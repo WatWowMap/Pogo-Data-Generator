@@ -1,0 +1,16 @@
+{
+  "name": "pogo-data-generator",
+  "version": "1.0.0",
+  "description": "Pokemon GO project data generator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "testGenerator": "node -e 'require(\"./dist/index\").generate({ safe: false })'"
+  },
+  "author": "TurtIeSocks",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "pogo-protos": "github:Furtif/pogo-protos"
+  }
+}

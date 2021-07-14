@@ -1,0 +1,4 @@
+/node_modules/
+masterfile.json
+.prettierrc
+.DS_Store
