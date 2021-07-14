@@ -352,7 +352,8 @@ class Masterfile {
                     obj.formId = this.FormsList[FormArray[i]];
                     obj.proto = FormArray[i];
                     if (this.formsToSkip.some(form => FormArray[i].includes(form)) ||
-                        (options.skipNormalIfUnset && obj.defaultFormId === 0 && FormArray[i].includes('NORMAL'))) {
+                        (options.skipNormalIfUnset && obj.defaultFormId === 0 && FormArray[i].includes('NORMAL'))
+                        || this.finalData.pokemon[this.keyRef[obj.pokedexId]].forms[obj.formId]) {
                         return;
                     }
                     const sub = {

@@ -131,4 +131,14 @@ export interface Input {
     questRewardTypes?: QuestTempOpt
     invasion?: InvasionTempOpt
   }
+  test? : boolean
+}
+
+export interface FullTemplate {
+  pokemon?: PokemonTempOpt
+  moves?: MoveTempOpt
+  items?: ItemTempOpt
+  questConditions?: QuestTempOpt
+  questRewardTypes?: QuestTempOpt
+  invasions?: InvasionTempOpt
 }
