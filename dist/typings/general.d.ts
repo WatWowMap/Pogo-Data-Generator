@@ -1,28 +1,17 @@
-import { Pokemon, Move, Item, Quest, Invasion, Forms } from './dataTypes';
+import { AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions } from './dataTypes';
 export interface FinalData {
     [index: string]: any;
-    pokemon?: Pokemon;
-    moves?: Move;
-    items?: Item;
-    questRewardTypes?: Quest;
-    questConditions?: Quest;
-    invasions?: Invasion;
-}
-export interface KeyRef {
-    [index: number]: string;
-}
-export interface TempForms {
-    [id: number]: {
-        forms?: {
-            [id: number]: Forms;
-        };
-        defaultFormId?: number;
-    };
+    pokemon?: AllPokemon;
+    moves?: AllMoves;
+    items?: AllItems;
+    questRewardTypes?: AllQuests;
+    questConditions?: AllQuests;
+    invasions?: AllInvasions;
 }
 export interface MegaStats {
     [index: number]: GuessedMega[];
 }
-export interface GuessedMega {
+interface GuessedMega {
     attack?: number;
     defense?: number;
     stamina?: number;

@@ -1,68 +1,31 @@
-export interface Pokemon {
-    [index: string]: SinglePokemon;
-}
-export interface SinglePokemon {
-    name?: string;
-    formId?: number;
-    proto?: string;
-    isCostume?: boolean;
-    forms?: {
-        [index: number]: Forms;
-    };
-    defaultFormId?: number;
-    pokedexId?: number;
-    genId?: number;
-    generation?: string;
-    types?: string[];
-    attack?: number;
-    defense?: number;
-    stamina?: number;
-    height?: number;
-    weight?: number;
-    fleeRate?: number;
-    captureRate?: number;
-    quickMoves?: string[];
-    chargedMoves?: string[];
-    family?: number;
-    legendary?: boolean;
-    mythic?: boolean;
-    buddyGroupNumber?: number;
-    kmBuddyDistance?: number;
-    thirdMoveStardust?: number;
-    thirdMoveCandy?: number;
-    gymDefenderEligible?: boolean;
-    little?: boolean;
-    evolutions?: object[];
-    tempEvolutions?: {
-        [id: number]: TempEvolutions;
-    };
-}
-export interface Invasion {
+export interface AllInvasions {
     [index: string]: SingleInvasion;
 }
 export interface SingleInvasion {
-    id?: number;
-    type?: string;
-    gender?: number;
-    grunt?: string;
-    secondReward?: boolean;
-    encounters?: {
-        [id: string]: number[];
+    id: number;
+    type: string;
+    gender: number;
+    grunt: string;
+    secondReward: boolean;
+    encounters: {
+        [position: string]: InvasionTeam[];
     };
-    little?: boolean;
 }
-export interface Move {
+declare type InvasionTeam = {
+    id: number;
+    formId: number;
+};
+export interface AllMoves {
     [index: string]: SingleMove;
 }
 export interface SingleMove {
     id: number;
     name: string;
-    proto: string;
-    type: string;
-    power: number;
-    little?: boolean;
+    proto?: string;
+    type?: string;
+    power?: number;
 }
-export interface Item {
+export interface AllItems {
     [index: string]: SingleItem;
 }
 export interface SingleItem {
@@ -72,31 +35,70 @@ export interface SingleItem {
     type: string;
     category: string;
     minTrainerLevel: number;
-    little?: boolean;
 }
-export interface Quest {
-    [index: string]: SingleQuest;
+export interface AllQuests {
+    [id: number]: SingleQuest;
 }
 export interface SingleQuest {
     id: number;
     proto: string;
     formatted: string;
-    little?: boolean;
 }
-export interface Forms {
+export interface AllPokemon {
+    [index: string]: SinglePokemon;
+}
+export interface AllForms {
+    [id: number]: {
+        forms?: {
+            [id: number]: SingleForm;
+        };
+    };
+}
+export interface SinglePokemon extends SingleForm {
+    id?: number;
+    forms?: {
+        [index: number]: SingleForm;
+    };
+    defaultFormId?: number;
+    genId?: number;
+    generation?: string;
+    fleeRate?: number;
+    captureRate?: number;
+    family?: number;
+    legendary?: boolean;
+    mythic?: boolean;
+    buddyGroupNumber?: number;
+    kmBuddyDistance?: number;
+    thirdMoveStardust?: number;
+    thirdMoveCandy?: number;
+    gymDefenderEligible?: boolean;
+}
+export interface SingleForm extends BaseStats {
     name?: string;
     proto?: string;
     formId?: number;
     isCostume?: boolean;
+    evolutions?: Evolutions;
+    tempEvolutions?: TempEvolutions;
+    quickMoves?: string[];
+    chargedMoves?: string[];
+    family?: number;
+    little?: boolean;
 }
-export interface Unreleased {
-    attack?: number;
-    defense?: number;
-    stamina?: number;
-    types?: string[];
+export interface Unreleased extends BaseStats {
     unreleased?: boolean;
 }
 export interface TempEvolutions {
+    [id: number]: BaseStats;
+}
+export interface Evolutions {
+    [index: string]: {
+        id?: number;
+        formId?: number;
+        genderRequirement?: number;
+    };
+}
+interface BaseStats {
     attack?: number;
     defense?: number;
     stamina?: number;
@@ -104,3 +106,4 @@ export interface TempEvolutions {
     weight?: number;
     types?: string[];
 }
+export {};
