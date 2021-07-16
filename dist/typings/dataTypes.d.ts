@@ -1,5 +1,5 @@
 export interface AllInvasions {
-    [index: string]: SingleInvasion;
+    [id: string]: SingleInvasion;
 }
 export interface SingleInvasion {
     id: number;
@@ -16,7 +16,7 @@ declare type InvasionTeam = {
     formId: number;
 };
 export interface AllMoves {
-    [index: string]: SingleMove;
+    [id: number]: SingleMove;
 }
 export interface SingleMove {
     id: number;
@@ -26,7 +26,7 @@ export interface SingleMove {
     power?: number;
 }
 export interface AllItems {
-    [index: string]: SingleItem;
+    [id: number]: SingleItem;
 }
 export interface SingleItem {
     id: number;
@@ -45,7 +45,7 @@ export interface SingleQuest {
     formatted: string;
 }
 export interface AllPokemon {
-    [index: string]: SinglePokemon;
+    [id: number]: SinglePokemon;
 }
 export interface AllForms {
     [id: number]: {
@@ -57,7 +57,7 @@ export interface AllForms {
 export interface SinglePokemon extends SingleForm {
     id?: number;
     forms?: {
-        [index: number]: SingleForm;
+        [id: number]: SingleForm;
     };
     defaultFormId?: number;
     genId?: number;
@@ -92,7 +92,7 @@ export interface TempEvolutions {
     [id: number]: BaseStats;
 }
 export interface Evolutions {
-    [index: string]: {
+    [id: number]: {
         id?: number;
         formId?: number;
         genderRequirement?: number;

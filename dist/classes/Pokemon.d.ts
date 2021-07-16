@@ -1,4 +1,4 @@
-import { AllPokemon, AllMoves, TempEvolutions, Evolutions, SinglePokemon, PokemonTyping } from '../typings/dataTypes';
+import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, PokemonTyping } from '../typings/dataTypes';
 import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general';
 import Masterfile from './Masterfile';
 export default class Pokemon extends Masterfile {
@@ -12,7 +12,6 @@ export default class Pokemon extends Masterfile {
     megaStats: MegaStats;
     lcBanList: any;
     evolvedPokemon: any;
-    moves: AllMoves;
     constructor();
     ensurePokemon(id: number): string;
     ensureFormName(id: number, formName: string): string;

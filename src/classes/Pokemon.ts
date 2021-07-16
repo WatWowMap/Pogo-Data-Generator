@@ -1,14 +1,6 @@
 import { Rpc } from 'pogo-protos'
 
-import {
-  AllPokemon,
-  AllMoves,
-  TempEvolutions,
-  Evolutions,
-  SinglePokemon,
-  Unreleased,
-  PokemonTyping,
-} from '../typings/dataTypes'
+import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, Unreleased, PokemonTyping } from '../typings/dataTypes'
 import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general'
 import Masterfile from './Masterfile'
 import generations from '../data/generations.json'
@@ -25,7 +17,6 @@ export default class Pokemon extends Masterfile {
   megaStats: MegaStats
   lcBanList: any
   evolvedPokemon: any
-  moves: AllMoves
 
   constructor() {
     super()

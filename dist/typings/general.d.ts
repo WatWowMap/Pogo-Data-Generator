@@ -1,6 +1,5 @@
 import { AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions } from './dataTypes';
 export interface FinalData {
-    [index: string]: any;
     pokemon?: AllPokemon;
     moves?: AllMoves;
     items?: AllItems;
@@ -9,7 +8,7 @@ export interface FinalData {
     invasions?: AllInvasions;
 }
 export interface MegaStats {
-    [index: number]: GuessedMega[];
+    [id: number]: GuessedMega[];
 }
 interface GuessedMega {
     attack?: number;
@@ -20,7 +19,7 @@ interface GuessedMega {
     type2?: string;
 }
 export interface Generation {
-    [index: string]: {
+    [id: string]: {
         name: string;
         start: number;
         end: number;

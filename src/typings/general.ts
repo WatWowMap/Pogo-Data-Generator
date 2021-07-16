@@ -3,7 +3,6 @@ import {
 } from './dataTypes'
 
 export interface FinalData {
-  [index: string]: any
   pokemon?: AllPokemon
   moves?: AllMoves
   items?: AllItems
@@ -13,7 +12,7 @@ export interface FinalData {
 }
 
 export interface MegaStats {
-  [index: number]: GuessedMega[]
+  [id: number]: GuessedMega[]
 }
 
 interface GuessedMega {
@@ -26,7 +25,7 @@ interface GuessedMega {
 }
 
 export interface Generation {
-  [index: string]: {
+  [id: string]: {
     name: string
     start: number
     end: number
