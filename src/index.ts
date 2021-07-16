@@ -217,6 +217,6 @@ export async function generate({ template, safe, url, test }: Input) {
   if (test) {
     fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => {})
   } else {
-    return
+    return final
   }
 }

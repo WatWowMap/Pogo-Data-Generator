@@ -43,7 +43,7 @@ class Pokemon extends Masterfile_1.default {
         }
     }
     getMoves(moves) {
-        const list = [];
+        const parsed = [];
         if (moves) {
             moves.forEach(move => {
                 const m = move.replace('_FAST', '').split('_');
@@ -51,10 +51,23 @@ class Pokemon extends Masterfile_1.default {
                 if (m[1]) {
                     newMove += ` ${this.capitalize(m[1])}`;
                 }
-                list.push(newMove);
+                parsed.push(newMove);
             });
         }
-        return list;
+        return parsed;
+    }
+    getTypeDetails(incomingTypes) {
+        const types = {};
+        incomingTypes.forEach(type => {
+            if (type) {
+                const typeId = this.TypeList[type];
+                types[typeId] = {
+                    typeId,
+                    typeName: this.capitalize(type.replace('POKEMON_TYPE_', '')),
+                };
+            }
+        });
+        return types;
     }
     compileEvos(mfObject) {
         const evolutions = {};
@@ -93,13 +106,7 @@ class Pokemon extends Masterfile_1.default {
                     tempEvolutions[key].height = tempEvo.averageHeightM;
                     tempEvolutions[key].weight = tempEvo.averageWeightKg;
             }
-            const types = [];
-            if (tempEvo.typeOverride1) {
-                types.push(this.capitalize(tempEvo.typeOverride1.replace('POKEMON_TYPE_', '')));
-            }
-            if (tempEvo.typeOverride2) {
-                types.push(this.capitalize(tempEvo.typeOverride2.replace('POKEMON_TYPE_', '')));
-            }
+            const types = this.getTypeDetails([tempEvo.typeOverride1, tempEvo.typeOverride2]);
             if (types.toString() !== primaryForm.types.toString()) {
                 tempEvolutions[key].types = types;
             }
@@ -121,14 +128,18 @@ class Pokemon extends Masterfile_1.default {
                         if (!this.parsedPokemon[id]) {
                             this.parsedPokemon[id] = {};
                         }
+                        this.parsedPokemon[id].id = id;
+                        this.parsedPokemon[id].name = this.ensurePokemon(id);
                         if (!this.parsedPokemon[id].forms) {
                             this.parsedPokemon[id].forms = {};
                         }
-                        this.parsedPokemon[id].forms[formId] = {
-                            name: this.ensurePokemon(id),
-                            proto,
-                            formId,
-                        };
+                        if (!this.parsedPokemon[id].forms[formId]) {
+                            this.parsedPokemon[id].forms[formId] = {
+                                name: this.ensureFormName(id, proto),
+                                proto,
+                                formId,
+                            };
+                        }
                     }
                 });
             }
@@ -164,6 +175,7 @@ class Pokemon extends Masterfile_1.default {
                 }
                 else {
                     this.parsedPokemon[id] = {
+                        name: this.ensurePokemon(id),
                         defaultFormId: 0,
                         forms: { 0: { name: '' } },
                     };
@@ -224,13 +236,7 @@ class Pokemon extends Masterfile_1.default {
             if (chargedMoves.toString() !== primaryForm.chargedMoves.toString()) {
                 form.chargedMoves = chargedMoves;
             }
-            const types = [];
-            if (pokemonSettings.type) {
-                types.push(this.capitalize(pokemonSettings.type.replace('POKEMON_TYPE_', '')));
-            }
-            if (pokemonSettings.type2) {
-                types.push(this.capitalize(pokemonSettings.type2.replace('POKEMON_TYPE_', '')));
-            }
+            const types = this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2]);
             if (types.toString() !== primaryForm.types.toString()) {
                 form.types = types;
             }
@@ -247,7 +253,7 @@ class Pokemon extends Masterfile_1.default {
                 id,
                 name: this.ensurePokemon(id),
                 forms: this.parsedPokemon[id].forms || {},
-                types: [],
+                types: this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2]),
                 attack: pokemonSettings.stats.baseAttack,
                 defense: pokemonSettings.stats.baseDefense,
                 stamina: pokemonSettings.stats.baseStamina,
@@ -274,12 +280,6 @@ class Pokemon extends Masterfile_1.default {
             }
             if (pokemonSettings.tempEvoOverrides) {
                 this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(pokemonSettings.tempEvoOverrides, this.parsedPokemon[id]);
-            }
-            if (pokemonSettings.type) {
-                this.parsedPokemon[id].types.push(this.capitalize(pokemonSettings.type.replace('POKEMON_TYPE_', '')));
-            }
-            if (pokemonSettings.type2) {
-                this.parsedPokemon[id].types.push(this.capitalize(pokemonSettings.type2.replace('POKEMON_TYPE_', '')));
             }
             this.parsedPokemon[id].generation = this.generations[this.parsedPokemon[id].genId].name;
         }
@@ -318,13 +318,7 @@ class Pokemon extends Masterfile_1.default {
                 }
                 for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
                     if (!this.parsedPokemon[id].tempEvolutions[tempEvoId]) {
-                        const types = [];
-                        if (type1) {
-                            types.push(this.capitalize(type1.replace('POKEMON_TYPE_', '')));
-                        }
-                        if (type2) {
-                            types.push(this.capitalize(type2.replace('POKEMON_TYPE_', '')));
-                        }
+                        const types = this.getTypeDetails([type1, type2]);
                         const evo = {
                             attack,
                             defense,

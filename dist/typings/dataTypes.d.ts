@@ -22,7 +22,7 @@ export interface SingleMove {
     id: number;
     name: string;
     proto?: string;
-    type?: string;
+    type?: PokemonTyping;
     power?: number;
 }
 export interface AllItems {
@@ -98,12 +98,18 @@ export interface Evolutions {
         genderRequirement?: number;
     };
 }
-interface BaseStats {
+declare type BaseStats = {
     attack?: number;
     defense?: number;
     stamina?: number;
     height?: number;
     weight?: number;
-    types?: string[];
+    types?: {
+        [id: number]: PokemonTyping;
+    };
+};
+export interface PokemonTyping {
+    typeId: number;
+    typeName: string;
 }
 export {};

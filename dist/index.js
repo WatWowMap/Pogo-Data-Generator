@@ -243,7 +243,7 @@ function generate({ template, safe, url, test }) {
             fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => { });
         }
         else {
-            return;
+            return final;
         }
     });
 }

@@ -1,17 +1,13 @@
-import { Rpc } from 'pogo-protos'
-import { AllMoves } from '../typings/dataTypes'
-
-import Masterfile from './Masterfile'
 import { NiaMfObj } from '../typings/general'
+import { AllMoves } from '../typings/dataTypes'
+import Masterfile from './Masterfile'
 
 export default class Moves extends Masterfile {
   parsedMoves: AllMoves
-  MovesList: any
 
   constructor() {
     super()
     this.parsedMoves = {}
-    this.MovesList = Rpc.HoloPokemonMove
   }
 
   protoMoves() {
@@ -21,21 +17,28 @@ export default class Moves extends Masterfile {
       if (!this.parsedMoves[id]) {
         this.parsedMoves[id] = {
           id: this.MovesList[MoveArray[i]],
-          name: this.capitalize(MoveArray[i].replace('_FAST', '')),  
+          name: this.capitalize(MoveArray[i].replace('_FAST', '')),
         }
       }
     }
   }
 
   addMove(object: NiaMfObj) {
+    const {
+      templateId,
+      data: { combatMove },
+    } = object
     try {
-      const id: number = this.MovesList[object.templateId.substr(18)]
+      const id: number = this.MovesList[templateId.substr(18)]
       this.parsedMoves[id] = {
         id,
-        name: this.capitalize(object.data.combatMove.uniqueId.replace('_FAST', '')),
-        proto: object.templateId.substr(7),
-        type: this.capitalize(object.data.combatMove.type.replace('POKEMON_TYPE_', '')),
-        power: object.data.combatMove.power,
+        name: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
+        proto: templateId.substr(7),
+        type: {
+          typeName: this.capitalize(combatMove.type.replace('POKEMON_TYPE_', '')),
+          typeId: this.TypeList[combatMove.type],
+        },
+        power: combatMove.power,
       }
     } catch (e) {
       console.error(e, '\n', object)

@@ -1,8 +1,16 @@
 import { Rpc } from 'pogo-protos'
 
-import Masterfile from './Masterfile'
-import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, Unreleased } from '../typings/dataTypes'
+import {
+  AllPokemon,
+  AllMoves,
+  TempEvolutions,
+  Evolutions,
+  SinglePokemon,
+  Unreleased,
+  PokemonTyping,
+} from '../typings/dataTypes'
 import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general'
+import Masterfile from './Masterfile'
 import generations from '../data/generations.json'
 import megas from '../data/megas.json'
 
@@ -17,6 +25,7 @@ export default class Pokemon extends Masterfile {
   megaStats: MegaStats
   lcBanList: any
   evolvedPokemon: any
+  moves: AllMoves
 
   constructor() {
     super()
@@ -61,7 +70,7 @@ export default class Pokemon extends Masterfile {
   }
 
   getMoves(moves: string[]) {
-    const list: string[] = []
+    const parsed: string[] = []
     if (moves) {
       moves.forEach(move => {
         const m = move.replace('_FAST', '').split('_')
@@ -69,10 +78,24 @@ export default class Pokemon extends Masterfile {
         if (m[1]) {
           newMove += ` ${this.capitalize(m[1])}`
         }
-        list.push(newMove)
+        parsed.push(newMove)
       })
     }
-    return list
+    return parsed
+  }
+
+  getTypeDetails(incomingTypes: string[]) {
+    const types: { [id: number]: PokemonTyping } = {}
+    incomingTypes.forEach(type => {
+      if (type) {
+        const typeId: number = this.TypeList[type]
+        types[typeId] = {
+          typeId,
+          typeName: this.capitalize(type.replace('POKEMON_TYPE_', '')),
+        }
+      }
+    })
+    return types
   }
 
   compileEvos(mfObject: EvoBranch[]) {
@@ -113,13 +136,7 @@ export default class Pokemon extends Masterfile {
           tempEvolutions[key].height = tempEvo.averageHeightM
           tempEvolutions[key].weight = tempEvo.averageWeightKg
       }
-      const types = []
-      if (tempEvo.typeOverride1) {
-        types.push(this.capitalize(tempEvo.typeOverride1.replace('POKEMON_TYPE_', '')))
-      }
-      if (tempEvo.typeOverride2) {
-        types.push(this.capitalize(tempEvo.typeOverride2.replace('POKEMON_TYPE_', '')))
-      }
+      const types = this.getTypeDetails([tempEvo.typeOverride1, tempEvo.typeOverride2])
       if (types.toString() !== primaryForm.types.toString()) {
         tempEvolutions[key].types = types
       }
@@ -145,13 +162,18 @@ export default class Pokemon extends Masterfile {
             if (!this.parsedPokemon[id]) {
               this.parsedPokemon[id] = {}
             }
+            this.parsedPokemon[id].id = id
+            this.parsedPokemon[id].name = this.ensurePokemon(id)
+
             if (!this.parsedPokemon[id].forms) {
               this.parsedPokemon[id].forms = {}
             }
-            this.parsedPokemon[id].forms[formId] = {
-              name: this.ensurePokemon(id),
-              proto,
-              formId,
+            if (!this.parsedPokemon[id].forms[formId]) {
+              this.parsedPokemon[id].forms[formId] = {
+                name: this.ensureFormName(id, proto),
+                proto,
+                formId,
+              }
             }
           }
         })
@@ -190,6 +212,7 @@ export default class Pokemon extends Masterfile {
           }
         } else {
           this.parsedPokemon[id] = {
+            name: this.ensurePokemon(id),
             defaultFormId: 0,
             forms: { 0: { name: '' } },
           }
@@ -257,13 +280,7 @@ export default class Pokemon extends Masterfile {
       if (chargedMoves.toString() !== primaryForm.chargedMoves.toString()) {
         form.chargedMoves = chargedMoves
       }
-      const types = []
-      if (pokemonSettings.type) {
-        types.push(this.capitalize(pokemonSettings.type.replace('POKEMON_TYPE_', '')))
-      }
-      if (pokemonSettings.type2) {
-        types.push(this.capitalize(pokemonSettings.type2.replace('POKEMON_TYPE_', '')))
-      }
+      const types = this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2])
       if (types.toString() !== primaryForm.types.toString()) {
         form.types = types
       }
@@ -279,7 +296,7 @@ export default class Pokemon extends Masterfile {
         id,
         name: this.ensurePokemon(id),
         forms: this.parsedPokemon[id].forms || {},
-        types: [],
+        types: this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2]),
         attack: pokemonSettings.stats.baseAttack,
         defense: pokemonSettings.stats.baseDefense,
         stamina: pokemonSettings.stats.baseStamina,
@@ -309,12 +326,6 @@ export default class Pokemon extends Masterfile {
           pokemonSettings.tempEvoOverrides,
           this.parsedPokemon[id]
         )
-      }
-      if (pokemonSettings.type) {
-        this.parsedPokemon[id].types.push(this.capitalize(pokemonSettings.type.replace('POKEMON_TYPE_', '')))
-      }
-      if (pokemonSettings.type2) {
-        this.parsedPokemon[id].types.push(this.capitalize(pokemonSettings.type2.replace('POKEMON_TYPE_', '')))
       }
       this.parsedPokemon[id].generation = this.generations[this.parsedPokemon[id].genId].name
     }
@@ -355,13 +366,7 @@ export default class Pokemon extends Masterfile {
         }
         for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
           if (!this.parsedPokemon[id].tempEvolutions[tempEvoId]) {
-            const types = []
-            if (type1) {
-              types.push(this.capitalize(type1.replace('POKEMON_TYPE_', '')))
-            }
-            if (type2) {
-              types.push(this.capitalize(type2.replace('POKEMON_TYPE_', '')))
-            }
+            const types = this.getTypeDetails([type1, type2])
             const evo: Unreleased = {
               attack,
               defense,

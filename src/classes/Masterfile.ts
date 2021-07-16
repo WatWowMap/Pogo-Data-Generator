@@ -1,4 +1,14 @@
+import { Rpc } from 'pogo-protos'
+
 export default class Masterfile {
+  TypeList: any
+  MovesList: any
+
+  constructor() {
+    this.TypeList = Rpc.HoloPokemonType
+    this.MovesList = Rpc.HoloPokemonMove
+  }
+  
   capitalize(string: string) {
     const capitalizeList = ['pvp', 'xl', 'npc', 'cp', 'poi', 'gbl']
     try {

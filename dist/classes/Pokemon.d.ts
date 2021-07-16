@@ -1,6 +1,6 @@
-import Masterfile from './Masterfile';
-import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon } from '../typings/dataTypes';
+import { AllPokemon, AllMoves, TempEvolutions, Evolutions, SinglePokemon, PokemonTyping } from '../typings/dataTypes';
 import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general';
+import Masterfile from './Masterfile';
 export default class Pokemon extends Masterfile {
     parsedPokemon: AllPokemon;
     FormsList: any;
@@ -12,11 +12,15 @@ export default class Pokemon extends Masterfile {
     megaStats: MegaStats;
     lcBanList: any;
     evolvedPokemon: any;
+    moves: AllMoves;
     constructor();
     ensurePokemon(id: number): string;
     ensureFormName(id: number, formName: string): string;
     lookupPokemon(name: string): string;
     getMoves(moves: string[]): string[];
+    getTypeDetails(incomingTypes: string[]): {
+        [id: number]: PokemonTyping;
+    };
     compileEvos(mfObject: EvoBranch[]): Evolutions;
     compileTempEvos(mfObject: TempEvo[], primaryForm: SinglePokemon): TempEvolutions;
     generateProtoForms(): void;
