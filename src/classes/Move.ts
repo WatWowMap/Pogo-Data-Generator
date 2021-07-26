@@ -18,6 +18,7 @@ export default class Moves extends Masterfile {
         this.parsedMoves[id] = {
           id: this.MovesList[MoveArray[i]],
           name: this.capitalize(MoveArray[i].replace('_FAST', '')),
+          proto: MoveArray[i],
         }
       }
     }
@@ -33,11 +34,8 @@ export default class Moves extends Masterfile {
       this.parsedMoves[id] = {
         id,
         name: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
-        proto: templateId.substr(7),
-        type: {
-          typeName: this.capitalize(combatMove.type.replace('POKEMON_TYPE_', '')),
-          typeId: this.TypeList[combatMove.type],
-        },
+        proto: templateId.substr(18),
+        typeId: this.TypesList[combatMove.type],
         power: combatMove.power,
       }
     } catch (e) {

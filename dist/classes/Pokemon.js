@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const pogo_protos_1 = require("pogo-protos");
 const Masterfile_1 = __importDefault(require("./Masterfile"));
-const generations_json_1 = __importDefault(require("../data/generations.json"));
 const megas_json_1 = __importDefault(require("../data/megas.json"));
 class Pokemon extends Masterfile_1.default {
     constructor() {
         super();
         this.parsedPokemon = {};
+        this.parsedForms = {};
         this.megaStats = {};
         this.evolvedPokemon = new Set();
         this.PokemonList = pogo_protos_1.Rpc.HoloPokemonId;
@@ -18,9 +18,42 @@ class Pokemon extends Masterfile_1.default {
         this.GenderList = pogo_protos_1.Rpc.PokemonDisplayProto.Gender;
         this.TempEvolutions = pogo_protos_1.Rpc.HoloTemporaryEvolutionId;
         this.FamilyId = pogo_protos_1.Rpc.HoloPokemonFamilyId;
-        this.generations = generations_json_1.default;
+        this.generations = {
+            1: {
+                name: 'Kanto',
+                range: [1, 151],
+            },
+            2: {
+                name: 'Johto',
+                range: [152, 251],
+            },
+            3: {
+                name: 'Hoenn',
+                range: [252, 386],
+            },
+            4: {
+                name: 'Sinnoh',
+                range: [387, 494],
+            },
+            5: {
+                name: 'Unova',
+                range: [495, 649],
+            },
+            6: {
+                name: 'Kalos',
+                range: [650, 721],
+            },
+            7: {
+                name: 'Alola',
+                range: [722, 809],
+            },
+            8: {
+                name: 'Galar',
+                range: [810, 893],
+            },
+        };
     }
-    ensurePokemon(id) {
+    pokemonName(id) {
         switch (id) {
             case 29:
                 return 'Nidoran♀';
@@ -30,10 +63,11 @@ class Pokemon extends Masterfile_1.default {
                 return this.capitalize(this.PokemonList[id]);
         }
     }
-    ensureFormName(id, formName) {
-        return this.capitalize(formName.substr(id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
+    formName(id, formName, noCap = false) {
+        const name = formName.substr(id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
             ? 8
-            : this.PokemonList[id].length + 1));
+            : this.PokemonList[id].length + 1);
+        return noCap ? name : this.capitalize(name);
     }
     lookupPokemon(name) {
         for (const key of Object.keys(this.PokemonList)) {
@@ -43,73 +77,80 @@ class Pokemon extends Masterfile_1.default {
         }
     }
     getMoves(moves) {
-        const parsed = [];
         if (moves) {
-            moves.forEach(move => {
-                const m = move.replace('_FAST', '').split('_');
-                let newMove = this.capitalize(m[0]);
-                if (m[1]) {
-                    newMove += ` ${this.capitalize(m[1])}`;
-                }
-                parsed.push(newMove);
-            });
-        }
-        return parsed;
-    }
-    getTypeDetails(incomingTypes) {
-        const types = {};
-        incomingTypes.forEach(type => {
-            if (type) {
-                const typeId = this.TypeList[type];
-                types[typeId] = {
-                    typeId,
-                    typeName: this.capitalize(type.replace('POKEMON_TYPE_', '')),
-                };
+            try {
+                return moves.map(move => this.MovesList[move]);
             }
-        });
-        return types;
+            catch (e) {
+                console.error(e, '\n', moves);
+            }
+        }
+    }
+    compare(formData, parentData) {
+        if (formData && parentData) {
+            try {
+                return formData.every((x, i) => x === parentData[i]);
+            }
+            catch (e) {
+                console.error(e, '\nForm:', formData, '\nParent:', parentData);
+            }
+        }
+    }
+    getTypes(incomingTypes) {
+        if (incomingTypes) {
+            try {
+                if (!incomingTypes[1]) {
+                    incomingTypes.pop();
+                }
+                return incomingTypes.map(type => this.TypesList[type]);
+            }
+            catch (e) {
+                console.error(e, '\n', incomingTypes);
+            }
+        }
     }
     compileEvos(mfObject) {
-        const evolutions = {};
+        const evolutions = [];
         mfObject.forEach(branch => {
             if (branch.temporaryEvolution) {
                 return;
             }
             else if (branch.evolution) {
                 const id = this.PokemonList[branch.evolution];
-                evolutions[id] = {
+                evolutions.push({
                     id,
                     formId: this.FormsList[branch.form],
                     genderRequirement: this.GenderList[branch.genderRequirement],
-                };
+                });
                 this.evolvedPokemon.add(id);
             }
         });
         return evolutions;
     }
     compileTempEvos(mfObject, primaryForm) {
-        const tempEvolutions = {};
-        mfObject.forEach(tempEvo => {
-            const key = this.TempEvolutions[tempEvo.tempEvoId];
-            tempEvolutions[key] = {};
+        const tempEvolutions = mfObject.map(tempEvo => {
+            const newTempEvolutions = {
+                tempEvoId: this.TempEvolutions[tempEvo.tempEvoId],
+            };
             switch (true) {
                 case tempEvo.stats.baseAttack !== primaryForm.attack:
                 case tempEvo.stats.baseDefense !== primaryForm.defense:
                 case tempEvo.stats.baseStamina !== primaryForm.stamina:
-                    tempEvolutions[key].attack = tempEvo.stats.baseAttack;
-                    tempEvolutions[key].defense = tempEvo.stats.baseDefense;
-                    tempEvolutions[key].stamina = tempEvo.stats.baseStamina;
+                    newTempEvolutions.attack = tempEvo.stats.baseAttack;
+                    newTempEvolutions.defense = tempEvo.stats.baseDefense;
+                    newTempEvolutions.stamina = tempEvo.stats.baseStamina;
             }
             switch (true) {
                 case tempEvo.averageHeightM !== primaryForm.height:
                 case tempEvo.averageWeightKg !== primaryForm.weight:
-                    tempEvolutions[key].height = tempEvo.averageHeightM;
-                    tempEvolutions[key].weight = tempEvo.averageWeightKg;
+                    newTempEvolutions.height = tempEvo.averageHeightM;
+                    newTempEvolutions.weight = tempEvo.averageWeightKg;
             }
-            const types = this.getTypeDetails([tempEvo.typeOverride1, tempEvo.typeOverride2]);
-            if (types.toString() !== primaryForm.types.toString()) {
-                tempEvolutions[key].types = types;
+            const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2]);
+            if (!this.compare(types, primaryForm.types)) {
+                newTempEvolutions.types = types;
             }
+            return newTempEvolutions;
         });
         return tempEvolutions;
     }
@@ -129,16 +170,19 @@ class Pokemon extends Masterfile_1.default {
                             this.parsedPokemon[id] = {};
                         }
                         this.parsedPokemon[id].id = id;
-                        this.parsedPokemon[id].name = this.ensurePokemon(id);
+                        this.parsedPokemon[id].name = this.pokemonName(id);
                         if (!this.parsedPokemon[id].forms) {
-                            this.parsedPokemon[id].forms = {};
+                            this.parsedPokemon[id].forms = [];
                         }
-                        if (!this.parsedPokemon[id].forms[formId]) {
-                            this.parsedPokemon[id].forms[formId] = {
-                                name: this.ensureFormName(id, proto),
+                        if (!this.parsedForms[formId]) {
+                            this.parsedForms[formId] = {
+                                name: this.formName(id, proto),
                                 proto,
                                 formId,
                             };
+                        }
+                        if (!this.parsedPokemon[id].forms.includes(formId)) {
+                            this.parsedPokemon[id].forms.push(formId);
                         }
                     }
                 });
@@ -156,7 +200,7 @@ class Pokemon extends Masterfile_1.default {
                     this.parsedPokemon[id] = {};
                 }
                 if (!this.parsedPokemon[id].forms) {
-                    this.parsedPokemon[id].forms = {};
+                    this.parsedPokemon[id].forms = [];
                 }
                 const forms = object.data.formSettings.forms;
                 if (forms) {
@@ -165,8 +209,8 @@ class Pokemon extends Masterfile_1.default {
                         if (i === 0) {
                             this.parsedPokemon[id].defaultFormId = formId;
                         }
-                        this.parsedPokemon[id].forms[formId] = {
-                            name: this.ensureFormName(id, forms[i].form),
+                        this.parsedForms[formId] = {
+                            name: this.formName(id, forms[i].form),
                             proto: forms[i].form,
                             formId,
                             isCostume: forms[i].isCostume,
@@ -175,9 +219,9 @@ class Pokemon extends Masterfile_1.default {
                 }
                 else {
                     this.parsedPokemon[id] = {
-                        name: this.ensurePokemon(id),
+                        name: this.pokemonName(id),
                         defaultFormId: 0,
-                        forms: { 0: { name: '' } },
+                        forms: [0],
                     };
                 }
             }
@@ -198,18 +242,21 @@ class Pokemon extends Masterfile_1.default {
             : null;
         if (formId) {
             if (!this.parsedPokemon[id].forms) {
-                this.parsedPokemon[id].forms = {};
+                this.parsedPokemon[id].forms = [];
             }
             const primaryForm = this.parsedPokemon[id];
             const formName = split.filter((word, i) => i > 1 && word).join('_');
-            if (!this.parsedPokemon[id].forms[formId]) {
-                this.parsedPokemon[id].forms[formId] = {
-                    name: this.ensureFormName(id, formName),
-                    proto: formName,
+            if (!this.parsedForms[formId]) {
+                this.parsedForms[formId] = {
+                    name: formName,
+                    proto: templateId,
                     formId,
                 };
             }
-            const form = this.parsedPokemon[id].forms[formId];
+            if (!this.parsedPokemon[id].forms.includes(formId)) {
+                this.parsedPokemon[id].forms.push(formId);
+            }
+            const form = this.parsedForms[formId];
             switch (true) {
                 case pokemonSettings.stats.baseAttack !== primaryForm.attack:
                 case pokemonSettings.stats.baseDefense !== primaryForm.defense:
@@ -225,35 +272,31 @@ class Pokemon extends Masterfile_1.default {
                     form.weight = object.data.pokemonSettings.pokedexWeightKg;
             }
             const qMoves = this.getMoves(pokemonSettings.quickMoves);
-            if (qMoves.toString() !== primaryForm.quickMoves.toString()) {
+            if (!this.compare(qMoves, primaryForm.quickMoves)) {
                 form.quickMoves = qMoves;
             }
-            const cMoves = this.getMoves(pokemonSettings.quickMoves);
-            if (cMoves.toString() !== primaryForm.quickMoves.toString()) {
-                form.quickMoves = cMoves;
+            const cMoves = this.getMoves(pokemonSettings.cinematicMoves);
+            if (!this.compare(cMoves, primaryForm.chargedMoves)) {
+                form.chargedMoves = cMoves;
             }
-            const chargedMoves = this.getMoves(pokemonSettings.cinematicMoves);
-            if (chargedMoves.toString() !== primaryForm.chargedMoves.toString()) {
-                form.chargedMoves = chargedMoves;
-            }
-            const types = this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2]);
-            if (types.toString() !== primaryForm.types.toString()) {
+            const types = this.getTypes([pokemonSettings.type, pokemonSettings.type2]);
+            if (!this.compare(types, primaryForm.types)) {
                 form.types = types;
             }
             const family = this.FamilyId[pokemonSettings.familyId];
             if (family !== primaryForm.family) {
                 form.family = family;
             }
-            if (pokemonSettings.evolutionBranch) {
+            if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
                 form.evolutions = this.compileEvos(pokemonSettings.evolutionBranch);
             }
         }
         else {
             this.parsedPokemon[id] = {
                 id,
-                name: this.ensurePokemon(id),
-                forms: this.parsedPokemon[id].forms || {},
-                types: this.getTypeDetails([pokemonSettings.type, pokemonSettings.type2]),
+                name: this.pokemonName(id),
+                forms: this.parsedPokemon[id].forms || [],
+                types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]),
                 attack: pokemonSettings.stats.baseAttack,
                 defense: pokemonSettings.stats.baseDefense,
                 stamina: pokemonSettings.stats.baseStamina,
@@ -271,8 +314,8 @@ class Pokemon extends Masterfile_1.default {
                 thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock,
                 thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock,
                 gymDefenderEligible: pokemonSettings.isDeployable,
-                genId: +Object.keys(generations_json_1.default).find(gen => {
-                    return id >= this.generations[gen].start && id <= this.generations[gen].end;
+                genId: +Object.keys(this.generations).find(gen => {
+                    return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1];
                 }),
             };
             if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
@@ -311,29 +354,25 @@ class Pokemon extends Masterfile_1.default {
             const guessedMega = this.megaStats[id];
             if (guessedMega) {
                 if (!this.parsedPokemon[id]) {
-                    this.parsedPokemon[id] = { name: this.ensurePokemon(id) };
+                    this.parsedPokemon[id] = { name: this.pokemonName(id) };
                 }
                 if (!this.parsedPokemon[id].tempEvolutions) {
-                    this.parsedPokemon[id].tempEvolutions = {};
+                    this.parsedPokemon[id].tempEvolutions = [];
                 }
                 for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
-                    if (!this.parsedPokemon[id].tempEvolutions[tempEvoId]) {
-                        const types = this.getTypeDetails([type1, type2]);
+                    if (!this.parsedPokemon[id].tempEvolutions.some(evo => evo.tempEvoId === tempEvoId)) {
+                        const types = this.getTypes([type1, type2]);
                         const evo = {
+                            tempEvoId,
                             attack,
                             defense,
                             stamina,
                             unreleased: true,
                         };
-                        if (types.toString() !== (this.parsedPokemon[id].types || {}).toString()) {
+                        if (!this.compare(types, this.parsedPokemon[id].types)) {
                             evo.types = types;
                         }
-                        this.parsedPokemon[id].tempEvolutions[tempEvoId] = evo;
-                    }
-                    else if (this.parsedPokemon[id].tempEvolutions[tempEvoId].attack !== attack ||
-                        this.parsedPokemon[id].tempEvolutions[tempEvoId].defense !== defense ||
-                        this.parsedPokemon[id].tempEvolutions[tempEvoId].stamina !== stamina) {
-                        console.warn('Inconsistent guessed mega stats for', id, tempEvoId);
+                        this.parsedPokemon[id].tempEvolutions.push(evo);
                     }
                 }
             }
@@ -345,7 +384,7 @@ class Pokemon extends Masterfile_1.default {
         }
         else {
             this.lcBanList.add('FARFETCHD');
-            this.parsedPokemon[this.PokemonList.FARFETCHD].forms[this.FormsList.FARFETCHD_GALARIAN].little = true;
+            this.parsedForms[this.FormsList.FARFETCHD_GALARIAN].little = true;
         }
         for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
             const allowed = id == this.PokemonList.DEERLING ||

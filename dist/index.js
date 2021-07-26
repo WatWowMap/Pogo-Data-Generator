@@ -32,19 +32,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
-const axios_1 = __importDefault(require("axios"));
 const fs = __importStar(require("fs"));
 const extend_1 = __importDefault(require("extend"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const Pokemon_1 = __importDefault(require("./classes/Pokemon"));
 const Item_1 = __importDefault(require("./classes/Item"));
 const Move_1 = __importDefault(require("./classes/Move"));
 const Quest_1 = __importDefault(require("./classes/Quest"));
 const Invasion_1 = __importDefault(require("./classes/Invasion"));
+const fetch = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    return new Promise(resolve => {
+        node_fetch_1.default(url)
+            .then(res => res.json())
+            .then(json => {
+            return resolve(json);
+        });
+    });
+});
 const stock = {
     pokemon: {
         enabled: true,
         options: {
-            key: 'pokedexId',
+            key: 'id',
+            array: true,
             formsKey: 'formId',
             keyJoiner: '_',
             unsetDefaultForm: false,
@@ -60,23 +70,32 @@ const stock = {
                 name: true,
                 proto: true,
                 isCostume: true,
-                evolutions: true,
+                evolutions: {
+                    id: true,
+                    formId: true,
+                },
                 tempEvolutions: true,
-                attack: 'unique',
-                defense: 'unique',
-                stamina: 'unique',
-                height: 'unique',
-                weight: 'unique',
-                types: 'unique',
-                quickMoves: 'unique',
-                chargedMoves: 'unique',
-                family: 'unique',
+                attack: true,
+                defense: true,
+                stamina: true,
+                height: true,
+                weight: true,
+                types: {
+                    typeId: true,
+                    typeName: true,
+                },
+                quickMoves: true,
+                chargedMoves: true,
+                family: true,
             },
             defaultFormId: true,
             pokedexId: true,
-            genId: true,
+            genId: false,
             generation: true,
-            types: true,
+            types: {
+                typeId: true,
+                typeName: true,
+            },
             attack: true,
             defense: true,
             stamina: true,
@@ -87,7 +106,10 @@ const stock = {
             quickMoves: true,
             chargedMoves: true,
             tempEvolutions: true,
-            evolutions: true,
+            evolutions: {
+                id: true,
+                formId: true,
+            },
             legendary: true,
             mythic: true,
             buddyGroupNumber: true,
@@ -171,68 +193,72 @@ const stock = {
         },
     },
 };
-function generate({ template, safe, url, test }) {
+function generate({ template, safe, url, test } = {}) {
     return __awaiter(this, void 0, void 0, function* () {
+        const start = new Date();
         const urlToFetch = url || safe
             ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest.json'
             : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json';
         const merged = {};
         extend_1.default(true, merged, stock, template);
-        const { data } = yield axios_1.default.get(urlToFetch);
+        const data = yield fetch(urlToFetch);
         const { pokemon, moves, items, questConditions, questRewardTypes, invasions } = merged;
         const AllPokemon = pokemon.enabled ? new Pokemon_1.default() : null;
         const AllItems = items.enabled ? new Item_1.default() : null;
         const AllMoves = moves.enabled ? new Move_1.default() : null;
         const AllQuests = questConditions.enabled || questRewardTypes.enabled ? new Quest_1.default() : null;
         const AllInvasions = invasions.enabled ? new Invasion_1.default() : null;
-        for (let i = 0; i < data.length; i += 1) {
-            if (data[i]) {
-                if (data[i].data.formSettings && AllPokemon) {
-                    AllPokemon.addForm(data[i]);
+        if (!safe) {
+            for (let i = 0; i < data.length; i += 1) {
+                if (data[i]) {
+                    if (data[i].data.formSettings && AllPokemon) {
+                        AllPokemon.addForm(data[i]);
+                    }
+                    else if (data[i].data.pokemonSettings && AllPokemon) {
+                        AllPokemon.addPokemon(data[i]);
+                    }
+                    else if (data[i].data.itemSettings && AllItems) {
+                        AllItems.addItem(data[i]);
+                    }
+                    else if (data[i].data.combatMove && AllMoves) {
+                        AllMoves.addMove(data[i]);
+                    }
+                    else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
+                        AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon);
+                    }
                 }
-                else if (data[i].data.pokemonSettings && AllPokemon) {
-                    AllPokemon.addPokemon(data[i]);
+            }
+            if (AllPokemon) {
+                if (pokemon.options.includeProtos) {
+                    AllPokemon.generateProtoForms();
                 }
-                else if (data[i].data.itemSettings && AllItems) {
-                    AllItems.addItem(data[i]);
+                if (pokemon.options.includeEstimatedPokemon) {
+                    AllPokemon.megaInfo();
+                    AllPokemon.futureMegas();
                 }
-                else if (data[i].data.combatMove && AllMoves) {
-                    AllMoves.addMove(data[i]);
-                }
-                else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
-                    AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon);
+                if (pokemon.template.little) {
+                    AllPokemon.littleCup();
                 }
             }
-        }
-        if (AllPokemon) {
-            if (pokemon.options.includeProtos) {
-                AllPokemon.generateProtoForms();
+            if (AllQuests) {
+                if (questRewardTypes.enabled) {
+                    AllQuests.addQuest(true);
+                }
+                if (questConditions.enabled) {
+                    AllQuests.addQuest(false);
+                }
             }
-            if (pokemon.options.includeEstimatedPokemon) {
-                AllPokemon.megaInfo();
-                AllPokemon.futureMegas();
+            if (AllMoves && moves.options.includeProtos) {
+                AllMoves.protoMoves();
             }
-            if (pokemon.template.little) {
-                AllPokemon.littleCup();
+            if (AllInvasions) {
+                const invasionData = yield fetch('https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json');
+                AllInvasions.invasions(invasionData);
             }
-        }
-        if (AllQuests) {
-            if (questRewardTypes.enabled) {
-                AllQuests.addQuest(true);
-            }
-            if (questConditions.enabled) {
-                AllQuests.addQuest(false);
-            }
-        }
-        if (AllMoves && moves.options.includeProtos) {
-            AllMoves.protoMoves();
-        }
-        if (AllInvasions) {
-            const { data: invasionData } = yield axios_1.default.get('https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json');
-            AllInvasions.invasions(invasionData);
         }
         const final = {
             pokemon: AllPokemon.parsedPokemon,
+            forms: AllPokemon.parsedForms,
             items: AllItems.parsedItems,
             moves: AllMoves.parsedMoves,
             questRewardTypes: AllQuests.parsedRewardTypes,
@@ -241,6 +267,8 @@ function generate({ template, safe, url, test }) {
         };
         if (test) {
             fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => { });
+            const end = new Date();
+            console.log(`Generated in ${end - start}ms`);
         }
         else {
             return final;

@@ -1,8 +1,9 @@
-import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, PokemonTyping } from '../typings/dataTypes';
+import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes';
 import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general';
 import Masterfile from './Masterfile';
 export default class Pokemon extends Masterfile {
     parsedPokemon: AllPokemon;
+    parsedForms: AllForms;
     FormsList: any;
     PokemonList: any;
     GenderList: any;
@@ -13,15 +14,14 @@ export default class Pokemon extends Masterfile {
     lcBanList: any;
     evolvedPokemon: any;
     constructor();
-    ensurePokemon(id: number): string;
-    ensureFormName(id: number, formName: string): string;
+    pokemonName(id: number): string;
+    formName(id: number, formName: string, noCap?: boolean): string;
     lookupPokemon(name: string): string;
-    getMoves(moves: string[]): string[];
-    getTypeDetails(incomingTypes: string[]): {
-        [id: number]: PokemonTyping;
-    };
-    compileEvos(mfObject: EvoBranch[]): Evolutions;
-    compileTempEvos(mfObject: TempEvo[], primaryForm: SinglePokemon): TempEvolutions;
+    getMoves(moves: string[]): any[];
+    compare(formData: number[], parentData: number[]): boolean;
+    getTypes(incomingTypes: string[]): any[];
+    compileEvos(mfObject: EvoBranch[]): Evolutions[];
+    compileTempEvos(mfObject: TempEvo[], primaryForm: SinglePokemon): TempEvolutions[];
     generateProtoForms(): void;
     addForm(object: NiaMfObj): void;
     addPokemon(object: NiaMfObj): void;

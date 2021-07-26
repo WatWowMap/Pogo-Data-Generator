@@ -21,8 +21,7 @@ interface GuessedMega {
 export interface Generation {
     [id: string]: {
         name: string;
-        start: number;
-        end: number;
+        range: number[];
     };
 }
 export interface NiaMfObj {

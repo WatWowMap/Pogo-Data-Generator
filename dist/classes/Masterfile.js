@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pogo_protos_1 = require("pogo-protos");
 class Masterfile {
     constructor() {
-        this.TypeList = pogo_protos_1.Rpc.HoloPokemonType;
+        this.TypesList = pogo_protos_1.Rpc.HoloPokemonType;
         this.MovesList = pogo_protos_1.Rpc.HoloPokemonMove;
     }
     capitalize(string) {

@@ -1,5 +1,5 @@
 export default class Masterfile {
-    TypeList: any;
+    TypesList: any;
     MovesList: any;
     constructor();
     capitalize(string: string): string;

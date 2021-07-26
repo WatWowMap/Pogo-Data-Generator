@@ -5,14 +5,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "testGenerator": "node -e 'require(\"./dist/index\").generate({ safe: false, test: true })'"
+    "testGenerator": "node -e 'require(\"./dist/index\").generate({ test: true })'"
   },
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/extend": "^3.0.1",
-    "axios": "^0.21.1",
+    "@types/node-fetch": "^2.5.12",
     "extend": "^3.0.2",
+    "node-fetch": "^2.6.1",
     "pogo-protos": "github:Furtif/pogo-protos"
   }
 }

@@ -22,7 +22,7 @@ export interface SingleMove {
     id: number;
     name: string;
     proto?: string;
-    type?: PokemonTyping;
+    typeId?: number;
     power?: number;
 }
 export interface AllItems {
@@ -48,17 +48,11 @@ export interface AllPokemon {
     [id: number]: SinglePokemon;
 }
 export interface AllForms {
-    [id: number]: {
-        forms?: {
-            [id: number]: SingleForm;
-        };
-    };
+    [id: number]: SingleForm;
 }
 export interface SinglePokemon extends SingleForm {
     id?: number;
-    forms?: {
-        [id: number]: SingleForm;
-    };
+    forms?: number[];
     defaultFormId?: number;
     genId?: number;
     generation?: string;
@@ -78,25 +72,23 @@ export interface SingleForm extends BaseStats {
     proto?: string;
     formId?: number;
     isCostume?: boolean;
-    evolutions?: Evolutions;
-    tempEvolutions?: TempEvolutions;
-    quickMoves?: string[];
-    chargedMoves?: string[];
+    evolutions?: Evolutions[];
+    tempEvolutions?: TempEvolutions[];
+    quickMoves?: number[];
+    chargedMoves?: number[];
     family?: number;
     little?: boolean;
 }
-export interface Unreleased extends BaseStats {
+export interface Unreleased extends TempEvolutions {
     unreleased?: boolean;
 }
-export interface TempEvolutions {
-    [id: number]: BaseStats;
+export interface TempEvolutions extends BaseStats {
+    tempEvoId: number;
 }
 export interface Evolutions {
-    [id: number]: {
-        id?: number;
-        formId?: number;
-        genderRequirement?: number;
-    };
+    id?: number;
+    formId?: number;
+    genderRequirement?: number;
 }
 declare type BaseStats = {
     attack?: number;
@@ -104,9 +96,7 @@ declare type BaseStats = {
     stamina?: number;
     height?: number;
     weight?: number;
-    types?: {
-        [id: number]: PokemonTyping;
-    };
+    types?: number[];
 };
 export interface PokemonTyping {
     typeId: number;

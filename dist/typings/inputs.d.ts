@@ -23,23 +23,32 @@ export interface PokemonTemplate {
         name: boolean;
         proto: boolean;
         isCostume: boolean;
-        evolutions: boolean;
+        evolutions: {
+            id: boolean;
+            formId: boolean;
+        };
         tempEvolutions: boolean;
-        attack: boolean | string;
-        defense: boolean | string;
-        stamina: boolean | string;
-        height: boolean | string;
-        weight: boolean | string;
-        types: boolean | string;
-        quickMoves: boolean | string;
-        chargedMoves: boolean | string;
-        family: boolean | string;
+        attack: boolean;
+        defense: boolean;
+        stamina: boolean;
+        height: boolean;
+        weight: boolean;
+        types: {
+            typeId: boolean;
+            typeName: boolean;
+        };
+        quickMoves: boolean;
+        chargedMoves: boolean;
+        family: boolean;
     };
     defaultFormId: boolean;
     pokedexId: boolean;
     genId: boolean;
     generation: boolean;
-    types: boolean;
+    types: {
+        typeId: true;
+        typeName: true;
+    };
     attack: boolean;
     defense: boolean;
     stamina: boolean;
@@ -50,7 +59,10 @@ export interface PokemonTemplate {
     quickMoves: boolean;
     chargedMoves: boolean;
     tempEvolutions: boolean;
-    evolutions: boolean;
+    evolutions: {
+        id: boolean;
+        formId: boolean;
+    };
     legendary: boolean;
     mythic: boolean;
     buddyGroupNumber: boolean;
