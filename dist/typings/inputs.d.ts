@@ -156,17 +156,22 @@ declare type WeatherTemplate = {
         typeName: boolean;
     };
 };
+declare type TranslationTempOpt = {
+    enabled: boolean;
+    options: Options;
+    locales: {
+        [code: string]: boolean;
+    };
+    template: {
+        pokemon: boolean;
+        moves: boolean;
+        items: boolean;
+    };
+};
 export interface Input {
     safe?: boolean;
     url?: string;
-    template?: {
-        pokemon?: PokemonTempOpt;
-        move?: MoveTempOpt;
-        item?: ItemTempOpt;
-        questConditions?: QuestTempOpt;
-        questRewardTypes?: QuestTempOpt;
-        invasion?: InvasionTempOpt;
-    };
+    template?: FullTemplate;
     test?: boolean;
 }
 export interface FullTemplate {
@@ -178,5 +183,6 @@ export interface FullTemplate {
     questRewardTypes?: QuestTempOpt;
     invasions?: InvasionTempOpt;
     weather?: WeatherTempOpt;
+    translations?: TranslationTempOpt;
 }
 export {};

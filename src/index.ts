@@ -11,6 +11,7 @@ import Quests from './classes/Quest'
 import Invasions from './classes/Invasion'
 import Types from './classes/Types'
 import Weather from './classes/Weather'
+import Translations from './classes/Translations'
 import base from './data/base.json'
 
 const fetch = async (url: string) => {
@@ -34,7 +35,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
   extend(true, merged, base, template)
 
   const data: any = await fetch(urlToFetch)
-  const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather } = merged
+  const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged
 
   const AllPokemon = pokemon.enabled ? new Pokemon(pokemon.options) : null
   const AllItems = items.enabled ? new Items() : null
@@ -43,6 +44,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
   const AllInvasions = invasions.enabled ? new Invasions(invasions.options) : null
   const AllTypes = types.enabled ? new Types() : null
   const AllWeather = weather.enabled ? new Weather() : null
+  const AllTranslations = translations.enabled ? new Translations(translations.options) : null
 
   if (!safe) {
     for (let i = 0; i < data.length; i += 1) {
@@ -98,6 +100,25 @@ export async function generate({ template, safe, url, test }: Input = {}) {
     if (AllWeather) {
       AllWeather.buildWeather()
     }
+    if (AllTranslations) {
+      await Promise.all(
+        Object.entries(translations.locales).map(async locale => {
+          const [code, bool] = locale
+          if (bool) {
+            await AllTranslations.fetchTranslations(code, fetch)
+            if (translations.template.pokemon) {
+              AllTranslations.pokemon(code)
+            }
+            if (translations.template.moves) {
+              AllTranslations.moves(code)
+            }
+            if (translations.template.items) {
+              AllTranslations.items(code)
+            }
+          }
+        })
+      )
+    }
   }
 
   const final = {
@@ -114,6 +135,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
     questConditions: AllQuests.templater(AllQuests.parsedConditions, questConditions),
     invasions: AllInvasions.templater(AllInvasions.parsedInvasions, invasions),
     weather: AllWeather.templater(AllWeather.parsedWeather, weather, { types: AllTypes.parsedTypes }),
+    translations: AllTranslations.parsedTranslations,
   }
 
   if (test) {

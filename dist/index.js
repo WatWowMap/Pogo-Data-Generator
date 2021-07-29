@@ -42,6 +42,7 @@ const Quest_1 = __importDefault(require("./classes/Quest"));
 const Invasion_1 = __importDefault(require("./classes/Invasion"));
 const Types_1 = __importDefault(require("./classes/Types"));
 const Weather_1 = __importDefault(require("./classes/Weather"));
+const Translations_1 = __importDefault(require("./classes/Translations"));
 const base_json_1 = __importDefault(require("./data/base.json"));
 const fetch = (url) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise(resolve => {
@@ -61,7 +62,7 @@ function generate({ template, safe, url, test } = {}) {
         const merged = {};
         extend_1.default(true, merged, base_json_1.default, template);
         const data = yield fetch(urlToFetch);
-        const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather } = merged;
+        const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged;
         const AllPokemon = pokemon.enabled ? new Pokemon_1.default(pokemon.options) : null;
         const AllItems = items.enabled ? new Item_1.default() : null;
         const AllMoves = moves.enabled ? new Move_1.default() : null;
@@ -69,6 +70,7 @@ function generate({ template, safe, url, test } = {}) {
         const AllInvasions = invasions.enabled ? new Invasion_1.default(invasions.options) : null;
         const AllTypes = types.enabled ? new Types_1.default() : null;
         const AllWeather = weather.enabled ? new Weather_1.default() : null;
+        const AllTranslations = translations.enabled ? new Translations_1.default(translations.options) : null;
         if (!safe) {
             for (let i = 0; i < data.length; i += 1) {
                 if (data[i]) {
@@ -127,6 +129,23 @@ function generate({ template, safe, url, test } = {}) {
             if (AllWeather) {
                 AllWeather.buildWeather();
             }
+            if (AllTranslations) {
+                yield Promise.all(Object.entries(translations.locales).map((locale) => __awaiter(this, void 0, void 0, function* () {
+                    const [code, bool] = locale;
+                    if (bool) {
+                        yield AllTranslations.fetchTranslations(code, fetch);
+                        if (translations.template.pokemon) {
+                            AllTranslations.pokemon(code);
+                        }
+                        if (translations.template.moves) {
+                            AllTranslations.moves(code);
+                        }
+                        if (translations.template.items) {
+                            AllTranslations.items(code);
+                        }
+                    }
+                })));
+            }
         }
         const final = {
             pokemon: AllPokemon.templater(AllPokemon.parsedPokemon, pokemon, {
@@ -142,6 +161,7 @@ function generate({ template, safe, url, test } = {}) {
             questConditions: AllQuests.templater(AllQuests.parsedConditions, questConditions),
             invasions: AllInvasions.templater(AllInvasions.parsedInvasions, invasions),
             weather: AllWeather.templater(AllWeather.parsedWeather, weather, { types: AllTypes.parsedTypes }),
+            translations: AllTranslations.parsedTranslations,
         };
         if (test) {
             fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => { });

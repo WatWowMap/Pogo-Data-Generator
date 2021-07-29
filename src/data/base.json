@@ -266,5 +266,32 @@
         "typeName": true
       }
     }
+  },
+  "translations": {
+    "enabled": true,
+    "options": {
+      "pokemonSuffix": "poke_",
+      "moveSuffix": "move_",
+      "itemSuffix": "item_",
+      "manualTranslations": true
+    },
+    "locales": {
+      "en": true,
+      "de": false,
+      "fr": false,
+      "es": false,
+      "it": false,
+      "ko": false,
+      "ja": false,
+      "zh-tw": false,
+      "pt-br": false,
+      "ru": false,
+      "th": false
+    },
+    "template": {
+      "pokemon": true,
+      "moves": true,
+      "items": true
+    }
   }
 }

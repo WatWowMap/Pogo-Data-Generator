@@ -8,4 +8,11 @@ export declare function generate({ template, safe, url, test }?: Input): Promise
     questConditions: any;
     invasions: any;
     weather: any;
+    translations: {
+        [id: string]: {
+            [id: string]: {
+                [id: string]: string;
+            };
+        };
+    };
 }>;
