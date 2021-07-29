@@ -247,5 +247,24 @@
                 "position": false
             }
         }
+    },
+    "weather": {
+        "enabled": true,
+        "options": {
+            "keys": {
+                "keyJoiner": "_",
+                "main": "weatherId"
+            },
+            "customFields": {}
+        },
+        "template": {
+            "weatherId": false,
+            "weatherName": true,
+            "proto": false,
+            "types": {
+                "typeId": false,
+                "typeName": true
+            }
+        }
     }
 }

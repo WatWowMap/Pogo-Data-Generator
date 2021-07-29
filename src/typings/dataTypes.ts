@@ -1,3 +1,14 @@
+export interface AllWeather {
+  [id: number]: SingleWeather
+}
+
+type SingleWeather = {
+  weatherId: string
+  weatherName: string
+  proto: string
+  types: number[]
+}
+
 export interface AllInvasions {
   [id: string]: SingleInvasion
 }

@@ -157,6 +157,21 @@ type InvasionTemplate = {
   encounters?: boolean
 }
 
+type WeatherTempOpt = {
+  enabled: boolean
+  options: Options
+  template: WeatherTemplate
+}
+
+type WeatherTemplate = {
+  weatherId: boolean
+  weatherName: boolean
+  proto: boolean
+  types: {
+    typeId: boolean
+    typeName: boolean
+  }
+}
 export interface Input {
   safe?: boolean
   url?: string
@@ -179,4 +194,5 @@ export interface FullTemplate {
   questConditions?: QuestTempOpt
   questRewardTypes?: QuestTempOpt
   invasions?: InvasionTempOpt
+  weather?: WeatherTempOpt
 }

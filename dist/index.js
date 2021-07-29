@@ -41,6 +41,7 @@ const Move_1 = __importDefault(require("./classes/Move"));
 const Quest_1 = __importDefault(require("./classes/Quest"));
 const Invasion_1 = __importDefault(require("./classes/Invasion"));
 const Types_1 = __importDefault(require("./classes/Types"));
+const Weather_1 = __importDefault(require("./classes/Weather"));
 const base_json_1 = __importDefault(require("./data/base.json"));
 const fetch = (url) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise(resolve => {
@@ -60,13 +61,14 @@ function generate({ template, safe, url, test } = {}) {
         const merged = {};
         extend_1.default(true, merged, base_json_1.default, template);
         const data = yield fetch(urlToFetch);
-        const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions } = merged;
+        const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather } = merged;
         const AllPokemon = pokemon.enabled ? new Pokemon_1.default(pokemon.options) : null;
         const AllItems = items.enabled ? new Item_1.default() : null;
         const AllMoves = moves.enabled ? new Move_1.default() : null;
         const AllQuests = questConditions.enabled || questRewardTypes.enabled ? new Quest_1.default() : null;
         const AllInvasions = invasions.enabled ? new Invasion_1.default(invasions.options) : null;
         const AllTypes = types.enabled ? new Types_1.default() : null;
+        const AllWeather = weather.enabled ? new Weather_1.default() : null;
         if (!safe) {
             for (let i = 0; i < data.length; i += 1) {
                 if (data[i]) {
@@ -84,6 +86,9 @@ function generate({ template, safe, url, test } = {}) {
                     }
                     else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
                         AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon);
+                    }
+                    else if (data[i].data.weatherAffinities && AllWeather) {
+                        AllWeather.addWeather(data[i]);
                     }
                 }
             }
@@ -119,6 +124,9 @@ function generate({ template, safe, url, test } = {}) {
             if (AllTypes) {
                 AllTypes.buildTypes();
             }
+            if (AllWeather) {
+                AllWeather.buildWeather();
+            }
         }
         const final = {
             pokemon: AllPokemon.templater(AllPokemon.parsedPokemon, pokemon, {
@@ -133,6 +141,7 @@ function generate({ template, safe, url, test } = {}) {
             questRewardTypes: AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes),
             questConditions: AllQuests.templater(AllQuests.parsedConditions, questConditions),
             invasions: AllInvasions.templater(AllInvasions.parsedInvasions, invasions),
+            weather: AllWeather.templater(AllWeather.parsedWeather, weather, { types: AllTypes.parsedTypes }),
         };
         if (test) {
             fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => { });

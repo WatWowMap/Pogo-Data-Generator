@@ -7,4 +7,5 @@ export declare function generate({ template, safe, url, test }?: Input): Promise
     questRewardTypes: any;
     questConditions: any;
     invasions: any;
+    weather: any;
 }>;

@@ -88,6 +88,10 @@ export interface NiaMfObj {
     combatLeague: {
       bannedPokemon: string[]
     }
+    weatherAffinities?: {
+      weatherCondition: string
+      pokemonType: string[]
+    }
   }
 }
 
