@@ -16,8 +16,8 @@ export default class Moves extends Masterfile {
       const id = this.MovesList[MoveArray[i]]
       if (!this.parsedMoves[id]) {
         this.parsedMoves[id] = {
-          id: this.MovesList[MoveArray[i]],
-          name: this.capitalize(MoveArray[i].replace('_FAST', '')),
+          moveId: this.MovesList[MoveArray[i]],
+          moveName: this.capitalize(MoveArray[i].replace('_FAST', '')),
           proto: MoveArray[i],
         }
       }
@@ -32,10 +32,10 @@ export default class Moves extends Masterfile {
     try {
       const id: number = this.MovesList[templateId.substr(18)]
       this.parsedMoves[id] = {
-        id,
-        name: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
+        moveId: id,
+        moveName: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
         proto: templateId.substr(18),
-        typeId: this.TypesList[combatMove.type],
+        type: this.TypesList[combatMove.type],
         power: combatMove.power,
       }
     } catch (e) {

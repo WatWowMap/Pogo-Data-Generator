@@ -12,24 +12,21 @@ export interface Options {
   placeholderData?: boolean
 }
 
-export interface PokemonTempOpt {
+type PokemonTempOpt = {
   enabled: boolean
   options: Options
   template: PokemonTemplate
 }
 
-export interface PokemonTemplate {
+type PokemonTemplate = {
   name: boolean
   forms: {
     formId: boolean
     name: boolean
     proto: boolean
     isCostume: boolean
-    evolutions: {
-      id: boolean
-      formId: boolean
-    }
-    tempEvolutions: boolean
+    evolutions: Evolution
+    tempEvolutions: TempEvolution
     attack: boolean
     defense: boolean
     stamina: boolean
@@ -39,8 +36,8 @@ export interface PokemonTemplate {
       typeId: boolean
       typeName: boolean
     }
-    quickMoves: boolean
-    chargedMoves: boolean
+    quickMoves: Move
+    chargedMoves: Move
     family: boolean
   }
   defaultFormId: boolean
@@ -58,13 +55,10 @@ export interface PokemonTemplate {
   weight: boolean
   fleeRate: boolean
   captureRate: boolean
-  quickMoves: boolean
-  chargedMoves: boolean
-  tempEvolutions: boolean
-  evolutions: {
-    id: boolean
-    formId: boolean
-  }
+  quickMoves: Move
+  chargedMoves: Move
+  tempEvolutions: TempEvolution
+  evolutions: Evolution
   legendary: boolean
   mythic: boolean
   buddyGroupNumber: boolean
@@ -76,13 +70,44 @@ export interface PokemonTemplate {
   little: boolean
 }
 
-export interface MoveTempOpt {
+type Move = {
+  moveId: boolean
+  name: boolean
+  typeId: boolean
+  type: boolean
+}
+
+type Evolution = {
+  id: boolean
+  formId: boolean
+  genderRequirement: boolean
+}
+
+type TempEvolution = {
+  tempEvoId: boolean
+  attack: boolean
+  defense: boolean
+  stamina: boolean
+  height: boolean
+  weight: boolean
+}
+
+export interface TypesTempOpt {
+  enabled: boolean
+  options: Options
+  template: TypesTemplate
+}
+
+type TypesTemplate = {
+  name: boolean
+}
+type MoveTempOpt = {
   enabled: boolean
   options: Options
   template: MoveTemplate
 }
 
-export interface MoveTemplate {
+type MoveTemplate = {
   id: boolean
   name: boolean
   proto: boolean
@@ -90,13 +115,13 @@ export interface MoveTemplate {
   power: boolean
 }
 
-export interface ItemTempOpt {
+type ItemTempOpt = {
   enabled: boolean
   options: Options
   template: ItemTemplate
 }
 
-export interface ItemTemplate {
+type ItemTemplate = {
   id: boolean
   name: boolean
   proto: boolean
@@ -105,25 +130,25 @@ export interface ItemTemplate {
   minTrainerLevel: boolean
 }
 
-export interface QuestTempOpt {
+type QuestTempOpt = {
   enabled: boolean
   options: Options
   template: QuestTemplate
 }
 
-export interface QuestTemplate {
+type QuestTemplate = {
   id: boolean
   proto: boolean
   formatted: boolean
 }
 
-export interface InvasionTempOpt {
+type InvasionTempOpt = {
   enabled: boolean
   options: Options
   template: InvasionTemplate
 }
 
-export interface InvasionTemplate {
+type InvasionTemplate = {
   id?: boolean
   type?: boolean
   gender?: boolean
@@ -148,6 +173,7 @@ export interface Input {
 
 export interface FullTemplate {
   pokemon?: PokemonTempOpt
+  types?: TypesTempOpt
   moves?: MoveTempOpt
   items?: ItemTempOpt
   questConditions?: QuestTempOpt

@@ -2,20 +2,19 @@ export interface AllInvasions {
   [id: string]: SingleInvasion
 }
 
-export interface SingleInvasion {
+type SingleInvasion = {
   id: number
   type: string
-  gender: number
+  gender: number | string
   grunt: string
-  secondReward: boolean
-  encounters: {
-    [position: string]: InvasionTeam[]
-  }
+  secondReward?: boolean
+  encounters?: InvasionTeam[]
 }
 
 type InvasionTeam = {
-  id: number
-  formId: number
+  id?: number
+  formId?: number
+  position?: string
 }
 
 export interface AllMoves {
@@ -23,10 +22,10 @@ export interface AllMoves {
 }
 
 export interface SingleMove {
-  id: number
-  name: string
+  moveId: number
+  moveName: string
   proto?: string
-  typeId?: number
+  type?: number
   power?: number
 }
 
@@ -62,7 +61,7 @@ export interface AllForms {
 }
 
 export interface SinglePokemon extends SingleForm {
-  id?: number
+  pokedexId?: number
   forms?: number[]
   defaultFormId?: number
   genId?: number
@@ -101,7 +100,7 @@ export interface TempEvolutions extends BaseStats {
 }
 
 export interface Evolutions {
-  id?: number
+  evoId?: number
   formId?: number
   genderRequirement?: number
 }

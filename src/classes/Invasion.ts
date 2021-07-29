@@ -1,15 +1,20 @@
 import { AllInvasions } from '../typings/dataTypes'
+import { Options } from '../typings/inputs'
 import { InvasionInfo, Character } from '../typings/pogoinfo'
 import Masterfile from './Masterfile'
 
 export default class Invasion extends Masterfile {
   parsedInvasions: AllInvasions
+  parsedEncounters: any
   QuestRewardTypes: any
   QuestConditions: any
+  options: Options
 
-  constructor() {
+  constructor(options: Options) {
     super()
+    this.options = options
     this.parsedInvasions = {}
+    this.parsedEncounters = {}
   }
 
   formatGrunts(character: Character) {
@@ -20,13 +25,14 @@ export default class Invasion extends Masterfile {
         .replace('_GRUNT', '')
         .replace('_MALE', '')
         .replace('_FEMALE', '')
-    )!.replace('Npc', 'NPC')
-    const grunt = this.capitalize!(
+    ).replace('Npc', 'NPC')
+    const grunt = this.capitalize(
       character.template.replace('CHARACTER_', '').replace('_MALE', '').replace('_FEMALE', '')
-    )!.replace('Npc', 'NPC')
+    ).replace('Npc', 'NPC')
+    const gender = character.gender ? 1 : 2
     return {
       type: type === 'Grunt' ? 'Mixed' : type,
-      gender: character.gender ? 1 : 2,
+      gender: this.options.genderString ? this.genders[gender] : gender,
       grunt,
     }
   }
@@ -35,19 +41,26 @@ export default class Invasion extends Masterfile {
     Object.entries(invasionData).forEach(gruntType => {
       const [id, info] = gruntType
       this.parsedInvasions[id] = {
-        ...this.formatGrunts(info.character),
         id: +id,
-        secondReward: false,
-        encounters: { first: [], second: [], third: [] },
+        ...this.formatGrunts(info.character),
       }
       if (info.active) {
         this.parsedInvasions[id].secondReward = info.lineup.rewards.length === 2
-        this.parsedInvasions[id].encounters = { first: [], second: [], third: [] }
-        Object.keys(this.parsedInvasions[id].encounters).forEach((position, i) => {
+        const positions = [
+          this.customFieldNames.first || 'first',
+          this.customFieldNames.second || 'second',
+          this.customFieldNames.third || 'third',
+        ]
+        this.parsedInvasions[id].encounters = []
+
+        positions.forEach((position, i) => {
           info.lineup.team[i].forEach(pkmn => {
-            this.parsedInvasions[id].encounters[position].push({ id: pkmn.id, formId: pkmn.form })
+            this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
           })
         })
+      } else if (this.options.placeholderData) {
+        this.parsedInvasions[id].secondReward = false
+        this.parsedInvasions[id].encounters = []
       }
     })
   }
