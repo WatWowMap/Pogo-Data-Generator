@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const pogo_protos_1 = require("pogo-protos");
 const Masterfile_1 = __importDefault(require("./Masterfile"));
-class Types extends Masterfile_1.default {
+class Weather extends Masterfile_1.default {
     constructor() {
         super();
         this.WeatherList = pogo_protos_1.Rpc.GameplayWeatherProto.WeatherCondition;
@@ -30,4 +30,4 @@ class Types extends Masterfile_1.default {
         });
     }
 }
-exports.default = Types;
+exports.default = Weather;
