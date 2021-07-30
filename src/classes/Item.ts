@@ -19,7 +19,7 @@ export default class Item extends Masterfile {
       const id: number = this.ItemList[object.data.itemSettings.itemId]
       this.parsedItems[id] = {
         id,
-        name: object.data.itemSettings.itemId
+        itemName: object.data.itemSettings.itemId
           .split('_')
           .splice(1)
           .map((word: string) => {

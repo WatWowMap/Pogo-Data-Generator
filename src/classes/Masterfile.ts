@@ -7,6 +7,7 @@ export default class Masterfile {
   customFieldNames: { [id: string]: string }
   genders: { [id: string]: string }
   snake_case: { [id: string]: string }
+  translations: any
 
   constructor() {
     this.TypesList = Rpc.HoloPokemonType
@@ -151,7 +152,7 @@ export default class Masterfile {
         if (mainKey !== undefined || mainKey !== null) {
           if (Object.keys(parent).length < 2) {
             parent = Object.values(parent)[0]
-          }    
+          }
           resolved[mainKey] = parent
         } else {
           resolved.push(parent)

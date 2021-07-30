@@ -23,7 +23,7 @@ export default class Weather extends Masterfile {
         weatherId,
         weatherName: this.capitalize(id),
         proto: id,
-        types: this.rawWeather[id],
+        types: this.rawWeather[id] || []
       }
     })
   }

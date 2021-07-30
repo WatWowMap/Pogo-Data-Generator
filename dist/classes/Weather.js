@@ -19,7 +19,7 @@ class Weather extends Masterfile_1.default {
                 weatherId,
                 weatherName: this.capitalize(id),
                 proto: id,
-                types: this.rawWeather[id],
+                types: this.rawWeather[id] || []
             };
         });
     }

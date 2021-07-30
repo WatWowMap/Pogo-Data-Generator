@@ -25,10 +25,10 @@
             "includeEstimatedPokemon": true
         },
         "template": {
-            "name": true,
+            "pokemonName": true,
             "forms": {
                 "formId": false,
-                "name": true,
+                "formName": true,
                 "proto": true,
                 "isCostume": true,
                 "evolutions": {
@@ -182,7 +182,7 @@
         },
         "template": {
             "id": false,
-            "name": true,
+            "itemName": true,
             "proto": true,
             "type": true,
             "category": true,
@@ -270,26 +270,42 @@
     "translations": {
         "enabled": true,
         "options": {
-            "pokemonSuffix": "poke_",
-            "moveSuffix": "move_",
-            "itemSuffix": "item_",
-            "manualTranslations": true
+            "prefix": {
+                "pokemon": "poke_",
+                "forms": "form_",
+                "descriptions": "desc_",
+                "moves": "move_",
+                "items": "item_",
+                "weather": "weather_",
+                "types": "poke_type_"
+            },
+            "questVariables": {
+                "prefix": "{{",
+                "suffix": "}}"
+            },
+            "masterfileLocale": "en",
+            "manualTranslations": true,
+            "mergeCategories": true
         },
         "locales": {
+            "de": true,
             "en": true,
-            "de": false,
-            "fr": false,
-            "es": false,
-            "it": false,
-            "ko": false,
-            "ja": false,
-            "zh-tw": false,
-            "pt-br": false,
-            "ru": false,
-            "th": false
+            "es": true,
+            "fr": true,
+            "it": true,
+            "jp": true,
+            "ko": true,
+            "pt-br": true,
+            "ru": true,
+            "th": true,
+            "zh-tw": true
         },
         "template": {
-            "pokemon": true,
+            "pokemon": {
+                "names": true,
+                "forms": true,
+                "descriptions": true
+            },
             "moves": true,
             "items": true
         }

@@ -1,5 +1,5 @@
 export interface AllWeather {
-    [id: number]: SingleWeather;
+    [id: string]: SingleWeather;
 }
 declare type SingleWeather = {
     weatherId: string;
@@ -24,7 +24,7 @@ declare type InvasionTeam = {
     position?: string;
 };
 export interface AllMoves {
-    [id: number]: SingleMove;
+    [id: string]: SingleMove;
 }
 export interface SingleMove {
     moveId: number;
@@ -34,18 +34,18 @@ export interface SingleMove {
     power?: number;
 }
 export interface AllItems {
-    [id: number]: SingleItem;
+    [id: string]: SingleItem;
 }
 export interface SingleItem {
     id: number;
-    name: string;
+    itemName: string;
     proto: string;
     type: string;
     category: string;
     minTrainerLevel: number;
 }
 export interface AllQuests {
-    [id: number]: SingleQuest;
+    [id: string]: SingleQuest;
 }
 export interface SingleQuest {
     id: number;
@@ -53,13 +53,14 @@ export interface SingleQuest {
     formatted: string;
 }
 export interface AllPokemon {
-    [id: number]: SinglePokemon;
+    [id: string]: SinglePokemon;
 }
 export interface AllForms {
-    [id: number]: SingleForm;
+    [id: string]: SingleForm;
 }
 export interface SinglePokemon extends SingleForm {
     pokedexId?: number;
+    pokemonName?: string;
     forms?: number[];
     defaultFormId?: number;
     genId?: number;
@@ -76,7 +77,7 @@ export interface SinglePokemon extends SingleForm {
     gymDefenderEligible?: boolean;
 }
 export interface SingleForm extends BaseStats {
-    name?: string;
+    formName?: string;
     proto?: string;
     formId?: number;
     isCostume?: boolean;
@@ -109,5 +110,10 @@ declare type BaseStats = {
 export interface PokemonTyping {
     typeId: number;
     typeName: string;
+}
+export interface TranslationCategories {
+    [category: string]: {
+        [key: string]: string;
+    };
 }
 export {};

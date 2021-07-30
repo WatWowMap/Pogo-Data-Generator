@@ -163,7 +163,11 @@ declare type TranslationTempOpt = {
         [code: string]: boolean;
     };
     template: {
-        pokemon: boolean;
+        pokemon: {
+            names: boolean;
+            forms: boolean;
+            descriptions: boolean;
+        };
         moves: boolean;
         items: boolean;
     };
@@ -173,6 +177,7 @@ export interface Input {
     url?: string;
     template?: FullTemplate;
     test?: boolean;
+    locale?: string;
 }
 export interface FullTemplate {
     pokemon?: PokemonTempOpt;

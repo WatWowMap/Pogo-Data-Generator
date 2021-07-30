@@ -9,6 +9,7 @@ import { Options } from '../typings/inputs'
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
   parsedForms: AllForms
+  formsRef: { [id: string]: string }
   FormsList: any
   PokemonList: any
   GenderList: any
@@ -20,6 +21,7 @@ export default class Pokemon extends Masterfile {
   evolvedPokemon: any
   options: Options
   formsToSkip: string[]
+  englishForms: { [id: string]: string }
 
   constructor(options: Options) {
     super()
@@ -28,11 +30,12 @@ export default class Pokemon extends Masterfile {
     this.parsedPokemon = {}
     this.parsedForms = {
       0: {
-        name: '',
+        formName: '',
         proto: 'FORM_UNSET',
         formId: 0,
       },
     }
+    this.formsRef = {}
     this.megaStats = {}
     this.evolvedPokemon = new Set()
     this.PokemonList = Rpc.HoloPokemonId
@@ -74,6 +77,7 @@ export default class Pokemon extends Masterfile {
         range: [810, 893],
       },
     }
+    this.englishForms = {}
   }
 
   pokemonName(id: number) {
@@ -87,13 +91,13 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  formName(id: number, formName: string, noCap: boolean = false) {
+  formName(id: number, formName: string) {
     const name = formName.substr(
       id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
         ? 8
         : this.PokemonList[id].length + 1
     )
-    return noCap ? name : this.capitalize(name)
+    return this.capitalize(name)
   }
 
   skipForms(formName: string) {
@@ -197,18 +201,19 @@ export default class Pokemon extends Masterfile {
       try {
         const pokemon: string[] = proto.startsWith('NIDORAN_')
           ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
-          : [this.lookupPokemon(proto)]
+          : [this.formsRef[proto] || this.lookupPokemon(proto)]
 
         pokemon.forEach(pkmn => {
           if (pkmn) {
             const id: number = this.PokemonList[pkmn]
             const formId: number = this.FormsList[proto]
             const name = this.formName(id, proto)
+            this.englishForms[`form_${formId}`] = name
             if (!this.skipForms(name)) {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
                   pokedexId: id,
-                  name: this.pokemonName(id),
+                  pokemonName: this.pokemonName(id),
                 }
               }
               if (!this.parsedPokemon[id].forms) {
@@ -227,7 +232,7 @@ export default class Pokemon extends Masterfile {
               }
               if (!this.parsedForms[formId]) {
                 this.parsedForms[formId] = {
-                  name,
+                  formName: name,
                   proto,
                   formId,
                 }
@@ -260,13 +265,14 @@ export default class Pokemon extends Masterfile {
           }
           for (let i = 0; i < forms.length; i++) {
             const formId: number = this.FormsList[forms[i].form]
+            this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
               this.parsedPokemon[id].defaultFormId = formId
             }
             if (!this.skipForms(name)) {
               this.parsedForms[formId] = {
-                name,
+                formName: name,
                 proto: forms[i].form,
                 formId,
                 isCostume: forms[i].isCostume,
@@ -280,7 +286,7 @@ export default class Pokemon extends Masterfile {
           } else {
             this.parsedPokemon[id] = {
               pokedexId: id,
-              name: this.pokemonName(id),
+              pokemonName: this.pokemonName(id),
               defaultFormId: 0,
               forms: [0],
             }
@@ -317,7 +323,7 @@ export default class Pokemon extends Masterfile {
       if (!this.skipForms(formName)) {
         if (!this.parsedForms[formId]) {
           this.parsedForms[formId] = {
-            name: formName,
+            formName,
             proto: templateId,
             formId,
           }
@@ -361,7 +367,7 @@ export default class Pokemon extends Masterfile {
         if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
           form.evolutions = this.compileEvos(pokemonSettings.evolutionBranch)
         }
-        if ((form.name === 'Normal' || form.name === 'Purified') && primaryForm.tempEvolutions) {
+        if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
           form.tempEvolutions = []
           Object.values(primaryForm.tempEvolutions).forEach(tempEvo => {
             form.tempEvolutions.push(tempEvo)
@@ -371,7 +377,7 @@ export default class Pokemon extends Masterfile {
     } else {
       this.parsedPokemon[id] = {
         pokedexId: id,
-        name: this.pokemonName(id),
+        pokemonName: this.pokemonName(id),
         forms: this.parsedPokemon[id].forms || [],
         ...this.parsedPokemon[id],
         types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]),
@@ -437,7 +443,7 @@ export default class Pokemon extends Masterfile {
       const guessedMega = this.megaStats[id]
       if (guessedMega) {
         if (!this.parsedPokemon[id]) {
-          this.parsedPokemon[id] = { name: this.pokemonName(id) }
+          this.parsedPokemon[id] = { pokemonName: this.pokemonName(id) }
         }
         if (!this.parsedPokemon[id].tempEvolutions) {
           this.parsedPokemon[id].tempEvolutions = []

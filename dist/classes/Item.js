@@ -16,7 +16,7 @@ class Item extends Masterfile_1.default {
             const id = this.ItemList[object.data.itemSettings.itemId];
             this.parsedItems[id] = {
                 id,
-                name: object.data.itemSettings.itemId
+                itemName: object.data.itemSettings.itemId
                     .split('_')
                     .splice(1)
                     .map((word) => {

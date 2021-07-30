@@ -14,11 +14,12 @@ class Pokemon extends Masterfile_1.default {
         this.parsedPokemon = {};
         this.parsedForms = {
             0: {
-                name: '',
+                formName: '',
                 proto: 'FORM_UNSET',
                 formId: 0,
             },
         };
+        this.formsRef = {};
         this.megaStats = {};
         this.evolvedPokemon = new Set();
         this.PokemonList = pogo_protos_1.Rpc.HoloPokemonId;
@@ -60,6 +61,7 @@ class Pokemon extends Masterfile_1.default {
                 range: [810, 893],
             },
         };
+        this.englishForms = {};
     }
     pokemonName(id) {
         switch (id) {
@@ -71,11 +73,11 @@ class Pokemon extends Masterfile_1.default {
                 return this.capitalize(this.PokemonList[id]);
         }
     }
-    formName(id, formName, noCap = false) {
+    formName(id, formName) {
         const name = formName.substr(id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
             ? 8
             : this.PokemonList[id].length + 1);
-        return noCap ? name : this.capitalize(name);
+        return this.capitalize(name);
     }
     skipForms(formName) {
         return this.formsToSkip.some(form => formName.toLowerCase().includes(form));
@@ -174,17 +176,18 @@ class Pokemon extends Masterfile_1.default {
             try {
                 const pokemon = proto.startsWith('NIDORAN_')
                     ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
-                    : [this.lookupPokemon(proto)];
+                    : [this.formsRef[proto] || this.lookupPokemon(proto)];
                 pokemon.forEach(pkmn => {
                     if (pkmn) {
                         const id = this.PokemonList[pkmn];
                         const formId = this.FormsList[proto];
                         const name = this.formName(id, proto);
+                        this.englishForms[`form_${formId}`] = name;
                         if (!this.skipForms(name)) {
                             if (!this.parsedPokemon[id]) {
                                 this.parsedPokemon[id] = {
                                     pokedexId: id,
-                                    name: this.pokemonName(id),
+                                    pokemonName: this.pokemonName(id),
                                 };
                             }
                             if (!this.parsedPokemon[id].forms) {
@@ -203,7 +206,7 @@ class Pokemon extends Masterfile_1.default {
                             }
                             if (!this.parsedForms[formId]) {
                                 this.parsedForms[formId] = {
-                                    name,
+                                    formName: name,
                                     proto,
                                     formId,
                                 };
@@ -234,13 +237,14 @@ class Pokemon extends Masterfile_1.default {
                     }
                     for (let i = 0; i < forms.length; i++) {
                         const formId = this.FormsList[forms[i].form];
+                        this.formsRef[forms[i].form] = object.data.formSettings.pokemon;
                         const name = this.formName(id, forms[i].form);
                         if (i === 0) {
                             this.parsedPokemon[id].defaultFormId = formId;
                         }
                         if (!this.skipForms(name)) {
                             this.parsedForms[formId] = {
-                                name,
+                                formName: name,
                                 proto: forms[i].form,
                                 formId,
                                 isCostume: forms[i].isCostume,
@@ -256,7 +260,7 @@ class Pokemon extends Masterfile_1.default {
                     else {
                         this.parsedPokemon[id] = {
                             pokedexId: id,
-                            name: this.pokemonName(id),
+                            pokemonName: this.pokemonName(id),
                             defaultFormId: 0,
                             forms: [0],
                         };
@@ -287,7 +291,7 @@ class Pokemon extends Masterfile_1.default {
             if (!this.skipForms(formName)) {
                 if (!this.parsedForms[formId]) {
                     this.parsedForms[formId] = {
-                        name: formName,
+                        formName,
                         proto: templateId,
                         formId,
                     };
@@ -329,7 +333,7 @@ class Pokemon extends Masterfile_1.default {
                 if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
                     form.evolutions = this.compileEvos(pokemonSettings.evolutionBranch);
                 }
-                if ((form.name === 'Normal' || form.name === 'Purified') && primaryForm.tempEvolutions) {
+                if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
                     form.tempEvolutions = [];
                     Object.values(primaryForm.tempEvolutions).forEach(tempEvo => {
                         form.tempEvolutions.push(tempEvo);
@@ -338,7 +342,7 @@ class Pokemon extends Masterfile_1.default {
             }
         }
         else {
-            this.parsedPokemon[id] = Object.assign(Object.assign({ pokedexId: id, name: this.pokemonName(id), forms: this.parsedPokemon[id].forms || [] }, this.parsedPokemon[id]), { types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]), attack: pokemonSettings.stats.baseAttack, defense: pokemonSettings.stats.baseDefense, stamina: pokemonSettings.stats.baseStamina, height: pokemonSettings.pokedexHeightM, weight: pokemonSettings.pokedexWeightKg, quickMoves: this.getMoves(pokemonSettings.quickMoves), chargedMoves: this.getMoves(pokemonSettings.cinematicMoves), family: this.FamilyId[pokemonSettings.familyId], fleeRate: pokemonSettings.encounter.baseFleeRate, captureRate: pokemonSettings.encounter.baseCaptureRate, legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY', mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC', buddyGroupNumber: pokemonSettings.buddyGroupNumber, kmBuddyDistance: pokemonSettings.kmBuddyDistance, thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock, thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock, gymDefenderEligible: pokemonSettings.isDeployable, genId: +Object.keys(this.generations).find(gen => {
+            this.parsedPokemon[id] = Object.assign(Object.assign({ pokedexId: id, pokemonName: this.pokemonName(id), forms: this.parsedPokemon[id].forms || [] }, this.parsedPokemon[id]), { types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]), attack: pokemonSettings.stats.baseAttack, defense: pokemonSettings.stats.baseDefense, stamina: pokemonSettings.stats.baseStamina, height: pokemonSettings.pokedexHeightM, weight: pokemonSettings.pokedexWeightKg, quickMoves: this.getMoves(pokemonSettings.quickMoves), chargedMoves: this.getMoves(pokemonSettings.cinematicMoves), family: this.FamilyId[pokemonSettings.familyId], fleeRate: pokemonSettings.encounter.baseFleeRate, captureRate: pokemonSettings.encounter.baseCaptureRate, legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY', mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC', buddyGroupNumber: pokemonSettings.buddyGroupNumber, kmBuddyDistance: pokemonSettings.kmBuddyDistance, thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock, thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock, gymDefenderEligible: pokemonSettings.isDeployable, genId: +Object.keys(this.generations).find(gen => {
                     return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1];
                 }) });
             if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
@@ -377,7 +381,7 @@ class Pokemon extends Masterfile_1.default {
             const guessedMega = this.megaStats[id];
             if (guessedMega) {
                 if (!this.parsedPokemon[id]) {
-                    this.parsedPokemon[id] = { name: this.pokemonName(id) };
+                    this.parsedPokemon[id] = { pokemonName: this.pokemonName(id) };
                 }
                 if (!this.parsedPokemon[id].tempEvolutions) {
                     this.parsedPokemon[id].tempEvolutions = [];

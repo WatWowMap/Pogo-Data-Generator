@@ -1,5 +1,5 @@
 export interface AllWeather {
-  [id: number]: SingleWeather
+  [id: string]: SingleWeather
 }
 
 type SingleWeather = {
@@ -29,7 +29,7 @@ type InvasionTeam = {
 }
 
 export interface AllMoves {
-  [id: number]: SingleMove
+  [id: string]: SingleMove
 }
 
 export interface SingleMove {
@@ -41,12 +41,12 @@ export interface SingleMove {
 }
 
 export interface AllItems {
-  [id: number]: SingleItem
+  [id: string]: SingleItem
 }
 
 export interface SingleItem {
   id: number
-  name: string
+  itemName: string
   proto: string
   type: string
   category: string
@@ -54,7 +54,7 @@ export interface SingleItem {
 }
 
 export interface AllQuests {
-  [id: number]: SingleQuest
+  [id: string]: SingleQuest
 }
 
 export interface SingleQuest {
@@ -64,15 +64,16 @@ export interface SingleQuest {
 }
 
 export interface AllPokemon {
-  [id: number]: SinglePokemon
+  [id: string]: SinglePokemon
 }
 
 export interface AllForms {
-  [id: number]: SingleForm
+  [id: string]: SingleForm
 }
 
 export interface SinglePokemon extends SingleForm {
   pokedexId?: number
+  pokemonName?: string
   forms?: number[]
   defaultFormId?: number
   genId?: number
@@ -90,7 +91,7 @@ export interface SinglePokemon extends SingleForm {
 }
 
 export interface SingleForm extends BaseStats {
-  name?: string
+  formName?: string
   proto?: string
   formId?: number
   isCostume?: boolean
@@ -128,4 +129,8 @@ type BaseStats = {
 export interface PokemonTyping {
   typeId: number
   typeName: string
+}
+
+export interface TranslationCategories {
+  [category: string]: { [key: string]: string }
 }

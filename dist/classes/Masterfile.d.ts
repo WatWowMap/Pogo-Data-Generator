@@ -12,6 +12,7 @@ export default class Masterfile {
     snake_case: {
         [id: string]: string;
     };
+    translations: any;
     constructor();
     capitalize(string: string): string;
     templater(data: any, settings: any, reference?: any): any;

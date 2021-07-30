@@ -5,6 +5,9 @@ import { Options } from '../typings/inputs';
 export default class Pokemon extends Masterfile {
     parsedPokemon: AllPokemon;
     parsedForms: AllForms;
+    formsRef: {
+        [id: string]: string;
+    };
     FormsList: any;
     PokemonList: any;
     GenderList: any;
@@ -16,9 +19,12 @@ export default class Pokemon extends Masterfile {
     evolvedPokemon: any;
     options: Options;
     formsToSkip: string[];
+    englishForms: {
+        [id: string]: string;
+    };
     constructor(options: Options);
     pokemonName(id: number): string;
-    formName(id: number, formName: string, noCap?: boolean): string;
+    formName(id: number, formName: string): string;
     skipForms(formName: string): boolean;
     lookupPokemon(name: string): string;
     getMoves(moves: string[]): any[];

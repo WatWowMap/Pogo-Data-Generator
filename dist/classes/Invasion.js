@@ -12,18 +12,14 @@ class Invasion extends Masterfile_1.default {
         this.parsedEncounters = {};
     }
     formatGrunts(character) {
-        const type = this.capitalize(character.template
-            .replace('CHARACTER_', '')
-            .replace('EXECUTIVE_', '')
-            .replace('_GRUNT', '')
-            .replace('_MALE', '')
-            .replace('_FEMALE', '')).replace('Npc', 'NPC');
-        const grunt = this.capitalize(character.template.replace('CHARACTER_', '').replace('_MALE', '').replace('_FEMALE', '')).replace('Npc', 'NPC');
+        const base = character.template.replace('CHARACTER_', '').replace('_MALE', '').replace('_FEMALE', '');
+        const type = base.replace('EXECUTIVE_', '').replace('_GRUNT', '').replace('EVENT_', '');
+        const grunt = base.split('_').length > 1 ? base.replace(`${type}_`, '').trim() : base;
         const gender = character.gender ? 1 : 2;
         return {
-            type: type === 'Grunt' ? 'Mixed' : type,
+            type: type === 'GRUNT' ? 'Mixed' : this.capitalize(type),
             gender: this.options.genderString ? this.genders[gender] : gender,
-            grunt,
+            grunt: this.capitalize(grunt),
         };
     }
     invasions(invasionData) {
