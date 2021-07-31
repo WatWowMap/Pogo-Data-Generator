@@ -2,13 +2,22 @@
   "name": "pogo-data-generator",
   "version": "1.0.0",
   "description": "Pokemon GO project data generator",
+  "author": "TurtIeSocks",
+  "license": "Apache-2.0",
+  "keywords": ["pogo", "pokemon", "go", "data", "generator"],
+  "files": ["/dist"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "testGenerator": "node -e 'require(\"./dist/index\").generate({ test: true })'"
   },
-  "author": "TurtIeSocks",
-  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WatWowMap/pogo-data-generator"
+  },
+  "bugs": {
+    "url": "https://github.com/WatWowMap/Pogo-Data-Generator/issues"
+  },
   "dependencies": {
     "@types/extend": "^3.0.1",
     "@types/node-fetch": "^2.5.12",
