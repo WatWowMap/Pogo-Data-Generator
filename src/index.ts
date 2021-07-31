@@ -31,7 +31,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
   const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en'
 
   const AllPokemon = new Pokemon(pokemon.options)
-  const AllItems = new Items()
+  const AllItems = new Items(items.options)
   const AllMoves = new Moves()
   const AllQuests = new Quests()
   const AllInvasions = new Invasions(invasions.options)

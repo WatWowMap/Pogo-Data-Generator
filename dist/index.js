@@ -45,7 +45,7 @@ async function generate({ template, safe, url, test } = {}) {
     const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged;
     const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en';
     const AllPokemon = new Pokemon_1.default(pokemon.options);
-    const AllItems = new Item_1.default();
+    const AllItems = new Item_1.default(items.options);
     const AllMoves = new Move_1.default();
     const AllQuests = new Quest_1.default();
     const AllInvasions = new Invasion_1.default(invasions.options);

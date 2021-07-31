@@ -6,27 +6,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pogo_protos_1 = require("pogo-protos");
 const Masterfile_1 = __importDefault(require("./Masterfile"));
 class Item extends Masterfile_1.default {
-    constructor() {
+    constructor(options) {
         super();
+        this.options = options;
         this.parsedItems = {};
     }
     addItem(object) {
         try {
-            const id = pogo_protos_1.Rpc.Item[object.data.itemSettings.itemId];
-            this.parsedItems[id] = {
-                itemId: id,
-                itemName: object.data.itemSettings.itemId
-                    .split('_')
-                    .splice(1)
-                    .map((word) => {
-                    return `${this.capitalize(word)}`;
-                })
-                    .join(' '),
-                proto: object.data.itemSettings.itemId,
-                type: this.capitalize(object.data.itemSettings.itemType.replace('ITEM_TYPE_', '')),
-                category: this.capitalize(object.data.itemSettings.category.replace('ITEM_CATEGORY_', '')),
-                minTrainerLevel: object.data.itemSettings.dropTrainerLevel,
-            };
+            const { data: { itemSettings: { itemId, itemType, category, dropTrainerLevel }, }, } = object;
+            if (dropTrainerLevel <= this.options.minTrainerLevel) {
+                const id = pogo_protos_1.Rpc.Item[itemId];
+                this.parsedItems[id] = {
+                    itemId: id,
+                    itemName: this.capitalize(itemId.replace('ITEM_', '')),
+                    proto: itemId,
+                    type: this.capitalize(itemType.replace('ITEM_TYPE_', '')),
+                    category: this.capitalize(category.replace('ITEM_CATEGORY_', '')),
+                    minTrainerLevel: dropTrainerLevel,
+                };
+            }
         }
         catch (e) {
             console.error(e, '\n', object);

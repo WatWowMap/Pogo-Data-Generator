@@ -11,33 +11,6 @@ class Masterfile {
             1: 'Male',
             2: 'Female',
         };
-        this.snake_case = {
-            pokedexId: 'pokedex_id',
-            formId: 'form_id',
-            defaultFormId: 'default_form_id',
-            moveId: 'move_id',
-            typeId: 'type_id',
-            evoId: 'evo_id',
-            tempEvoId: 'temp_evo_id',
-            genId: 'gen_id',
-            typeName: 'type_name',
-            moveName: 'move_name',
-            formName: 'form_name',
-            quickMoves: 'quick_moves',
-            chargeMoves: 'charge_moves',
-            tempEvolutions: 'temp_evolutions',
-            genderRequirement: 'gender_requirement',
-            isCostume: 'is_costume',
-            fleeRate: 'flee_rate',
-            captureRate: 'capture_rate',
-            buddyGroupNumber: 'buddy_group_number',
-            buddyDistance: 'buddy_distance',
-            thirdMoveStardust: 'third_move_stardust',
-            thirdMoveCandy: 'third_move_candy',
-            gymDefenderEligible: 'gym_defender_eligible',
-            minTrainerLevel: 'min_trainer_level',
-            secondReward: 'second_reward',
-        };
     }
     async fetch(url) {
         return new Promise(resolve => {
@@ -163,8 +136,8 @@ class Masterfile {
         if (options.customFields[key]) {
             return options.customFields[key];
         }
-        if (options.snake_case && this.snake_case[key]) {
-            return this.snake_case[key];
+        if (options.snake_case) {
+            return key.replace(/([a-z](?=[A-Z]))/g, '$1_').toLowerCase();
         }
         return key;
     }

@@ -14,16 +14,18 @@
             },
             "customFields": {
                 "formId": "form",
-                "evoId": "pokemon"
+                "evoId": "pokemon",
+                "formName": "name",
+                "pokemonName": "name"
             },
-            "genderString": false,
+            "genderString": true,
             "snake_case": true,
             "unsetDefaultForm": false,
             "skipNormalIfUnset": false,
             "skipForms": [],
             "includeProtos": true,
             "includeEstimatedPokemon": true,
-            "includeSeparateForms": true
+            "includeSeparateForms": false
         },
         "template": {
             "pokedexId": true,
@@ -142,7 +144,8 @@
                 "keyJoiner": "_",
                 "main": "typeId"
             },
-            "customFields": {}
+            "customFields": {},
+            "snake_case": false
         },
         "template": {
             "typeId": false,
@@ -157,8 +160,12 @@
                 "main": "moveId",
                 "type": false
             },
-            "customFields": {},
-            "includeProtos": true
+            "customFields": {
+                "moveId": "id",
+                "moveName": "name"
+            },
+            "includeProtos": true,
+            "snake_case": false
         },
         "template": {
             "moveId": true,
@@ -176,13 +183,17 @@
         "options": {
             "keys": {
                 "keyJoiner": "_",
-                "main": "id"
+                "main": "itemId"
             },
-            "customFields": {},
+            "customFields": {
+                "itemId": "id",
+                "itemName": "name"
+            },
+            "snake_case": false,
             "minTrainerLevel": 50
         },
         "template": {
-            "id": false,
+            "itemId": false,
             "itemName": true,
             "proto": true,
             "type": true,
@@ -197,7 +208,8 @@
                 "keyJoiner": "_",
                 "main": "id"
             },
-            "customFields": {}
+            "customFields": {},
+            "snake_case": false
         },
         "template": {
             "id": false,
@@ -212,7 +224,8 @@
                 "keyJoiner": "_",
                 "main": "id"
             },
-            "customFields": {}
+            "customFields": {},
+            "snake_case": false
         },
         "template": {
             "id": false,
@@ -234,7 +247,8 @@
                 "third": "third"
             },
             "genderString": false,
-            "placeholderData": false
+            "placeholderData": false,
+            "snake_case": false
         },
         "template": {
             "id": false,
@@ -291,15 +305,15 @@
         "locales": {
             "de": true,
             "en": true,
-            "es": true,
+            "es": false,
             "fr": true,
-            "it": true,
-            "jp": true,
-            "ko": true,
-            "pt-br": true,
-            "ru": true,
-            "th": true,
-            "zh-tw": true
+            "it": false,
+            "jp": false,
+            "ko": false,
+            "pt-br": false,
+            "ru": false,
+            "th": false,
+            "zh-tw": false
         },
         "template": {
             "pokemon": {

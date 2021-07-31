@@ -7,9 +7,6 @@ export default class Masterfile {
     genders: {
         [id: string]: string;
     };
-    snake_case: {
-        [id: string]: string;
-    };
     constructor();
     fetch(url: string): Promise<any>;
     capitalize(string: string): string;
