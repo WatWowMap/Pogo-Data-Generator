@@ -1,12 +1,14 @@
 export interface AllWeather {
-  [id: string]: SingleWeather
+  [id: string]: {
+    weatherId: number
+    weatherName: string
+    proto: string
+    types: number[]
+  }
 }
 
-type SingleWeather = {
-  weatherId: string
-  weatherName: string
-  proto: string
-  types: number[]
+export interface AllTypes {
+  [id: string]: { typeId: number; typeName: string }
 }
 
 export interface AllInvasions {
@@ -41,26 +43,22 @@ export interface SingleMove {
 }
 
 export interface AllItems {
-  [id: string]: SingleItem
-}
-
-export interface SingleItem {
-  id: number
-  itemName: string
-  proto: string
-  type: string
-  category: string
-  minTrainerLevel: number
+  [id: string]: {
+    itemId: number
+    itemName: string
+    proto: string
+    type: string
+    category: string
+    minTrainerLevel: number
+  }
 }
 
 export interface AllQuests {
-  [id: string]: SingleQuest
-}
-
-export interface SingleQuest {
-  id: number
-  proto: string
-  formatted: string
+  [id: string]: {
+    id: number
+    proto: string
+    formatted: string
+  }
 }
 
 export interface AllPokemon {
@@ -80,7 +78,6 @@ export interface SinglePokemon extends SingleForm {
   generation?: string
   fleeRate?: number
   captureRate?: number
-  family?: number
   legendary?: boolean
   mythic?: boolean
   buddyGroupNumber?: number
@@ -90,7 +87,7 @@ export interface SinglePokemon extends SingleForm {
   gymDefenderEligible?: boolean
 }
 
-export interface SingleForm extends BaseStats {
+interface SingleForm extends BaseStats {
   formName?: string
   proto?: string
   formId?: number
@@ -103,18 +100,15 @@ export interface SingleForm extends BaseStats {
   little?: boolean
 }
 
-export interface Unreleased extends TempEvolutions {
-  unreleased?: boolean
-}
-
 export interface TempEvolutions extends BaseStats {
   tempEvoId: number
+  unreleased?: boolean
 }
 
 export interface Evolutions {
   evoId?: number
   formId?: number
-  genderRequirement?: number
+  genderRequirement?: number | string
 }
 
 type BaseStats = {
@@ -126,11 +120,20 @@ type BaseStats = {
   types?: number[]
 }
 
-export interface PokemonTyping {
-  typeId: number
-  typeName: string
+export interface TranslationKeys {
+  [category: string]: { [key: string]: string }
 }
 
-export interface TranslationCategories {
-  [category: string]: { [key: string]: string }
+export interface FinalResult {
+  [category: string]: any
+  pokemon?: AllPokemon
+  forms?: AllForms
+  items?: AllItems
+  moves?: AllMoves
+  types?: AllTypes
+  weather?: AllWeather
+  questRewardTypes?: AllQuests
+  questConditions?: AllQuests
+  invasions?: AllInvasions
+  translations?: { [locale: string]: TranslationKeys }
 }

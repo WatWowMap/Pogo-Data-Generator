@@ -1,17 +1,13 @@
-import { Rpc } from 'pogo-protos'
+import Fetch from 'node-fetch'
+
 import { Options } from '../typings/inputs'
+import { FinalResult } from '../typings/dataTypes'
 export default class Masterfile {
-  TypesList: any
-  MovesList: any
-  final: any
   customFieldNames: { [id: string]: string }
   genders: { [id: string]: string }
   snake_case: { [id: string]: string }
-  translations: any
 
   constructor() {
-    this.TypesList = Rpc.HoloPokemonType
-    this.MovesList = Rpc.HoloPokemonMove
     this.customFieldNames = {}
     this.genders = {
       1: 'Male',
@@ -46,6 +42,16 @@ export default class Masterfile {
     }
   }
 
+  async fetch(url: string): Promise<any> {
+    return new Promise(resolve => {
+      Fetch(url)
+        .then(res => res.json())
+        .then((json: any) => {
+          return resolve(json)
+        })
+    })
+  }
+
   capitalize(string: string) {
     const capitalizeList = ['pvp', 'xl', 'npc', 'cp', 'poi', 'gbl']
     try {
@@ -68,7 +74,7 @@ export default class Masterfile {
     }
   }
 
-  templater(data: any, settings: any, reference: any = {}) {
+  templater(data: any, settings: { template: any; options: Options }, reference: FinalResult = {}) {
     // loops through the raw data and outputs the desired template
     const { template, options } = settings
     const resolved: any = options.keys.main ? {} : []

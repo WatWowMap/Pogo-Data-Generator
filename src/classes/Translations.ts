@@ -1,16 +1,16 @@
 import { Rpc } from 'pogo-protos'
-import { AllForms, AllPokemon, TranslationCategories } from '../typings/dataTypes'
+import { AllForms, AllPokemon, FinalResult, TranslationKeys } from '../typings/dataTypes'
 import { Options } from '../typings/inputs'
 
 import Masterfile from './Masterfile'
 
 export default class Translations extends Masterfile {
-  rawTranslations: { [key: string]: { [key: string]: string } }
-  manualTranslations: { [key: string]: TranslationCategories }
-  parsedTranslations: { [key: string]: TranslationCategories }
   options: Options
+  rawTranslations: TranslationKeys
+  manualTranslations: { [key: string]: TranslationKeys }
+  parsedTranslations: { [key: string]: TranslationKeys }
   codes: { [id: string]: string }
-  masterfile: { [category: string]: { [id: string]: any } }
+  masterfile: FinalResult
 
   constructor(options: Options) {
     super()
@@ -34,7 +34,7 @@ export default class Translations extends Masterfile {
     }
   }
 
-  async fetchTranslations(locale: string, fetch: any) {
+  async fetchTranslations(locale: string) {
     this.rawTranslations[locale] = {}
     this.parsedTranslations[locale] = {}
     this.manualTranslations[locale] = {
@@ -51,7 +51,7 @@ export default class Translations extends Masterfile {
       misc: {},
     }
     try {
-      const { data } = await fetch(
+      const { data }: { data: string[] } = await this.fetch(
         `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale]}.json`
       )
 
@@ -63,7 +63,7 @@ export default class Translations extends Masterfile {
     }
     try {
       if (this.options.manualTranslations) {
-        const manual: { [key: string]: string } = await fetch(
+        const manual: { [key: string]: string } = await this.fetch(
           `https://raw.githubusercontent.com/bschultz/pogo-translations/master/static/manual/${locale}.json`
         )
 
@@ -100,7 +100,7 @@ export default class Translations extends Masterfile {
     }
   }
 
-  mergeManualTranslations(locale: string, enFallback: TranslationCategories) {
+  mergeManualTranslations(locale: string, enFallback: TranslationKeys) {
     let merged = this.options.mergeCategories ? {} : null
     Object.keys(this.manualTranslations[locale]).forEach(category => {
       if (merged) {
@@ -123,7 +123,7 @@ export default class Translations extends Masterfile {
     }
   }
 
-  translateMasterfile(data: any, locale: string) {
+  translateMasterfile(data: FinalResult, locale: string) {
     const language = this.parsedTranslations[locale]
     if (language) {
       Object.keys(data).forEach(category => {
@@ -138,7 +138,7 @@ export default class Translations extends Masterfile {
                   this.masterfile[category][id] = {
                     ...data[category][id],
                     [fieldKey]: ref[`${this.options.prefix[category]}${id}`],
-                  }  
+                  }
                 } else {
                   console.warn(`Unable to determine field key for ${id} in ${category}`)
                 }
@@ -152,7 +152,7 @@ export default class Translations extends Masterfile {
         } else {
           this.masterfile[category] = data[category]
         }
-      })  
+      })
     } else {
       console.warn(`Missing ${locale} translation, please check your template to make sure it's being parsed.`)
     }

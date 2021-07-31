@@ -22,11 +22,6 @@ class Pokemon extends Masterfile_1.default {
         this.formsRef = {};
         this.megaStats = {};
         this.evolvedPokemon = new Set();
-        this.PokemonList = pogo_protos_1.Rpc.HoloPokemonId;
-        this.FormsList = pogo_protos_1.Rpc.PokemonDisplayProto.Form;
-        this.GenderList = pogo_protos_1.Rpc.PokemonDisplayProto.Gender;
-        this.TempEvolutions = pogo_protos_1.Rpc.HoloTemporaryEvolutionId;
-        this.FamilyId = pogo_protos_1.Rpc.HoloPokemonFamilyId;
         this.generations = {
             1: {
                 name: 'Kanto',
@@ -61,7 +56,6 @@ class Pokemon extends Masterfile_1.default {
                 range: [810, 893],
             },
         };
-        this.englishForms = {};
     }
     pokemonName(id) {
         switch (id) {
@@ -70,20 +64,20 @@ class Pokemon extends Masterfile_1.default {
             case 32:
                 return 'Nidoran♂';
             default:
-                return this.capitalize(this.PokemonList[id]);
+                return this.capitalize(pogo_protos_1.Rpc.HoloPokemonId[id]);
         }
     }
     formName(id, formName) {
-        const name = formName.substr(id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
+        const name = formName.substr(id === pogo_protos_1.Rpc.HoloPokemonId.NIDORAN_FEMALE || id === pogo_protos_1.Rpc.HoloPokemonId.NIDORAN_MALE
             ? 8
-            : this.PokemonList[id].length + 1);
+            : pogo_protos_1.Rpc.HoloPokemonId[id].length + 1);
         return this.capitalize(name);
     }
     skipForms(formName) {
         return this.formsToSkip.some(form => formName.toLowerCase().includes(form));
     }
     lookupPokemon(name) {
-        for (const key of Object.keys(this.PokemonList)) {
+        for (const key of Object.keys(pogo_protos_1.Rpc.HoloPokemonId)) {
             if (name.startsWith(`${key}_`)) {
                 return key;
             }
@@ -92,7 +86,7 @@ class Pokemon extends Masterfile_1.default {
     getMoves(moves) {
         if (moves) {
             try {
-                return moves.map(move => this.MovesList[move]);
+                return moves.map(move => pogo_protos_1.Rpc.HoloPokemonMove[move]);
             }
             catch (e) {
                 console.error(e, '\n', moves);
@@ -115,7 +109,7 @@ class Pokemon extends Masterfile_1.default {
                 if (!incomingTypes[1]) {
                     incomingTypes.pop();
                 }
-                return incomingTypes.map(type => this.TypesList[type]);
+                return incomingTypes.map(type => pogo_protos_1.Rpc.HoloPokemonType[type]);
             }
             catch (e) {
                 console.error(e, '\n', incomingTypes);
@@ -129,13 +123,13 @@ class Pokemon extends Masterfile_1.default {
                 return;
             }
             else if (branch.evolution) {
-                const id = this.PokemonList[branch.evolution];
+                const id = pogo_protos_1.Rpc.HoloPokemonId[branch.evolution];
                 evolutions.push({
                     evoId: id,
-                    formId: this.FormsList[branch.form],
+                    formId: pogo_protos_1.Rpc.PokemonDisplayProto.Form[branch.form],
                     genderRequirement: this.options.genderString
-                        ? this.genders[this.GenderList[branch.genderRequirement]]
-                        : this.GenderList[branch.genderRequirement],
+                        ? this.genders[pogo_protos_1.Rpc.PokemonDisplayProto.Gender[branch.genderRequirement]]
+                        : pogo_protos_1.Rpc.PokemonDisplayProto.Gender[branch.genderRequirement],
                 });
                 this.evolvedPokemon.add(id);
             }
@@ -145,7 +139,7 @@ class Pokemon extends Masterfile_1.default {
     compileTempEvos(mfObject, primaryForm) {
         const tempEvolutions = mfObject.map(tempEvo => {
             const newTempEvolutions = {
-                tempEvoId: this.TempEvolutions[tempEvo.tempEvoId],
+                tempEvoId: pogo_protos_1.Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId],
             };
             switch (true) {
                 case tempEvo.stats.baseAttack !== primaryForm.attack:
@@ -170,20 +164,17 @@ class Pokemon extends Masterfile_1.default {
         return tempEvolutions;
     }
     generateProtoForms() {
-        const FormArray = Object.keys(this.FormsList).map(i => i);
-        for (let i = 0; i < FormArray.length; i++) {
-            const proto = FormArray[i];
+        Object.entries(pogo_protos_1.Rpc.PokemonDisplayProto.Form).forEach(proto => {
+            const [name, formId] = proto;
             try {
-                const pokemon = proto.startsWith('NIDORAN_')
+                const pokemon = name.startsWith('NIDORAN_')
                     ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
-                    : [this.formsRef[proto] || this.lookupPokemon(proto)];
+                    : [this.formsRef[name] || this.lookupPokemon(name)];
                 pokemon.forEach(pkmn => {
                     if (pkmn) {
-                        const id = this.PokemonList[pkmn];
-                        const formId = this.FormsList[proto];
-                        const name = this.formName(id, proto);
-                        this.englishForms[`form_${formId}`] = name;
-                        if (!this.skipForms(name)) {
+                        const id = pogo_protos_1.Rpc.HoloPokemonId[pkmn];
+                        const formName = this.formName(id, name);
+                        if (!this.skipForms(formName)) {
                             if (!this.parsedPokemon[id]) {
                                 this.parsedPokemon[id] = {
                                     pokedexId: id,
@@ -196,9 +187,9 @@ class Pokemon extends Masterfile_1.default {
                             if (this.parsedPokemon[id].defaultFormId === undefined) {
                                 this.parsedPokemon[id].defaultFormId = 0;
                             }
-                            if (this.parsedPokemon[id].defaultFormId === 0 && name === 'Normal') {
+                            if (this.parsedPokemon[id].defaultFormId === 0 && formName === 'Normal') {
                                 if (!this.options.unsetDefaultForm) {
-                                    this.parsedPokemon[id].defaultFormId = formId;
+                                    this.parsedPokemon[id].defaultFormId = +formId;
                                 }
                                 if (this.options.skipNormalIfUnset) {
                                     return;
@@ -206,13 +197,13 @@ class Pokemon extends Masterfile_1.default {
                             }
                             if (!this.parsedForms[formId]) {
                                 this.parsedForms[formId] = {
-                                    formName: name,
-                                    proto,
-                                    formId,
+                                    formName,
+                                    proto: name,
+                                    formId: +formId,
                                 };
                             }
-                            if (!this.parsedPokemon[id].forms.includes(formId)) {
-                                this.parsedPokemon[id].forms.push(formId);
+                            if (!this.parsedPokemon[id].forms.includes(+formId)) {
+                                this.parsedPokemon[id].forms.push(+formId);
                             }
                         }
                     }
@@ -221,7 +212,7 @@ class Pokemon extends Masterfile_1.default {
             catch (e) {
                 console.error(e, '\n', proto);
             }
-        }
+        });
     }
     addForm(object) {
         if (object.templateId.split('_')[1]) {
@@ -235,8 +226,8 @@ class Pokemon extends Masterfile_1.default {
                     if (!this.parsedPokemon[id].forms) {
                         this.parsedPokemon[id].forms = [];
                     }
-                    for (let i = 0; i < forms.length; i++) {
-                        const formId = this.FormsList[forms[i].form];
+                    for (let i = 0; i < forms.length; i += 1) {
+                        const formId = pogo_protos_1.Rpc.PokemonDisplayProto.Form[forms[i].form];
                         this.formsRef[forms[i].form] = object.data.formSettings.pokemon;
                         const name = this.formName(id, forms[i].form);
                         if (i === 0) {
@@ -280,7 +271,7 @@ class Pokemon extends Masterfile_1.default {
             this.parsedPokemon[id] = {};
         }
         const formId = /^V\d{4}_POKEMON_/.test(templateId)
-            ? this.FormsList[templateId.substr('V9999_POKEMON_'.length)]
+            ? pogo_protos_1.Rpc.PokemonDisplayProto.Form[templateId.substr('V9999_POKEMON_'.length)]
             : null;
         if (formId) {
             if (!this.parsedPokemon[id].forms) {
@@ -326,7 +317,7 @@ class Pokemon extends Masterfile_1.default {
                 if (!this.compare(types, primaryForm.types)) {
                     form.types = types;
                 }
-                const family = this.FamilyId[pokemonSettings.familyId];
+                const family = pogo_protos_1.Rpc.HoloPokemonFamilyId[pokemonSettings.familyId];
                 if (family !== primaryForm.family) {
                     form.family = family;
                 }
@@ -342,9 +333,33 @@ class Pokemon extends Masterfile_1.default {
             }
         }
         else {
-            this.parsedPokemon[id] = Object.assign(Object.assign({ pokedexId: id, pokemonName: this.pokemonName(id), forms: this.parsedPokemon[id].forms || [] }, this.parsedPokemon[id]), { types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]), attack: pokemonSettings.stats.baseAttack, defense: pokemonSettings.stats.baseDefense, stamina: pokemonSettings.stats.baseStamina, height: pokemonSettings.pokedexHeightM, weight: pokemonSettings.pokedexWeightKg, quickMoves: this.getMoves(pokemonSettings.quickMoves), chargedMoves: this.getMoves(pokemonSettings.cinematicMoves), family: this.FamilyId[pokemonSettings.familyId], fleeRate: pokemonSettings.encounter.baseFleeRate, captureRate: pokemonSettings.encounter.baseCaptureRate, legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY', mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC', buddyGroupNumber: pokemonSettings.buddyGroupNumber, kmBuddyDistance: pokemonSettings.kmBuddyDistance, thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock, thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock, gymDefenderEligible: pokemonSettings.isDeployable, genId: +Object.keys(this.generations).find(gen => {
+            this.parsedPokemon[id] = {
+                pokedexId: id,
+                pokemonName: this.pokemonName(id),
+                forms: this.parsedPokemon[id].forms || [],
+                ...this.parsedPokemon[id],
+                types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]),
+                attack: pokemonSettings.stats.baseAttack,
+                defense: pokemonSettings.stats.baseDefense,
+                stamina: pokemonSettings.stats.baseStamina,
+                height: pokemonSettings.pokedexHeightM,
+                weight: pokemonSettings.pokedexWeightKg,
+                quickMoves: this.getMoves(pokemonSettings.quickMoves),
+                chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
+                family: pogo_protos_1.Rpc.HoloPokemonFamilyId[pokemonSettings.familyId],
+                fleeRate: pokemonSettings.encounter.baseFleeRate,
+                captureRate: pokemonSettings.encounter.baseCaptureRate,
+                legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY',
+                mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC',
+                buddyGroupNumber: pokemonSettings.buddyGroupNumber,
+                kmBuddyDistance: pokemonSettings.kmBuddyDistance,
+                thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock,
+                thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock,
+                gymDefenderEligible: pokemonSettings.isDeployable,
+                genId: +Object.keys(this.generations).find(gen => {
                     return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1];
-                }) });
+                }),
+            };
             if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
                 this.parsedPokemon[id].evolutions = this.compileEvos(pokemonSettings.evolutionBranch);
             }
@@ -356,9 +371,9 @@ class Pokemon extends Masterfile_1.default {
     }
     megaInfo() {
         const megaLookup = {
-            undefined: this.TempEvolutions.TEMP_EVOLUTION_MEGA,
-            _X: this.TempEvolutions.TEMP_EVOLUTION_MEGA_X,
-            _Y: this.TempEvolutions.TEMP_EVOLUTION_MEGA_Y,
+            undefined: pogo_protos_1.Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA,
+            _X: pogo_protos_1.Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_X,
+            _Y: pogo_protos_1.Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_Y,
         };
         for (const { data } of megas_json_1.default.items) {
             const match = /^V(\d{4})_POKEMON_.*_MEGA(_[XY])?$/.exec(data.templateId);
@@ -377,11 +392,11 @@ class Pokemon extends Masterfile_1.default {
         }
     }
     futureMegas() {
-        Object.values(this.PokemonList).forEach((id) => {
+        Object.values(pogo_protos_1.Rpc.HoloPokemonId).forEach(id => {
             const guessedMega = this.megaStats[id];
             if (guessedMega) {
                 if (!this.parsedPokemon[id]) {
-                    this.parsedPokemon[id] = { pokemonName: this.pokemonName(id) };
+                    this.parsedPokemon[id] = { pokemonName: this.pokemonName(+id) };
                 }
                 if (!this.parsedPokemon[id].tempEvolutions) {
                     this.parsedPokemon[id].tempEvolutions = [];
@@ -411,12 +426,11 @@ class Pokemon extends Masterfile_1.default {
         }
         else {
             this.lcBanList.add('FARFETCHD');
-            this.parsedForms[this.FormsList.FARFETCHD_GALARIAN].little = true;
+            this.parsedForms[pogo_protos_1.Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN].little = true;
         }
         for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
-            const allowed = id == this.PokemonList.DEERLING ||
-                (!this.evolvedPokemon.has(parseInt(id)) && pokemon.evolutions !== undefined);
-            if (allowed) {
+            const allowed = !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined;
+            if (allowed || +id === pogo_protos_1.Rpc.HoloPokemonId.DEERLING) {
                 pokemon.little = true;
             }
         }

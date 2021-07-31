@@ -1,7 +1,9 @@
+import { Rpc } from 'pogo-protos'
+import { AllTypes } from '../typings/dataTypes'
 import Masterfile from './Masterfile'
 
 export default class Types extends Masterfile {
-  parsedTypes: { [id: number]: { typeId: number; typeName: string } }
+  parsedTypes: AllTypes
 
   constructor() {
     super()
@@ -9,11 +11,11 @@ export default class Types extends Masterfile {
   }
 
   buildTypes() {
-    const TypesArray: number[] = Object.values(this.TypesList).map(id => +id)
-    TypesArray.forEach(typeId => {
-      this.parsedTypes[typeId] = {
-        typeId,
-        typeName: this.capitalize(this.TypesList[typeId].substring(13)),
+    Object.entries(Rpc.HoloPokemonType).forEach(proto => {
+      const [name, id] = proto
+      this.parsedTypes[id] = {
+        typeId: +id,
+        typeName: this.capitalize(name.substring(13)),
       }
     })
   }

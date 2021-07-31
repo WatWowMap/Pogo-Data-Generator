@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -36,85 +27,92 @@ class Translations extends Masterfile_1.default {
             'zh-tw': 'chinesetraditional',
         };
     }
-    fetchTranslations(locale, fetch) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.rawTranslations[locale] = {};
-            this.parsedTranslations[locale] = {};
-            this.manualTranslations[locale] = {
-                pokemon: {},
-                forms: {},
-                costumes: {},
-                descriptions: {},
-                moves: {},
-                items: {},
-                quests: {},
-                types: {},
-                weather: {},
-                characters: {},
-                misc: {},
-            };
-            try {
-                const { data } = yield fetch(`https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale]}.json`);
-                for (let i = 0; i < data.length; i += 2) {
-                    this.rawTranslations[locale][data[i]] = data[i + 1];
-                }
+    async fetchTranslations(locale) {
+        this.rawTranslations[locale] = {};
+        this.parsedTranslations[locale] = {};
+        this.manualTranslations[locale] = {
+            pokemon: {},
+            forms: {},
+            costumes: {},
+            descriptions: {},
+            moves: {},
+            items: {},
+            quests: {},
+            types: {},
+            weather: {},
+            characters: {},
+            misc: {},
+        };
+        try {
+            const { data } = await this.fetch(`https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale]}.json`);
+            for (let i = 0; i < data.length; i += 2) {
+                this.rawTranslations[locale][data[i]] = data[i + 1];
             }
-            catch (e) {
-                console.error(e, '\n', `Unable to process ${locale} from GM`);
+        }
+        catch (e) {
+            console.error(e, '\n', `Unable to process ${locale} from GM`);
+        }
+        try {
+            if (this.options.manualTranslations) {
+                const manual = await this.fetch(`https://raw.githubusercontent.com/bschultz/pogo-translations/master/static/manual/${locale}.json`);
+                Object.entries(manual).forEach(pair => {
+                    const [key, value] = pair;
+                    if (key.startsWith('poke_type')) {
+                        this.manualTranslations[locale].types[key] = value;
+                    }
+                    else if (key.startsWith('poke')) {
+                        this.manualTranslations[locale].pokemon[key] = value;
+                    }
+                    else if (key.startsWith('form')) {
+                        this.manualTranslations[locale].forms[key] = value;
+                    }
+                    else if (key.startsWith('costume')) {
+                        this.manualTranslations[locale].costumes[key] = value;
+                    }
+                    else if (key.startsWith('quest') || key.startsWith('throw')) {
+                        let newValue = value;
+                        if (value.includes('%{') && this.options.questVariables) {
+                            newValue = newValue.replace('%{', this.options.questVariables.prefix);
+                            newValue = newValue.replace('}', this.options.questVariables.suffix);
+                        }
+                        this.manualTranslations[locale].quests[key] = newValue;
+                    }
+                    else if (key.startsWith('character') || key.startsWith('grunt')) {
+                        this.manualTranslations[locale].characters[key] = value;
+                    }
+                    else if (key.startsWith('type')) {
+                        this.manualTranslations[locale].types[key] = value;
+                    }
+                    else if (key.startsWith('weather')) {
+                        this.manualTranslations[locale].weather[key] = value;
+                    }
+                    else {
+                        this.manualTranslations[locale].misc[key] = value;
+                    }
+                });
             }
-            try {
-                if (this.options.manualTranslations) {
-                    const manual = yield fetch(`https://raw.githubusercontent.com/bschultz/pogo-translations/master/static/manual/${locale}.json`);
-                    Object.entries(manual).forEach(pair => {
-                        const [key, value] = pair;
-                        if (key.startsWith('poke_type')) {
-                            this.manualTranslations[locale].types[key] = value;
-                        }
-                        else if (key.startsWith('poke')) {
-                            this.manualTranslations[locale].pokemon[key] = value;
-                        }
-                        else if (key.startsWith('form')) {
-                            this.manualTranslations[locale].forms[key] = value;
-                        }
-                        else if (key.startsWith('costume')) {
-                            this.manualTranslations[locale].costumes[key] = value;
-                        }
-                        else if (key.startsWith('quest') || key.startsWith('throw')) {
-                            let newValue = value;
-                            if (value.includes('%{') && this.options.questVariables) {
-                                newValue = newValue.replace('%{', this.options.questVariables.prefix);
-                                newValue = newValue.replace('}', this.options.questVariables.suffix);
-                            }
-                            this.manualTranslations[locale].quests[key] = newValue;
-                        }
-                        else if (key.startsWith('character') || key.startsWith('grunt')) {
-                            this.manualTranslations[locale].characters[key] = value;
-                        }
-                        else if (key.startsWith('type')) {
-                            this.manualTranslations[locale].types[key] = value;
-                        }
-                        else if (key.startsWith('weather')) {
-                            this.manualTranslations[locale].weather[key] = value;
-                        }
-                        else {
-                            this.manualTranslations[locale].misc[key] = value;
-                        }
-                    });
-                }
-            }
-            catch (e) {
-                console.error(e, '\n', `Unable to fetch manual translations for ${locale}`);
-            }
-        });
+        }
+        catch (e) {
+            console.error(e, '\n', `Unable to fetch manual translations for ${locale}`);
+        }
     }
     mergeManualTranslations(locale, enFallback) {
         let merged = this.options.mergeCategories ? {} : null;
         Object.keys(this.manualTranslations[locale]).forEach(category => {
             if (merged) {
-                merged = Object.assign(Object.assign(Object.assign(Object.assign({}, merged), enFallback[category]), this.parsedTranslations[locale][category]), this.manualTranslations[locale][category]);
+                merged = {
+                    ...merged,
+                    ...enFallback[category],
+                    ...this.parsedTranslations[locale][category],
+                    ...this.manualTranslations[locale][category],
+                };
             }
             else {
-                this.parsedTranslations[locale][category] = Object.assign(Object.assign(Object.assign({}, enFallback[category]), this.parsedTranslations[locale][category]), this.manualTranslations[locale][category]);
+                this.parsedTranslations[locale][category] = {
+                    ...enFallback[category],
+                    ...this.parsedTranslations[locale][category],
+                    ...this.manualTranslations[locale][category],
+                };
             }
         });
         if (merged) {
@@ -133,7 +131,10 @@ class Translations extends Masterfile_1.default {
                             if (ref[`${this.options.prefix[category]}${id}`]) {
                                 const fieldKey = Object.keys(data[category][id]).find(field => field.includes('Name'));
                                 if (fieldKey) {
-                                    this.masterfile[category][id] = Object.assign(Object.assign({}, data[category][id]), { [fieldKey]: ref[`${this.options.prefix[category]}${id}`] });
+                                    this.masterfile[category][id] = {
+                                        ...data[category][id],
+                                        [fieldKey]: ref[`${this.options.prefix[category]}${id}`],
+                                    };
                                 }
                                 else {
                                     console.warn(`Unable to determine field key for ${id} in ${category}`);

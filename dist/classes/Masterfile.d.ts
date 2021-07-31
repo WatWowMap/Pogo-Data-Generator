@@ -1,8 +1,6 @@
 import { Options } from '../typings/inputs';
+import { FinalResult } from '../typings/dataTypes';
 export default class Masterfile {
-    TypesList: any;
-    MovesList: any;
-    final: any;
     customFieldNames: {
         [id: string]: string;
     };
@@ -12,10 +10,13 @@ export default class Masterfile {
     snake_case: {
         [id: string]: string;
     };
-    translations: any;
     constructor();
+    fetch(url: string): Promise<any>;
     capitalize(string: string): string;
-    templater(data: any, settings: any, reference?: any): any;
-    keyFormatter(key: string, options: Options): any;
+    templater(data: any, settings: {
+        template: any;
+        options: Options;
+    }, reference?: FinalResult): any;
+    keyFormatter(key: string, options: Options): string;
     keyResolver(key: string, data: any, options: Options): string;
 }

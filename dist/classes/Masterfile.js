@@ -1,10 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const pogo_protos_1 = require("pogo-protos");
+const node_fetch_1 = __importDefault(require("node-fetch"));
 class Masterfile {
     constructor() {
-        this.TypesList = pogo_protos_1.Rpc.HoloPokemonType;
-        this.MovesList = pogo_protos_1.Rpc.HoloPokemonMove;
         this.customFieldNames = {};
         this.genders = {
             1: 'Male',
@@ -37,6 +38,15 @@ class Masterfile {
             minTrainerLevel: 'min_trainer_level',
             secondReward: 'second_reward',
         };
+    }
+    async fetch(url) {
+        return new Promise(resolve => {
+            node_fetch_1.default(url)
+                .then(res => res.json())
+                .then((json) => {
+                return resolve(json);
+            });
+        });
     }
     capitalize(string) {
         const capitalizeList = ['pvp', 'xl', 'npc', 'cp', 'poi', 'gbl'];

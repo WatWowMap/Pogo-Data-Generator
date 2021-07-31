@@ -10,13 +10,11 @@ class Quests extends Masterfile_1.default {
         super();
         this.parsedRewardTypes = {};
         this.parsedConditions = {};
-        this.QuestRewardTypes = pogo_protos_1.Rpc.QuestRewardProto.Type;
-        this.QuestConditions = pogo_protos_1.Rpc.QuestConditionProto.ConditionType;
     }
     addQuest(types) {
         const parsedTarget = types ? this.parsedRewardTypes : this.parsedConditions;
-        const protoTarget = types ? this.QuestRewardTypes : this.QuestConditions;
-        Object.entries(protoTarget).forEach((type) => {
+        const protoTarget = types ? pogo_protos_1.Rpc.QuestRewardProto.Type : pogo_protos_1.Rpc.QuestConditionProto.ConditionType;
+        Object.entries(protoTarget).forEach(type => {
             const [proto, id] = type;
             parsedTarget[id] = {
                 id,

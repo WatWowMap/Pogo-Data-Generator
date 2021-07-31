@@ -1,6 +1,4 @@
-import {
-  AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions,
-} from './dataTypes'
+import { AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions } from './dataTypes'
 
 export interface FinalData {
   pokemon?: AllPokemon
@@ -11,15 +9,11 @@ export interface FinalData {
   invasions?: AllInvasions
 }
 
-export interface MegaStats {
-  [id: number]: GuessedMega[]
-}
-
-interface GuessedMega {
+export interface GuessedMega {
   attack?: number
   defense?: number
   stamina?: number
-  tempEvoId?: any
+  tempEvoId?: number
   type1?: string
   type2?: string
 }
@@ -72,7 +66,10 @@ export interface NiaMfObj {
     }
     formSettings?: {
       pokemon: string
-      forms: FormType[]
+      forms: {
+        form: string
+        isCostume: boolean
+      }[]
     }
     combatMove?: {
       uniqueId: string
@@ -114,9 +111,4 @@ export interface EvoBranch {
   form: string
   temporaryEvolution: string
   genderRequirement: string
-}
-
-interface FormType {
-  form: string
-  isCostume: boolean
 }

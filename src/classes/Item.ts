@@ -3,22 +3,21 @@ import { AllItems } from '../typings/dataTypes'
 
 import Masterfile from './Masterfile'
 import { NiaMfObj } from '../typings/general'
+import { ItemProto } from '../typings/protos'
 
 export default class Item extends Masterfile {
   parsedItems: AllItems
-  ItemList: any
 
   constructor() {
     super()
     this.parsedItems = {}
-    this.ItemList = Rpc.Item
   }
 
   addItem(object: NiaMfObj) {
     try {
-      const id: number = this.ItemList[object.data.itemSettings.itemId]
+      const id = Rpc.Item[object.data.itemSettings.itemId as ItemProto]
       this.parsedItems[id] = {
-        id,
+        itemId: id,
         itemName: object.data.itemSettings.itemId
           .split('_')
           .splice(1)

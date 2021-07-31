@@ -9,7 +9,6 @@ class Invasion extends Masterfile_1.default {
         super();
         this.options = options;
         this.parsedInvasions = {};
-        this.parsedEncounters = {};
     }
     formatGrunts(character) {
         const base = character.template.replace('CHARACTER_', '').replace('_MALE', '').replace('_FEMALE', '');
@@ -25,7 +24,10 @@ class Invasion extends Masterfile_1.default {
     invasions(invasionData) {
         Object.entries(invasionData).forEach(gruntType => {
             const [id, info] = gruntType;
-            this.parsedInvasions[id] = Object.assign({ id: +id }, this.formatGrunts(info.character));
+            this.parsedInvasions[id] = {
+                id: +id,
+                ...this.formatGrunts(info.character),
+            };
             if (info.active) {
                 this.parsedInvasions[id].secondReward = info.lineup.rewards.length === 2;
                 const positions = [

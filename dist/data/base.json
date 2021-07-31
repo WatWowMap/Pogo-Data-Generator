@@ -22,9 +22,11 @@
             "skipNormalIfUnset": false,
             "skipForms": [],
             "includeProtos": true,
-            "includeEstimatedPokemon": true
+            "includeEstimatedPokemon": true,
+            "includeSeparateForms": true
         },
         "template": {
+            "pokedexId": true,
             "pokemonName": true,
             "forms": {
                 "formId": false,
@@ -77,7 +79,6 @@
                 "family": true
             },
             "defaultFormId": true,
-            "pokedexId": true,
             "genId": true,
             "generation": true,
             "types": {
@@ -126,7 +127,7 @@
             "legendary": true,
             "mythic": true,
             "buddyGroupNumber": true,
-            "buddyDistance": true,
+            "kmBuddyDistance": true,
             "thirdMoveStardust": true,
             "thirdMoveCandy": true,
             "gymDefenderEligible": true,

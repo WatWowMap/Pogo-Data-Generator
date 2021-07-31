@@ -5,16 +5,12 @@ import Masterfile from './Masterfile'
 
 export default class Invasion extends Masterfile {
   parsedInvasions: AllInvasions
-  parsedEncounters: any
-  QuestRewardTypes: any
-  QuestConditions: any
   options: Options
 
   constructor(options: Options) {
     super()
     this.options = options
     this.parsedInvasions = {}
-    this.parsedEncounters = {}
   }
 
   formatGrunts(character: Character) {

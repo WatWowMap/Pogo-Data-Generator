@@ -1,11 +1,7 @@
+import { AllTypes } from '../typings/dataTypes';
 import Masterfile from './Masterfile';
 export default class Types extends Masterfile {
-    parsedTypes: {
-        [id: number]: {
-            typeId: number;
-            typeName: string;
-        };
-    };
+    parsedTypes: AllTypes;
     constructor();
     buildTypes(): void;
 }

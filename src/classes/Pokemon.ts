@@ -1,27 +1,22 @@
 import { Rpc } from 'pogo-protos'
 
-import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, Unreleased, AllForms } from '../typings/dataTypes'
-import { NiaMfObj, Generation, TempEvo, EvoBranch, MegaStats } from '../typings/general'
+import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes'
+import { NiaMfObj, Generation, TempEvo, EvoBranch, GuessedMega } from '../typings/general'
 import Masterfile from './Masterfile'
 import megas from '../data/megas.json'
 import { Options } from '../typings/inputs'
+import { FamilyProto, FormProto, GenderProto, MegaProto, MoveProto, PokemonIdProto, TypeProto } from '../typings/protos'
 
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
   parsedForms: AllForms
   formsRef: { [id: string]: string }
-  FormsList: any
-  PokemonList: any
-  GenderList: any
-  TempEvolutions: any
-  FamilyId: any
   generations: Generation
-  megaStats: MegaStats
-  lcBanList: any
-  evolvedPokemon: any
+  megaStats: { [id: string]: GuessedMega[] }
+  lcBanList: Set<string>
+  evolvedPokemon: Set<number>
   options: Options
   formsToSkip: string[]
-  englishForms: { [id: string]: string }
 
   constructor(options: Options) {
     super()
@@ -38,11 +33,6 @@ export default class Pokemon extends Masterfile {
     this.formsRef = {}
     this.megaStats = {}
     this.evolvedPokemon = new Set()
-    this.PokemonList = Rpc.HoloPokemonId
-    this.FormsList = Rpc.PokemonDisplayProto.Form
-    this.GenderList = Rpc.PokemonDisplayProto.Gender
-    this.TempEvolutions = Rpc.HoloTemporaryEvolutionId
-    this.FamilyId = Rpc.HoloPokemonFamilyId
     this.generations = {
       1: {
         name: 'Kanto',
@@ -77,7 +67,6 @@ export default class Pokemon extends Masterfile {
         range: [810, 893],
       },
     }
-    this.englishForms = {}
   }
 
   pokemonName(id: number) {
@@ -87,15 +76,15 @@ export default class Pokemon extends Masterfile {
       case 32:
         return 'Nidoran♂'
       default:
-        return this.capitalize(this.PokemonList[id])
+        return this.capitalize(Rpc.HoloPokemonId[id])
     }
   }
 
   formName(id: number, formName: string) {
     const name = formName.substr(
-      id === this.PokemonList.NIDORAN_FEMALE || id === this.PokemonList.NIDORAN_MALE
+      id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
         ? 8
-        : this.PokemonList[id].length + 1
+        : Rpc.HoloPokemonId[id].length + 1
     )
     return this.capitalize(name)
   }
@@ -105,7 +94,7 @@ export default class Pokemon extends Masterfile {
   }
 
   lookupPokemon(name: string) {
-    for (const key of Object.keys(this.PokemonList)) {
+    for (const key of Object.keys(Rpc.HoloPokemonId)) {
       if (name.startsWith(`${key}_`)) {
         return key
       }
@@ -115,7 +104,7 @@ export default class Pokemon extends Masterfile {
   getMoves(moves: string[]) {
     if (moves) {
       try {
-        return moves.map(move => this.MovesList[move])
+        return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto])
       } catch (e) {
         console.error(e, '\n', moves)
       }
@@ -138,7 +127,7 @@ export default class Pokemon extends Masterfile {
         if (!incomingTypes[1]) {
           incomingTypes.pop()
         }
-        return incomingTypes.map(type => this.TypesList[type])
+        return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto])
       } catch (e) {
         console.error(e, '\n', incomingTypes)
       }
@@ -151,13 +140,13 @@ export default class Pokemon extends Masterfile {
       if (branch.temporaryEvolution) {
         return
       } else if (branch.evolution) {
-        const id = this.PokemonList[branch.evolution]
+        const id = Rpc.HoloPokemonId[branch.evolution as PokemonIdProto]
         evolutions.push({
           evoId: id,
-          formId: this.FormsList[branch.form],
+          formId: Rpc.PokemonDisplayProto.Form[branch.form as FormProto],
           genderRequirement: this.options.genderString
-            ? this.genders[this.GenderList[branch.genderRequirement]]
-            : this.GenderList[branch.genderRequirement],
+            ? this.genders[Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto]]
+            : Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto],
         })
         this.evolvedPokemon.add(id)
       }
@@ -168,7 +157,7 @@ export default class Pokemon extends Masterfile {
   compileTempEvos(mfObject: TempEvo[], primaryForm: SinglePokemon) {
     const tempEvolutions: TempEvolutions[] = mfObject.map(tempEvo => {
       const newTempEvolutions: TempEvolutions = {
-        tempEvoId: this.TempEvolutions[tempEvo.tempEvoId],
+        tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
       }
       switch (true) {
         case tempEvo.stats.baseAttack !== primaryForm.attack:
@@ -194,22 +183,18 @@ export default class Pokemon extends Masterfile {
   }
 
   generateProtoForms() {
-    const FormArray = Object.keys(this.FormsList).map(i => i)
-
-    for (let i = 0; i < FormArray.length; i++) {
-      const proto: any = FormArray[i]
+    Object.entries(Rpc.PokemonDisplayProto.Form).forEach(proto => {
+      const [name, formId] = proto
       try {
-        const pokemon: string[] = proto.startsWith('NIDORAN_')
+        const pokemon: string[] = name.startsWith('NIDORAN_')
           ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
-          : [this.formsRef[proto] || this.lookupPokemon(proto)]
+          : [this.formsRef[name] || this.lookupPokemon(name)]
 
         pokemon.forEach(pkmn => {
           if (pkmn) {
-            const id: number = this.PokemonList[pkmn]
-            const formId: number = this.FormsList[proto]
-            const name = this.formName(id, proto)
-            this.englishForms[`form_${formId}`] = name
-            if (!this.skipForms(name)) {
+            const id: number = Rpc.HoloPokemonId[pkmn as PokemonIdProto]
+            const formName = this.formName(id, name)
+            if (!this.skipForms(formName)) {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
                   pokedexId: id,
@@ -222,9 +207,9 @@ export default class Pokemon extends Masterfile {
               if (this.parsedPokemon[id].defaultFormId === undefined) {
                 this.parsedPokemon[id].defaultFormId = 0
               }
-              if (this.parsedPokemon[id].defaultFormId === 0 && name === 'Normal') {
+              if (this.parsedPokemon[id].defaultFormId === 0 && formName === 'Normal') {
                 if (!this.options.unsetDefaultForm) {
-                  this.parsedPokemon[id].defaultFormId = formId
+                  this.parsedPokemon[id].defaultFormId = +formId
                 }
                 if (this.options.skipNormalIfUnset) {
                   return
@@ -232,13 +217,13 @@ export default class Pokemon extends Masterfile {
               }
               if (!this.parsedForms[formId]) {
                 this.parsedForms[formId] = {
-                  formName: name,
-                  proto,
-                  formId,
+                  formName,
+                  proto: name,
+                  formId: +formId,
                 }
               }
-              if (!this.parsedPokemon[id].forms.includes(formId)) {
-                this.parsedPokemon[id].forms.push(formId)
+              if (!this.parsedPokemon[id].forms.includes(+formId)) {
+                this.parsedPokemon[id].forms.push(+formId)
               }
             }
           }
@@ -246,7 +231,7 @@ export default class Pokemon extends Masterfile {
       } catch (e) {
         console.error(e, '\n', proto)
       }
-    }
+    })
   }
 
   addForm(object: NiaMfObj) {
@@ -263,8 +248,8 @@ export default class Pokemon extends Masterfile {
           if (!this.parsedPokemon[id].forms) {
             this.parsedPokemon[id].forms = []
           }
-          for (let i = 0; i < forms.length; i++) {
-            const formId: number = this.FormsList[forms[i].form]
+          for (let i = 0; i < forms.length; i += 1) {
+            const formId: number = Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
             this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
@@ -310,7 +295,7 @@ export default class Pokemon extends Masterfile {
       this.parsedPokemon[id] = {}
     }
     const formId: number = /^V\d{4}_POKEMON_/.test(templateId)
-      ? this.FormsList[templateId.substr('V9999_POKEMON_'.length)]
+      ? Rpc.PokemonDisplayProto.Form[templateId.substr('V9999_POKEMON_'.length) as FormProto]
       : null
 
     if (formId) {
@@ -360,7 +345,7 @@ export default class Pokemon extends Masterfile {
         if (!this.compare(types, primaryForm.types)) {
           form.types = types
         }
-        const family = this.FamilyId[pokemonSettings.familyId]
+        const family = Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto]
         if (family !== primaryForm.family) {
           form.family = family
         }
@@ -388,7 +373,7 @@ export default class Pokemon extends Masterfile {
         weight: pokemonSettings.pokedexWeightKg,
         quickMoves: this.getMoves(pokemonSettings.quickMoves),
         chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
-        family: this.FamilyId[pokemonSettings.familyId],
+        family: Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
         fleeRate: pokemonSettings.encounter.baseFleeRate,
         captureRate: pokemonSettings.encounter.baseCaptureRate,
         legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY',
@@ -417,9 +402,9 @@ export default class Pokemon extends Masterfile {
 
   megaInfo() {
     const megaLookup: { [id: string]: number } = {
-      undefined: this.TempEvolutions.TEMP_EVOLUTION_MEGA,
-      _X: this.TempEvolutions.TEMP_EVOLUTION_MEGA_X,
-      _Y: this.TempEvolutions.TEMP_EVOLUTION_MEGA_Y,
+      undefined: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA,
+      _X: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_X,
+      _Y: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_Y,
     }
     for (const { data } of megas.items) {
       const match = /^V(\d{4})_POKEMON_.*_MEGA(_[XY])?$/.exec(data.templateId)
@@ -439,11 +424,11 @@ export default class Pokemon extends Masterfile {
   }
 
   futureMegas() {
-    Object.values(this.PokemonList).forEach((id: any) => {
+    Object.values(Rpc.HoloPokemonId).forEach(id => {
       const guessedMega = this.megaStats[id]
       if (guessedMega) {
         if (!this.parsedPokemon[id]) {
-          this.parsedPokemon[id] = { pokemonName: this.pokemonName(id) }
+          this.parsedPokemon[id] = { pokemonName: this.pokemonName(+id) }
         }
         if (!this.parsedPokemon[id].tempEvolutions) {
           this.parsedPokemon[id].tempEvolutions = []
@@ -451,7 +436,7 @@ export default class Pokemon extends Masterfile {
         for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
           if (!this.parsedPokemon[id].tempEvolutions.some(evo => evo.tempEvoId === tempEvoId)) {
             const types = this.getTypes([type1, type2])
-            const evo: Unreleased = {
+            const evo: TempEvolutions = {
               tempEvoId,
               attack,
               defense,
@@ -473,14 +458,11 @@ export default class Pokemon extends Masterfile {
       console.warn('Missing little cup ban list from Masterfile')
     } else {
       this.lcBanList.add('FARFETCHD')
-      this.parsedForms[this.FormsList.FARFETCHD_GALARIAN].little = true
+      this.parsedForms[Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN].little = true
     }
     for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
-      const allowed =
-        id == this.PokemonList.DEERLING ||
-        // for some reason FORM_UNSET DEERLING cannot evolve
-        (!this.evolvedPokemon.has(parseInt(id)) && pokemon.evolutions !== undefined)
-      if (allowed) {
+      const allowed = !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined
+      if (allowed || +id === Rpc.HoloPokemonId.DEERLING) {
         pokemon.little = true
       }
     }

@@ -9,13 +9,12 @@ class Item extends Masterfile_1.default {
     constructor() {
         super();
         this.parsedItems = {};
-        this.ItemList = pogo_protos_1.Rpc.Item;
     }
     addItem(object) {
         try {
-            const id = this.ItemList[object.data.itemSettings.itemId];
+            const id = pogo_protos_1.Rpc.Item[object.data.itemSettings.itemId];
             this.parsedItems[id] = {
-                id,
+                itemId: id,
                 itemName: object.data.itemSettings.itemId
                     .split('_')
                     .splice(1)

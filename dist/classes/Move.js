@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const pogo_protos_1 = require("pogo-protos");
 const Masterfile_1 = __importDefault(require("./Masterfile"));
 class Moves extends Masterfile_1.default {
     constructor() {
@@ -10,12 +11,12 @@ class Moves extends Masterfile_1.default {
         this.parsedMoves = {};
     }
     protoMoves() {
-        const MoveArray = Object.keys(this.MovesList).map(i => i);
+        const MoveArray = Object.keys(pogo_protos_1.Rpc.HoloPokemonMove).map(i => i);
         for (let i = 0; i < MoveArray.length; i += 1) {
-            const id = this.MovesList[MoveArray[i]];
+            const id = pogo_protos_1.Rpc.HoloPokemonMove[MoveArray[i]];
             if (!this.parsedMoves[id]) {
                 this.parsedMoves[id] = {
-                    moveId: this.MovesList[MoveArray[i]],
+                    moveId: pogo_protos_1.Rpc.HoloPokemonMove[MoveArray[i]],
                     moveName: this.capitalize(MoveArray[i].replace('_FAST', '')),
                     proto: MoveArray[i],
                 };
@@ -25,12 +26,12 @@ class Moves extends Masterfile_1.default {
     addMove(object) {
         const { templateId, data: { combatMove }, } = object;
         try {
-            const id = this.MovesList[templateId.substr(18)];
+            const id = pogo_protos_1.Rpc.HoloPokemonMove[templateId.substr(18)];
             this.parsedMoves[id] = {
                 moveId: id,
                 moveName: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
                 proto: templateId.substr(18),
-                type: this.TypesList[combatMove.type],
+                type: pogo_protos_1.Rpc.HoloPokemonType[combatMove.type],
                 power: combatMove.power,
             };
         }

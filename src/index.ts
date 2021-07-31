@@ -1,8 +1,5 @@
 import * as fs from 'fs'
 import extend from 'extend'
-import Fetch from 'node-fetch'
-
-import { Input, FullTemplate } from './typings/inputs'
 
 import Pokemon from './classes/Pokemon'
 import Items from './classes/Item'
@@ -14,47 +11,37 @@ import Weather from './classes/Weather'
 import Translations from './classes/Translations'
 import base from './data/base.json'
 
-const fetch = async (url: string) => {
-  return new Promise(resolve => {
-    Fetch(url)
-      .then(res => res.json())
-      .then(json => {
-        return resolve(json)
-      })
-  })
-}
+import { Input, FullTemplate } from './typings/inputs'
+import { FinalResult } from './typings/dataTypes'
+import { InvasionInfo } from './typings/pogoinfo'
+import { NiaMfObj } from './typings/general'
 
 export async function generate({ template, safe, url, test }: Input = {}) {
-  const start: any = new Date()
-  let parseTime: any = new Date()
-  const final: any = {}
+  const start: number = new Date().getTime()
+  const final: FinalResult = {}
   const urlToFetch =
     url || safe
       ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest.json'
       : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
-  const data: any = await fetch(urlToFetch)
+
   const merged: FullTemplate = {}
   extend(true, merged, base, template)
 
-  if (test) {
-    const checkpoint: any = new Date()
-    console.log('Masterfile fetched in', checkpoint - parseTime)
-    parseTime = new Date()
-  }
+  const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged
+  const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en'
+
+  const AllPokemon = new Pokemon(pokemon.options)
+  const AllItems = new Items()
+  const AllMoves = new Moves()
+  const AllQuests = new Quests()
+  const AllInvasions = new Invasions(invasions.options)
+  const AllTypes = new Types()
+  const AllWeather = new Weather()
+  const AllTranslations = new Translations(translations.options)
+
+  const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
 
   if (!safe) {
-    const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged
-    const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en'
-
-    const AllPokemon = new Pokemon(pokemon.options)
-    const AllItems = new Items()
-    const AllMoves = new Moves()
-    const AllQuests = new Quests()
-    const AllInvasions = new Invasions(invasions.options)
-    const AllTypes = new Types()
-    const AllWeather = new Weather()
-    const AllTranslations = new Translations(translations.options)
-
     for (let i = 0; i < data.length; i += 1) {
       if (data[i]) {
         if (data[i].data.formSettings) {
@@ -73,13 +60,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
       }
     }
 
-    if (test) {
-      const checkpoint: any = new Date()
-      console.log('Masterfile parsed in', checkpoint - parseTime)
-      parseTime = new Date()
-    }
     AllTypes.buildTypes()
-
     if (pokemon.enabled) {
       if (pokemon.options.includeProtos) {
         AllPokemon.generateProtoForms()
@@ -107,13 +88,10 @@ export async function generate({ template, safe, url, test }: Input = {}) {
       AllWeather.buildWeather()
     }
     if (invasions.enabled) {
-      const invasionData: any = await fetch('https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json')
+      const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
+        'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
+      )
       AllInvasions.invasions(invasionData)
-    }
-    if (test) {
-      const checkpoint: any = new Date()
-      console.log('Invasions fetched & parsed in', checkpoint - parseTime)
-      parseTime = new Date()
     }
 
     if (translations.enabled) {
@@ -121,7 +99,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
         Object.entries(translations.locales).map(async langCode => {
           const [localeCode, bool] = langCode
           if (bool) {
-            await AllTranslations.fetchTranslations(localeCode, fetch)
+            await AllTranslations.fetchTranslations(localeCode)
             if (translations.template.pokemon) {
               AllTranslations.pokemon(
                 localeCode,
@@ -168,6 +146,9 @@ export async function generate({ template, safe, url, test }: Input = {}) {
         types: localTypes,
         forms: localForms,
       })
+      if (pokemon.options.includeSeparateForms) {
+        final.forms = localForms
+      }
     }
     if (types.enabled) {
       final.types = AllTypes.templater(localTypes, types)
@@ -181,7 +162,7 @@ export async function generate({ template, safe, url, test }: Input = {}) {
       })
     }
     if (questRewardTypes.enabled) {
-      final.questRewards = AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
+      final.questRewardTypes = AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
     }
     if (questConditions.enabled) {
       final.questConditions = AllQuests.templater(AllQuests.parsedConditions, questConditions)
@@ -196,15 +177,10 @@ export async function generate({ template, safe, url, test }: Input = {}) {
       final.translations = AllTranslations.parsedTranslations
     }
   }
-  if (test) {
-    const checkpoint: any = new Date()
-    console.log('Templating completed in', checkpoint - parseTime)
-  }
 
   if (test) {
     fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => {})
-    const end: any = new Date()
-    console.log('Generated in ', end - start)
+    console.log('Generated in ', new Date().getTime() - start)
   } else {
     return safe ? data : final
   }

@@ -1,31 +1,23 @@
-import { AllForms, AllPokemon, TranslationCategories } from '../typings/dataTypes';
+import { AllForms, AllPokemon, FinalResult, TranslationKeys } from '../typings/dataTypes';
 import { Options } from '../typings/inputs';
 import Masterfile from './Masterfile';
 export default class Translations extends Masterfile {
-    rawTranslations: {
-        [key: string]: {
-            [key: string]: string;
-        };
-    };
+    options: Options;
+    rawTranslations: TranslationKeys;
     manualTranslations: {
-        [key: string]: TranslationCategories;
+        [key: string]: TranslationKeys;
     };
     parsedTranslations: {
-        [key: string]: TranslationCategories;
+        [key: string]: TranslationKeys;
     };
-    options: Options;
     codes: {
         [id: string]: string;
     };
-    masterfile: {
-        [category: string]: {
-            [id: string]: any;
-        };
-    };
+    masterfile: FinalResult;
     constructor(options: Options);
-    fetchTranslations(locale: string, fetch: any): Promise<void>;
-    mergeManualTranslations(locale: string, enFallback: TranslationCategories): void;
-    translateMasterfile(data: any, locale: string): void;
+    fetchTranslations(locale: string): Promise<void>;
+    mergeManualTranslations(locale: string, enFallback: TranslationKeys): void;
+    translateMasterfile(data: FinalResult, locale: string): void;
     pokemon(locale: string, subItems: {
         [id: string]: boolean;
     }, pokemon: AllPokemon, forms: AllForms): void;

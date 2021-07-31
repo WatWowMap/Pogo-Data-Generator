@@ -8,17 +8,16 @@ const Masterfile_1 = __importDefault(require("./Masterfile"));
 class Weather extends Masterfile_1.default {
     constructor() {
         super();
-        this.WeatherList = pogo_protos_1.Rpc.GameplayWeatherProto.WeatherCondition;
         this.rawWeather = {};
         this.parsedWeather = {};
     }
     buildWeather() {
-        Object.keys(this.WeatherList).forEach(id => {
-            const weatherId = this.WeatherList[id];
-            this.parsedWeather[this.WeatherList[id]] = {
-                weatherId,
-                weatherName: this.capitalize(id),
-                proto: id,
+        Object.entries(pogo_protos_1.Rpc.GameplayWeatherProto.WeatherCondition).forEach(proto => {
+            const [name, id] = proto;
+            this.parsedWeather[id] = {
+                weatherId: +id,
+                weatherName: this.capitalize(name),
+                proto: name,
                 types: this.rawWeather[id] || []
             };
         });
@@ -26,7 +25,7 @@ class Weather extends Masterfile_1.default {
     addWeather(object) {
         const { data: { weatherAffinities: { weatherCondition, pokemonType }, }, } = object;
         this.rawWeather[weatherCondition] = pokemonType.map(type => {
-            return this.TypesList[type];
+            return pogo_protos_1.Rpc.HoloPokemonType[type];
         });
     }
 }

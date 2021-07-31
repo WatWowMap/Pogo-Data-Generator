@@ -1,2 +1,4 @@
 import { Input } from './typings/inputs';
-export declare function generate({ template, safe, url, test }?: Input): Promise<any>;
+import { FinalResult } from './typings/dataTypes';
+import { NiaMfObj } from './typings/general';
+export declare function generate({ template, safe, url, test }?: Input): Promise<FinalResult | NiaMfObj[]>;
