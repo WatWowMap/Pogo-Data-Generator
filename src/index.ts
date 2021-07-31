@@ -16,13 +16,14 @@ import { FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 
-export async function generate({ template, safe, url, test }: Input = {}) {
+export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const start: number = new Date().getTime()
   const final: FinalResult = {}
   const urlToFetch =
-    url || safe
-      ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest.json'
-      : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
+    url ||
+    (safe
+      ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
+      : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json')
 
   const merged: FullTemplate = {}
   extend(true, merged, base, template)
@@ -96,89 +97,98 @@ export async function generate({ template, safe, url, test }: Input = {}) {
       )
       AllInvasions.invasions(invasionData)
     }
-
-    if (translations.enabled) {
-      await Promise.all(
-        Object.entries(translations.locales).map(async langCode => {
-          const [localeCode, bool] = langCode
-          if (bool) {
-            await AllTranslations.fetchTranslations(localeCode)
-            if (translations.template.pokemon) {
-              AllTranslations.pokemon(
-                localeCode,
-                translations.template.pokemon,
-                AllPokemon.parsedPokemon,
-                AllPokemon.parsedForms
-              )
-            }
-            if (translations.template.moves) {
-              AllTranslations.moves(localeCode)
-            }
-            if (translations.template.items) {
-              AllTranslations.items(localeCode)
-            }
-            AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en)
+  }
+  if (translations.enabled) {
+    await Promise.all(
+      Object.entries(translations.locales).map(async langCode => {
+        const [localeCode, bool] = langCode
+        if (bool) {
+          await AllTranslations.fetchTranslations(localeCode)
+          if (translations.template.pokemon) {
+            AllTranslations.pokemon(
+              localeCode,
+              translations.template.pokemon,
+              AllPokemon.parsedPokemon,
+              AllPokemon.parsedForms
+            )
           }
-        })
+          if (translations.template.moves) {
+            AllTranslations.moves(localeCode)
+          }
+          if (translations.template.items) {
+            AllTranslations.items(localeCode)
+          }
+          AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en)
+        }
+      })
+    )
+    if (localeCheck) {
+      AllTranslations.translateMasterfile(
+        {
+          pokemon: AllPokemon.parsedPokemon,
+          moves: AllMoves.parsedMoves,
+          items: AllItems.parsedItems,
+          forms: AllPokemon.parsedForms,
+          types: AllTypes.parsedTypes,
+          weather: AllWeather.parsedWeather,
+        },
+        translations.options.masterfileLocale
       )
-      if (localeCheck) {
-        AllTranslations.translateMasterfile(
-          {
-            pokemon: AllPokemon.parsedPokemon,
-            moves: AllMoves.parsedMoves,
-            items: AllItems.parsedItems,
-            forms: AllPokemon.parsedForms,
-            types: AllTypes.parsedTypes,
-            weather: AllWeather.parsedWeather,
-          },
-          translations.options.masterfileLocale
-        )
-      }
     }
-    const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokemon
-    const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes
-    const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves
-    const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms
-    const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems
-    const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather
+  }
+  const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokemon
+  const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes
+  const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves
+  const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms
+  const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems
+  const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather
 
-    if (pokemon.enabled) {
-      final.pokemon = AllPokemon.templater(localPokemon, pokemon, {
-        quickMoves: localMoves,
-        chargedMoves: localMoves,
-        types: localTypes,
-        forms: localForms,
-      })
-      if (pokemon.options.includeRawForms) {
-        final.forms = localForms
-      }
+  if (pokemon.enabled) {
+    final.pokemon = raw
+      ? localPokemon
+      : AllPokemon.templater(localPokemon, pokemon, {
+          quickMoves: localMoves,
+          chargedMoves: localMoves,
+          types: localTypes,
+          forms: localForms,
+        })
+    if (pokemon.options.includeRawForms || raw) {
+      final.forms = localForms
     }
-    if (types.enabled) {
-      final.types = AllTypes.templater(localTypes, types)
-    }
-    if (items.enabled) {
-      final.items = AllItems.templater(localItems, items)
-    }
-    if (moves.enabled) {
-      final.moves = AllMoves.templater(localMoves, moves, {
-        type: localTypes,
-      })
-    }
-    if (questRewardTypes.enabled) {
-      final.questRewardTypes = AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
-    }
-    if (questConditions.enabled) {
-      final.questConditions = AllQuests.templater(AllQuests.parsedConditions, questConditions)
-    }
-    if (invasions.enabled) {
-      final.invasions = AllInvasions.templater(AllInvasions.parsedInvasions, invasions)
-    }
-    if (weather.enabled) {
-      final.weather = AllWeather.templater(localWeather, weather, { types: localTypes })
-    }
-    if (translations.enabled) {
-      final.translations = AllTranslations.parsedTranslations
-    }
+  }
+  if (types.enabled) {
+    final.types = raw ? localTypes : AllTypes.templater(localTypes, types)
+  }
+  if (items.enabled) {
+    final.items = raw ? localItems : AllItems.templater(localItems, items)
+  }
+  if (moves.enabled) {
+    final.moves = raw
+      ? localMoves
+      : AllMoves.templater(localMoves, moves, {
+          type: localTypes,
+        })
+  }
+  if (questRewardTypes.enabled) {
+    final.questRewardTypes = raw
+      ? AllQuests.parsedRewardTypes
+      : AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
+  }
+  if (questConditions.enabled) {
+    final.questConditions = raw
+      ? AllQuests.parsedConditions
+      : AllQuests.templater(AllQuests.parsedConditions, questConditions)
+  }
+  if (invasions.enabled) {
+    final.invasions = raw
+      ? AllInvasions.parsedInvasions
+      : AllInvasions.templater(AllInvasions.parsedInvasions, invasions)
+  }
+  if (weather.enabled) {
+    final.weather = raw ? localWeather : AllWeather.templater(localWeather, weather, { types: localTypes })
+  }
+  if (translations.enabled) {
+    final.translations = AllTranslations.parsedTranslations
   }
 
   if (test) {

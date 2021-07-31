@@ -144,6 +144,7 @@ export interface Input {
     url?: string;
     template?: FullTemplate;
     test?: boolean;
+    raw?: boolean;
 }
 export interface FullTemplate {
     pokemon?: {
