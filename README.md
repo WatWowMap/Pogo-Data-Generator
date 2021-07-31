@@ -43,6 +43,12 @@ const template = {
         formName: 'name',
         pokemonName: 'name',
       },
+      customChildObj: {
+        // Puts specific fields into a custom child obj. Attack, Defense, Stamina will now be properties of the "stats" parent object.
+        attack: "stats",
+        defense: "stats",
+        stamina: "stats",
+      },
       genderString: true, // Returns "Male"/"Female" instead of 1/2
       snake_case: true, // Converts any and all camelCase (including custom) keys to snake case
       unsetDefaultForm: false, // If unset form is currently in use, this will become the default form
@@ -50,7 +56,8 @@ const template = {
       skipForms: [], // Can be used to skip forms, such as Shadow/Purified
       includeProtos: true, // Adds unreleased forms from the protos
       includeEstimatedPokemon: true, // Includes mega info for Mega Evos that do not officially exist in Pogo
-      includeSeparateForms: false, // Returns a "forms" obj with all individual forms
+      processFormsSeparately: false, // Full Pokemon obj for each form
+      includeRawForms: false, // Returns a "forms" obj with all individual forms
     },
     template: {
       pokedexId: true,

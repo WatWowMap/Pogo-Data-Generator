@@ -33,4 +33,5 @@ export default class Pokemon extends Masterfile {
     megaInfo(): void;
     futureMegas(): void;
     littleCup(): void;
+    makeFormsSeparate(): void;
 }

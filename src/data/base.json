@@ -13,23 +13,25 @@
         "chargedMoves": false
       },
       "customFields": {
-        "formId": "form",
         "evoId": "pokemon",
         "formName": "name",
         "pokemonName": "name"
       },
-      "genderString": true,
+      "customChildObj": {},
+      "genderString": false,
       "snake_case": true,
       "unsetDefaultForm": false,
       "skipNormalIfUnset": false,
       "skipForms": [],
       "includeProtos": true,
       "includeEstimatedPokemon": true,
-      "includeSeparateForms": false
+      "processFormsSeparately": false,
+      "includeRawForms": false
     },
     "template": {
       "pokedexId": true,
       "pokemonName": true,
+      "formId": false,
       "forms": {
         "formId": false,
         "formName": true,

@@ -143,7 +143,7 @@ export default class Pokemon extends Masterfile {
         const id = Rpc.HoloPokemonId[branch.evolution as PokemonIdProto]
         evolutions.push({
           evoId: id,
-          formId: Rpc.PokemonDisplayProto.Form[branch.form as FormProto],
+          formId: Rpc.PokemonDisplayProto.Form[branch.form as FormProto] || 0,
           genderRequirement: this.options.genderString
             ? this.genders[Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto]]
             : Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto],
@@ -466,5 +466,21 @@ export default class Pokemon extends Masterfile {
         pokemon.little = true
       }
     }
+  }
+
+  makeFormsSeparate() {
+    const parsed: AllPokemon = {}
+    Object.values(this.parsedPokemon).forEach(pokemon => {
+      if (pokemon.forms) {
+        pokemon.forms.forEach(form => {
+          parsed[`${pokemon.pokedexId}_${form}`] = {
+            ...pokemon,
+            ...this.parsedForms[form],
+            forms: [form],
+          }
+        })
+      }
+    })
+    this.parsedPokemon = parsed
   }
 }

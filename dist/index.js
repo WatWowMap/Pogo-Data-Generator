@@ -88,6 +88,9 @@ async function generate({ template, safe, url, test } = {}) {
             if (pokemon.template.little) {
                 AllPokemon.littleCup();
             }
+            if (pokemon.options.processFormsSeparately) {
+                AllPokemon.makeFormsSeparate();
+            }
         }
         if (questRewardTypes.enabled) {
             AllQuests.addQuest(true);
@@ -148,7 +151,7 @@ async function generate({ template, safe, url, test } = {}) {
                 types: localTypes,
                 forms: localForms,
             });
-            if (pokemon.options.includeSeparateForms) {
+            if (pokemon.options.includeRawForms) {
                 final.forms = localForms;
             }
         }
