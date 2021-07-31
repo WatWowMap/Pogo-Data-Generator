@@ -34,12 +34,13 @@ const Types_1 = __importDefault(require("./classes/Types"));
 const Weather_1 = __importDefault(require("./classes/Weather"));
 const Translations_1 = __importDefault(require("./classes/Translations"));
 const base_json_1 = __importDefault(require("./data/base.json"));
-async function generate({ template, safe, url, test } = {}) {
+async function generate({ template, safe, url, test, raw } = {}) {
     const start = new Date().getTime();
     const final = {};
-    const urlToFetch = url || safe
-        ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest.json'
-        : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json';
+    const urlToFetch = url ||
+        (safe
+            ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
+            : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json');
     const merged = {};
     extend_1.default(true, merged, base_json_1.default, template);
     const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged;
@@ -110,40 +111,52 @@ async function generate({ template, safe, url, test } = {}) {
             const invasionData = await AllInvasions.fetch('https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json');
             AllInvasions.invasions(invasionData);
         }
-        if (translations.enabled) {
-            await Promise.all(Object.entries(translations.locales).map(async (langCode) => {
-                const [localeCode, bool] = langCode;
-                if (bool) {
-                    await AllTranslations.fetchTranslations(localeCode);
-                    if (translations.template.pokemon) {
-                        AllTranslations.pokemon(localeCode, translations.template.pokemon, AllPokemon.parsedPokemon, AllPokemon.parsedForms);
-                    }
-                    if (translations.template.moves) {
-                        AllTranslations.moves(localeCode);
-                    }
-                    if (translations.template.items) {
-                        AllTranslations.items(localeCode);
-                    }
-                    AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en);
+    }
+    if (translations.enabled) {
+        await Promise.all(Object.entries(translations.locales).map(async (langCode) => {
+            const [localeCode, bool] = langCode;
+            if (bool) {
+                await AllTranslations.fetchTranslations(localeCode);
+                if (translations.template.pokemon) {
+                    AllTranslations.pokemon(localeCode, translations.template.pokemon, AllPokemon.parsedPokemon, AllPokemon.parsedForms);
                 }
-            }));
-            if (localeCheck) {
-                AllTranslations.translateMasterfile({
-                    pokemon: AllPokemon.parsedPokemon,
-                    moves: AllMoves.parsedMoves,
-                    items: AllItems.parsedItems,
-                    forms: AllPokemon.parsedForms,
-                    types: AllTypes.parsedTypes,
-                    weather: AllWeather.parsedWeather,
-                }, translations.options.masterfileLocale);
+                if (translations.template.moves) {
+                    AllTranslations.moves(localeCode);
+                }
+                if (translations.template.items) {
+                    AllTranslations.items(localeCode);
+                }
+                AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en);
             }
+        }));
+        if (localeCheck) {
+            AllTranslations.translateMasterfile({
+                pokemon: AllPokemon.parsedPokemon,
+                moves: AllMoves.parsedMoves,
+                items: AllItems.parsedItems,
+                forms: AllPokemon.parsedForms,
+                types: AllTypes.parsedTypes,
+                weather: AllWeather.parsedWeather,
+            }, translations.options.masterfileLocale);
         }
-        const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokemon;
-        const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes;
-        const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves;
-        const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms;
-        const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems;
-        const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather;
+    }
+    const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokemon;
+    const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes;
+    const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves;
+    const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms;
+    const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems;
+    const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather;
+    if (raw) {
+        final.pokemon = localPokemon;
+        final.forms = localForms;
+        final.types = localTypes;
+        final.moves = localMoves;
+        final.items = localItems;
+        final.weather = localWeather;
+        final.questRewardTypes = AllQuests.parsedRewardTypes;
+        final.questConditions = AllQuests.parsedConditions;
+    }
+    else {
         if (pokemon.enabled) {
             final.pokemon = AllPokemon.templater(localPokemon, pokemon, {
                 quickMoves: localMoves,
