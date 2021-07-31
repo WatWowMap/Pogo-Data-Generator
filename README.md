@@ -1,6 +1,14 @@
-# pogo-masterfile-generator
+# Pogo Data Generator
 
-Generates templated data for Pokemon GO related projects.
+Generates templated data for Pokemon GO related projects, including:
+- Pokemon
+- Forms
+- Moves
+- Items
+- Team Rocket Invasions
+- Pokemon Types
+- Weather
+- Translations
 
 ## Installing/Usage
 
