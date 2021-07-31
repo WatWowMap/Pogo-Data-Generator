@@ -1,0 +1,10 @@
+import { Rpc } from 'pogo-protos';
+export declare type WeatherProto = keyof typeof Rpc.GameplayWeatherProto.WeatherCondition;
+export declare type TypeProto = keyof typeof Rpc.HoloPokemonType;
+export declare type PokemonIdProto = keyof typeof Rpc.HoloPokemonId;
+export declare type MoveProto = keyof typeof Rpc.HoloPokemonMove;
+export declare type FormProto = keyof typeof Rpc.PokemonDisplayProto.Form;
+export declare type GenderProto = keyof typeof Rpc.PokemonDisplayProto.Gender;
+export declare type FamilyProto = keyof typeof Rpc.HoloPokemonFamilyId;
+export declare type MegaProto = keyof typeof Rpc.HoloTemporaryEvolutionId;
+export declare type ItemProto = keyof typeof Rpc.Item;

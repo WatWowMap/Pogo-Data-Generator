@@ -1,30 +1,83 @@
-export interface Pokemon {
-  [index: string]: SinglePokemon
+export interface AllWeather {
+  [id: string]: {
+    weatherId: number
+    weatherName: string
+    proto: string
+    types: number[]
+  }
 }
 
-export interface SinglePokemon {
-  name?: string
+export interface AllTypes {
+  [id: string]: { typeId: number; typeName: string }
+}
+
+export interface AllInvasions {
+  [id: string]: SingleInvasion
+}
+
+type SingleInvasion = {
+  id: number
+  type: string
+  gender: number | string
+  grunt: string
+  secondReward?: boolean
+  encounters?: InvasionTeam[]
+}
+
+type InvasionTeam = {
+  id?: number
   formId?: number
+  position?: string
+}
+
+export interface AllMoves {
+  [id: string]: SingleMove
+}
+
+export interface SingleMove {
+  moveId: number
+  moveName: string
   proto?: string
-  isCostume?: boolean
-  forms?: {
-    [index: number]: Forms
+  type?: number
+  power?: number
+}
+
+export interface AllItems {
+  [id: string]: {
+    itemId: number
+    itemName: string
+    proto: string
+    type: string
+    category: string
+    minTrainerLevel: number
   }
-  defaultFormId?: number
+}
+
+export interface AllQuests {
+  [id: string]: {
+    id: number
+    proto: string
+    formatted: string
+  }
+}
+
+export interface AllPokemon {
+  [id: string]: SinglePokemon
+}
+
+export interface AllForms {
+  [id: string]: SingleForm
+}
+
+export interface SinglePokemon extends SingleForm {
   pokedexId?: number
+  pokemonName?: string
+  forms?: number[]
+  defaultFormId?: number
   genId?: number
   generation?: string
-  types?: string[]
-  attack?: number
-  defense?: number
-  stamina?: number
-  height?: number
-  weight?: number
   fleeRate?: number
   captureRate?: number
-  quickMoves?: string[]
-  chargedMoves?: string[]
-  family?: number
   legendary?: boolean
   mythic?: boolean
   buddyGroupNumber?: number
@@ -32,87 +85,55 @@ export interface SinglePokemon {
   thirdMoveStardust?: number
   thirdMoveCandy?: number
   gymDefenderEligible?: boolean
-  little?: boolean
-  evolutions?: object[]
-  tempEvolutions?: {
-    [id: number]: TempEvolutions
-  }
 }
 
-export interface Invasion {
-  [index: string]: SingleInvasion
-}
-
-export interface SingleInvasion {
-  id?: number
-  type?: string
-  gender?: number
-  grunt?: string
-  secondReward?: boolean
-  encounters?: {
-    [id: string]: number[]
-  }
-  little?: boolean
-}
-
-export interface Move {
-  [index: string]: SingleMove
-}
-
-export interface SingleMove {
-  id: number
-  name: string
-  proto: string
-  type: string
-  power: number
-  little?: boolean
-}
-
-export interface Item {
-  [index: string]: SingleItem
-}
-
-export interface SingleItem {
-  id: number
-  name: string
-  proto: string
-  type: string
-  category: string
-  minTrainerLevel: number
-  little?: boolean
-}
-
-export interface Quest {
-  [index: string]: SingleQuest
-}
-
-export interface SingleQuest {
-  id: number
-  proto: string
-  formatted: string
-  little?: boolean
-}
-
-export interface Forms {
-  name?: string
+interface SingleForm extends BaseStats {
+  formName?: string
   proto?: string
   formId?: number
   isCostume?: boolean
+  evolutions?: Evolutions[]
+  tempEvolutions?: TempEvolutions[]
+  quickMoves?: number[]
+  chargedMoves?: number[]
+  family?: number
+  little?: boolean
 }
 
-export interface Unreleased {
-  attack?: number
-  defense?: number
-  stamina?: number
-  types?: string[]
+export interface TempEvolutions extends BaseStats {
+  tempEvoId: number
   unreleased?: boolean
 }
 
-export interface TempEvolutions {
+export interface Evolutions {
+  evoId?: number
+  formId?: number
+  genderRequirement?: number | string
+}
+
+type BaseStats = {
   attack?: number
   defense?: number
   stamina?: number
   height?: number
   weight?: number
-  types?: string[]
+  types?: number[]
+}
+
+export interface TranslationKeys {
+  [category: string]: { [key: string]: string }
+}
+
+export interface FinalResult {
+  [category: string]: any
+  pokemon?: AllPokemon
+  forms?: AllForms
+  items?: AllItems
+  moves?: AllMoves
+  types?: AllTypes
+  weather?: AllWeather
+  questRewardTypes?: AllQuests
+  questConditions?: AllQuests
+  invasions?: AllInvasions
+  translations?: { [locale: string]: TranslationKeys }
 }

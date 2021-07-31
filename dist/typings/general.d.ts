@@ -1,40 +1,24 @@
-import { Pokemon, Move, Item, Quest, Invasion, Forms } from './dataTypes';
+import { AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions } from './dataTypes';
 export interface FinalData {
-    [index: string]: any;
-    pokemon?: Pokemon;
-    moves?: Move;
-    items?: Item;
-    questRewardTypes?: Quest;
-    questConditions?: Quest;
-    invasions?: Invasion;
-}
-export interface KeyRef {
-    [index: number]: string;
-}
-export interface TempForms {
-    [id: number]: {
-        forms?: {
-            [id: number]: Forms;
-        };
-        defaultFormId?: number;
-    };
-}
-export interface MegaStats {
-    [index: number]: GuessedMega[];
+    pokemon?: AllPokemon;
+    moves?: AllMoves;
+    items?: AllItems;
+    questRewardTypes?: AllQuests;
+    questConditions?: AllQuests;
+    invasions?: AllInvasions;
 }
 export interface GuessedMega {
     attack?: number;
     defense?: number;
     stamina?: number;
-    tempEvoId?: any;
+    tempEvoId?: number;
     type1?: string;
     type2?: string;
 }
 export interface Generation {
-    [index: string]: {
+    [id: string]: {
         name: string;
-        start: number;
-        end: number;
+        range: number[];
     };
 }
 export interface NiaMfObj {
@@ -78,7 +62,10 @@ export interface NiaMfObj {
         };
         formSettings?: {
             pokemon: string;
-            forms: FormType[];
+            forms: {
+                form: string;
+                isCostume: boolean;
+            }[];
         };
         combatMove?: {
             uniqueId: string;
@@ -93,6 +80,10 @@ export interface NiaMfObj {
         };
         combatLeague: {
             bannedPokemon: string[];
+        };
+        weatherAffinities?: {
+            weatherCondition: string;
+            pokemonType: string[];
         };
     };
 }
@@ -115,8 +106,3 @@ export interface EvoBranch {
     temporaryEvolution: string;
     genderRequirement: string;
 }
-interface FormType {
-    form: string;
-    isCostume: boolean;
-}
-export {};

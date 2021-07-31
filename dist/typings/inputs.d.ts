@@ -1,8 +1,20 @@
 export interface Options {
-    [index: string]: any;
-    key: string;
-    formsKey?: string;
-    keyJoiner: string;
+    keys: {
+        keyJoiner: string;
+        [key: string]: string;
+    };
+    customFields: {
+        [key: string]: string;
+    };
+    prefix?: {
+        [key: string]: string;
+    };
+    questVariables?: {
+        prefix: string;
+        suffix: string;
+    };
+    genderString?: boolean;
+    snake_case?: boolean;
     unsetDefaultForm?: boolean;
     skipNormalIfUnset?: boolean;
     skipForms?: string[];
@@ -10,123 +22,173 @@ export interface Options {
     includeEstimatedPokemon?: boolean;
     minTrainerLevel?: number;
     placeholderData?: boolean;
+    masterfileLocale?: string;
+    manualTranslations?: boolean;
+    mergeCategories?: boolean;
+    includeSeparateForms?: boolean;
 }
-export interface PokemonTempOpt {
-    enabled: boolean;
-    options: Options;
-    template: PokemonTemplate;
-}
-export interface PokemonTemplate {
-    name: boolean;
-    forms: {
-        formId: boolean;
-        name: boolean;
-        proto: boolean;
-        isCostume: boolean;
-        evolutions: boolean;
-        tempEvolutions: boolean;
-        attack: boolean | string;
-        defense: boolean | string;
-        stamina: boolean | string;
-        height: boolean | string;
-        weight: boolean | string;
-        types: boolean | string;
-        quickMoves: boolean | string;
-        chargedMoves: boolean | string;
-        family: boolean | string;
-    };
-    defaultFormId: boolean;
+interface PokemonTemplate extends Form {
     pokedexId: boolean;
+    pokemonName: boolean;
+    form: Form;
+    defaultFormId: boolean;
     genId: boolean;
     generation: boolean;
-    types: boolean;
+    fleeRate: boolean;
+    captureRate: boolean;
+    legendary: boolean;
+    mythic: boolean;
+    buddyGroupNumber: boolean;
+    kmBuddyDistance: boolean;
+    thirdMoveStardust: boolean;
+    thirdMoveCandy: boolean;
+    gymDefenderEligible: boolean;
+}
+interface Form extends BaseStats {
+    formName: boolean;
+    proto: boolean;
+    formId: boolean;
+    isCostume: boolean;
+    evolutions: {
+        evoId: boolean;
+        formId: boolean;
+        genderRequirement: boolean;
+    };
+    tempEvolutions: TempEvolution;
+    quickMoves: Move;
+    chargedMoves: Move;
+    family: boolean;
+    little: boolean;
+}
+declare type Move = {
+    moveId: boolean;
+    name: boolean;
+    typeId: boolean;
+    type: boolean;
+};
+interface TempEvolution extends BaseStats {
+    tempEvoId: boolean;
+    unreleased: boolean;
+}
+declare type BaseStats = {
     attack: boolean;
     defense: boolean;
     stamina: boolean;
     height: boolean;
     weight: boolean;
-    fleeRate: boolean;
-    captureRate: boolean;
-    quickMoves: boolean;
-    chargedMoves: boolean;
-    tempEvolutions: boolean;
-    evolutions: boolean;
-    legendary: boolean;
-    mythic: boolean;
-    buddyGroupNumber: boolean;
-    buddyDistance: boolean;
-    thirdMoveStardust: boolean;
-    thirdMoveCandy: boolean;
-    gymDefenderEligible: boolean;
-    family: boolean;
-    little: boolean;
-}
-export interface MoveTempOpt {
+    types: {
+        typeId: boolean;
+        typeName: boolean;
+    };
+};
+export interface TypesTempOpt {
     enabled: boolean;
     options: Options;
-    template: MoveTemplate;
+    template: TypesTemplate;
 }
-export interface MoveTemplate {
+declare type TypesTemplate = {
+    name: boolean;
+};
+declare type MoveTemplate = {
     id: boolean;
     name: boolean;
     proto: boolean;
     type: boolean;
     power: boolean;
-}
-export interface ItemTempOpt {
-    enabled: boolean;
-    options: Options;
-    template: ItemTemplate;
-}
-export interface ItemTemplate {
+};
+declare type ItemTemplate = {
     id: boolean;
     name: boolean;
     proto: boolean;
     type: boolean;
     category: boolean;
     minTrainerLevel: boolean;
-}
-export interface QuestTempOpt {
-    enabled: boolean;
-    options: Options;
-    template: QuestTemplate;
-}
-export interface QuestTemplate {
+};
+declare type QuestTemplate = {
     id: boolean;
     proto: boolean;
     formatted: boolean;
-}
-export interface InvasionTempOpt {
-    enabled: boolean;
-    options: Options;
-    template: InvasionTemplate;
-}
-export interface InvasionTemplate {
+};
+declare type InvasionTemplate = {
     id?: boolean;
     type?: boolean;
     gender?: boolean;
     grunt?: boolean;
     secondReward?: boolean;
     encounters?: boolean;
-}
+};
+declare type WeatherTemplate = {
+    weatherId: boolean;
+    weatherName: boolean;
+    proto: boolean;
+    types: {
+        typeId: boolean;
+        typeName: boolean;
+    };
+};
+declare type TranslationsTemplate = {
+    pokemon: {
+        names: boolean;
+        forms: boolean;
+        descriptions: boolean;
+    };
+    moves: boolean;
+    items: boolean;
+};
 export interface Input {
     safe?: boolean;
     url?: string;
-    template?: {
-        pokemon?: PokemonTempOpt;
-        move?: MoveTempOpt;
-        item?: ItemTempOpt;
-        questConditions?: QuestTempOpt;
-        questRewardTypes?: QuestTempOpt;
-        invasion?: InvasionTempOpt;
-    };
+    template?: FullTemplate;
     test?: boolean;
 }
 export interface FullTemplate {
-    pokemon?: PokemonTempOpt;
-    moves?: MoveTempOpt;
-    items?: ItemTempOpt;
-    questConditions?: QuestTempOpt;
-    questRewardTypes?: QuestTempOpt;
-    invasions?: InvasionTempOpt;
+    pokemon?: {
+        enabled: boolean;
+        options: Options;
+        template: PokemonTemplate;
+    };
+    types?: {
+        enabled: boolean;
+        options: Options;
+        template: TypesTemplate;
+    };
+    moves?: {
+        enabled: boolean;
+        options: Options;
+        template: MoveTemplate;
+    };
+    items?: {
+        enabled: boolean;
+        options: Options;
+        template: ItemTemplate;
+    };
+    questConditions?: {
+        enabled: boolean;
+        options: Options;
+        template: QuestTemplate;
+    };
+    questRewardTypes?: {
+        enabled: boolean;
+        options: Options;
+        template: QuestTemplate;
+    };
+    invasions?: {
+        enabled: boolean;
+        options: Options;
+        template: InvasionTemplate;
+    };
+    weather?: {
+        enabled: boolean;
+        options: Options;
+        template: WeatherTemplate;
+    };
+    translations?: {
+        enabled: boolean;
+        options: Options;
+        template: TranslationsTemplate;
+        locales: {
+            [code: string]: boolean;
+        };
+    };
 }
+export {};

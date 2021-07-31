@@ -1,4 +1,5 @@
 /node_modules/
 masterfile.json
+master-latest.json
 .prettierrc
 .DS_Store
