@@ -54,7 +54,7 @@ export default class Masterfile {
     const parseData = (fieldKey: string, fieldValue: any, templateChild: any) => {
       // turns integer references into values
       const isObj = options.keys[fieldKey]
-      const returnValue: any = isObj ? {} : []
+      let returnValue: any = isObj ? {} : []
 
       if (!Array.isArray(fieldValue)) {
         fieldValue = [fieldValue]
@@ -82,6 +82,9 @@ export default class Masterfile {
           }
         }
       })
+      if (options.processFormsSeparately && fieldKey === 'forms') {
+        returnValue = returnValue[0]
+      }
       // edge case for single move type
       return fieldKey === 'type' && !isObj ? returnValue[0] : returnValue
     }
@@ -100,7 +103,11 @@ export default class Masterfile {
           if (typeof subFieldValue === 'object') {
             returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey])
           } else {
-            returnedObj[customKey] = subFieldValue
+            if (options.customChildObj && options.customChildObj[subFieldKey]) {
+              customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
+            } else {
+              returnedObj[customKey] = subFieldValue
+            }
           }
         }
       })
@@ -110,6 +117,14 @@ export default class Masterfile {
       return returnedObj
     }
 
+    const customChildObj = (target: any, key: string, customKey: string, field: any) => {
+      const customObj = options.customChildObj[key]
+      if (!target[customObj]) {
+        target[customObj] = {}
+      }
+      target[customObj][customKey] = field
+    }
+
     Object.keys(data).forEach(id => {
       let parent: any = {}
       const mainKey = this.keyResolver('main', data[id], options)
@@ -117,13 +132,17 @@ export default class Masterfile {
         Object.entries(data[id]).forEach(field => {
           const [fieldKey, fieldValue] = field
 
-          if (template[fieldKey] && fieldValue !== undefined && fieldValue !== null) {
+          if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
             const customKey = this.keyFormatter(fieldKey, options)
 
             if (typeof fieldValue === 'object' || reference[fieldKey]) {
               parent[customKey] = parseData(fieldKey, fieldValue, template)
             } else {
-              parent[customKey] = fieldValue
+              if (options.customChildObj && options.customChildObj[fieldKey]) {
+                customChildObj(parent, fieldKey, customKey, fieldValue)
+              } else {
+                parent[customKey] = fieldValue
+              }
             }
           }
         })
@@ -163,9 +182,10 @@ export default class Masterfile {
           newKey = data[split[0]]
         } else {
           split.forEach((field: string) => {
-            newKey += data[field]
-              ? `${data[field].toString().replace(' ', options.keys.keyJoiner)}${options.keys.keyJoiner}`
-              : ''
+            newKey +=
+              data[field] || data[field] === 0
+                ? `${data[field].toString().replace(' ', options.keys.keyJoiner)}${options.keys.keyJoiner}`
+                : ''
           })
           if (newKey.endsWith(options.keys.keyJoiner)) {
             newKey = newKey.slice(0, -1)

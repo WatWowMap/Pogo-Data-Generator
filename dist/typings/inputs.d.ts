@@ -6,6 +6,9 @@ export interface Options {
     customFields: {
         [key: string]: string;
     };
+    customChildObj: {
+        [key: string]: string;
+    };
     prefix?: {
         [key: string]: string;
     };
@@ -25,7 +28,8 @@ export interface Options {
     masterfileLocale?: string;
     manualTranslations?: boolean;
     mergeCategories?: boolean;
-    includeSeparateForms?: boolean;
+    processFormsSeparately?: boolean;
+    includeRawForms?: boolean;
 }
 interface PokemonTemplate extends Form {
     pokedexId: boolean;
