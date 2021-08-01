@@ -1,11 +1,19 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
-  "keywords": ["pogo", "pokemon", "go", "data", "generator"],
-  "files": ["/dist"],
+  "keywords": [
+    "pogo",
+    "pokemon",
+    "go",
+    "data",
+    "generator"
+  ],
+  "files": [
+    "/dist"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -19,9 +27,7 @@
     "url": "https://github.com/WatWowMap/Pogo-Data-Generator/issues"
   },
   "dependencies": {
-    "@types/extend": "^3.0.1",
     "@types/node-fetch": "^2.5.12",
-    "extend": "^3.0.2",
     "node-fetch": "^2.6.1",
     "pogo-protos": "github:Furtif/pogo-protos"
   }

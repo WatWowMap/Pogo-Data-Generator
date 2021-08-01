@@ -14,7 +14,7 @@ class Item extends Masterfile_1.default {
     addItem(object) {
         try {
             const { data: { itemSettings: { itemId, itemType, category, dropTrainerLevel }, }, } = object;
-            if (dropTrainerLevel <= this.options.minTrainerLevel) {
+            if (!this.options.minTrainerLevel || dropTrainerLevel <= this.options.minTrainerLevel) {
                 const id = pogo_protos_1.Rpc.Item[itemId];
                 this.parsedItems[id] = {
                     itemId: id,

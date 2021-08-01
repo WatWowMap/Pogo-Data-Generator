@@ -21,7 +21,7 @@ export default class Pokemon extends Masterfile {
   constructor(options: Options) {
     super()
     this.options = options
-    this.formsToSkip = this.options.skipForms.map(name => name.toLowerCase())
+    this.formsToSkip = this.options.skipForms ? this.options.skipForms.map(name => name.toLowerCase()) : []
     this.parsedPokemon = {}
     this.parsedForms = {
       0: {
