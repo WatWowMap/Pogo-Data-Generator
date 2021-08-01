@@ -16,7 +16,7 @@ Generates templated data for Pokemon GO related projects, including:
 **Package**
 
 ```
-// with NPM
+// with npm
 npm install pogo-data-generator
 
 // with Yarn
@@ -95,7 +95,7 @@ const template = {
     },
   },
 }
-const customData = await generate({ template })
+const customData = await generate({ template }) // returns custom templated data
 ```
 
 **Local Usage/Testing**
