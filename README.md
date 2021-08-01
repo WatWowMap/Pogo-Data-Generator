@@ -1,6 +1,7 @@
 # Pogo Data Generator
 
 Generates templated data for Pokemon GO related projects, including:
+
 - Pokemon
 - Forms
 - Moves
@@ -12,8 +13,90 @@ Generates templated data for Pokemon GO related projects, including:
 
 ## Installing/Usage
 
-**Coming Soon**
-NPM Module
+**Package**
+
+```
+// with NPM
+npm install pogo-data-generator
+
+// with Yarn
+yarn add pogo-data-generator
+```
+
+Usage:
+
+```js
+// commonJS
+const { generate } = require('pogo-data-generator')
+
+// es6
+import { generate } from 'pogo-data-generator'
+
+const data = await generate() // returns the default settings
+
+const template = {
+  pokemon: {
+    enabled: true,
+    options: {
+      snake_case: true,
+      unsetDefaultForm: true,
+    },
+    template: {
+      pokemonName: true,
+      pokedexId: true,
+      forms: {
+        formName: true,
+        proto: true,
+      }
+    }
+  },
+  types: {
+    enabled: true,
+    template: {
+      typeName: true,
+    }
+  }
+  moves: {
+    enabled: false,
+  },
+  items: {
+    enabled: true,
+    options: {
+      customFields: {
+        itemId: 'id',
+      },
+    },
+    template: {
+      itemId: true,
+      type: true,
+      minTrainerLevel: true,
+    }
+  },
+  questRewards: {
+    enabled: false,
+  },
+  questConditions: {
+    enabled: false,
+  },
+  invasions: {
+    enabled: true,
+  },
+  weather: {
+    enabled: true,
+  },
+  translations: {
+    enabled: true,
+    options: {
+      masterfileLocale: 'de',
+    },
+    locales: {
+      en: true,
+      de: true,
+    },
+  },
+}
+const customData = await generate({ template })
+```
 
 **Local Usage/Testing**
 
@@ -23,6 +106,14 @@ NPM Module
 4. `tsc -w` will auto recompile the TypeScript during development
 
 - You can play with the input options by changing the script in `package.json`
+
+The generate function accepts an object with the following properties:
+
+- `template` (object): Your template for each of the categories
+- `safe` (boolean): Fetches an already built masterfile with known safe values
+- `url` (string): Custom url to fetch the masterfile from, results not guaranteed
+- `test` (boolean): Writes the masterfile to a local json
+- `raw` (boolean): Returns the data in its raw format without any template processing
 
 ## Full Template
 
@@ -53,9 +144,9 @@ const template = {
       },
       customChildObj: {
         // Puts specific fields into a custom child obj. Attack, Defense, Stamina will now be properties of the "stats" parent object.
-        attack: "stats",
-        defense: "stats",
-        stamina: "stats",
+        attack: 'stats',
+        defense: 'stats',
+        stamina: 'stats',
       },
       genderString: true, // Returns "Male"/"Female" instead of 1/2
       snake_case: true, // Converts any and all camelCase (including custom) keys to snake case
