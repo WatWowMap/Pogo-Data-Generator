@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import extend from 'extend'
 
 import Pokemon from './classes/Pokemon'
 import Items from './classes/Item'
@@ -16,6 +15,33 @@ import { FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 
+const templateMerger = (template: { [key: string]: any }): FullTemplate => {
+  const baseline: { [key: string]: any } = base
+  const merged: { [key: string]: any } = {}
+  Object.keys(base).forEach(key => {
+    merged[key] = template[key] || {}
+    Object.keys(baseline[key]).forEach(subKey => {
+      if (merged[key][subKey] === undefined) {
+        merged[key][subKey] = typeof baseline[key][subKey] === 'boolean' ? false : baseline[key][subKey]
+      }
+    })
+    if (key !== 'globalOptions') {
+      const globalOptions = template.globalOptions || baseline.globalOptions
+      Object.entries(globalOptions).forEach(option => {
+        const [optionKey, optionValue] = option
+        if (merged[key].options[optionKey] === undefined) {
+          if (template.globalOptions) {
+            merged[key].options[optionKey] = optionValue
+          } else {
+            merged[key].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
+          }
+        }
+      })
+    }
+  })
+  return merged
+}
+
 export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const start: number = new Date().getTime()
   const final: FinalResult = {}
@@ -25,10 +51,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
       ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
       : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json')
 
-  const merged: FullTemplate = {}
-  extend(true, merged, base, template)
-
-  const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged
+  const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = templateMerger(template || base)
   const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en'
 
   const AllPokemon = new Pokemon(pokemon.options)

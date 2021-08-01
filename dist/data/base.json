@@ -1,9 +1,17 @@
 {
+    "globalOptions": {
+        "keyJoiner": "_",
+        "keys": {},
+        "customChildObj": {},
+        "customFields": {},
+        "genderString": false,
+        "snake_case": true,
+        "includeProtos": true
+    },
     "pokemon": {
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "pokedexId",
                 "forms": "formId",
                 "evolutions": false,
@@ -14,16 +22,13 @@
             },
             "customFields": {
                 "evoId": "pokemon",
+                "formId": "form",
                 "formName": "name",
                 "pokemonName": "name"
             },
-            "customChildObj": {},
-            "genderString": false,
-            "snake_case": true,
             "unsetDefaultForm": false,
             "skipNormalIfUnset": false,
             "skipForms": [],
-            "includeProtos": true,
             "includeEstimatedPokemon": true,
             "processFormsSeparately": false,
             "includeRawForms": false
@@ -143,11 +148,8 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "typeId"
-            },
-            "customFields": {},
-            "snake_case": false
+            }
         },
         "template": {
             "typeId": false,
@@ -158,16 +160,13 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "moveId",
                 "type": false
             },
             "customFields": {
                 "moveId": "id",
                 "moveName": "name"
-            },
-            "includeProtos": true,
-            "snake_case": false
+            }
         },
         "template": {
             "moveId": true,
@@ -184,7 +183,6 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "itemId"
             },
             "customFields": {
@@ -207,11 +205,8 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "id"
-            },
-            "customFields": {},
-            "snake_case": false
+            }
         },
         "template": {
             "id": false,
@@ -223,11 +218,8 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "id"
-            },
-            "customFields": {},
-            "snake_case": false
+            }
         },
         "template": {
             "id": false,
@@ -239,7 +231,6 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "id",
                 "encounters": "position"
             },
@@ -248,9 +239,7 @@
                 "second": "second",
                 "third": "third"
             },
-            "genderString": false,
-            "placeholderData": false,
-            "snake_case": false
+            "placeholderData": false
         },
         "template": {
             "id": false,
@@ -269,10 +258,8 @@
         "enabled": true,
         "options": {
             "keys": {
-                "keyJoiner": "_",
                 "main": "weatherId"
-            },
-            "customFields": {}
+            }
         },
         "template": {
             "weatherId": false,

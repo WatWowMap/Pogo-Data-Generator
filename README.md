@@ -19,7 +19,7 @@ Generates templated data for Pokemon GO related projects, including:
 // with npm
 npm install pogo-data-generator
 
-// with Yarn
+// with yarn
 yarn add pogo-data-generator
 ```
 
@@ -47,15 +47,15 @@ const template = {
       forms: {
         formName: true,
         proto: true,
-      }
-    }
+      },
+    },
   },
   types: {
     enabled: true,
     template: {
       typeName: true,
-    }
-  }
+    },
+  },
   moves: {
     enabled: false,
   },
@@ -70,7 +70,7 @@ const template = {
       itemId: true,
       type: true,
       minTrainerLevel: true,
-    }
+    },
   },
   questRewards: {
     enabled: false,
@@ -121,6 +121,13 @@ This is the full template example with notes on each field. The default template
 
 ```js
 const template = {
+  globalOptions: {
+    // Options that are applied to all categories, if the same option is set in the category itself, it will override the global option
+    keyJoiner: '_',
+    genderString: false,
+    snake_case: true,
+    includeProtos: true,
+  },
   pokemon: {
     enabled: true,
     options: {

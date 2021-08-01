@@ -103,7 +103,7 @@ export default class Masterfile {
           if (typeof subFieldValue === 'object') {
             returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey])
           } else {
-            if (options.customChildObj && options.customChildObj[subFieldKey]) {
+            if (options.customChildObj[subFieldKey]) {
               customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
             } else {
               returnedObj[customKey] = subFieldValue
@@ -138,7 +138,7 @@ export default class Masterfile {
             if (typeof fieldValue === 'object' || reference[fieldKey]) {
               parent[customKey] = parseData(fieldKey, fieldValue, template)
             } else {
-              if (options.customChildObj && options.customChildObj[fieldKey]) {
+              if (options.customChildObj[fieldKey]) {
                 customChildObj(parent, fieldKey, customKey, fieldValue)
               } else {
                 parent[customKey] = fieldValue
@@ -146,7 +146,7 @@ export default class Masterfile {
             }
           }
         })
-        if (mainKey !== undefined || mainKey !== null) {
+        if (mainKey !== undefined && mainKey !== null) {
           if (Object.keys(parent).length < 2) {
             parent = Object.values(parent)[0]
           }
@@ -184,11 +184,11 @@ export default class Masterfile {
           split.forEach((field: string) => {
             newKey +=
               data[field] || data[field] === 0
-                ? `${data[field].toString().replace(' ', options.keys.keyJoiner)}${options.keys.keyJoiner}`
+                ? `${data[field].toString().replace(' ', options.keyJoiner)}${options.keyJoiner}`
                 : ''
           })
-          if (newKey.endsWith(options.keys.keyJoiner)) {
-            newKey = newKey.slice(0, -1)
+          if (newKey.endsWith(options.keyJoiner)) {
+            newKey = newKey.slice(0, -options.keyJoiner.length)
           }
         }
         return newKey

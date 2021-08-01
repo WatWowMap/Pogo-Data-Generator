@@ -10,7 +10,7 @@ class Pokemon extends Masterfile_1.default {
     constructor(options) {
         super();
         this.options = options;
-        this.formsToSkip = this.options.skipForms.map(name => name.toLowerCase());
+        this.formsToSkip = this.options.skipForms ? this.options.skipForms.map(name => name.toLowerCase()) : [];
         this.parsedPokemon = {};
         this.parsedForms = {
             0: {
