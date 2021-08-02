@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -9,7 +9,8 @@
     "pokemon",
     "go",
     "data",
-    "generator"
+    "generator",
+    "masterfile"
   ],
   "files": [
     "/dist"
