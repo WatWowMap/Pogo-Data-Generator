@@ -67,8 +67,7 @@ async function generate({ template, safe, url, test, raw } = {}) {
         (safe
             ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
             : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json');
-    const merged = templateMerger(template || base_json_1.default);
-    const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = merged;
+    const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = templateMerger(template || base_json_1.default);
     const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en';
     const AllPokemon = new Pokemon_1.default(pokemon.options);
     const AllItems = new Item_1.default(items.options);
