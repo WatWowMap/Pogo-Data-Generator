@@ -102,10 +102,10 @@ const customData = await generate({ template }) // returns custom templated data
 
 1. Clone the repo
 2. Install TypeScript compiler `npm install -g typescript`
-3. `npm testGenerator` will generate a local `masterfile.json` for you to checkout
+3. `npm run local` will generate a local `masterfile.json` for you to checkout
 4. `tsc -w` will auto recompile the TypeScript during development
 
-- You can play with the input options by changing the script in `package.json`
+- You can play with the input options by changing the script in `package.json` or modifying the `base.json` file.
 
 The generate function accepts an object with the following properties:
 
@@ -278,11 +278,18 @@ const template = {
         // Enables custom prefixes to be used with i18n or other translators
         pokemon: 'poke_',
         forms: 'form_',
+        costumes: 'costume_',
+        alignment: 'alignment_',
+        evolutions: 'evo_',
         descriptions: 'desc_',
         moves: 'move_',
         items: 'item_',
         weather: 'weather_',
         types: 'poke_type_',
+        characters: 'grunt_',
+        characterCategory: 'character_category_',
+        lures: 'lure_',
+        throwTypes: 'throw_type_',
       },
       questVariables: {
         // Some translations have variables for i18n to dynamically adjust, these will set those variables
@@ -315,6 +322,10 @@ const template = {
       },
       moves: true,
       items: true,
+      types: true,
+      characters: true,
+      weather: true,
+      misc: true,
     },
   },
   types: {
@@ -379,6 +390,19 @@ const template = {
       type: true,
       category: true,
       minTrainerLevel: true,
+    },
+  },
+  questTypes: {
+    enabled: true,
+    options: {
+      keys: {
+        main: 'id',
+      },
+    },
+    template: {
+      id: false,
+      proto: true,
+      formatted: true,
     },
   },
   questConditions: {
