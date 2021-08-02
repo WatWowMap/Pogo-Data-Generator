@@ -1,4 +1,4 @@
-import { AllForms, AllPokemon, FinalResult, TranslationKeys } from '../typings/dataTypes';
+import { AllForms, AllInvasions, AllPokemon, FinalResult, TranslationKeys } from '../typings/dataTypes';
 import { Options } from '../typings/inputs';
 import Masterfile from './Masterfile';
 export default class Translations extends Masterfile {
@@ -14,6 +14,11 @@ export default class Translations extends Masterfile {
         [id: string]: string;
     };
     masterfile: FinalResult;
+    generics: {
+        [key: string]: {
+            [key: string]: string;
+        };
+    };
     constructor(options: Options);
     fetchTranslations(locale: string): Promise<void>;
     mergeManualTranslations(locale: string, enFallback: TranslationKeys): void;
@@ -23,4 +28,8 @@ export default class Translations extends Masterfile {
     }, pokemon: AllPokemon, forms: AllForms): void;
     moves(locale: string): void;
     items(locale: string): void;
+    types(locale: string): void;
+    characters(locale: string, parsedInvasions: AllInvasions): void;
+    weather(locale: string): void;
+    misc(locale: string): void;
 }

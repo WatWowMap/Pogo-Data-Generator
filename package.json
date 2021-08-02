@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -18,7 +18,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "testGenerator": "node -e 'require(\"./dist/index\").generate({ test: true })'"
+    "local": "node -e 'require(\"./dist/index\").generate({ test: true })'"
   },
   "repository": {
     "type": "git",

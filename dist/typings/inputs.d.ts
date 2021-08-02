@@ -30,6 +30,7 @@ export interface Options {
     mergeCategories?: boolean;
     processFormsSeparately?: boolean;
     includeRawForms?: boolean;
+    includeBalloons?: boolean;
 }
 interface PokemonTemplate extends Form {
     pokedexId?: boolean;
@@ -138,6 +139,10 @@ declare type TranslationsTemplate = {
     };
     moves?: boolean;
     items?: boolean;
+    types?: boolean;
+    characters?: boolean;
+    weather?: boolean;
+    misc?: boolean;
 };
 export interface Input {
     safe?: boolean;
@@ -178,6 +183,11 @@ export interface FullTemplate {
         enabled?: boolean;
         options: Options;
         template: ItemTemplate;
+    };
+    questTypes?: {
+        enabled?: boolean;
+        options: Options;
+        template: QuestTemplate;
     };
     questConditions?: {
         enabled?: boolean;

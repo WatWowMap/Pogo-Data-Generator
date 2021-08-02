@@ -67,7 +67,7 @@ async function generate({ template, safe, url, test, raw } = {}) {
         (safe
             ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
             : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json');
-    const { pokemon, types, moves, items, questConditions, questRewardTypes, invasions, weather, translations } = templateMerger(template || base_json_1.default);
+    const { pokemon, types, moves, items, questTypes, questConditions, questRewardTypes, invasions, weather, translations } = templateMerger(template || base_json_1.default);
     const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en';
     const AllPokemon = new Pokemon_1.default(pokemon.options);
     const AllItems = new Item_1.default(items.options);
@@ -117,11 +117,14 @@ async function generate({ template, safe, url, test, raw } = {}) {
                 AllPokemon.makeFormsSeparate();
             }
         }
+        if (questTypes.enabled) {
+            AllQuests.addQuest('types');
+        }
         if (questRewardTypes.enabled) {
-            AllQuests.addQuest(true);
+            AllQuests.addQuest('rewards');
         }
         if (questConditions.enabled) {
-            AllQuests.addQuest(false);
+            AllQuests.addQuest('conditions');
         }
         if (moves.enabled) {
             if (moves.options.includeProtos) {
@@ -141,6 +144,9 @@ async function generate({ template, safe, url, test, raw } = {}) {
             const [localeCode, bool] = langCode;
             if (bool) {
                 await AllTranslations.fetchTranslations(localeCode);
+                if (translations.template.misc) {
+                    AllTranslations.misc(localeCode);
+                }
                 if (translations.template.pokemon) {
                     AllTranslations.pokemon(localeCode, translations.template.pokemon, AllPokemon.parsedPokemon, AllPokemon.parsedForms);
                 }
@@ -149,6 +155,15 @@ async function generate({ template, safe, url, test, raw } = {}) {
                 }
                 if (translations.template.items) {
                     AllTranslations.items(localeCode);
+                }
+                if (translations.template.types) {
+                    AllTranslations.types(localeCode);
+                }
+                if (translations.template.characters && invasions.enabled) {
+                    AllTranslations.characters(localeCode, AllInvasions.parsedInvasions);
+                }
+                if (translations.template.weather) {
+                    AllTranslations.weather(localeCode);
                 }
                 AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en);
             }
@@ -195,6 +210,11 @@ async function generate({ template, safe, url, test, raw } = {}) {
             : AllMoves.templater(localMoves, moves, {
                 type: localTypes,
             });
+    }
+    if (questRewardTypes.enabled) {
+        final.questTypes = raw
+            ? AllQuests.parsedQuestTypes
+            : AllQuests.templater(AllQuests.parsedQuestTypes, questTypes);
     }
     if (questRewardTypes.enabled) {
         final.questRewardTypes = raw

@@ -50,11 +50,14 @@ export interface AllItems {
 }
 export interface AllQuests {
     [id: string]: {
-        id: number;
-        proto: string;
-        formatted: string;
+        [id: string]: QuestSubCategory;
     };
 }
+declare type QuestSubCategory = {
+    questId: number;
+    proto: string;
+    formatted: string;
+};
 export interface AllPokemon {
     [id: string]: SinglePokemon;
 }

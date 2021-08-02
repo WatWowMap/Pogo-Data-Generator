@@ -1,17 +1,17 @@
 import { AllInvasions } from '../typings/dataTypes';
 import { Options } from '../typings/inputs';
-import { InvasionInfo, Character } from '../typings/pogoinfo';
+import { InvasionInfo } from '../typings/pogoinfo';
 import Masterfile from './Masterfile';
 export default class Invasion extends Masterfile {
     parsedInvasions: AllInvasions;
     options: Options;
     constructor(options: Options);
-    formatGrunts(character: Character): {
+    formatGrunts(character: string): {
         type: string;
         gender: string | number;
         grunt: string;
     };
     invasions(invasionData: {
-        [id: number]: InvasionInfo;
+        [id: string]: InvasionInfo;
     }): void;
 }

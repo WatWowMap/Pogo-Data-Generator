@@ -8,18 +8,33 @@ const Masterfile_1 = __importDefault(require("./Masterfile"));
 class Quests extends Masterfile_1.default {
     constructor() {
         super();
+        this.parsedQuestTypes = {};
         this.parsedRewardTypes = {};
         this.parsedConditions = {};
     }
-    addQuest(types) {
-        const parsedTarget = types ? this.parsedRewardTypes : this.parsedConditions;
-        const protoTarget = types ? pogo_protos_1.Rpc.QuestRewardProto.Type : pogo_protos_1.Rpc.QuestConditionProto.ConditionType;
+    addQuest(category) {
+        let parseTarget;
+        let protoTarget;
+        switch (category) {
+            case 'types':
+                parseTarget = this.parsedQuestTypes;
+                protoTarget = pogo_protos_1.Rpc.QuestType;
+                break;
+            case 'rewards':
+                parseTarget = this.parsedRewardTypes;
+                protoTarget = pogo_protos_1.Rpc.QuestRewardProto.Type;
+                break;
+            case 'conditions':
+                parseTarget = this.parsedConditions;
+                protoTarget = pogo_protos_1.Rpc.QuestConditionProto.ConditionType;
+                break;
+        }
         Object.entries(protoTarget).forEach(type => {
             const [proto, id] = type;
-            parsedTarget[id] = {
+            parseTarget[id] = {
                 id,
                 proto,
-                formatted: this.capitalize(proto),
+                formatted: category === 'types' ? this.capitalize(proto.replace('QUEST_', '')) : this.capitalize(proto),
             };
         });
     }
