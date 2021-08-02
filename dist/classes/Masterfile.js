@@ -88,7 +88,10 @@ class Masterfile {
             const ref = reference[fieldKey] ? reference[fieldKey][x] : x;
             Object.entries(ref).forEach(subField => {
                 const [subFieldKey, subFieldValue] = subField;
-                if (templateChild[fieldKey][subFieldKey]) {
+                if (templateChild[fieldKey] === subFieldKey) {
+                    returnedObj = subFieldValue;
+                }
+                else if (templateChild[fieldKey][subFieldKey]) {
                     const customKey = this.keyFormatter(subFieldKey, options);
                     if (typeof subFieldValue === 'object') {
                         returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey]);
@@ -103,9 +106,6 @@ class Masterfile {
                     }
                 }
             });
-            if (Object.keys(returnedObj).length < 2) {
-                returnedObj = Object.values(returnedObj)[0];
-            }
             return returnedObj;
         };
         const customChildObj = (target, key, customKey, field) => {
@@ -121,7 +121,10 @@ class Masterfile {
             try {
                 Object.entries(data[id]).forEach(field => {
                     const [fieldKey, fieldValue] = field;
-                    if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
+                    if (template === fieldKey || template[fieldKey] === fieldKey) {
+                        parent = fieldValue;
+                    }
+                    else if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
                         const customKey = this.keyFormatter(fieldKey, options);
                         if (typeof fieldValue === 'object' || reference[fieldKey]) {
                             parent[customKey] = parseData(fieldKey, fieldValue, template);
@@ -137,9 +140,6 @@ class Masterfile {
                     }
                 });
                 if (mainKey !== undefined && mainKey !== null) {
-                    if (Object.keys(parent).length < 2) {
-                        parent = Object.values(parent)[0];
-                    }
                     resolved[mainKey] = parent;
                 }
                 else {

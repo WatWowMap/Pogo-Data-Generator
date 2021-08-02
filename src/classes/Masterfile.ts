@@ -97,7 +97,10 @@ export default class Masterfile {
       Object.entries(ref).forEach(subField => {
         const [subFieldKey, subFieldValue] = subField
 
-        if (templateChild[fieldKey][subFieldKey]) {
+        if (templateChild[fieldKey] === subFieldKey) {
+          // allows for singular returns
+          returnedObj = subFieldValue
+        } else if (templateChild[fieldKey][subFieldKey]) {
           const customKey = this.keyFormatter(subFieldKey, options)
 
           if (typeof subFieldValue === 'object') {
@@ -111,9 +114,6 @@ export default class Masterfile {
           }
         }
       })
-      if (Object.keys(returnedObj).length < 2) {
-        returnedObj = Object.values(returnedObj)[0]
-      }
       return returnedObj
     }
 
@@ -132,7 +132,10 @@ export default class Masterfile {
         Object.entries(data[id]).forEach(field => {
           const [fieldKey, fieldValue] = field
 
-          if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
+          if (template === fieldKey || template[fieldKey] === fieldKey) {
+            // allows for singular returns
+            parent = fieldValue
+          } else if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
             const customKey = this.keyFormatter(fieldKey, options)
 
             if (typeof fieldValue === 'object' || reference[fieldKey]) {
@@ -147,9 +150,6 @@ export default class Masterfile {
           }
         })
         if (mainKey !== undefined && mainKey !== null) {
-          if (Object.keys(parent).length < 2) {
-            parent = Object.values(parent)[0]
-          }
           resolved[mainKey] = parent
         } else {
           resolved.push(parent)

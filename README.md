@@ -175,18 +175,13 @@ const template = {
         proto: true,
         isCostume: true,
         evolutions: {
+          // If you set a parent object, such as "evolutions", to a valid string child value (such as "evoId"), the result will be that singular child value instead of an object.
           evoId: true,
           formId: true,
           genderRequirement: true,
         },
         tempEvolutions: {
-          tempEvoId: true,
-          attack: false,
-          defense: false,
-          stamina: false,
-          height: false,
-          weight: false,
-          types: false,
+          tempEvoId: false,
         },
         attack: true,
         defense: true,
