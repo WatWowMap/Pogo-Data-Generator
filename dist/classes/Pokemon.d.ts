@@ -5,6 +5,7 @@ import Masterfile from './Masterfile';
 import { Options } from '../typings/inputs';
 export default class Pokemon extends Masterfile {
     parsedPokemon: AllPokemon;
+    parsedPokeForms: AllPokemon;
     parsedForms: AllForms;
     formsRef: {
         [id: string]: string;

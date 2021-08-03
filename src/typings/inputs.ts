@@ -99,7 +99,8 @@ export interface TypesTempOpt {
 }
 
 type TypesTemplate = {
-  name?: boolean
+  typeId: boolean
+  typeName?: boolean
 }
 
 type MoveTemplate = {

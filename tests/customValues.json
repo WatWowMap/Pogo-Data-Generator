@@ -1,0 +1,198 @@
+{
+  "pokemon": {
+    "6_%_951": {
+      "id": 6,
+      "name": "Glurak",
+      "form": {
+        "formName": "Copy 2019",
+        "id": 951
+      },
+      "types": [
+        {
+          "typeId": 10,
+          "typeName": "Feuer"
+        },
+        {
+          "typeId": 3,
+          "typeName": "Flug"
+        }
+      ],
+      "stats": {
+        "baseAttack": 223,
+        "baseDefense": 173,
+        "baseStamina": 186
+      },
+      "quickMoves": {
+        "255": "Luftschnitt",
+        "269": "Feuerwirbel"
+      },
+      "chargedMoves": {
+        "83": "Drachenklaue",
+        "103": "Feuersturm",
+        "270": "Hitzekoller"
+      },
+      "family": 4,
+      "tempEvolutions": [
+        2,
+        3
+      ],
+      "generation": "Kanto"
+    },
+    "52_%_710": {
+      "id": 52,
+      "name": "Mauzi",
+      "form": {
+        "formName": "Erlöst",
+        "id": 710
+      },
+      "types": [
+        {
+          "typeId": 1,
+          "typeName": "Normal"
+        }
+      ],
+      "stats": {
+        "baseAttack": 92,
+        "baseDefense": 78,
+        "baseStamina": 120
+      },
+      "quickMoves": {
+        "202": "Biss",
+        "220": "Kratzer"
+      },
+      "chargedMoves": {
+        "16": "Finsteraura",
+        "51": "Nachthieb",
+        "280": "Schmarotzer"
+      },
+      "family": 52,
+      "evolutions": [
+        {
+          "evoId": 53,
+          "id": 712
+        }
+      ],
+      "generation": "Kanto",
+      "little": true
+    },
+    "53_%_66": {
+      "id": 53,
+      "name": "Snobilikat",
+      "form": {
+        "formName": "Alola",
+        "id": 66
+      },
+      "types": [
+        {
+          "typeId": 17,
+          "typeName": "Unlicht"
+        }
+      ],
+      "stats": {
+        "baseAttack": 158,
+        "baseDefense": 136,
+        "baseStamina": 163
+      },
+      "quickMoves": {
+        "220": "Kratzer",
+        "238": "Finte"
+      },
+      "chargedMoves": {
+        "16": "Finsteraura",
+        "88": "Knuddler",
+        "280": "Schmarotzer",
+        "333": "Gegenstoß"
+      },
+      "family": 52,
+      "generation": "Kanto"
+    }
+  },
+  "types": {
+    "2_%_Kampf": {
+      "typeName": "Kampf"
+    },
+    "3_%_Flug": {
+      "typeName": "Flug"
+    }
+  },
+  "moves": {
+    "23_%_Flügelschlag": {
+      "moveName": "Flügelschlag",
+      "proto": "WING_ATTACK"
+    },
+    "24_%_Flammenwurf_%_90": {
+      "moveName": "Flammenwurf",
+      "proto": "FLAMETHROWER",
+      "type": {
+        "typeName": "Feuer"
+      }
+    }
+  },
+  "items": {
+    "3": {
+      "itemName": "Hyperball",
+      "proto": "ITEM_ULTRA_BALL",
+      "minTrainerLevel": 20
+    },
+    "4": {
+      "itemName": "Meisterball",
+      "proto": "ITEM_MASTER_BALL",
+      "minTrainerLevel": 100
+    }
+  },
+  "invasions": {
+    "Grunt_%_Darkness": {
+      "type": "Darkness",
+      "gender": "Male",
+      "grunt": "Grunt"
+    },
+    "Grunt_%_Dark": {
+      "type": "Dark",
+      "gender": "Male",
+      "grunt": "Grunt"
+    }
+  },
+  "weather": {
+    "0": "Extrem",
+    "1": "Sonnig/Klar",
+    "2": "Regen"
+  },
+  "translations": {
+    "de": {
+      "pokemon_0": "Ersatzpokemon",
+      "pokemon_1": "Bisasam",
+      "forms_34": "Angriffsform",
+      "forms_35": "Verteidigungsform",
+      "pokemon_pokedex_descriptions_0": "Keiner",
+      "pokemon_pokedex_descriptions_1": "Bisasam macht gern einmal ein Nickerchen im Sonnenschein. Auf seinem Rücken trägt es einen Samen. Indem es Sonnenstrahlen aufsaugt, wird der Samen zunehmend größer.",
+      "stupid_costumes_12": "April 2020 Noevolve",
+      "stupid_costumes_13": "Safari 2020 Noevolve",
+      "fight_club!_0": "Unbekannt",
+      "fight_club!_1": "Donnerschock",
+      "pokemon%types_3": "Flug",
+      "pokemon%types_4": "Gift",
+      "weather_is_not_accurate_0": "Extrem",
+      "weather_is_not_accurate_1": "Sonnig/Klar",
+      "amazing_pokemon_spawners_502": "Gletscher",
+      "amazing_pokemon_spawners_503": "Moos",
+      "cool_helpers_1404": "Sternenstück",
+      "cool_helpers_1405": "Geschenk"
+    },
+    "en": {
+      "pokemon_0": "Substitute Pokemon",
+      "pokemon_1": "Bulbasaur",
+      "forms_34": "Attack",
+      "forms_35": "Defense",
+      "stupid_costumes_12": "April 2020 Noevolve",
+      "stupid_costumes_13": "Safari 2020 Noevolve",
+      "fight_club!_0": "Unknown",
+      "fight_club!_1": "Thunder Shock",
+      "cool_helpers_1404": "Star Piece",
+      "cool_helpers_1405": "Gift",
+      "amazing_pokemon_spawners_502": "Glacial",
+      "amazing_pokemon_spawners_503": "Mossy",
+      "pokemon%types_3": "Flying",
+      "pokemon%types_4": "Poison"
+    }
+  }
+}
