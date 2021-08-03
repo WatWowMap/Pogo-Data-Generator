@@ -22,7 +22,7 @@ export default class Translations extends Masterfile {
     constructor(options: Options);
     fetchTranslations(locale: string): Promise<void>;
     mergeManualTranslations(locale: string, enFallback: TranslationKeys): void;
-    translateMasterfile(data: FinalResult, locale: string): void;
+    translateMasterfile(data: FinalResult, locale: string, formsSeparate: boolean): void;
     pokemon(locale: string, subItems: {
         [id: string]: boolean;
     }, pokemon: AllPokemon, forms: AllForms): void;

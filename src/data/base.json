@@ -216,6 +216,9 @@
     "options": {
       "keys": {
         "main": "weatherId"
+      },
+      "customFields": {
+        "weatherName": "name"
       }
     },
     "template": {
@@ -239,8 +242,8 @@
         "items": "item_",
         "weather": "weather_",
         "types": "poke_type_",
-        "characters": "grunt_",
-        "characterCategory": "character_category_",
+        "grunts": "grunt_",
+        "characterCategories": "character_category_",
         "lures": "lure_",
         "throwTypes": "throw_type_"
       },

@@ -12,6 +12,7 @@ class Pokemon extends Masterfile_1.default {
         this.options = options;
         this.formsToSkip = this.options.skipForms ? this.options.skipForms.map(name => name.toLowerCase()) : [];
         this.parsedPokemon = {};
+        this.parsedPokeForms = {};
         this.parsedForms = {
             0: {
                 formName: '',
@@ -436,11 +437,10 @@ class Pokemon extends Masterfile_1.default {
         }
     }
     makeFormsSeparate() {
-        const parsed = {};
         Object.values(this.parsedPokemon).forEach(pokemon => {
             if (pokemon.forms) {
                 pokemon.forms.forEach(form => {
-                    parsed[`${pokemon.pokedexId}_${form}`] = {
+                    this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
                         ...pokemon,
                         ...this.parsedForms[form],
                         forms: [form],
@@ -448,7 +448,6 @@ class Pokemon extends Masterfile_1.default {
                 });
             }
         });
-        this.parsedPokemon = parsed;
     }
 }
 exports.default = Pokemon;

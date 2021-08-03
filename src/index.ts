@@ -76,6 +76,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const AllTranslations = new Translations(translations.options)
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
+  let safeData: FinalResult = {}
 
   if (!safe) {
     for (let i = 0; i < data.length; i += 1) {
@@ -131,6 +132,8 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
       )
       AllInvasions.invasions(invasionData)
     }
+  } else {
+    safeData = data
   }
   if (translations.enabled) {
     await Promise.all(
@@ -171,14 +174,15 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     if (localeCheck) {
       AllTranslations.translateMasterfile(
         {
-          pokemon: AllPokemon.parsedPokemon,
+          pokemon: pokemon.options.processFormsSeparately ? AllPokemon.parsedPokeForms : AllPokemon.parsedPokemon,
           moves: AllMoves.parsedMoves,
           items: AllItems.parsedItems,
           forms: AllPokemon.parsedForms,
           types: AllTypes.parsedTypes,
           weather: AllWeather.parsedWeather,
         },
-        translations.options.masterfileLocale
+        translations.options.masterfileLocale,
+        pokemon.options.processFormsSeparately
       )
     }
   }
@@ -192,7 +196,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   if (pokemon.enabled) {
     final.pokemon = raw
       ? localPokemon
-      : AllPokemon.templater(localPokemon, pokemon, {
+      : AllPokemon.templater(safeData.pokemon || localPokemon, pokemon, {
           quickMoves: localMoves,
           chargedMoves: localMoves,
           types: localTypes,
@@ -203,38 +207,38 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     }
   }
   if (types.enabled) {
-    final.types = raw ? localTypes : AllTypes.templater(localTypes, types)
+    final.types = raw ? localTypes : AllTypes.templater(safeData.types || localTypes, types)
   }
   if (items.enabled) {
-    final.items = raw ? localItems : AllItems.templater(localItems, items)
+    final.items = raw ? localItems : AllItems.templater(safeData.items || localItems, items)
   }
   if (moves.enabled) {
     final.moves = raw
       ? localMoves
-      : AllMoves.templater(localMoves, moves, {
+      : AllMoves.templater(safeData.moves || localMoves, moves, {
           type: localTypes,
         })
   }
   if (questRewardTypes.enabled) {
-    final.questTypes = raw ? AllQuests.parsedQuestTypes : AllQuests.templater(AllQuests.parsedQuestTypes, questTypes)
+    final.questTypes = raw ? AllQuests.parsedQuestTypes : AllQuests.templater(safeData.questTypes || AllQuests.parsedQuestTypes, questTypes)
   }
   if (questRewardTypes.enabled) {
     final.questRewardTypes = raw
       ? AllQuests.parsedRewardTypes
-      : AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
+      : AllQuests.templater(safeData.questRewardTypes || AllQuests.parsedRewardTypes, questRewardTypes)
   }
   if (questConditions.enabled) {
     final.questConditions = raw
       ? AllQuests.parsedConditions
-      : AllQuests.templater(AllQuests.parsedConditions, questConditions)
+      : AllQuests.templater(safeData.questConditions || AllQuests.parsedConditions, questConditions)
   }
   if (invasions.enabled) {
     final.invasions = raw
       ? AllInvasions.parsedInvasions
-      : AllInvasions.templater(AllInvasions.parsedInvasions, invasions)
+      : AllInvasions.templater(safeData.invasions || AllInvasions.parsedInvasions, invasions)
   }
   if (weather.enabled) {
-    final.weather = raw ? localWeather : AllWeather.templater(localWeather, weather, { types: localTypes })
+    final.weather = raw ? localWeather : AllWeather.templater(safeData.weather || localWeather, weather, { types: localTypes })
   }
   if (translations.enabled) {
     final.translations = AllTranslations.parsedTranslations

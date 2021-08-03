@@ -1,0 +1,519 @@
+{
+  "pokemon": {
+    "1": {
+      "pokedex_id": 1,
+      "name": "Bulbasaur",
+      "forms": {
+        "163": {
+          "name": "Normal",
+          "proto": "BULBASAUR_NORMAL",
+          "evolutions": [
+            {
+              "pokemon": 2,
+              "form": 166
+            }
+          ]
+        },
+        "164": {
+          "name": "Shadow",
+          "proto": "BULBASAUR_SHADOW",
+          "evolutions": [
+            {
+              "pokemon": 2,
+              "form": 167
+            }
+          ]
+        },
+        "165": {
+          "name": "Purified",
+          "proto": "BULBASAUR_PURIFIED",
+          "evolutions": [
+            {
+              "pokemon": 2,
+              "form": 168
+            }
+          ]
+        },
+        "897": {
+          "name": "Fall 2019",
+          "proto": "BULBASAUR_FALL_2019",
+          "is_costume": true
+        }
+      },
+      "default_form_id": 163,
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "attack": 118,
+      "defense": 111,
+      "stamina": 128,
+      "height": 0.7,
+      "weight": 6.9,
+      "quick_moves": [
+        "Vine Whip",
+        "Tackle"
+      ],
+      "charged_moves": [
+        "Sludge Bomb",
+        "Seed Bomb",
+        "Power Whip"
+      ],
+      "family": 1,
+      "flee_rate": 0.1,
+      "capture_rate": 0.2,
+      "buddy_group_number": 2,
+      "km_buddy_distance": 3,
+      "third_move_stardust": 10000,
+      "third_move_candy": 25,
+      "gym_defender_eligible": true,
+      "gen_id": 1,
+      "evolutions": [
+        {
+          "pokemon": 2,
+          "form": 166
+        }
+      ],
+      "generation": "Kanto",
+      "little": true
+    },
+    "6": {
+      "pokedex_id": 6,
+      "name": "Charizard",
+      "forms": {
+        "178": {
+          "name": "Normal",
+          "proto": "CHARIZARD_NORMAL",
+          "temp_evolutions": {
+            "2": {},
+            "3": {}
+          }
+        },
+        "179": {
+          "name": "Shadow",
+          "proto": "CHARIZARD_SHADOW"
+        },
+        "180": {
+          "name": "Purified",
+          "proto": "CHARIZARD_PURIFIED",
+          "temp_evolutions": {
+            "2": {},
+            "3": {}
+          }
+        },
+        "951": {
+          "name": "Copy 2019",
+          "proto": "CHARIZARD_COPY_2019"
+        }
+      },
+      "default_form_id": 178,
+      "types": [
+        "Fire",
+        "Flying"
+      ],
+      "attack": 223,
+      "defense": 173,
+      "stamina": 186,
+      "height": 1.7,
+      "weight": 90.5,
+      "quick_moves": [
+        "Fire Spin",
+        "Air Slash"
+      ],
+      "charged_moves": [
+        "Fire Blast",
+        "Dragon Claw",
+        "Overheat"
+      ],
+      "family": 4,
+      "flee_rate": 0.05,
+      "capture_rate": 0.05,
+      "buddy_group_number": 3,
+      "km_buddy_distance": 3,
+      "third_move_stardust": 10000,
+      "third_move_candy": 25,
+      "gym_defender_eligible": true,
+      "gen_id": 1,
+      "temp_evolutions": {
+        "2": {
+          "attack": 273,
+          "defense": 213,
+          "stamina": 186,
+          "height": 1.7,
+          "weight": 110.5,
+          "types": [
+            "Fire",
+            "Dragon"
+          ]
+        },
+        "3": {
+          "attack": 319,
+          "defense": 212,
+          "stamina": 186,
+          "height": 1.7,
+          "weight": 100.5
+        }
+      },
+      "generation": "Kanto"
+    },
+    "52": {
+      "pokedex_id": 52,
+      "name": "Meowth",
+      "forms": {
+        "63": {
+          "name": "Normal",
+          "proto": "MEOWTH_NORMAL",
+          "evolutions": [
+            {
+              "pokemon": 53,
+              "form": 65
+            }
+          ]
+        },
+        "64": {
+          "name": "Alola",
+          "proto": "MEOWTH_ALOLA",
+          "attack": 99,
+          "defense": 78,
+          "stamina": 120,
+          "types": [
+            "Dark"
+          ],
+          "evolutions": [
+            {
+              "pokemon": 53,
+              "form": 66
+            }
+          ]
+        },
+        "709": {
+          "name": "Shadow",
+          "proto": "MEOWTH_SHADOW",
+          "evolutions": [
+            {
+              "pokemon": 53,
+              "form": 711
+            }
+          ]
+        },
+        "710": {
+          "name": "Purified",
+          "proto": "MEOWTH_PURIFIED",
+          "evolutions": [
+            {
+              "pokemon": 53,
+              "form": 712
+            }
+          ]
+        },
+        "2335": {
+          "name": "Galarian",
+          "proto": "MEOWTH_GALARIAN",
+          "attack": 115,
+          "defense": 92,
+          "stamina": 137,
+          "height": 0.4,
+          "weight": 7.5,
+          "quick_moves": [
+            "Scratch",
+            "Metal Claw"
+          ],
+          "charged_moves": [
+            "Night Slash",
+            "Gyro Ball",
+            "Dig"
+          ],
+          "types": [
+            "Steel"
+          ],
+          "evolutions": [
+            {
+              "pokemon": 863,
+              "form": 2504
+            }
+          ]
+        }
+      },
+      "default_form_id": 63,
+      "types": [
+        "Normal"
+      ],
+      "attack": 92,
+      "defense": 78,
+      "stamina": 120,
+      "height": 0.4,
+      "weight": 4.2,
+      "quick_moves": [
+        "Scratch",
+        "Bite"
+      ],
+      "charged_moves": [
+        "Night Slash",
+        "Dark Pulse",
+        "Foul Play"
+      ],
+      "family": 52,
+      "flee_rate": 0.15,
+      "capture_rate": 0.5,
+      "buddy_group_number": 2,
+      "km_buddy_distance": 3,
+      "third_move_stardust": 50000,
+      "third_move_candy": 50,
+      "gym_defender_eligible": true,
+      "gen_id": 1,
+      "evolutions": [
+        {
+          "pokemon": 53,
+          "form": 65
+        }
+      ],
+      "generation": "Kanto",
+      "little": true
+    },
+    "248": {
+      "pokedex_id": 248,
+      "name": "Tyranitar",
+      "forms": {
+        "319": {
+          "name": "Normal",
+          "proto": "TYRANITAR_NORMAL"
+        },
+        "320": {
+          "name": "Shadow",
+          "proto": "TYRANITAR_SHADOW"
+        },
+        "321": {
+          "name": "Purified",
+          "proto": "TYRANITAR_PURIFIED"
+        }
+      },
+      "default_form_id": 319,
+      "types": [
+        "Rock",
+        "Dark"
+      ],
+      "attack": 251,
+      "defense": 207,
+      "stamina": 225,
+      "height": 2.01,
+      "weight": 202,
+      "quick_moves": [
+        "Bite",
+        "Iron Tail"
+      ],
+      "charged_moves": [
+        "Fire Blast",
+        "Crunch",
+        "Stone Edge"
+      ],
+      "family": 246,
+      "flee_rate": 0.04,
+      "capture_rate": 0.05,
+      "buddy_group_number": 3,
+      "km_buddy_distance": 5,
+      "third_move_stardust": 75000,
+      "third_move_candy": 75,
+      "gym_defender_eligible": true,
+      "gen_id": 2,
+      "generation": "Johto",
+      "temp_evolutions": {
+        "1": {
+          "attack": 309,
+          "defense": 276,
+          "stamina": 225,
+          "unreleased": true
+        }
+      }
+    },
+    "315": {
+      "pokedex_id": 315,
+      "name": "Roselia",
+      "forms": {
+        "0": {
+          "name": "",
+          "proto": "FORM_UNSET"
+        },
+        "1502": {
+          "name": "Normal",
+          "proto": "ROSELIA_NORMAL"
+        },
+        "1503": {
+          "name": "Shadow",
+          "proto": "ROSELIA_SHADOW"
+        },
+        "1504": {
+          "name": "Purified",
+          "proto": "ROSELIA_PURIFIED"
+        }
+      },
+      "default_form_id": 1502,
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "attack": 186,
+      "defense": 131,
+      "stamina": 137,
+      "height": 0.3,
+      "weight": 2,
+      "quick_moves": [
+        "Poison Jab",
+        "Razor Leaf"
+      ],
+      "charged_moves": [
+        "Petal Blizzard",
+        "Sludge Bomb",
+        "Dazzling Gleam"
+      ],
+      "family": 315,
+      "flee_rate": 0.09,
+      "capture_rate": 0.3,
+      "buddy_group_number": 2,
+      "km_buddy_distance": 3,
+      "third_move_stardust": 50000,
+      "third_move_candy": 50,
+      "gym_defender_eligible": true,
+      "gen_id": 3,
+      "evolutions": [
+        {
+          "pokemon": 407,
+          "form": 0
+        }
+      ],
+      "generation": "Hoenn"
+    }
+  },
+  "types": {
+    "0": "None",
+    "1": "Normal"
+  },
+  "moves": {
+    "0": {
+      "id": 0,
+      "name": "Move Unset",
+      "proto": "MOVE_UNSET"
+    },
+    "21": {
+      "id": 21,
+      "name": "Flame Wheel",
+      "proto": "FLAME_WHEEL",
+      "type": "Fire",
+      "power": 60
+    }
+  },
+  "items": {
+    "1": {
+      "name": "Poke Ball",
+      "proto": "ITEM_POKE_BALL",
+      "type": "Pokeball",
+      "category": "Pokeball",
+      "minTrainerLevel": 1
+    },
+    "503": {
+      "name": "Troy Disk Mossy",
+      "proto": "ITEM_TROY_DISK_MOSSY",
+      "type": "Disk",
+      "category": "Disk",
+      "minTrainerLevel": 1
+    }
+  },
+  "questTypes": {
+    "0": {
+      "proto": "QUEST_UNSET",
+      "formatted": "Unset"
+    },
+    "1": {
+      "proto": "QUEST_FIRST_CATCH_OF_THE_DAY",
+      "formatted": "First Catch Of The Day"
+    }
+  },
+  "questRewardTypes": {
+    "0": {
+      "proto": "UNSET",
+      "formatted": "Unset"
+    },
+    "1": {
+      "proto": "EXPERIENCE",
+      "formatted": "Experience"
+    }
+  },
+  "questConditions": {
+    "0": {
+      "proto": "UNSET",
+      "formatted": "Unset"
+    },
+    "1": {
+      "proto": "WITH_POKEMON_TYPE",
+      "formatted": "With Pokemon Type"
+    }
+  },
+  "invasions": {
+    "0": {
+      "type": "Unset",
+      "gender": 0,
+      "grunt": "Unset",
+      "encounters": {}
+    },
+    "4": {
+      "type": "Mixed",
+      "gender": 1,
+      "grunt": "Grunt",
+      "encounters": {}
+    },
+    "11": {
+      "type": "Dark",
+      "gender": 1,
+      "grunt": "Grunt",
+      "encounters": {}
+    }
+  },
+  "weather": {
+    "0": {
+      "name": "None",
+      "types": []
+    },
+    "1": {
+      "name": "Clear",
+      "types": [
+        "Grass",
+        "Ground",
+        "Fire"
+      ]
+    }
+  },
+  "translations": {
+    "de": {
+      "gender_1": "Männlich",
+      "gender_2": "Weiblich",
+      "item_4": "Meisterball",
+      "lure_503": "Moos",
+      "move_94": "Knochenkeule",
+      "poke_0": "Ersatzpokemon",
+      "poke_1": "Bisasam",
+      "form_183": "Erlöst",
+      "form_34": "Angriffsform",
+      "desc_26_50": "Kräftiges Massieren seiner Backentaschen setzt einen süßen Geruch frei. Dafür nimmt man auch gerne einen leichten Elektroschock in Kauf.",
+      "grunt_5": "Rüpel (weiblich)",
+      "grunt_6": "Käfer - Rüpel (weiblich)",
+      "character_category_6": "Giovanni",
+      "weather_4": "Bedeckt",
+      "weather_icon_4": "☁️"
+    },
+    "en": {
+      "gender_1": "Male",
+      "gender_2": "Female",
+      "poke_0": "Substitute Pokemon",
+      "poke_1": "Bulbasaur",
+      "lure_503": "Mossy",
+      "item_4": "Master Ball",
+      "form_183": "Purified",
+      "form_34": "Attack",
+      "desc_26_50": "When you rub its cheeks, a sweet fragrance comes wafting out. However, you'll also get a light shock!",
+      "grunt_5": "Grunt (female)",
+      "grunt_6": "Bug - Grunt (female)",
+      "character_category_6": "Giovanni",
+      "weather_4": "Cloudy",
+      "weather_icon_4": "☁️"
+    }
+  }
+}

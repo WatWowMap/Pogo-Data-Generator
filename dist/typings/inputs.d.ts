@@ -92,7 +92,8 @@ export interface TypesTempOpt {
     template?: TypesTemplate;
 }
 declare type TypesTemplate = {
-    name?: boolean;
+    typeId: boolean;
+    typeName?: boolean;
 };
 declare type MoveTemplate = {
     id?: boolean;

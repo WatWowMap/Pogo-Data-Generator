@@ -116,7 +116,8 @@ export default class Translations extends Masterfile {
       quests: {},
       types: {},
       weather: {},
-      characters: {},
+      grunts: {},
+      characterCategories: {},
       misc: {},
     }
     try {
@@ -138,14 +139,19 @@ export default class Translations extends Masterfile {
 
         Object.entries(manual).forEach(pair => {
           const [key, value] = pair
+          let trimmedKey
           if (key.startsWith('poke_type')) {
-            this.manualTranslations[locale].types[key] = value
+            trimmedKey = key.replace('poke_type_', '')
+            this.manualTranslations[locale].types[`${this.options.prefix.types}${trimmedKey}`] = value
           } else if (key.startsWith('poke')) {
-            this.manualTranslations[locale].pokemon[key] = value
+            trimmedKey = key.replace('poke_', '')
+            this.manualTranslations[locale].pokemon[`${this.options.prefix.pokemon}${trimmedKey}`] = value
           } else if (key.startsWith('form')) {
-            this.manualTranslations[locale].forms[key] = value
+            trimmedKey = key.replace('form_', '')
+            this.manualTranslations[locale].forms[`${this.options.prefix.forms}${trimmedKey}`] = value
           } else if (key.startsWith('costume')) {
-            this.manualTranslations[locale].costumes[key] = value
+            trimmedKey = key.replace('costume_', '')
+            this.manualTranslations[locale].costumes[`${this.options.prefix.costumes}${trimmedKey}`] = value
           } else if (key.startsWith('quest') || key.startsWith('throw')) {
             let newValue = value
             if (value.includes('%{') && this.options.questVariables) {
@@ -153,12 +159,15 @@ export default class Translations extends Masterfile {
               newValue = newValue.replace('}', this.options.questVariables.suffix)
             }
             this.manualTranslations[locale].quests[key] = newValue
+          } else if (key.startsWith('grunt')) {
+            trimmedKey = key.replace('grunt_', '')
+            this.manualTranslations[locale].grunts[`${this.options.prefix.grunts}${trimmedKey}`] = value
           } else if (key.startsWith('character') || key.startsWith('grunt')) {
-            this.manualTranslations[locale].characters[key] = value
-          } else if (key.startsWith('type')) {
-            this.manualTranslations[locale].types[key] = value
+            trimmedKey = key.replace('grunt_', '')
+            this.manualTranslations[locale].characterCategories[key] = value
           } else if (key.startsWith('weather')) {
-            this.manualTranslations[locale].weather[key] = value
+            trimmedKey = key.replace('weather_', '')
+            this.manualTranslations[locale].weather[`${this.options.prefix.weather}${trimmedKey}`] = value
           } else {
             this.manualTranslations[locale].misc[key] = value
           }
@@ -192,30 +201,42 @@ export default class Translations extends Masterfile {
     }
   }
 
-  translateMasterfile(data: FinalResult, locale: string) {
+  translateMasterfile(data: FinalResult, locale: string, formsSeparate: boolean) {
     const language = this.parsedTranslations[locale]
+
     if (language) {
       Object.keys(data).forEach(category => {
         const ref = this.options.mergeCategories ? language : language[category]
+
         if (ref) {
           this.masterfile[category] = {}
+
           Object.keys(data[category]).forEach(id => {
             if (this.options.prefix[category]) {
-              if (ref[`${this.options.prefix[category]}${id}`]) {
-                const fieldKey = Object.keys(data[category][id]).find(field => field.includes('Name'))
+              const actualId = category === 'pokemon' && formsSeparate ? data[category][id].pokedexId : id
+
+              if (ref[`${this.options.prefix[category]}${actualId}`]) {
+                const fieldKey =
+                  category === 'pokemon' && formsSeparate
+                    ? 'pokemonName'
+                    : Object.keys(data[category][id]).find(field => field.includes('Name'))
+
                 if (fieldKey) {
                   this.masterfile[category][id] = {
                     ...data[category][id],
-                    [fieldKey]: ref[`${this.options.prefix[category]}${id}`],
+                    [fieldKey]: ref[`${this.options.prefix[category]}${actualId}`],
                   }
                 } else {
-                  console.warn(`Unable to determine field key for ${id} in ${category}`)
+                  console.warn(`Unable to determine field key for ${id} in ${category}, proceeding with default.`)
+                  this.masterfile[category][id] = data[category][id]
                 }
               } else {
-                console.warn(`Missing ${locale} key for id: ${id} in ${category}`)
+                console.warn(`Missing ${locale} key for id: ${id} in ${category}, proceeding with default.`)
+                this.masterfile[category][id] = data[category][id]
               }
             } else {
-              console.warn(`Missing prefix for category ${category}`)
+              console.warn(`Missing prefix for category ${category}, proceeding with default.`)
+              this.masterfile[category][id] = data[category][id]
             }
           })
         } else {
@@ -260,12 +281,15 @@ export default class Translations extends Masterfile {
               if (id === '413' || id === '412') {
                 checkAssets += '_cloak'
               }
-              if (this.parsedTranslations[locale].misc[formName.toLowerCase()]) {
+              if (this.parsedTranslations.misc && this.parsedTranslations[locale].misc[formName.toLowerCase()]) {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.parsedTranslations[locale].misc[formName.toLowerCase()]
-              } else if (this.rawTranslations[locale][`form_${checkAssets}`] && checkAssets !== 'normal') {
+              } else if (
+                this.rawTranslations[locale][`${this.options.prefix.forms}${checkAssets}`] &&
+                checkAssets !== 'normal'
+              ) {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
-                  this.rawTranslations[locale][`form_${checkAssets}`]
+                  this.rawTranslations[locale][`${this.options.prefix.forms}${checkAssets}`]
               } else if (formName === 'Normal') {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.generics[locale].normal
@@ -341,10 +365,10 @@ export default class Translations extends Masterfile {
   }
 
   characters(locale: string, parsedInvasions: AllInvasions) {
-    this.parsedTranslations[locale].characters = {
-      [`${this.options.prefix.characters}0`]: this.generics[locale].none,
+    this.parsedTranslations[locale].grunts = {
+      [`${this.options.prefix.grunts}0`]: this.generics[locale].none,
     }
-    this.parsedTranslations[locale].characterCategory = {}
+    this.parsedTranslations[locale].characterCategories = {}
     Object.entries(parsedInvasions).forEach(grunt => {
       const [id, info] = grunt
       let assetRef
@@ -366,12 +390,12 @@ export default class Translations extends Masterfile {
           assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`]
       }
       if (assetRef) {
-        this.parsedTranslations[locale].characters[`${this.options.prefix.characters}${id}`] = assetRef
+        this.parsedTranslations[locale].grunts[`${this.options.prefix.grunts}${id}`] = assetRef
       }
     })
     Object.entries(Rpc.EnumWrapper.CharacterCategory).forEach(proto => {
       const [name, id] = proto
-      this.parsedTranslations[locale].characterCategory[`${this.options.prefix.characterCategory}${id}`] =
+      this.parsedTranslations[locale].characterCategories[`${this.options.prefix.characterCategories}${id}`] =
         this.capitalize(name)
     })
   }

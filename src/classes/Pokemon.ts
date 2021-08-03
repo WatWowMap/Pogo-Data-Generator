@@ -9,6 +9,7 @@ import { FamilyProto, FormProto, GenderProto, MegaProto, MoveProto, PokemonIdPro
 
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
+  parsedPokeForms: AllPokemon
   parsedForms: AllForms
   formsRef: { [id: string]: string }
   generations: Generation
@@ -23,6 +24,7 @@ export default class Pokemon extends Masterfile {
     this.options = options
     this.formsToSkip = this.options.skipForms ? this.options.skipForms.map(name => name.toLowerCase()) : []
     this.parsedPokemon = {}
+    this.parsedPokeForms = {}
     this.parsedForms = {
       0: {
         formName: '',
@@ -469,11 +471,10 @@ export default class Pokemon extends Masterfile {
   }
 
   makeFormsSeparate() {
-    const parsed: AllPokemon = {}
     Object.values(this.parsedPokemon).forEach(pokemon => {
       if (pokemon.forms) {
         pokemon.forms.forEach(form => {
-          parsed[`${pokemon.pokedexId}_${form}`] = {
+          this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
             ...pokemon,
             ...this.parsedForms[form],
             forms: [form],
@@ -481,6 +482,5 @@ export default class Pokemon extends Masterfile {
         })
       }
     })
-    this.parsedPokemon = parsed
   }
 }

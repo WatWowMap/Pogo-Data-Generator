@@ -1,0 +1,232 @@
+{
+  "pokemon": {
+    "1": {
+      "pokedexId": 1,
+      "pokemonName": "Bulbasaur",
+      "forms": [
+        897,
+        163,
+        165,
+        164
+      ],
+      "defaultFormId": 163,
+      "types": [
+        12,
+        4
+      ],
+      "attack": 118,
+      "defense": 111,
+      "stamina": 128,
+      "height": 0.7,
+      "weight": 6.9,
+      "quickMoves": [
+        214,
+        221
+      ],
+      "chargedMoves": [
+        90,
+        59,
+        118
+      ],
+      "family": 1,
+      "fleeRate": 0.1,
+      "captureRate": 0.2,
+      "legendary": false,
+      "mythic": false,
+      "buddyGroupNumber": 2,
+      "kmBuddyDistance": 3,
+      "thirdMoveStardust": 10000,
+      "thirdMoveCandy": 25,
+      "gymDefenderEligible": true,
+      "genId": 1,
+      "evolutions": [
+        {
+          "evoId": 2,
+          "formId": 166
+        }
+      ],
+      "generation": "Kanto",
+      "little": true
+    },
+    "6": {
+      "pokedexId": 6,
+      "pokemonName": "Charizard",
+      "forms": [
+        951,
+        178,
+        180,
+        179
+      ],
+      "defaultFormId": 178,
+      "types": [
+        10,
+        3
+      ],
+      "attack": 223,
+      "defense": 173,
+      "stamina": 186,
+      "height": 1.7,
+      "weight": 90.5,
+      "quickMoves": [
+        269,
+        255
+      ],
+      "chargedMoves": [
+        103,
+        83,
+        270
+      ],
+      "family": 4,
+      "fleeRate": 0.05,
+      "captureRate": 0.05,
+      "legendary": false,
+      "mythic": false,
+      "buddyGroupNumber": 3,
+      "kmBuddyDistance": 3,
+      "thirdMoveStardust": 10000,
+      "thirdMoveCandy": 25,
+      "gymDefenderEligible": true,
+      "genId": 1,
+      "tempEvolutions": [
+        {
+          "tempEvoId": 2,
+          "attack": 273,
+          "defense": 213,
+          "stamina": 186,
+          "height": 1.7,
+          "weight": 110.5,
+          "types": [
+            10,
+            16
+          ]
+        },
+        {
+          "tempEvoId": 3,
+          "attack": 319,
+          "defense": 212,
+          "stamina": 186,
+          "height": 1.7,
+          "weight": 100.5
+        }
+      ],
+      "generation": "Kanto"
+    }
+  },
+  "forms": {
+    "32": {
+      "formName": "Snowy",
+      "proto": "CASTFORM_SNOWY",
+      "formId": 32,
+      "quickMoves": [
+        244,
+        221
+      ],
+      "chargedMoves": [
+        40,
+        39,
+        293
+      ],
+      "types": [
+        15
+      ]
+    },
+    "2507": {
+      "formName": "Normal",
+      "proto": "CURSOLA_NORMAL",
+      "formId": 2507
+    },
+    "2583": {
+      "formName": "Galarian",
+      "proto": "SLOWBRO_GALARIAN",
+      "formId": 2583,
+      "attack": 182,
+      "defense": 156,
+      "stamina": 216,
+      "height": 1.6,
+      "weight": 70.5,
+      "quickMoves": [
+        235,
+        224
+      ],
+      "chargedMoves": [
+        247,
+        108,
+        90
+      ],
+      "types": [
+        4,
+        14
+      ]
+    }
+  },
+  "types": {
+    "1": {
+      "typeId": 1,
+      "typeName": "Normal"
+    },
+    "2": {
+      "typeId": 2,
+      "typeName": "Fighting"
+    }
+  },
+  "moves": {
+    "17": {
+      "moveId": 17,
+      "moveName": "Smog",
+      "proto": "SMOG"
+    },
+    "72": {
+      "moveId": 72,
+      "moveName": "Magnet Bomb",
+      "proto": "MAGNET_BOMB",
+      "type": 9,
+      "power": 70
+    }
+  },
+  "items": {
+    "1": {
+      "itemId": 1,
+      "itemName": "Poke Ball",
+      "proto": "ITEM_POKE_BALL",
+      "type": "Pokeball",
+      "category": "Pokeball",
+      "minTrainerLevel": 1
+    },
+    "503": {
+      "itemId": 503,
+      "itemName": "Troy Disk Mossy",
+      "proto": "ITEM_TROY_DISK_MOSSY",
+      "type": "Disk",
+      "category": "Disk",
+      "minTrainerLevel": 1
+    }
+  },
+  "invasions": {
+    "4": {
+      "id": 4,
+      "type": "Mixed",
+      "gender": 1,
+      "grunt": "Grunt",
+      "secondReward": false,
+      "encounters": []
+    }
+  },
+  "weather": {
+    "0": {
+      "weatherId": 0,
+      "weatherName": "None",
+      "proto": "NONE",
+      "types": []
+    },
+    "1": {
+      "weatherId": 1,
+      "weatherName": "Clear",
+      "proto": "CLEAR",
+      "types": [
+        12,
+        5,
+        10
+      ]
+    }
+  }
+}
