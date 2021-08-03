@@ -171,7 +171,7 @@ export default class Translations extends Masterfile {
 
   mergeManualTranslations(locale: string, enFallback: TranslationKeys) {
     let merged = this.options.mergeCategories ? {} : null
-    Object.keys(this.manualTranslations[locale]).forEach(category => {
+    Object.keys(this.parsedTranslations[locale]).forEach(category => {
       if (merged) {
         merged = {
           ...merged,

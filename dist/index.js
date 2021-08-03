@@ -67,8 +67,8 @@ async function generate({ template, safe, url, test, raw } = {}) {
         (safe
             ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
             : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json');
-    const { pokemon, types, moves, items, questTypes, questConditions, questRewardTypes, invasions, weather, translations } = templateMerger(template || base_json_1.default);
-    const localeCheck = translations.enabled && translations.options.masterfileLocale !== 'en';
+    const { pokemon, types, moves, items, questTypes, questConditions, questRewardTypes, invasions, weather, translations, } = templateMerger(template || base_json_1.default);
+    const localeCheck = translations.enabled && translations.options.masterfileLocale && translations.options.masterfileLocale !== 'en';
     const AllPokemon = new Pokemon_1.default(pokemon.options);
     const AllItems = new Item_1.default(items.options);
     const AllMoves = new Move_1.default();
@@ -102,20 +102,18 @@ async function generate({ template, safe, url, test, raw } = {}) {
             }
         }
         AllTypes.buildTypes();
-        if (pokemon.enabled) {
-            if (pokemon.options.includeProtos) {
-                AllPokemon.generateProtoForms();
-            }
-            if (pokemon.options.includeEstimatedPokemon) {
-                AllPokemon.megaInfo();
-                AllPokemon.futureMegas();
-            }
-            if (pokemon.template.little) {
-                AllPokemon.littleCup();
-            }
-            if (pokemon.options.processFormsSeparately) {
-                AllPokemon.makeFormsSeparate();
-            }
+        if (pokemon.options.includeProtos || translations.options.includeProtos) {
+            AllPokemon.generateProtoForms();
+        }
+        if (pokemon.options.includeEstimatedPokemon) {
+            AllPokemon.megaInfo();
+            AllPokemon.futureMegas();
+        }
+        if (pokemon.template.little) {
+            AllPokemon.littleCup();
+        }
+        if (pokemon.options.processFormsSeparately) {
+            AllPokemon.makeFormsSeparate();
         }
         if (questTypes.enabled) {
             AllQuests.addQuest('types');
@@ -126,15 +124,13 @@ async function generate({ template, safe, url, test, raw } = {}) {
         if (questConditions.enabled) {
             AllQuests.addQuest('conditions');
         }
-        if (moves.enabled) {
-            if (moves.options.includeProtos) {
-                AllMoves.protoMoves();
-            }
+        if (moves.options.includeProtos) {
+            AllMoves.protoMoves();
         }
         if (weather.enabled) {
             AllWeather.buildWeather();
         }
-        if (invasions.enabled) {
+        if (invasions.enabled || translations.template.characters) {
             const invasionData = await AllInvasions.fetch('https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json');
             AllInvasions.invasions(invasionData);
         }
@@ -212,9 +208,7 @@ async function generate({ template, safe, url, test, raw } = {}) {
             });
     }
     if (questRewardTypes.enabled) {
-        final.questTypes = raw
-            ? AllQuests.parsedQuestTypes
-            : AllQuests.templater(AllQuests.parsedQuestTypes, questTypes);
+        final.questTypes = raw ? AllQuests.parsedQuestTypes : AllQuests.templater(AllQuests.parsedQuestTypes, questTypes);
     }
     if (questRewardTypes.enabled) {
         final.questRewardTypes = raw
