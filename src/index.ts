@@ -158,7 +158,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
           if (translations.template.types) {
             AllTranslations.types(localeCode)
           }
-          if (translations.template.characters && invasions.enabled) {
+          if (translations.template.characters) {
             AllTranslations.characters(localeCode, AllInvasions.parsedInvasions)
           }
           if (translations.template.weather) {
