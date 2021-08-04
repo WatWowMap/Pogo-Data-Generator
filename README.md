@@ -102,9 +102,9 @@ const customData = await generate({ template }) // returns custom templated data
 
 1. Clone the repo
 2. Install TypeScript compiler `npm install -g typescript`
-3. `npm run local` will generate a local `masterfile.json` for you to checkout
-4. `tsc -w` will auto recompile the TypeScript during development
+3. `tsc` will compile the TS into JS, then you can run `npm run local`, which will generate a local `masterfile.json` for you to checkout
 
+- `tsc -w` will auto recompile the TypeScript during development
 - You can play with the input options by changing the script in `package.json` or modifying the `base.json` file.
 
 The generate function accepts an object with the following properties:
@@ -131,6 +131,7 @@ const template = {
   pokemon: {
     enabled: true,
     options: {
+      topLevelName: 'pokemon',
       keys: {
         // The keys section are dynamic based off of the data
         keyJoiner: '_', // pokedexId and pokemonName will be joined by a '_'
@@ -274,6 +275,7 @@ const template = {
   translations: {
     enabled: true,
     options: {
+      topLevelName: 'translations',
       prefix: {
         // Enables custom prefixes to be used with i18n or other translators
         pokemon: 'poke_',
@@ -331,6 +333,7 @@ const template = {
   types: {
     enabled: true,
     options: {
+      topLevelName: 'types',
       keys: {
         keyJoiner: '_',
         main: 'typeId',
@@ -346,6 +349,7 @@ const template = {
   moves: {
     enabled: true,
     options: {
+      topLevelName: 'moves',
       keys: {
         keyJoiner: '_',
         main: 'moveId',
@@ -395,6 +399,7 @@ const template = {
   questTypes: {
     enabled: true,
     options: {
+      topLevelName: 'questTypes',
       keys: {
         main: 'id',
       },
@@ -408,6 +413,7 @@ const template = {
   questConditions: {
     enabled: true,
     options: {
+      topLevelName: 'questConditions',
       keys: {
         keyJoiner: '_',
         main: 'id',
@@ -424,6 +430,7 @@ const template = {
   questRewardTypes: {
     enabled: true,
     options: {
+      topLevelName: 'questRewardTypes',
       keys: {
         keyJoiner: '_',
         main: 'id',
@@ -440,6 +447,7 @@ const template = {
   invasions: {
     enabled: true,
     options: {
+      topLevelName: 'invasions',
       keys: {
         keyJoiner: '_',
         main: 'id',
@@ -470,6 +478,7 @@ const template = {
   weather: {
     enabled: true,
     options: {
+      topLevelName: 'weather',
       keys: {
         keyJoiner: '_',
         main: 'weatherId',

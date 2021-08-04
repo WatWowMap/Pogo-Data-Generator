@@ -1,4 +1,5 @@
 export interface Options {
+  topLevelName?: string
   keys?: {
     [key: string]: string
   }
