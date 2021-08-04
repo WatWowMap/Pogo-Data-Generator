@@ -24,7 +24,6 @@ export default class Pokemon extends Masterfile {
     this.options = options
     this.formsToSkip = this.options.skipForms ? this.options.skipForms.map(name => name.toLowerCase()) : []
     this.parsedPokemon = {}
-    this.parsedPokeForms = {}
     this.parsedForms = {
       0: {
         formName: '',
@@ -471,6 +470,7 @@ export default class Pokemon extends Masterfile {
   }
 
   makeFormsSeparate() {
+    this.parsedPokeForms = {}
     Object.values(this.parsedPokemon).forEach(pokemon => {
       if (pokemon.forms) {
         pokemon.forms.forEach(form => {

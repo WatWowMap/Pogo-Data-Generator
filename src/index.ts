@@ -174,7 +174,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     if (localeCheck) {
       AllTranslations.translateMasterfile(
         {
-          pokemon: pokemon.options.processFormsSeparately ? AllPokemon.parsedPokeForms : AllPokemon.parsedPokemon,
+          pokemon: AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon,
           moves: AllMoves.parsedMoves,
           items: AllItems.parsedItems,
           forms: AllPokemon.parsedForms,
@@ -186,7 +186,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
       )
     }
   }
-  const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokemon
+  const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon
   const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes
   const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves
   const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms
