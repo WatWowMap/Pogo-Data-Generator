@@ -11,6 +11,7 @@
   "pokemon": {
     "enabled": true,
     "options": {
+      "topLevelName": "pokemon",
       "keys": {
         "main": "pokedexId",
         "forms": "formId",
@@ -100,6 +101,7 @@
   "types": {
     "enabled": true,
     "options": {
+      "topLevelName": "types",
       "keys": {
         "main": "typeId"
       }
@@ -109,6 +111,7 @@
   "moves": {
     "enabled": true,
     "options": {
+      "topLevelName": "moves",
       "keys": {
         "main": "moveId",
         "type": false
@@ -129,6 +132,7 @@
   "items": {
     "enabled": true,
     "options": {
+      "topLevelName": "items",
       "keys": {
         "main": "itemId"
       },
@@ -151,6 +155,7 @@
   "questTypes": {
     "enabled": true,
     "options": {
+      "topLevelName": "questTypes",
       "keys": {
         "main": "id"
       }
@@ -164,6 +169,7 @@
   "questConditions": {
     "enabled": true,
     "options": {
+      "topLevelName": "questConditions",
       "keys": {
         "main": "id"
       }
@@ -177,6 +183,7 @@
   "questRewardTypes": {
     "enabled": true,
     "options": {
+      "topLevelName": "questRewardTypes",
       "keys": {
         "main": "id"
       }
@@ -190,6 +197,7 @@
   "invasions": {
     "enabled": true,
     "options": {
+      "topLevelName": "invasions",
       "keys": {
         "main": "id",
         "encounters": "position"
@@ -214,6 +222,7 @@
   "weather": {
     "enabled": true,
     "options": {
+      "topLevelName": "weather",
       "keys": {
         "main": "weatherId"
       },
@@ -231,6 +240,7 @@
   "translations": {
     "enabled": true,
     "options": {
+      "topLevelName": "translations",
       "prefix": {
         "pokemon": "poke_",
         "forms": "form_",

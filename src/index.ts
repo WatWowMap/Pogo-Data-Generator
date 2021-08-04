@@ -194,7 +194,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather
 
   if (pokemon.enabled) {
-    final.pokemon = raw
+    final[pokemon.options.topLevelName || 'pokemon'] = raw
       ? localPokemon
       : AllPokemon.templater(safeData.pokemon || localPokemon, pokemon, {
           quickMoves: localMoves,
@@ -207,41 +207,49 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     }
   }
   if (types.enabled) {
-    final.types = raw ? localTypes : AllTypes.templater(safeData.types || localTypes, types)
+    final[types.options.topLevelName || 'types'] = raw
+      ? localTypes
+      : AllTypes.templater(safeData.types || localTypes, types)
   }
   if (items.enabled) {
-    final.items = raw ? localItems : AllItems.templater(safeData.items || localItems, items)
+    final[items.options.topLevelName || 'items'] = raw
+      ? localItems
+      : AllItems.templater(safeData.items || localItems, items)
   }
   if (moves.enabled) {
-    final.moves = raw
+    final[moves.options.topLevelName || 'moves'] = raw
       ? localMoves
       : AllMoves.templater(safeData.moves || localMoves, moves, {
           type: localTypes,
         })
   }
-  if (questRewardTypes.enabled) {
-    final.questTypes = raw ? AllQuests.parsedQuestTypes : AllQuests.templater(safeData.questTypes || AllQuests.parsedQuestTypes, questTypes)
+  if (questTypes.enabled) {
+    final[questTypes.options.topLevelName || 'questTypes'] = raw
+      ? AllQuests.parsedQuestTypes
+      : AllQuests.templater(safeData.questTypes || AllQuests.parsedQuestTypes, questTypes)
   }
   if (questRewardTypes.enabled) {
-    final.questRewardTypes = raw
+    final[questRewardTypes.options.topLevelName || 'questRewardTypes'] = raw
       ? AllQuests.parsedRewardTypes
       : AllQuests.templater(safeData.questRewardTypes || AllQuests.parsedRewardTypes, questRewardTypes)
   }
   if (questConditions.enabled) {
-    final.questConditions = raw
+    final[questConditions.options.topLevelName || 'questConditions'] = raw
       ? AllQuests.parsedConditions
       : AllQuests.templater(safeData.questConditions || AllQuests.parsedConditions, questConditions)
   }
   if (invasions.enabled) {
-    final.invasions = raw
+    final[invasions.options.topLevelName || 'invasions'] = raw
       ? AllInvasions.parsedInvasions
       : AllInvasions.templater(safeData.invasions || AllInvasions.parsedInvasions, invasions)
   }
   if (weather.enabled) {
-    final.weather = raw ? localWeather : AllWeather.templater(safeData.weather || localWeather, weather, { types: localTypes })
+    final[weather.options.topLevelName || 'weather'] = raw
+      ? localWeather
+      : AllWeather.templater(safeData.weather || localWeather, weather, { types: localTypes })
   }
   if (translations.enabled) {
-    final.translations = AllTranslations.parsedTranslations
+    final[translations.options.topLevelName || 'translations'] = AllTranslations.parsedTranslations
   }
 
   if (test) {

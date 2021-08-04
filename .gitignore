@@ -1,4 +1,5 @@
 /node_modules/
+/dist/
 masterfile.json
 master-latest.json
 .prettierrc

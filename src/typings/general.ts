@@ -1,14 +1,3 @@
-import { AllPokemon, AllMoves, AllItems, AllQuests, AllInvasions } from './dataTypes'
-
-export interface FinalData {
-  pokemon?: AllPokemon
-  moves?: AllMoves
-  items?: AllItems
-  questRewardTypes?: AllQuests
-  questConditions?: AllQuests
-  invasions?: AllInvasions
-}
-
 export interface GuessedMega {
   attack?: number
   defense?: number

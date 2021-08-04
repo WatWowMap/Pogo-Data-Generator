@@ -3,7 +3,7 @@ const defaultRef = require('./defaultValues.json')
 const rawRef = require('./rawValues.json')
 const customRef = require('./customValues.json')
 
-let data = {}
+let data
 
 const testFn = (refData) => {
   Object.keys(refData).forEach(category => {
