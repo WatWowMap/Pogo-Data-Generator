@@ -255,7 +255,8 @@
         "grunts": "grunt_",
         "characterCategories": "character_category_",
         "lures": "lure_",
-        "throwTypes": "throw_type_"
+        "throwTypes": "throw_type_",
+        "pokemonCategories": "pokemon_categories_"
       },
       "questVariables": {
         "prefix": "{{",
@@ -263,7 +264,8 @@
       },
       "masterfileLocale": "en",
       "manualTranslations": true,
-      "mergeCategories": true
+      "mergeCategories": true,
+      "useLanguageAsRef": false
     },
     "locales": {
       "de": true,
@@ -289,7 +291,8 @@
       "types": true,
       "characters": true,
       "weather": true,
-      "misc": true
+      "misc": true,
+      "pokemonCategories": true
     }
   }
 }

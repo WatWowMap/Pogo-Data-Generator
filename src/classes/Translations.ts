@@ -12,9 +12,13 @@ export default class Translations extends Masterfile {
   codes: { [id: string]: string }
   masterfile: FinalResult
   generics: { [key: string]: { [key: string]: string } }
+  reference: TranslationKeys
+  enFallback: TranslationKeys
+  collator: Intl.Collator
 
   constructor(options: Options) {
     super()
+    this.collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
     this.options = options
     this.rawTranslations = {}
     this.manualTranslations = {}
@@ -111,6 +115,7 @@ export default class Translations extends Masterfile {
       forms: {},
       costumes: {},
       descriptions: {},
+      pokemonCategories: {},
       moves: {},
       items: {},
       quests: {},
@@ -178,27 +183,55 @@ export default class Translations extends Masterfile {
     }
   }
 
-  mergeManualTranslations(locale: string, enFallback: TranslationKeys) {
-    let merged = this.options.mergeCategories ? {} : null
+  mergeManualTranslations(locale: string) {
+    if (!this.enFallback) {
+      this.enFallback = this.parsedTranslations.en
+    }
+    const merged: TranslationKeys = {}
+    const sorted: TranslationKeys = {}
     Object.keys(this.parsedTranslations[locale]).forEach(category => {
-      if (merged) {
-        merged = {
-          ...merged,
-          ...enFallback[category],
-          ...this.parsedTranslations[locale][category],
-          ...this.manualTranslations[locale][category],
-        }
-      } else {
-        this.parsedTranslations[locale][category] = {
-          ...enFallback[category],
-          ...this.parsedTranslations[locale][category],
-          ...this.manualTranslations[locale][category],
-        }
+      merged[category] = {
+        ...this.enFallback[category],
+        ...this.parsedTranslations[locale][category],
+        ...this.manualTranslations[locale][category],
+      }
+      if (category === 'forms' || category === 'misc' || category === 'grunts') {
+        sorted[category] = {}
+        const sortedKeys = Object.keys(merged[category]).sort(this.collator.compare)
+        sortedKeys.forEach(key => {
+          sorted[category][key] = merged[category][key]
+        })
+        merged[category] = sorted[category]
       }
     })
-    if (merged) {
-      this.parsedTranslations[locale] = merged
+    this.parsedTranslations[locale] = merged
+  }
+
+  languageRef(locale: string) {
+    if (!this.reference) {
+      this.reference = this.parsedTranslations[this.options.useLanguageAsRef]
     }
+    const languageRef: TranslationKeys = {}
+    Object.keys(this.parsedTranslations[locale]).forEach(category => {
+      languageRef[category] = {}
+      Object.keys(this.parsedTranslations[locale][category]).forEach(x => {
+        if (this.reference[category][x] && !languageRef[category][this.reference[category][x]]) {
+          languageRef[category][this.reference[category][x]] = this.parsedTranslations[locale][category][x]
+        }
+      })
+    })
+    this.parsedTranslations[locale] = languageRef
+  }
+
+  mergeCategories(locale: string) {
+    let merged: any = {}
+    Object.keys(this.parsedTranslations[locale]).forEach(category => {
+      merged = {
+        ...merged,
+        ...this.parsedTranslations[locale][category],
+      }
+    })
+    this.parsedTranslations[locale] = merged
   }
 
   translateMasterfile(data: FinalResult, locale: string, formsSeparate: boolean) {
@@ -308,6 +341,18 @@ export default class Translations extends Masterfile {
     Object.entries(Rpc.PokemonDisplayProto.Costume).forEach(proto => {
       const [name, id] = proto
       this.parsedTranslations[locale].costumes[`${this.options.prefix.costumes}${id}`] = this.capitalize(name)
+    })
+  }
+
+  pokemonCategories(locale: string) {
+    this.parsedTranslations[locale].pokemonCategories = {}
+    Object.keys(this.rawTranslations[locale]).forEach(key => {
+      if (key.startsWith(`pokemon_category_`)) {
+        const split = key.replace('pokemon_category_', '').split('_')
+        this.parsedTranslations[locale].pokemonCategories[
+          `${this.options.prefix.pokemonCategories}${split.map(x => +x || x).join('_')}`
+        ] = this.rawTranslations[locale][key]
+      }
     })
   }
 
