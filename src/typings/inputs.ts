@@ -33,6 +33,7 @@ export interface Options {
   includeRawForms?: boolean
   includeBalloons?: boolean
   useLanguageAsRef?: string
+  includeUnset?: boolean
 }
 
 interface PokemonTemplate extends Form {

@@ -85,7 +85,7 @@ export interface SinglePokemon extends SingleForm {
   legendary?: boolean
   mythic?: boolean
   buddyGroupNumber?: number
-  kmBuddyDistance?: number
+  buddyDistance?: number
   thirdMoveStardust?: number
   thirdMoveCandy?: number
   gymDefenderEligible?: boolean

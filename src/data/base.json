@@ -32,7 +32,8 @@
       "skipForms": [],
       "includeEstimatedPokemon": true,
       "processFormsSeparately": false,
-      "includeRawForms": false
+      "includeRawForms": true,
+      "includeUnset": false
     },
     "template": {
       "pokedexId": true,
@@ -90,7 +91,7 @@
       "legendary": true,
       "mythic": true,
       "buddyGroupNumber": true,
-      "kmBuddyDistance": true,
+      "buddyDistance": true,
       "thirdMoveStardust": true,
       "thirdMoveCandy": true,
       "gymDefenderEligible": true,
@@ -238,7 +239,7 @@
     }
   },
   "translations": {
-    "enabled": true,
+    "enabled": false,
     "options": {
       "topLevelName": "translations",
       "prefix": {
