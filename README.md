@@ -165,6 +165,7 @@ const template = {
       includeEstimatedPokemon: true, // Includes mega info for Mega Evos that do not officially exist in Pogo
       processFormsSeparately: false, // Full Pokemon obj for each form
       includeRawForms: false, // Returns a "forms" obj with all individual forms
+      includeUnset: false, //includes Pokemon that have unset forms
     },
     template: {
       pokedexId: true,
@@ -292,6 +293,7 @@ const template = {
         characterCategories: 'character_category_',
         lures: 'lure_',
         throwTypes: 'throw_type_',
+        pokemonCategories: 'pokemon_categories_',
       },
       questVariables: {
         // Some translations have variables for i18n to dynamically adjust, these will set those variables
@@ -301,6 +303,7 @@ const template = {
       masterfileLocale: 'en', // If you want *most* of the Masterfile to be translated
       manualTranslations: true, // Grabs unofficial translations created by the community
       mergeCategories: true, // Translations will be merged into one obj
+      useLanguageAsRef: 'en', // Sets all translation keys to whatever language is specified, set false to ignore
     },
     locales: {
       // If you are translating the masterfile, your desired locale must be selected

@@ -51,7 +51,7 @@ export default class Masterfile {
     const { template, options } = settings
     const resolved: any = options.keys.main ? {} : []
 
-    const parseData = (fieldKey: string, fieldValue: any, templateChild: any) => {
+    const parseData = (fieldKey: string, fieldValue: any, templateChild: any, data: any) => {
       // turns integer references into values
       const isObj = options.keys[fieldKey]
       let returnValue: any = isObj ? {} : []
@@ -60,7 +60,7 @@ export default class Masterfile {
         fieldValue = [fieldValue]
       }
       fieldValue.forEach((x: any) => {
-        const child = loopFields(fieldKey, x, templateChild)
+        const child = loopFields(fieldKey, x, templateChild, data)
 
         if (child) {
           if (isObj) {
@@ -89,13 +89,13 @@ export default class Masterfile {
       return fieldKey === 'type' && !isObj ? returnValue[0] : returnValue
     }
 
-    const loopFields = (fieldKey: string, x: any, templateChild: any) => {
+    const loopFields = (fieldKey: string, x: number, templateChild: any, data: any) => {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
       const ref = reference[fieldKey] ? reference[fieldKey][x] : x
 
       Object.entries(ref).forEach(subField => {
-        const [subFieldKey, subFieldValue] = subField
+        let [subFieldKey, subFieldValue] = subField
 
         if (templateChild[fieldKey] === subFieldKey) {
           // allows for singular returns
@@ -104,11 +104,15 @@ export default class Masterfile {
           const customKey = this.keyFormatter(subFieldKey, options)
 
           if (typeof subFieldValue === 'object') {
-            returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey])
+            if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
+              // Nidoran hack
+              subFieldValue = data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
+            }
+            returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey], data)
           } else {
             if (options.customChildObj[subFieldKey]) {
               customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
-            } else {
+            } else if (subFieldValue !== undefined) {
               returnedObj[customKey] = subFieldValue
             }
           }
@@ -135,11 +139,11 @@ export default class Masterfile {
           if (template === fieldKey || template[fieldKey] === fieldKey) {
             // allows for singular returns
             parent = fieldValue
-          } else if (template[fieldKey] && (fieldValue || fieldValue === 0)) {
+          } else if (template[fieldKey] && fieldValue !== undefined) {
             const customKey = this.keyFormatter(fieldKey, options)
 
             if (typeof fieldValue === 'object' || reference[fieldKey]) {
-              parent[customKey] = parseData(fieldKey, fieldValue, template)
+              parent[customKey] = parseData(fieldKey, fieldValue, template, data[id])
             } else {
               if (options.customChildObj[fieldKey]) {
                 customChildObj(parent, fieldKey, customKey, fieldValue)
