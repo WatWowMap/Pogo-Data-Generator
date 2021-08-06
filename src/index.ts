@@ -141,6 +141,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
         const [localeCode, bool] = langCode
         if (bool) {
           await AllTranslations.fetchTranslations(localeCode)
+
           if (translations.template.misc) {
             AllTranslations.misc(localeCode)
           }
@@ -167,10 +168,24 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
           if (translations.template.weather) {
             AllTranslations.weather(localeCode)
           }
-          AllTranslations.mergeManualTranslations(localeCode, AllTranslations.parsedTranslations.en)
+          if (translations.template.pokemonCategories) {
+            AllTranslations.pokemonCategories(localeCode)
+          }
         }
       })
     )
+    Object.entries(translations.locales).forEach(langCode => {
+      const [localeCode, bool] = langCode
+      if (bool) {
+        AllTranslations.mergeManualTranslations(localeCode)
+        if (translations.options.useLanguageAsRef) {
+          AllTranslations.languageRef(localeCode)
+        }
+        if (translations.options.mergeCategories) {
+          AllTranslations.mergeCategories(localeCode)
+        }
+      }
+    })
     if (localeCheck) {
       AllTranslations.translateMasterfile(
         {
@@ -186,7 +201,9 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
       )
     }
   }
-  const localPokemon = localeCheck ? AllTranslations.masterfile.pokemon : AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon
+  const localPokemon = localeCheck
+    ? AllTranslations.masterfile.pokemon
+    : AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon
   const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes
   const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves
   const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms

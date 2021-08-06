@@ -32,6 +32,7 @@ export interface Options {
   processFormsSeparately?: boolean
   includeRawForms?: boolean
   includeBalloons?: boolean
+  useLanguageAsRef?: string
 }
 
 interface PokemonTemplate extends Form {
@@ -158,6 +159,7 @@ type TranslationsTemplate = {
   characters?: boolean
   weather?: boolean
   misc?: boolean
+  pokemonCategories?: boolean
 }
 
 export interface Input {
