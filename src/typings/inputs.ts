@@ -34,6 +34,7 @@ export interface Options {
   includeBalloons?: boolean
   useLanguageAsRef?: string
   includeUnset?: boolean
+  unsetFormName?: string
 }
 
 interface PokemonTemplate extends Form {

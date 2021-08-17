@@ -166,6 +166,7 @@ const template = {
       processFormsSeparately: false, // Full Pokemon obj for each form
       includeRawForms: false, // Returns a "forms" obj with all individual forms
       includeUnset: false, //includes Pokemon that have unset forms
+      unsetFormName: '', // Form name to use for unset forms
     },
     template: {
       pokedexId: true,

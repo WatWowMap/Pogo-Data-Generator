@@ -101,10 +101,8 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     if (pokemon.options.includeProtos || translations.options.includeProtos) {
       AllPokemon.generateProtoForms()
     }
-    if (pokemon.options.includeEstimatedPokemon) {
-      AllPokemon.megaInfo()
-      AllPokemon.futureMegas()
-    }
+    AllPokemon.megaInfo()
+    AllPokemon.futurePokemon()
     if (pokemon.template.little) {
       AllPokemon.littleCup()
     }

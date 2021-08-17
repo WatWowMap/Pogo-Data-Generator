@@ -2,6 +2,8 @@
   "pokemon": {
     "1": {
       "name": "Bulbasaur",
+      "pokedex_id": 1,
+      "default_form_id": 163,
       "forms": {
         "163": {
           "name": "Normal",
@@ -39,10 +41,6 @@
           "is_costume": true
         }
       },
-      "default_form_id": 163,
-      "pokedex_id": 1,
-      "gen_id": 1,
-      "generation": "Kanto",
       "types": [
         "Grass",
         "Poison"
@@ -52,8 +50,6 @@
       "stamina": 128,
       "height": 0.7,
       "weight": 6.9,
-      "flee_rate": 0.1,
-      "capture_rate": 0.2,
       "quick_moves": [
         "Vine Whip",
         "Tackle"
@@ -63,12 +59,9 @@
         "Seed Bomb",
         "Power Whip"
       ],
-      "evolutions": [
-        {
-          "pokemon": 2,
-          "form": 166
-        }
-      ],
+      "family": 1,
+      "flee_rate": 0.1,
+      "capture_rate": 0.2,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 2,
@@ -76,11 +69,20 @@
       "third_move_stardust": 10000,
       "third_move_candy": 25,
       "gym_defender_eligible": true,
-      "family": 1,
+      "gen_id": 1,
+      "generation": "Kanto",
+      "evolutions": [
+        {
+          "pokemon": 2,
+          "form": 166
+        }
+      ],
       "little": true
     },
     "6": {
       "name": "Charizard",
+      "pokedex_id": 6,
+      "default_form_id": 178,
       "forms": {
         "178": {
           "name": "Normal",
@@ -107,10 +109,6 @@
           "proto": "CHARIZARD_COPY_2019"
         }
       },
-      "default_form_id": 178,
-      "pokedex_id": 6,
-      "gen_id": 1,
-      "generation": "Kanto",
       "types": [
         "Fire",
         "Flying"
@@ -120,8 +118,6 @@
       "stamina": 186,
       "height": 1.7,
       "weight": 90.5,
-      "flee_rate": 0.05,
-      "capture_rate": 0.05,
       "quick_moves": [
         "Fire Spin",
         "Air Slash"
@@ -131,6 +127,18 @@
         "Dragon Claw",
         "Overheat"
       ],
+      "family": 4,
+      "flee_rate": 0.05,
+      "capture_rate": 0.05,
+      "legendary": false,
+      "mythic": false,
+      "buddy_group_number": 3,
+      "buddy_distance": 3,
+      "third_move_stardust": 10000,
+      "third_move_candy": 25,
+      "gym_defender_eligible": true,
+      "gen_id": 1,
+      "generation": "Kanto",
       "temp_evolutions": {
         "2": {
           "attack": 273,
@@ -148,164 +156,12 @@
           "stamina": 186,
           "weight": 100.5
         }
-      },
-      "legendary": false,
-      "mythic": false,
-      "buddy_group_number": 3,
-      "buddy_distance": 3,
-      "third_move_stardust": 10000,
-      "third_move_candy": 25,
-      "gym_defender_eligible": true,
-      "family": 4
-    },
-    "29": {
-			"name": "Nidoran♀",
-			"forms": {
-				"776": {
-					"name": "Normal",
-					"proto": "NIDORAN_NORMAL",
-					"evolutions": [
-						{
-							"pokemon": 30,
-							"form": 779
-						}
-					]
-				},
-				"777": {
-					"name": "Shadow",
-					"proto": "NIDORAN_SHADOW",
-					"evolutions": [
-						{
-							"pokemon": 30,
-							"form": 780
-						}
-					]
-				},
-				"778": {
-					"name": "Purified",
-					"proto": "NIDORAN_PURIFIED",
-					"evolutions": [
-						{
-							"pokemon": 30,
-							"form": 781
-						}
-					]
-				}
-			},
-			"default_form_id": 776,
-			"pokedex_id": 29,
-			"gen_id": 1,
-			"generation": "Kanto",
-			"types": [
-				"Poison"
-			],
-			"attack": 86,
-			"defense": 89,
-			"stamina": 146,
-			"height": 0.4,
-			"weight": 7,
-			"flee_rate": 0.15,
-			"capture_rate": 0.5,
-			"quick_moves": [
-				"Bite",
-				"Poison Sting"
-			],
-			"charged_moves": [
-				"Poison Fang",
-				"Body Slam",
-				"Sludge Bomb"
-			],
-			"evolutions": [
-				{
-					"pokemon": 30,
-					"form": 779
-				}
-			],
-			"legendary": false,
-			"mythic": false,
-			"buddy_group_number": 2,
-			"buddy_distance": 3,
-			"third_move_stardust": 50000,
-			"third_move_candy": 50,
-			"gym_defender_eligible": true,
-			"family": 29,
-			"little": true
-		},
-    "32": {
-      "name": "Nidoran♂",
-      "forms": {
-        "776": {
-          "name": "Normal",
-          "proto": "NIDORAN_NORMAL",
-          "evolutions": [
-            {
-              "pokemon": 33,
-              "form": 785
-            }
-          ]
-        },
-        "777": {
-          "name": "Shadow",
-          "proto": "NIDORAN_SHADOW",
-          "evolutions": [
-            {
-              "pokemon": 33,
-              "form": 786
-            }
-          ]
-        },
-        "778": {
-          "name": "Purified",
-          "proto": "NIDORAN_PURIFIED",
-          "evolutions": [
-            {
-              "pokemon": 33,
-              "form": 787
-            }
-          ]
-        }
-      },
-      "default_form_id": 776,
-      "pokedex_id": 32,
-      "gen_id": 1,
-      "generation": "Kanto",
-      "types": [
-        "Poison"
-      ],
-      "attack": 105,
-      "defense": 76,
-      "stamina": 130,
-      "height": 0.5,
-      "weight": 9,
-      "flee_rate": 0.15,
-      "capture_rate": 0.5,
-      "quick_moves": [
-        "Peck",
-        "Poison Sting"
-      ],
-      "charged_moves": [
-        "Horn Attack",
-        "Body Slam",
-        "Sludge Bomb"
-      ],
-      "evolutions": [
-        {
-          "pokemon": 33,
-          "form": 785
-        }
-      ],
-      "legendary": false,
-      "mythic": false,
-      "buddy_group_number": 2,
-      "buddy_distance": 3,
-      "third_move_stardust": 50000,
-      "third_move_candy": 50,
-      "gym_defender_eligible": true,
-      "family": 32,
-      "little": true
+      }
     },
     "52": {
       "name": "Meowth",
+      "pokedex_id": 52,
+      "default_form_id": 63,
       "forms": {
         "63": {
           "name": "Normal",
@@ -320,17 +176,17 @@
         "64": {
           "name": "Alola",
           "proto": "MEOWTH_ALOLA",
-          "evolutions": [
-            {
-              "pokemon": 53,
-              "form": 66
-            }
-          ],
           "attack": 99,
           "defense": 78,
           "stamina": 120,
           "types": [
             "Dark"
+          ],
+          "evolutions": [
+            {
+              "pokemon": 53,
+              "form": 66
+            }
           ]
         },
         "709": {
@@ -356,12 +212,6 @@
         "2335": {
           "name": "Galarian",
           "proto": "MEOWTH_GALARIAN",
-          "evolutions": [
-            {
-              "pokemon": 863,
-              "form": 2504
-            }
-          ],
           "attack": 115,
           "defense": 92,
           "stamina": 137,
@@ -378,13 +228,15 @@
           ],
           "types": [
             "Steel"
+          ],
+          "evolutions": [
+            {
+              "pokemon": 863,
+              "form": 2504
+            }
           ]
         }
       },
-      "default_form_id": 63,
-      "pokedex_id": 52,
-      "gen_id": 1,
-      "generation": "Kanto",
       "types": [
         "Normal"
       ],
@@ -393,8 +245,6 @@
       "stamina": 120,
       "height": 0.4,
       "weight": 4.2,
-      "flee_rate": 0.15,
-      "capture_rate": 0.5,
       "quick_moves": [
         "Scratch",
         "Bite"
@@ -404,78 +254,30 @@
         "Dark Pulse",
         "Foul Play"
       ],
+      "family": 52,
+      "flee_rate": 0.15,
+      "capture_rate": 0.5,
+      "legendary": false,
+      "mythic": false,
+      "buddy_group_number": 2,
+      "buddy_distance": 3,
+      "third_move_stardust": 50000,
+      "third_move_candy": 50,
+      "gym_defender_eligible": true,
+      "gen_id": 1,
+      "generation": "Kanto",
       "evolutions": [
         {
           "pokemon": 53,
           "form": 65
         }
       ],
-      "legendary": false,
-      "mythic": false,
-      "buddy_group_number": 2,
-      "buddy_distance": 3,
-      "third_move_stardust": 50000,
-      "third_move_candy": 50,
-      "gym_defender_eligible": true,
-      "family": 52,
       "little": true
-    },
-    "315": {
-      "name": "Roselia",
-      "forms": {
-        "1502": {
-          "name": "Normal",
-          "proto": "ROSELIA_NORMAL"
-        },
-        "1503": {
-          "name": "Shadow",
-          "proto": "ROSELIA_SHADOW"
-        },
-        "1504": {
-          "name": "Purified",
-          "proto": "ROSELIA_PURIFIED"
-        }
-      },
-      "default_form_id": 1502,
-      "pokedex_id": 315,
-      "gen_id": 3,
-      "generation": "Hoenn",
-      "types": [
-        "Grass",
-        "Poison"
-      ],
-      "attack": 186,
-      "defense": 131,
-      "stamina": 137,
-      "height": 0.3,
-      "weight": 2,
-      "flee_rate": 0.09,
-      "capture_rate": 0.3,
-      "quick_moves": [
-        "Poison Jab",
-        "Razor Leaf"
-      ],
-      "charged_moves": [
-        "Petal Blizzard",
-        "Sludge Bomb",
-        "Dazzling Gleam"
-      ],
-      "evolutions": [
-        {
-          "pokemon": 407
-        }
-      ],
-      "legendary": false,
-      "mythic": false,
-      "buddy_group_number": 2,
-      "buddy_distance": 3,
-      "third_move_stardust": 50000,
-      "third_move_candy": 50,
-      "gym_defender_eligible": true,
-      "family": 315
     },
     "531": {
       "name": "Audino",
+      "pokedex_id": 531,
+      "default_form_id": 1997,
       "forms": {
         "1997": {
           "name": "Normal",
@@ -496,8 +298,6 @@
           }
         }
       },
-      "default_form_id": 1997,
-      "pokedex_id": 531,
       "gen_id": 5,
       "generation": "Unova",
       "types": [
@@ -508,8 +308,6 @@
       "stamina": 230,
       "height": 1.1,
       "weight": 31,
-      "flee_rate": 0.05,
-      "capture_rate": 0.05,
       "quick_moves": [
         "Pound",
         "Zen Headbutt"
@@ -519,6 +317,9 @@
         "Dazzling Gleam",
         "Hyper Beam"
       ],
+      "family": 531,
+      "flee_rate": 0.05,
+      "capture_rate": 0.05,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 2,
@@ -526,7 +327,6 @@
       "third_move_stardust": 50000,
       "third_move_candy": 50,
       "gym_defender_eligible": true,
-      "family": 531,
       "temp_evolutions": {
         "1": {
           "attack": 147,
@@ -536,6 +336,174 @@
           "types": [
             "Normal",
             "Fairy"
+          ]
+        }
+      }
+    },
+    "650": {
+      "name": "Chespin",
+      "pokedex_id": 650,
+      "default_form_id": 0,
+      "forms": {
+        "0": {
+          "proto": "FORM_UNSET"
+        }
+      },
+      "gen_id": 6,
+      "generation": "Kalos",
+      "types": [
+        "Grass"
+      ],
+      "attack": 110,
+      "defense": 106,
+      "stamina": 148,
+      "height": 0.4,
+      "weight": 9,
+      "quick_moves": [
+        "Take Down",
+        "Vine Whip"
+      ],
+      "charged_moves": [
+        "Gyro Ball",
+        "Seed Bomb",
+        "Body Slam"
+      ],
+      "family": 650,
+      "flee_rate": 0.1,
+      "capture_rate": 0.2,
+      "legendary": false,
+      "mythic": false,
+      "buddy_group_number": 1,
+      "buddy_distance": 3,
+      "third_move_stardust": 10000,
+      "third_move_candy": 25,
+      "gym_defender_eligible": true,
+      "evolutions": [
+        {
+          "pokemon": 651
+        }
+      ],
+      "little": true
+    },
+    "668": {
+      "name": "Pyroar",
+      "pokedex_id": 668,
+      "default_form_id": 2587,
+      "forms": {
+        "2587": {
+          "name": "Normal",
+          "proto": "PYROAR_NORMAL",
+          "quick_moves": [
+            "Fire Fang",
+            "Take Down"
+          ]
+        },
+        "2588": {
+          "name": "Female",
+          "proto": "PYROAR_FEMALE",
+          "quick_moves": [
+            "Fire Fang",
+            "Take Down"
+          ]
+        }
+      },
+      "types": [
+        "Fire",
+        "Normal"
+      ],
+      "attack": 221,
+      "defense": 149,
+      "stamina": 200,
+      "height": 1.5,
+      "weight": 81.5,
+      "quick_moves": [
+        "Fire Fang",
+        "Take Down",
+        "Ember"
+      ],
+      "charged_moves": [
+        "Flame Charge",
+        "Solar Beam",
+        "Dark Pulse",
+        "Overheat"
+      ],
+      "family": 667,
+      "flee_rate": 0.07,
+      "capture_rate": 0.2,
+      "legendary": false,
+      "mythic": false,
+      "buddy_distance": 3,
+      "third_move_stardust": 10000,
+      "third_move_candy": 25,
+      "gym_defender_eligible": true,
+      "gen_id": 6,
+      "generation": "Kalos"
+    },
+    "718": {
+      "name": "Zygarde",
+      "pokedex_id": 718,
+      "default_form_id": 2591,
+      "forms": {
+        "2591": {
+          "name": "Ten Percent",
+          "proto": "ZYGARDE_TEN_PERCENT"
+        },
+        "2592": {
+          "name": "Fifty Percent",
+          "proto": "ZYGARDE_FIFTY_PERCENT"
+        },
+        "2593": {
+          "name": "Complete",
+          "proto": "ZYGARDE_COMPLETE"
+        }
+      },
+      "gen_id": 6,
+      "generation": "Kalos",
+      "types": [
+        "Dragon",
+        "Ground"
+      ],
+      "quick_moves": [
+        "Dragon Tail",
+        "Bite",
+        "Zen Headbutt"
+      ],
+      "charged_moves": [
+        "Outrage",
+        "Earthquake",
+        "Crunch",
+        "Hyper Beam",
+        "Bulldoze"
+      ],
+      "family": 718,
+      "flee_rate": 0.1,
+      "capture_rate": 0.02,
+      "legendary": true,
+      "mythic": false,
+      "buddy_distance": 20,
+      "third_move_stardust": 100000,
+      "third_move_candy": 100
+    },
+    "719": {
+      "name": "Diancie",
+      "pokedex_id": 719,
+      "default_form_id": 0,
+      "forms": {
+        "0": {
+          "proto": "FORM_UNSET"
+        }
+      },
+      "gen_id": 6,
+      "generation": "Kalos",
+      "temp_evolutions": {
+        "1": {
+          "attack": 342,
+          "defense": 235,
+          "stamina": 137,
+          "unreleased": true,
+          "types": [
+            "Fairy",
+            "Rock"
           ]
         }
       }
