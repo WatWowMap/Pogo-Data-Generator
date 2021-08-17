@@ -28,12 +28,12 @@
         "pokemonName": "name"
       },
       "unsetDefaultForm": false,
+      "includeUnset": false,
       "skipNormalIfUnset": false,
       "skipForms": [],
       "includeEstimatedPokemon": true,
       "processFormsSeparately": false,
-      "includeRawForms": true,
-      "includeUnset": false
+      "includeRawForms": false
     },
     "template": {
       "pokedexId": true,
@@ -58,7 +58,8 @@
         "types": "typeName",
         "quickMoves": "moveName",
         "chargedMoves": "moveName",
-        "family": true
+        "family": true,
+        "little": true
       },
       "defaultFormId": true,
       "genId": true,
@@ -239,7 +240,7 @@
     }
   },
   "translations": {
-    "enabled": false,
+    "enabled": true,
     "options": {
       "topLevelName": "translations",
       "prefix": {
