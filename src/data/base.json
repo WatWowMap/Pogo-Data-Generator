@@ -255,6 +255,7 @@
         "weather": "weather_",
         "types": "poke_type_",
         "grunts": "grunt_",
+        "gruntsAlt": "grunt_a_",
         "characterCategories": "character_category_",
         "lures": "lure_",
         "throwTypes": "throw_type_",

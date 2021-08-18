@@ -314,7 +314,10 @@ export default class Translations extends Masterfile {
               if (id === '413' || id === '412') {
                 checkAssets += '_cloak'
               }
-              if (this.parsedTranslations.misc && this.parsedTranslations[locale].misc[formName.toLowerCase()]) {
+              if (
+                this.parsedTranslations[locale].misc &&
+                this.parsedTranslations[locale].misc[formName.toLowerCase()]
+              ) {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.parsedTranslations[locale].misc[formName.toLowerCase()]
               } else if (
@@ -417,6 +420,7 @@ export default class Translations extends Masterfile {
     Object.entries(parsedInvasions).forEach(grunt => {
       const [id, info] = grunt
       let assetRef
+      let shortRef
       switch (info.grunt) {
         case 'Grunt':
           const base = `${
@@ -424,6 +428,12 @@ export default class Translations extends Masterfile {
           } (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`
           const type = this.rawTranslations[locale][`pokemon_type_${info.type.replace(' Balloon', '').toLowerCase()}`]
           assetRef = type ? `${type} - ${base}` : base
+          shortRef = assetRef
+            .replace(
+              ` (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`,
+              info.gender === 1 ? ' ♂' : ' ♀'
+            )
+            .replace(` - ${this.rawTranslations[locale]['combat_grunt_name']}`, '')
           break
         case 'Executive':
           assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`]
@@ -436,6 +446,11 @@ export default class Translations extends Masterfile {
       }
       if (assetRef) {
         this.parsedTranslations[locale].grunts[`${this.options.prefix.grunts}${id}`] = assetRef
+      }
+      if (shortRef) {
+        this.parsedTranslations[locale].grunts[`${this.options.prefix.gruntsAlt}${id}`] = shortRef
+      } else if (assetRef) {
+        this.parsedTranslations[locale].grunts[`${this.options.prefix.gruntsAlt}${id}`] = assetRef
       }
     })
     Object.entries(Rpc.EnumWrapper.CharacterCategory).forEach(proto => {
