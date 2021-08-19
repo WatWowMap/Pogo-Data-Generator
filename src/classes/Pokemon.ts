@@ -65,7 +65,7 @@ export default class Pokemon extends Masterfile {
       },
       8: {
         name: 'Galar',
-        range: [810, 898],
+        range: [810, 1000],
       },
     }
   }
@@ -91,7 +91,7 @@ export default class Pokemon extends Masterfile {
   }
 
   skipForms(formName: string) {
-    return this.formsToSkip.some(form => formName.toLowerCase().includes(form))
+    return this.formsToSkip.some(form => formName.toLowerCase() === form)
   }
 
   lookupPokemon(name: string) {
@@ -219,7 +219,9 @@ export default class Pokemon extends Masterfile {
               }
               if (this.parsedPokemon[id].defaultFormId === undefined) {
                 this.parsedPokemon[id].defaultFormId =
-                  this.options.unsetDefaultForm && this.options.includeUnset && this.parsedPokemon[id].forms.includes(0) ? 0 : +formId
+                  this.options.unsetDefaultForm && this.options.includeUnset && this.parsedPokemon[id].forms.includes(0)
+                    ? 0
+                    : +formId
               }
               if (!this.parsedForms[formId]) {
                 this.parsedForms[formId] = {
@@ -228,7 +230,11 @@ export default class Pokemon extends Masterfile {
                   formId: +formId,
                 }
               }
-              if (this.parsedPokemon[id].defaultFormId === 0 && formName === 'Normal' && this.options.skipNormalIfUnset) {
+              if (
+                this.parsedPokemon[id].defaultFormId === 0 &&
+                formName === 'Normal' &&
+                this.options.skipNormalIfUnset
+              ) {
                 return
               }
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
@@ -312,7 +318,7 @@ export default class Pokemon extends Masterfile {
         this.parsedPokemon[id].forms = []
       }
       const primaryForm = this.parsedPokemon[id]
-      const formName: string = split.filter((word, i) => i > 1 && word).join('_')
+      const formName = this.formName(id, split.filter((word, i) => i > 1 && word).join('_'))
 
       if (!this.skipForms(formName)) {
         if (!this.parsedForms[formId]) {

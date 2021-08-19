@@ -381,6 +381,8 @@ export default class Translations extends Masterfile {
       let item = this.rawTranslations[locale][`${key.toLowerCase()}_name`]
       if (item) {
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = item
+      } else {
+        this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = this.capitalize(key.replace('ITEM_', ''))
       }
       if (key.startsWith('ITEM_TROY_DISK')) {
         const base = this.rawTranslations[locale].item_troy_disk_name.split(' ')
