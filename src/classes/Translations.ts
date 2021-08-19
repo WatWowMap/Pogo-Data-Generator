@@ -139,7 +139,7 @@ export default class Translations extends Masterfile {
     try {
       if (this.options.manualTranslations) {
         const manual: { [key: string]: string } = await this.fetch(
-          `https://raw.githubusercontent.com/bschultz/pogo-translations/master/static/manual/${locale}.json`
+          `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/manual/${locale}.json`
         )
 
         Object.entries(manual).forEach(pair => {
@@ -381,7 +381,7 @@ export default class Translations extends Masterfile {
       let item = this.rawTranslations[locale][`${key.toLowerCase()}_name`]
       if (item) {
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = item
-      } else {
+      } else if (value) {
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = this.capitalize(key.replace('ITEM_', ''))
       }
       if (key.startsWith('ITEM_TROY_DISK')) {

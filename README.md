@@ -102,7 +102,7 @@ const customData = await generate({ template }) // returns custom templated data
 
 1. Clone the repo
 2. Install TypeScript compiler `npm install -g typescript`
-3. `tsc` will compile the TS into JS, then you can run `npm run local`, which will generate a local `masterfile.json` for you to checkout
+3. `tsc` will compile the TS into JS, then you can run `npm run generate`, which will generate a local `masterfile.json` for you to checkout
 
 - `tsc -w` will auto recompile the TypeScript during development
 - You can play with the input options by changing the script in `package.json` or modifying the `base.json` file.
