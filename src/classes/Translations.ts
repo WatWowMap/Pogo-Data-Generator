@@ -444,7 +444,7 @@ export default class Translations extends Masterfile {
           assetRef = this.rawTranslations[locale][`event_npc${info.type.split(' ')[1].padStart(2, '0')}_name`]
           break
         default:
-          assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`]
+          assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`] || this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`] || this.capitalize(info.type)
       }
       if (assetRef) {
         this.parsedTranslations[locale].grunts[`${this.options.prefix.grunts}${id}`] = assetRef
