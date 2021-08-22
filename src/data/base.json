@@ -268,7 +268,7 @@
         "prefix": "{{",
         "suffix": "}}"
       },
-      "masterfileLocale": "en",
+      "masterfileLocale": false,
       "manualTranslations": true,
       "mergeCategories": true,
       "useLanguageAsRef": false
