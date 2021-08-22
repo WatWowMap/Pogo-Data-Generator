@@ -1,5 +1,5 @@
 import { Rpc } from 'pogo-protos'
-import { AllForms, AllInvasions, AllPokemon, FinalResult, TranslationKeys } from '../typings/dataTypes'
+import { AllForms, AllInvasions, AllPokemon, AllQuests, FinalResult, TranslationKeys } from '../typings/dataTypes'
 import { Options } from '../typings/inputs'
 
 import Masterfile from './Masterfile'
@@ -118,7 +118,9 @@ export default class Translations extends Masterfile {
       pokemonCategories: {},
       moves: {},
       items: {},
-      quests: {},
+      questTypes: {},
+      questConditions: {},
+      questRewardTypes: {},
       types: {},
       weather: {},
       grunts: {},
@@ -146,33 +148,49 @@ export default class Translations extends Masterfile {
           const [key, value] = pair
           let trimmedKey
           if (key.startsWith('poke_type')) {
-            trimmedKey = key.replace('poke_type_', '')
-            this.manualTranslations[locale].types[`${this.options.prefix.types}${trimmedKey}`] = value
+            trimmedKey = key.replace('poke_type_', this.options.prefix.types || 'poke_type_')
+            this.manualTranslations[locale].types[trimmedKey] = value
           } else if (key.startsWith('poke')) {
-            trimmedKey = key.replace('poke_', '')
-            this.manualTranslations[locale].pokemon[`${this.options.prefix.pokemon}${trimmedKey}`] = value
+            trimmedKey = key.replace('poke_', this.options.prefix.pokemon || 'poke_')
+            this.manualTranslations[locale].pokemon[trimmedKey] = value
           } else if (key.startsWith('form')) {
-            trimmedKey = key.replace('form_', '')
-            this.manualTranslations[locale].forms[`${this.options.prefix.forms}${trimmedKey}`] = value
+            trimmedKey = key.replace('form_', this.options.prefix.forms || 'form_')
+            this.manualTranslations[locale].forms[trimmedKey] = value
           } else if (key.startsWith('costume')) {
-            trimmedKey = key.replace('costume_', '')
-            this.manualTranslations[locale].costumes[`${this.options.prefix.costumes}${trimmedKey}`] = value
-          } else if (key.startsWith('quest') || key.startsWith('throw')) {
-            let newValue = value
-            if (value.includes('%{') && this.options.questVariables) {
-              newValue = newValue.replace('%{', this.options.questVariables.prefix)
-              newValue = newValue.replace('}', this.options.questVariables.suffix)
+            trimmedKey = key.replace('costume_', this.options.prefix.costumes || 'costume_')
+            this.manualTranslations[locale].costumes[trimmedKey] = value
+          } else if (key.startsWith('quest_')) {
+            const newValue =
+              value.includes('%{') && this.options.questVariables
+                ? value
+                    .replace(/%\{/g, this.options.questVariables.prefix)
+                    .replace(/\}/g, this.options.questVariables.suffix)
+                : value
+            if (key.startsWith('quest_condition_')) {
+              this.manualTranslations[locale].questConditions[
+                key.replace('quest_condition_', this.options.prefix.questConditions || 'quest_condition_')
+              ] = newValue
+            } else if (key.startsWith('quest_reward_')) {
+              this.manualTranslations[locale].questRewardTypes[
+                key.replace('quest_reward_', this.options.prefix.questRewardTypes || 'quest_reward_')
+              ] = newValue
+            } else {
+              this.manualTranslations[locale].questTypes[
+                key.replace('quest_', this.options.prefix.questTypes || 'quest_')
+              ] = newValue
             }
-            this.manualTranslations[locale].quests[key] = newValue
           } else if (key.startsWith('grunt')) {
-            trimmedKey = key.replace('grunt_', '')
-            this.manualTranslations[locale].grunts[`${this.options.prefix.grunts}${trimmedKey}`] = value
-          } else if (key.startsWith('character') || key.startsWith('grunt')) {
-            trimmedKey = key.replace('grunt_', '')
-            this.manualTranslations[locale].characterCategories[key] = value
+            trimmedKey = key.replace('grunt_', this.options.prefix.grunts || 'grunt_')
+            this.manualTranslations[locale].grunts[trimmedKey] = value
+          } else if (key.startsWith('character')) {
+            trimmedKey = key.replace('character_', this.options.prefix.characterCategories || 'character_category_')
+            this.manualTranslations[locale].characterCategories[trimmedKey] = value
           } else if (key.startsWith('weather')) {
-            trimmedKey = key.replace('weather_', '')
-            this.manualTranslations[locale].weather[`${this.options.prefix.weather}${trimmedKey}`] = value
+            trimmedKey = key.replace('weather_', this.options.prefix.weather || 'weather_')
+            this.manualTranslations[locale].weather[trimmedKey] = value
+          } else if (key.startsWith('throw')) {
+            trimmedKey = key.replace('throw_type_', this.options.prefix.throwTypes || 'throw_type_')
+            this.manualTranslations[locale].misc[trimmedKey] = value
           } else {
             this.manualTranslations[locale].misc[key] = value
           }
@@ -195,14 +213,12 @@ export default class Translations extends Masterfile {
         ...this.parsedTranslations[locale][category],
         ...this.manualTranslations[locale][category],
       }
-      if (category === 'forms' || category === 'misc' || category === 'grunts') {
-        sorted[category] = {}
-        const sortedKeys = Object.keys(merged[category]).sort(this.collator.compare)
-        sortedKeys.forEach(key => {
-          sorted[category][key] = merged[category][key]
-        })
-        merged[category] = sorted[category]
-      }
+      sorted[category] = {}
+      const sortedKeys = Object.keys(merged[category]).sort(this.collator.compare)
+      sortedKeys.forEach(key => {
+        sorted[category][key] = merged[category][key]
+      })
+      merged[category] = sorted[category]
     })
     this.parsedTranslations[locale] = merged
   }
@@ -382,7 +398,9 @@ export default class Translations extends Masterfile {
       if (item) {
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = item
       } else if (value) {
-        this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = this.capitalize(key.replace('ITEM_', ''))
+        this.parsedTranslations[locale].items[`${this.options.prefix.items}${value}`] = this.capitalize(
+          key.replace('ITEM_', '')
+        )
       }
       if (key.startsWith('ITEM_TROY_DISK')) {
         const base = this.rawTranslations[locale].item_troy_disk_name.split(' ')
@@ -417,6 +435,7 @@ export default class Translations extends Masterfile {
   characters(locale: string, parsedInvasions: AllInvasions) {
     this.parsedTranslations[locale].grunts = {
       [`${this.options.prefix.grunts}0`]: this.generics[locale].none,
+      [`${this.options.prefix.gruntsAlt}0`]: this.generics[locale].none,
     }
     this.parsedTranslations[locale].characterCategories = {}
     Object.entries(parsedInvasions).forEach(grunt => {
@@ -444,14 +463,17 @@ export default class Translations extends Masterfile {
           assetRef = this.rawTranslations[locale][`event_npc${info.type.split(' ')[1].padStart(2, '0')}_name`]
           break
         default:
-          assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`] || this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`] || this.capitalize(info.type)
+          assetRef =
+            this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`] ||
+            this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`] ||
+            this.capitalize(info.type)
       }
       if (assetRef) {
         this.parsedTranslations[locale].grunts[`${this.options.prefix.grunts}${id}`] = assetRef
       }
       if (shortRef) {
         this.parsedTranslations[locale].grunts[`${this.options.prefix.gruntsAlt}${id}`] = shortRef
-      } else if (assetRef) {
+      } else if (assetRef && id !== '0') {
         this.parsedTranslations[locale].grunts[`${this.options.prefix.gruntsAlt}${id}`] = assetRef
       }
     })
@@ -468,7 +490,9 @@ export default class Translations extends Masterfile {
     }
     Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach(proto => {
       const [name, id] = proto
-      const type = this.rawTranslations[locale][`weather_${name.toLowerCase()}`]
+      const type = id
+        ? this.rawTranslations[locale][`weather_${name.toLowerCase()}`]
+        : this.rawTranslations[locale][`weather_extreme`]
       if (type) {
         this.parsedTranslations[locale].weather[`${this.options.prefix.weather}${id}`] = type
       }
@@ -511,6 +535,16 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].misc[`${this.options.prefix.alignment}${id}`] = this.capitalize(
         name.replace('POKEMON_ALIGNMENT_', '')
       )
+    })
+  }
+
+  quests(locale: string, data: { [category: string]: AllQuests }) {
+    Object.keys(data).forEach(category => {
+      this.parsedTranslations[locale][category] = {}
+      Object.keys(data[category]).forEach(proto => {
+        const value = data[category][proto].formatted.replace('With ', '')
+        this.parsedTranslations[locale][category][`${this.options.prefix[category]}${proto}`] = value
+      })
     })
   }
 }

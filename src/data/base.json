@@ -259,7 +259,10 @@
         "characterCategories": "character_category_",
         "lures": "lure_",
         "throwTypes": "throw_type_",
-        "pokemonCategories": "pokemon_categories_"
+        "pokemonCategories": "pokemon_categories_",
+        "questTypes": "quest_",
+        "questConditions": "quest_condition_",
+        "questRewardTypes": "quest_reward_"
       },
       "questVariables": {
         "prefix": "{{",
@@ -295,7 +298,8 @@
       "characters": true,
       "weather": true,
       "misc": true,
-      "pokemonCategories": true
+      "pokemonCategories": true,
+      "quests": true
     }
   }
 }

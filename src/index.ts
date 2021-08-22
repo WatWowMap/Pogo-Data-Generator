@@ -63,8 +63,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     weather,
     translations,
   } = templateMerger(template || base)
-  const localeCheck =
-    translations.enabled && translations.options.masterfileLocale && translations.options.masterfileLocale !== 'en'
+  const localeCheck = translations.enabled && translations.options.masterfileLocale
 
   const AllPokemon = new Pokemon(pokemon.options)
   const AllItems = new Items(items.options)
@@ -168,6 +167,13 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
           }
           if (translations.template.pokemonCategories) {
             AllTranslations.pokemonCategories(localeCode)
+          }
+          if (translations.template.quests) {
+            AllTranslations.quests(localeCode, {
+              questTypes: AllQuests.parsedQuestTypes,
+              questConditions: AllQuests.parsedConditions,
+              questRewardTypes: AllQuests.parsedRewardTypes,
+            })
           }
         }
       })

@@ -54,9 +54,7 @@ export interface AllItems {
 }
 
 export interface AllQuests {
-  [id: string]: {
-    [id: string]: QuestSubCategory
-  }
+  [id: string]: QuestSubCategory
 }
 
 type QuestSubCategory = {

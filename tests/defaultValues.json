@@ -495,6 +495,32 @@
       },
       "gen_id": 6,
       "generation": "Kalos",
+      "types": [
+        "Rock",
+        "Fairy"
+      ],
+      "attack": 190,
+      "defense": 285,
+      "stamina": 137,
+      "height": 0.7,
+      "weight": 8.8,
+      "quick_moves": [
+        "Tackle",
+        "Rock Throw"
+      ],
+      "charged_moves": [
+        "Rock Slide",
+        "Moonblast",
+        "Power Gem"
+      ],
+      "family": 719,
+      "flee_rate": 0.1,
+      "capture_rate": 0.02,
+      "legendary": false,
+      "mythic": true,
+      "buddy_distance": 20,
+      "third_move_stardust": 100000,
+      "third_move_candy": 100,
       "temp_evolutions": {
         "1": {
           "attack": 342,
@@ -622,8 +648,8 @@
       "form_183": "Erlöst",
       "form_34": "Angriffsform",
       "desc_26_50": "Kräftiges Massieren seiner Backentaschen setzt einen süßen Geruch frei. Dafür nimmt man auch gerne einen leichten Elektroschock in Kauf.",
-      "grunt_5": "Rüpel (weiblich)",
-      "grunt_6": "Käfer - Rüpel (weiblich)",
+      "grunt_5": "Rüpel (Weiblich)",
+      "grunt_6": "Käfer - Rüpel (Weiblich)",
       "character_category_6": "Giovanni",
       "weather_4": "Bedeckt",
       "weather_icon_4": "☁️"
@@ -631,15 +657,15 @@
     "en": {
       "gender_1": "Male",
       "gender_2": "Female",
-      "poke_0": "Substitute Pokemon",
+      "poke_0": "Substitute",
       "poke_1": "Bulbasaur",
       "lure_503": "Mossy",
       "item_4": "Master Ball",
       "form_183": "Purified",
       "form_34": "Attack",
       "desc_26_50": "When you rub its cheeks, a sweet fragrance comes wafting out. However, you'll also get a light shock!",
-      "grunt_5": "Grunt (female)",
-      "grunt_6": "Bug - Grunt (female)",
+      "grunt_5": "Grunt (Female)",
+      "grunt_6": "Bug - Grunt (Female)",
       "character_category_6": "Giovanni",
       "weather_4": "Cloudy",
       "weather_icon_4": "☁️"
