@@ -154,7 +154,7 @@
   },
   "weather": {
     "0": "Extrem",
-    "1": "Sonnig/Klar",
+    "1": "Klar",
     "2": "Regen"
   },
   "translations": {
@@ -172,14 +172,14 @@
       "pokemon%types_3": "Flug",
       "pokemon%types_4": "Gift",
       "weather_is_not_accurate_0": "Extrem",
-      "weather_is_not_accurate_1": "Sonnig/Klar",
+      "weather_is_not_accurate_1": "Klar",
       "amazing_pokemon_spawners_502": "Gletscher",
       "amazing_pokemon_spawners_503": "Moos",
       "cool_helpers_1404": "Sternenstück",
       "cool_helpers_1405": "Geschenk"
     },
     "en": {
-      "pokemon_0": "Substitute Pokemon",
+      "pokemon_0": "Substitute",
       "pokemon_1": "Bulbasaur",
       "forms_34": "Attack",
       "forms_35": "Defense",

@@ -162,6 +162,7 @@ type TranslationsTemplate = {
   weather?: boolean
   misc?: boolean
   pokemonCategories?: boolean
+  quests?: boolean
 }
 
 export interface Input {
