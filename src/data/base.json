@@ -97,7 +97,8 @@
       "thirdMoveCandy": true,
       "gymDefenderEligible": true,
       "family": true,
-      "little": true
+      "little": true,
+      "unreleased": false
     }
   },
   "types": {

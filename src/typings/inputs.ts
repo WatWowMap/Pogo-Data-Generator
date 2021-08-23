@@ -35,6 +35,8 @@ export interface Options {
   useLanguageAsRef?: string
   includeUnset?: boolean
   unsetFormName?: string
+  allUnset?: boolean
+  pokeApiIds?: number[]
 }
 
 interface PokemonTemplate extends Form {
@@ -74,7 +76,7 @@ interface Form extends BaseStats {
 
 type Move = {
   moveId?: boolean
-  name?: boolean
+  moveName?: boolean
   typeId?: boolean
   type?: boolean
 }
@@ -108,8 +110,8 @@ type TypesTemplate = {
 }
 
 type MoveTemplate = {
-  id?: boolean
-  name?: boolean
+  moveId?: boolean
+  moveName?: boolean
   proto?: boolean
   type?: boolean
   power?: boolean
@@ -117,7 +119,7 @@ type MoveTemplate = {
 
 type ItemTemplate = {
   itemId?: boolean
-  name?: boolean
+  itemName?: boolean
   proto?: boolean
   type?: boolean
   category?: boolean

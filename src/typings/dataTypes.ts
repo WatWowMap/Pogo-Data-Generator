@@ -87,6 +87,7 @@ export interface SinglePokemon extends SingleForm {
   thirdMoveStardust?: number
   thirdMoveCandy?: number
   gymDefenderEligible?: boolean
+  unreleased?: boolean
 }
 
 interface SingleForm extends BaseStats {

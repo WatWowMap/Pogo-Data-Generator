@@ -2,6 +2,7 @@ const { generate } = require('../dist/index')
 const defaultRef = require('./defaultValues.json')
 const rawRef = require('./rawValues.json')
 const customRef = require('./customValues.json')
+const statCalculatingRef = require('./statCalculating.json')
 
 let data
 
@@ -229,4 +230,41 @@ describe('Testing Custom Template', () => {
     })
   })
   testFn(customRef)
+})
+
+describe('Testing Stat Calculations', () => {
+  beforeAll(async () => {
+    data = await generate({
+      template: {
+        globalOptions: {
+          keyJoiner: '_',
+          customChildObj: {},
+          customFields: {},
+          includeProtos: true,
+        },
+        pokemon: {
+          enabled: true,
+          options: {
+            keys: {
+              main: 'pokedexId',
+            },
+            includeUnset: true,
+            allUnset: true,
+            includeEstimatedPokemon: true,
+            nonProtoGMStats: true,
+            pokeApiIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 24, 51, 176, 226, 227, 292, 770, 893, 895, 896, 897, 898],
+          },
+          template: {
+            pokedexId: true,
+            pokemonName: true,
+            attack: true,
+            defense: true,
+            stamina: true,
+            types: 'typeName',
+          },
+        },
+      },
+    })
+  })
+  testFn(statCalculatingRef)
 })

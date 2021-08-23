@@ -1,7 +1,7 @@
 import { Rpc } from 'pogo-protos'
 
 import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes'
-import { NiaMfObj, Generation, TempEvo, EvoBranch, GuessedMega } from '../typings/general'
+import { NiaMfObj, Generation, TempEvo, EvoBranch, GuessedMega, PogoApi, SpeciesApi } from '../typings/general'
 import Masterfile from './Masterfile'
 import megas from '../data/megas.json'
 import { Options } from '../typings/inputs'
@@ -81,6 +81,153 @@ export default class Pokemon extends Masterfile {
     }
   }
 
+  async pokeApi() {
+    const inconsistentStats: { [id: string]: { attack?: number; defense?: number; stamina?: number } } = {
+      24: {
+        attack: 167,
+      },
+      51: {
+        attack: 167,
+        defense: 134,
+      },
+      83: {
+        attack: 124,
+      },
+      85: {
+        attack: 218,
+        defense: 140,
+      },
+      101: {
+        attack: 173,
+        defense: 173,
+      },
+      103: {
+        defense: 149,
+      },
+      164: {
+        attack: 145,
+      },
+      168: {
+        defense: 124,
+      },
+      176: {
+        attack: 139,
+      },
+      211: {
+        defense: 138,
+      },
+      219: {
+        attack: 139,
+        stamina: 137,
+      },
+      222: {
+        defense: 156,
+        stamina: 146,
+      },
+      226: {
+        attack: 148,
+        stamina: 163,
+      },
+      227: {
+        attack: 148,
+        stamina: 163,
+      },
+      241: {
+        attack: 157,
+      },
+      292: {
+        stamina: 1,
+      },
+      809: {
+        stamina: 264,
+      },
+    }
+    const attack = (normal: number, special: number, speed: number, nerf: boolean = false) =>
+      Math.round(
+        Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
+          (1 + (speed - 75) / 500) *
+          (nerf ? 0.91 : 1)
+      )
+
+    const defense = (normal: number, special: number, speed: number, nerf: boolean = false) =>
+      Math.round(
+        Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
+          (1 + (speed - 75) / 500) *
+          (nerf ? 0.91 : 1)
+      )
+
+    const stamina = (hp: number, nerf: boolean = false) =>
+      nerf ? Math.round((1.75 * hp + 50) * 0.91) : Math.floor(1.75 * hp + 50)
+
+    const cp = (atk: number, def: number, sta: number, cpm: number) =>
+      Math.floor(((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10)
+
+    await Promise.all(
+      Object.keys(this.parsedPokemon).map(async id => {
+        if (
+          !this.parsedPokemon[id].attack ||
+          !this.parsedPokemon[id].defense ||
+          !this.parsedPokemon[id].stamina ||
+          this.parsedPokemon[id].types.length === 0 ||
+          (this.options.pokeApiIds && this.options.pokeApiIds.includes(+id))
+        ) {
+          const evoData: SpeciesApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+          const statsData: PogoApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+
+          const baseStats: { [stat: string]: number } = {}
+          statsData.stats.forEach(stat => {
+            baseStats[stat.stat.name] = stat.base_stat
+          })
+          const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
+            attack: attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
+            defense: defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+            stamina: stamina(baseStats.hp),
+          }
+          initial.cp = cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
+
+          const nerfCheck = {
+            attack:
+              initial.cp > 4000
+                ? attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
+                : initial.attack,
+            defense:
+              initial.cp > 4000
+                ? defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
+                : initial.defense,
+            stamina: initial.cp > 4000 ? stamina(baseStats.hp, true) : initial.stamina,
+          }
+          this.parsedPokemon[id] = {
+            ...this.parsedPokemon[id],
+            attack: inconsistentStats[id] ? inconsistentStats[id].attack || nerfCheck.attack : nerfCheck.attack,
+            defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
+            stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
+            types: statsData.types.map(
+              type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
+            ),
+            unreleased: true,
+          }
+
+          if (evoData.evolves_from_species) {
+            const prevEvoId =
+              Rpc.HoloPokemonId[evoData.evolves_from_species.name.toUpperCase().replace('-', '_') as PokemonIdProto]
+            if (prevEvoId) {
+              if (!this.parsedPokemon[prevEvoId].evolutions) {
+                this.parsedPokemon[prevEvoId].evolutions = []
+              }
+              this.parsedPokemon[prevEvoId].evolutions.push({ evoId: +id })
+              this.evolvedPokemon.add(+id)
+            } else {
+              console.warn(
+                'Unable to find proto ID for',
+                evoData.evolves_from_species.name.toUpperCase().replace('-', '_')
+              )
+            }
+          }
+        }
+      })
+    )
+  }
+
   formName(id: number, formName: string) {
     const name = formName.substr(
       id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
@@ -145,6 +292,7 @@ export default class Pokemon extends Masterfile {
         console.error(e, '\n', incomingTypes)
       }
     }
+    return []
   }
 
   compileEvos(mfObject: EvoBranch[]) {
@@ -277,6 +425,9 @@ export default class Pokemon extends Masterfile {
                 formId,
                 isCostume: forms[i].isCostume,
               }
+            }
+            if (this.options.allUnset) {
+              this.parsedPokemon[id].forms.push(0)
             }
           }
         } else {
@@ -448,8 +599,8 @@ export default class Pokemon extends Masterfile {
           pokemonName: this.pokemonName(+id),
           pokedexId: +id,
           defaultFormId: 0,
-          ...this.parsedPokemon[id],
           ...this.getGeneration(+id),
+          ...this.parsedPokemon[id],
         }
         if (!this.parsedPokemon[id].forms) {
           this.parsedPokemon[id].forms = [0]
