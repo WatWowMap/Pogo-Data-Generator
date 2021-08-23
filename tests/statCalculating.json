@@ -1,0 +1,235 @@
+{
+  "pokemon": {
+    "1": {
+      "pokemonName": "Bulbasaur",
+      "pokedexId": 1,
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "attack": 118,
+      "defense": 111,
+      "stamina": 128
+    },
+    "2": {
+      "pokemonName": "Ivysaur",
+      "pokedexId": 2,
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "attack": 151,
+      "defense": 143,
+      "stamina": 155
+    },
+    "3": {
+      "pokemonName": "Venusaur",
+      "pokedexId": 3,
+      "types": [
+        "Grass",
+        "Poison"
+      ],
+      "attack": 198,
+      "defense": 189,
+      "stamina": 190
+    },
+    "4": {
+      "pokemonName": "Charmander",
+      "pokedexId": 4,
+      "types": [
+        "Fire"
+      ],
+      "attack": 116,
+      "defense": 93,
+      "stamina": 118
+    },
+    "5": {
+      "pokemonName": "Charmeleon",
+      "pokedexId": 5,
+      "types": [
+        "Fire"
+      ],
+      "attack": 158,
+      "defense": 126,
+      "stamina": 151
+    },
+    "6": {
+      "pokemonName": "Charizard",
+      "pokedexId": 6,
+      "types": [
+        "Fire",
+        "Flying"
+      ],
+      "attack": 223,
+      "defense": 173,
+      "stamina": 186
+    },
+    "7": {
+      "pokemonName": "Squirtle",
+      "pokedexId": 7,
+      "types": [
+        "Water"
+      ],
+      "attack": 94,
+      "defense": 121,
+      "stamina": 127
+    },
+    "8": {
+      "pokemonName": "Wartortle",
+      "pokedexId": 8,
+      "types": [
+        "Water"
+      ],
+      "attack": 126,
+      "defense": 155,
+      "stamina": 153
+    },
+    "9": {
+      "pokemonName": "Blastoise",
+      "pokedexId": 9,
+      "types": [
+        "Water"
+      ],
+      "attack": 171,
+      "defense": 207,
+      "stamina": 188
+    },
+    "24": {
+      "pokemonName": "Arbok",
+      "pokedexId": 24,
+      "types": [
+        "Poison"
+      ],
+      "attack": 167,
+      "defense": 153,
+      "stamina": 155
+    },
+    "51": {
+      "pokemonName": "Dugtrio",
+      "pokedexId": 51,
+      "types": [
+        "Ground"
+      ],
+      "attack": 167,
+      "defense": 134,
+      "stamina": 111
+    },
+    "176": {
+      "pokemonName": "Togetic",
+      "pokedexId": 176,
+      "types": [
+        "Fairy",
+        "Flying"
+      ],
+      "attack": 139,
+      "defense": 181,
+      "stamina": 146
+    },
+    "226": {
+      "pokemonName": "Mantine",
+      "pokedexId": 226,
+      "types": [
+        "Water",
+        "Flying"
+      ],
+      "attack": 148,
+      "defense": 226,
+      "stamina": 163
+    },
+    "227": {
+      "pokemonName": "Skarmory",
+      "pokedexId": 227,
+      "types": [
+        "Steel",
+        "Flying"
+      ],
+      "attack": 148,
+      "defense": 226,
+      "stamina": 163
+    },
+    "292": {
+      "pokemonName": "Shedinja",
+      "pokedexId": 292,
+      "types": [
+        "Bug",
+        "Ghost"
+      ],
+      "attack": 153,
+      "defense": 73,
+      "stamina": 1
+    },
+    "770": {
+      "pokemonName": "Palossand",
+      "pokedexId": 770,
+      "types": [
+        "Ghost",
+        "Ground"
+      ],
+      "attack": 178,
+      "defense": 178,
+      "stamina": 198
+    },
+    "893": {
+      "pokemonName": "Zarude",
+      "pokedexId": 893,
+      "types": [
+        "Dark",
+        "Grass"
+      ],
+      "attack": 242,
+      "defense": 215,
+      "stamina": 233
+    },
+    "894": {
+      "pokemonName": "Regieleki",
+      "pokedexId": 894,
+      "types": [
+        "Electric"
+      ],
+      "attack": 250,
+      "defense": 125,
+      "stamina": 190
+    },
+    "895": {
+      "pokemonName": "Regidrago",
+      "pokedexId": 895,
+      "types": [
+        "Dragon"
+      ],
+      "attack": 202,
+      "defense": 101,
+      "stamina": 400
+    },
+    "896": {
+      "pokemonName": "Glastrier",
+      "pokedexId": 896,
+      "types": [
+        "Ice"
+      ],
+      "attack": 246,
+      "defense": 223,
+      "stamina": 225
+    },
+    "897": {
+      "pokemonName": "Spectrier",
+      "pokedexId": 897,
+      "types": [
+        "Ghost"
+      ],
+      "attack": 273,
+      "defense": 146,
+      "stamina": 205
+    },
+    "898": {
+      "pokemonName": "Calyrex",
+      "pokedexId": 898,
+      "types": [
+        "Psychic",
+        "Grass"
+      ],
+      "attack": 162,
+      "defense": 162,
+      "stamina": 225
+    }
+  }
+}

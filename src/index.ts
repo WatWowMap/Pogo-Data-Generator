@@ -48,7 +48,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const urlToFetch =
     url ||
     (safe
-      ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-v2.json'
+      ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-raw.json'
       : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json')
 
   const {
@@ -102,27 +102,22 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     }
     AllPokemon.megaInfo()
     AllPokemon.futurePokemon()
+    if (pokemon.options.includeEstimatedPokemon) {
+      await AllPokemon.pokeApi()
+    }
     if (pokemon.template.little) {
       AllPokemon.littleCup()
     }
     if (pokemon.options.processFormsSeparately) {
       AllPokemon.makeFormsSeparate()
     }
-    if (questTypes.enabled) {
-      AllQuests.addQuest('types')
-    }
-    if (questRewardTypes.enabled) {
-      AllQuests.addQuest('rewards')
-    }
-    if (questConditions.enabled) {
-      AllQuests.addQuest('conditions')
-    }
+    AllQuests.addQuest('types')
+    AllQuests.addQuest('rewards')
+    AllQuests.addQuest('conditions')
     if (moves.options.includeProtos) {
       AllMoves.protoMoves()
     }
-    if (weather.enabled) {
-      AllWeather.buildWeather()
-    }
+    AllWeather.buildWeather()
     if (invasions.enabled || translations.template.characters) {
       const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
         'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'

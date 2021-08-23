@@ -482,7 +482,10 @@
       "mythic": false,
       "buddy_distance": 20,
       "third_move_stardust": 100000,
-      "third_move_candy": 100
+      "third_move_candy": 100,
+      "attack": 203,
+      "defense": 232,
+      "stamina": 239
     },
     "719": {
       "name": "Diancie",
