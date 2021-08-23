@@ -115,6 +115,10 @@ The generate function accepts an object with the following properties:
 - `test` (boolean): Writes the masterfile to a local json
 - `raw` (boolean): Returns the data in its raw format without any template processing
 
+To view some static examples of what this library can create, check out these repos:
+[Masterfiles](https://github.com/WatWowMap/Masterfile-Generator)
+[Translations](https://github.com/WatWowMap/pogo-translations)
+
 ## Full Template
 
 This is the full template example with notes on each field. The default template if you simply call `generate()` is `src/data/base.json`
