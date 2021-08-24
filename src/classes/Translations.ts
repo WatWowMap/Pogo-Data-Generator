@@ -332,7 +332,6 @@ export default class Translations extends Masterfile {
 
               const formAsset = this.rawTranslations[locale][`form_${checkAssets}`]
               const typeId = Rpc.HoloPokemonType[`POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto]
-              // console.log(typeId)
               if (
                 this.parsedTranslations[locale].misc &&
                 this.parsedTranslations[locale].misc[formName.toLowerCase()]
@@ -354,7 +353,6 @@ export default class Translations extends Masterfile {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.generics[locale].normal
               } else if (typeId && this.parsedTranslations[locale].types) {
-                console.log(formId, typeId, this.parsedTranslations[locale].types[`${this.options.prefix.types}${typeId}`])
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.parsedTranslations[locale].types[`${this.options.prefix.types}${typeId}`]
               } else {
