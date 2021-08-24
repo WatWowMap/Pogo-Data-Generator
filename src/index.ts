@@ -137,6 +137,9 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
           if (translations.template.misc) {
             AllTranslations.misc(localeCode)
           }
+          if (translations.template.types) {
+            AllTranslations.types(localeCode)
+          }
           if (translations.template.pokemon) {
             AllTranslations.pokemon(
               localeCode,
@@ -150,9 +153,6 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
           }
           if (translations.template.items) {
             AllTranslations.items(localeCode)
-          }
-          if (translations.template.types) {
-            AllTranslations.types(localeCode)
           }
           if (translations.template.characters) {
             AllTranslations.characters(localeCode, AllInvasions.parsedInvasions)
