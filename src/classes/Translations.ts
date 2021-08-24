@@ -1,6 +1,7 @@
 import { Rpc } from 'pogo-protos'
 import { AllForms, AllInvasions, AllPokemon, AllQuests, FinalResult, TranslationKeys } from '../typings/dataTypes'
 import { Options } from '../typings/inputs'
+import { TypeProto } from '../typings/protos'
 
 import Masterfile from './Masterfile'
 
@@ -327,24 +328,35 @@ export default class Translations extends Masterfile {
 
             if (formName && subItems.forms) {
               let checkAssets = formName.replace(' ', '_').toLowerCase()
-              if (id === '413' || id === '412') {
-                checkAssets += '_cloak'
-              }
+              if (id === '413' || id === '412') checkAssets += '_cloak'
+
+              const formAsset = this.rawTranslations[locale][`form_${checkAssets}`]
+              const typeId = Rpc.HoloPokemonType[`POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto]
+              // console.log(typeId)
               if (
                 this.parsedTranslations[locale].misc &&
                 this.parsedTranslations[locale].misc[formName.toLowerCase()]
               ) {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.parsedTranslations[locale].misc[formName.toLowerCase()]
-              } else if (
-                this.rawTranslations[locale][`${this.options.prefix.forms}${checkAssets}`] &&
-                checkAssets !== 'normal'
-              ) {
-                this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
-                  this.rawTranslations[locale][`${this.options.prefix.forms}${checkAssets}`]
+              } else if (formAsset && checkAssets !== 'normal') {
+                // Couple of edge cases here due to Niantic not being specific enough in the masterfile
+                if (checkAssets === 'white' || formAsset === 'black') {
+                  this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
+                    formId === 147 || formId === 148 ? formAsset : formName
+                } else if (checkAssets === 'ice') {
+                  this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
+                    formId === 2540 || formId === 2541 ? formAsset : this.parsedTranslations[locale].types[`${this.options.prefix.types}${typeId}`] || formName
+                } else {
+                  this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] = formAsset
+                }
               } else if (formName === 'Normal') {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
                   this.generics[locale].normal
+              } else if (typeId && this.parsedTranslations[locale].types) {
+                console.log(formId, typeId, this.parsedTranslations[locale].types[`${this.options.prefix.types}${typeId}`])
+                this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] =
+                  this.parsedTranslations[locale].types[`${this.options.prefix.types}${typeId}`]
               } else {
                 this.parsedTranslations[locale].forms[`${this.options.prefix.forms}${formId}`] = formName
               }
@@ -513,8 +525,7 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].misc[entry] = this.capitalize(this.parsedTranslations[locale].misc[entry])
     })
     for (let i = 0; i < 4; i += 1) {
-      this.parsedTranslations[locale].misc[`team_${i}`] =
-        this.rawTranslations[locale][`team_name_team${i}`].split(' ')[1]
+      this.parsedTranslations[locale].misc[`team_${i}`] = this.rawTranslations[locale][`team_name_team${i}`]
     }
     Object.entries(Rpc.HoloActivityType).forEach(proto => {
       const [name, id] = proto
