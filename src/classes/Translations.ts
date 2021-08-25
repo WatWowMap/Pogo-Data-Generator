@@ -523,7 +523,9 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].misc[entry] = this.capitalize(this.parsedTranslations[locale].misc[entry])
     })
     for (let i = 0; i < 4; i += 1) {
-      this.parsedTranslations[locale].misc[`team_${i}`] = this.rawTranslations[locale][`team_name_team${i}`]
+      const teamName = this.rawTranslations[locale][`team_name_team${i}`]
+      this.parsedTranslations[locale].misc[`team_a_${i}`] = teamName
+      this.parsedTranslations[locale].misc[`team_${i}`] = i ? teamName.split(' ')[1] || teamName.split(' ')[0] : teamName
     }
     Object.entries(Rpc.HoloActivityType).forEach(proto => {
       const [name, id] = proto
