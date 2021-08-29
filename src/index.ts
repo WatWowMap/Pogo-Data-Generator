@@ -18,38 +18,43 @@ import { NiaMfObj } from './typings/general'
 const templateMerger = (template: { [key: string]: any }): FullTemplate => {
   const baseline: { [key: string]: any } = base
   const merged: { [key: string]: any } = {}
-  Object.keys(base).forEach(key => {
-    merged[key] = template[key] || {}
-    Object.keys(baseline[key]).forEach(subKey => {
-      if (merged[key][subKey] === undefined) {
-        merged[key][subKey] = typeof baseline[key][subKey] === 'boolean' ? false : baseline[key][subKey]
+  Object.keys(base).forEach(category => {
+    merged[category] = template[category] || {}
+    Object.keys(baseline[category]).forEach(subKey => {
+      if (merged[category][subKey] === undefined) {
+        merged[category][subKey] = typeof baseline[category][subKey] === 'boolean' ? false : baseline[category][subKey]
       }
     })
-    if (key !== 'globalOptions') {
+    if (category !== 'globalOptions') {
       const globalOptions = template.globalOptions || baseline.globalOptions
       Object.entries(globalOptions).forEach(option => {
         const [optionKey, optionValue] = option
-        if (merged[key].options[optionKey] === undefined) {
+        if (merged[category].options[optionKey] === undefined) {
           if (template.globalOptions) {
-            merged[key].options[optionKey] = optionValue
+            merged[category].options[optionKey] = optionValue
           } else {
-            merged[key].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
+            merged[category].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
           }
         }
       })
+    }
+    if (category === 'translations' && template.translations) {
+      if (!template.translations.options.prefix) {
+        merged.translations.options.prefix = {}
+      }
+      merged.translations.options.prefix = {
+        ...base.translations.options.prefix,
+        ...template.translations.options.prefix,
+      }
     }
   })
   return merged
 }
 
-export async function generate({ template, safe, url, test, raw }: Input = {}) {
+export async function generate({ template, url, test, raw }: Input = {}) {
   const start: number = new Date().getTime()
   const final: FinalResult = {}
-  const urlToFetch =
-    url ||
-    (safe
-      ? 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-raw.json'
-      : 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json')
+  const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
 
   const {
     pokemon,
@@ -75,64 +80,64 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   const AllTranslations = new Translations(translations.options)
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
-  let safeData: FinalResult = {}
 
-  if (!safe) {
-    for (let i = 0; i < data.length; i += 1) {
-      if (data[i]) {
-        if (data[i].data.formSettings) {
-          AllPokemon.addForm(data[i])
-        } else if (data[i].data.pokemonSettings) {
-          AllPokemon.addPokemon(data[i])
-        } else if (data[i].data.itemSettings) {
-          AllItems.addItem(data[i])
-        } else if (data[i].data.combatMove) {
-          AllMoves.addMove(data[i])
-        } else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
-          AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon)
-        } else if (data[i].data.weatherAffinities) {
-          AllWeather.addWeather(data[i])
-        }
+  for (let i = 0; i < data.length; i += 1) {
+    if (data[i]) {
+      if (data[i].data.formSettings) {
+        AllPokemon.addForm(data[i])
+      } else if (data[i].data.pokemonSettings) {
+        AllPokemon.addPokemon(data[i])
+      } else if (data[i].data.itemSettings) {
+        AllItems.addItem(data[i])
+      } else if (data[i].data.combatMove) {
+        AllMoves.addMove(data[i])
+      } else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
+        AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon)
+      } else if (data[i].data.weatherAffinities) {
+        AllWeather.addWeather(data[i])
       }
     }
-
-    AllTypes.buildTypes()
-    if (pokemon.options.includeProtos || translations.options.includeProtos) {
-      AllPokemon.generateProtoForms()
-    }
-    AllPokemon.megaInfo()
-    AllPokemon.futurePokemon()
-    if (pokemon.options.includeEstimatedPokemon) {
-      await AllPokemon.pokeApi()
-    }
-    if (pokemon.template.little) {
-      AllPokemon.littleCup()
-    }
-    if (pokemon.options.processFormsSeparately) {
-      AllPokemon.makeFormsSeparate()
-    }
-    AllQuests.addQuest('types')
-    AllQuests.addQuest('rewards')
-    AllQuests.addQuest('conditions')
-    if (moves.options.includeProtos) {
-      AllMoves.protoMoves()
-    }
-    AllWeather.buildWeather()
-    if (invasions.enabled || translations.template.characters) {
-      const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
-        'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
-      )
-      AllInvasions.invasions(invasionData)
-    }
-  } else {
-    safeData = data
   }
+
+  AllTypes.buildTypes()
+  if (pokemon.options.includeProtos || translations.options.includeProtos) {
+    AllPokemon.generateProtoForms()
+  }
+  AllPokemon.megaInfo()
+  AllPokemon.futurePokemon()
+  if (pokemon.options.includeEstimatedPokemon) {
+    await AllPokemon.pokeApiStats()
+    await AllPokemon.pokeApiEvos()
+  }
+  if (pokemon.template.little) {
+    AllPokemon.littleCup()
+  }
+  if (pokemon.options.processFormsSeparately) {
+    AllPokemon.makeFormsSeparate()
+  }
+  AllQuests.addQuest('types')
+  AllQuests.addQuest('rewards')
+  AllQuests.addQuest('conditions')
+  if (moves.options.includeProtos) {
+    AllMoves.protoMoves()
+  }
+  AllWeather.buildWeather()
+  if (invasions.enabled || translations.template.characters) {
+    const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
+      'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
+    )
+    AllInvasions.invasions(invasionData)
+  }
+
   if (translations.enabled) {
     await Promise.all(
       Object.entries(translations.locales).map(async langCode => {
         const [localeCode, bool] = langCode
         if (bool) {
-          await AllTranslations.fetchTranslations(localeCode)
+          const availableManualTranslations = await AllTranslations.fetch(
+            'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json'
+          )
+          await AllTranslations.fetchTranslations(localeCode, availableManualTranslations)
 
           if (translations.template.misc) {
             AllTranslations.misc(localeCode)
@@ -145,7 +150,8 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
               localeCode,
               translations.template.pokemon,
               AllPokemon.parsedPokemon,
-              AllPokemon.parsedForms
+              AllPokemon.parsedForms,
+              pokemon.options.unsetFormName
             )
           }
           if (translations.template.moves) {
@@ -212,7 +218,7 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   if (pokemon.enabled) {
     final[pokemon.options.topLevelName || 'pokemon'] = raw
       ? localPokemon
-      : AllPokemon.templater(safeData.pokemon || localPokemon, pokemon, {
+      : AllPokemon.templater(localPokemon, pokemon, {
           quickMoves: localMoves,
           chargedMoves: localMoves,
           types: localTypes,
@@ -225,44 +231,44 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
   if (types.enabled) {
     final[types.options.topLevelName || 'types'] = raw
       ? localTypes
-      : AllTypes.templater(safeData.types || localTypes, types)
+      : AllTypes.templater(localTypes, types)
   }
   if (items.enabled) {
     final[items.options.topLevelName || 'items'] = raw
       ? localItems
-      : AllItems.templater(safeData.items || localItems, items)
+      : AllItems.templater(localItems, items)
   }
   if (moves.enabled) {
     final[moves.options.topLevelName || 'moves'] = raw
       ? localMoves
-      : AllMoves.templater(safeData.moves || localMoves, moves, {
+      : AllMoves.templater(localMoves, moves, {
           type: localTypes,
         })
   }
   if (questTypes.enabled) {
     final[questTypes.options.topLevelName || 'questTypes'] = raw
       ? AllQuests.parsedQuestTypes
-      : AllQuests.templater(safeData.questTypes || AllQuests.parsedQuestTypes, questTypes)
+      : AllQuests.templater(AllQuests.parsedQuestTypes, questTypes)
   }
   if (questRewardTypes.enabled) {
     final[questRewardTypes.options.topLevelName || 'questRewardTypes'] = raw
       ? AllQuests.parsedRewardTypes
-      : AllQuests.templater(safeData.questRewardTypes || AllQuests.parsedRewardTypes, questRewardTypes)
+      : AllQuests.templater(AllQuests.parsedRewardTypes, questRewardTypes)
   }
   if (questConditions.enabled) {
     final[questConditions.options.topLevelName || 'questConditions'] = raw
       ? AllQuests.parsedConditions
-      : AllQuests.templater(safeData.questConditions || AllQuests.parsedConditions, questConditions)
+      : AllQuests.templater(AllQuests.parsedConditions, questConditions)
   }
   if (invasions.enabled) {
     final[invasions.options.topLevelName || 'invasions'] = raw
       ? AllInvasions.parsedInvasions
-      : AllInvasions.templater(safeData.invasions || AllInvasions.parsedInvasions, invasions)
+      : AllInvasions.templater(AllInvasions.parsedInvasions, invasions)
   }
   if (weather.enabled) {
     final[weather.options.topLevelName || 'weather'] = raw
       ? localWeather
-      : AllWeather.templater(safeData.weather || localWeather, weather, { types: localTypes })
+      : AllWeather.templater(localWeather, weather, { types: localTypes })
   }
   if (translations.enabled) {
     final[translations.options.topLevelName || 'translations'] = AllTranslations.parsedTranslations
@@ -272,6 +278,6 @@ export async function generate({ template, safe, url, test, raw }: Input = {}) {
     fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => {})
     console.log('Generated in ', new Date().getTime() - start)
   } else {
-    return safe ? data : final
+    return final
   }
 }

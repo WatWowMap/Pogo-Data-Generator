@@ -42,7 +42,7 @@ export default class Masterfile {
         return string.charAt(0).toUpperCase() + string.slice(1)
       }
     } catch (e) {
-      console.error(e, '\n', string)
+      console.warn(e, '\n', string)
     }
   }
 
@@ -159,7 +159,7 @@ export default class Masterfile {
           resolved.push(parent)
         }
       } catch (e) {
-        console.error(e, '\n', mainKey, data[id])
+        console.warn(e, '\n', mainKey, data[id])
       }
     })
     return resolved
@@ -198,7 +198,7 @@ export default class Masterfile {
         return newKey
       }
     } catch (e) {
-      console.error(e, '\n', data)
+      console.warn(e, '\n', data)
     }
   }
 }

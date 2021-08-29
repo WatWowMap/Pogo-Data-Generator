@@ -32,31 +32,35 @@ export default class Invasion extends Masterfile {
 
   invasions(invasionData: { [id: string]: InvasionInfo }) {
     Object.entries(Rpc.EnumWrapper.InvasionCharacter).forEach(proto => {
-      const [name, id] = proto
-      if ((this.options.includeBalloons && name.includes('BALLOON')) || !name.includes('BALLOON_')) {
-        const pogoInfo = invasionData[id]
-        this.parsedInvasions[id] = {
-          id: +id,
-          ...this.formatGrunts(name),
-        }
-        if (pogoInfo && pogoInfo.active) {
-          this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.length === 2
-          const positions = [
-            this.customFieldNames.first || 'first',
-            this.customFieldNames.second || 'second',
-            this.customFieldNames.third || 'third',
-          ]
-          this.parsedInvasions[id].encounters = []
-
-          positions.forEach((position, i) => {
-            pogoInfo.lineup.team[i].forEach(pkmn => {
-              this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
+      try {
+        const [name, id] = proto
+        if ((this.options.includeBalloons && name.includes('BALLOON')) || !name.includes('BALLOON_')) {
+          const pogoInfo = invasionData[id]
+          this.parsedInvasions[id] = {
+            id: +id,
+            ...this.formatGrunts(name),
+          }
+          if (pogoInfo && pogoInfo.active) {
+            this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.length === 2
+            const positions = [
+              this.customFieldNames.first || 'first',
+              this.customFieldNames.second || 'second',
+              this.customFieldNames.third || 'third',
+            ]
+            this.parsedInvasions[id].encounters = []
+  
+            positions.forEach((position, i) => {
+              pogoInfo.lineup.team[i].forEach(pkmn => {
+                this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
+              })
             })
-          })
-        } else if (this.options.placeholderData) {
-          this.parsedInvasions[id].secondReward = false
-          this.parsedInvasions[id].encounters = []
+          } else if (this.options.placeholderData) {
+            this.parsedInvasions[id].secondReward = false
+            this.parsedInvasions[id].encounters = []
+          }
         }
+      } catch (e) {
+        console.warn(e, proto)
       }
     })
   }

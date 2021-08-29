@@ -168,7 +168,6 @@ type TranslationsTemplate = {
 }
 
 export interface Input {
-  safe?: boolean
   url?: string
   template?: FullTemplate
   test?: boolean
