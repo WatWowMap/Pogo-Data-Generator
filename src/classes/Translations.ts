@@ -222,7 +222,7 @@ export default class Translations extends Masterfile {
         })
         merged[category] = sorted[category]
       })
-      this.parsedTranslations[locale] = merged  
+      this.parsedTranslations[locale] = merged
     } catch (e) {
       console.warn(e, '\n', `Unable to merge manual translations for ${locale}`)
     }
@@ -242,7 +242,7 @@ export default class Translations extends Masterfile {
           }
         })
       })
-      this.parsedTranslations[locale] = languageRef  
+      this.parsedTranslations[locale] = languageRef
     } catch (e) {
       console.warn(e, '\n', `Unable to reference translations for ${locale}`)
     }
@@ -257,7 +257,7 @@ export default class Translations extends Masterfile {
           ...this.parsedTranslations[locale][category],
         }
       })
-      this.parsedTranslations[locale] = merged  
+      this.parsedTranslations[locale] = merged
     } catch (e) {
       console.warn(e, '\n', `Unable to merge categories for ${locale}`)
     }
@@ -270,20 +270,20 @@ export default class Translations extends Masterfile {
       if (language) {
         Object.keys(data).forEach(category => {
           const ref = this.options.mergeCategories ? language : language[category]
-  
+
           if (ref) {
             this.masterfile[category] = {}
-  
+
             Object.keys(data[category]).forEach(id => {
               if (this.options.prefix[category]) {
                 const actualId = category === 'pokemon' && formsSeparate ? data[category][id].pokedexId : id
-  
+
                 if (ref[`${this.options.prefix[category]}${actualId}`] !== undefined) {
                   const fieldKey =
                     category === 'pokemon' && formsSeparate
                       ? 'pokemonName'
                       : Object.keys(data[category][id]).find(field => field.includes('Name'))
-  
+
                   if (fieldKey) {
                     this.masterfile[category][id] = {
                       ...data[category][id],
@@ -308,7 +308,7 @@ export default class Translations extends Masterfile {
         })
       } else {
         console.warn(`Missing ${locale} translation, please check your template to make sure it's being parsed.`)
-      }  
+      }
     } catch (e) {
       console.warn(e, '\n', `Unable to translate masterfile for ${locale}`)
     }
@@ -330,7 +330,7 @@ export default class Translations extends Masterfile {
     this.parsedTranslations[locale].descriptions = {
       [`${this.options.prefix.descriptions}0`]: this.generics[locale].none,
     }
-    this.parsedTranslations[locale].costumes = { [`${this.options.prefix.costume}0`]: this.generics[locale].unknown }
+    this.parsedTranslations[locale].costumes = {}
 
     Object.keys(pokemon).forEach(id => {
       try {
@@ -348,11 +348,11 @@ export default class Translations extends Masterfile {
             pokemon[id].forms.forEach(formId => {
               const formName = forms[formId].formName
               const formDescription = this.rawTranslations[locale][`${description}_${String(formId).padStart(4, '0')}`]
-  
+
               if (formName && subItems.forms) {
                 let checkAssets = formName.replace(' ', '_').toLowerCase()
                 if (id === '413' || id === '412') checkAssets += '_cloak'
-  
+
                 const formAsset = this.rawTranslations[locale][`form_${checkAssets}`]
                 const typeId = Rpc.HoloPokemonType[`POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto]
                 if (
@@ -390,7 +390,7 @@ export default class Translations extends Masterfile {
               }
             })
           }
-        }  
+        }
       } catch (e) {
         console.warn(e, '\n', `Unable to translate pokemon ${id} for ${locale}`)
       }
@@ -411,7 +411,7 @@ export default class Translations extends Masterfile {
             `${this.options.prefix.pokemonCategories}${split.map(x => +x || x).join('_')}`
           ] = this.rawTranslations[locale][key]
         }
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate pokemon categories for ${locale}`)
     }
@@ -425,10 +425,10 @@ export default class Translations extends Masterfile {
       Object.entries(Rpc.HoloPokemonMove).forEach(proto => {
         const [name, id] = proto
         if (!id) return
-  
+
         const move = this.rawTranslations[locale][`move_name_${String(id).padStart(4, '0')}`]
         this.parsedTranslations[locale].moves[`${this.options.prefix.moves}${id}`] = move || this.capitalize(name)
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate moves for ${locale}`)
     }
@@ -443,7 +443,7 @@ export default class Translations extends Masterfile {
       Object.entries(Rpc.Item).forEach(proto => {
         const [name, id] = proto
         if (!id) return
-  
+
         let item = this.rawTranslations[locale][`${name.toLowerCase()}_name`]
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${id}`] =
           item || this.capitalize(name.replace('ITEM_', ''))
@@ -461,7 +461,7 @@ export default class Translations extends Masterfile {
             )
           }
         }
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate items for ${locale}`)
     }
@@ -478,7 +478,7 @@ export default class Translations extends Masterfile {
         if (type) {
           this.parsedTranslations[locale].types[`${this.options.prefix.types}${id}`] = type
         }
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate types for ${locale}`)
     }
@@ -534,7 +534,7 @@ export default class Translations extends Masterfile {
         const [name, id] = proto
         this.parsedTranslations[locale].characterCategories[`${this.options.prefix.characterCategories}${id}`] =
           this.capitalize(name)
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate characters for ${locale}`)
     }
@@ -553,7 +553,7 @@ export default class Translations extends Masterfile {
         if (type) {
           this.parsedTranslations[locale].weather[`${this.options.prefix.weather}${id}`] = type
         }
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate weather for ${locale}`)
     }
@@ -613,7 +613,7 @@ export default class Translations extends Masterfile {
           const value = data[category][proto].formatted.replace('With ', '')
           this.parsedTranslations[locale][category][`${this.options.prefix[category]}${proto}`] = value
         })
-      })  
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate quests for ${locale}`)
     }
