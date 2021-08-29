@@ -14,17 +14,16 @@ export default class Moves extends Masterfile {
   }
 
   protoMoves() {
-    const MoveArray = Object.keys(Rpc.HoloPokemonMove).map(i => i)
-    for (let i = 0; i < MoveArray.length; i += 1) {
-      const id = Rpc.HoloPokemonMove[MoveArray[i] as MoveProto]
+    Object.entries(Rpc.HoloPokemonMove).forEach(proto => {
+      const [name, id] = proto
       if (!this.parsedMoves[id]) {
         this.parsedMoves[id] = {
-          moveId: Rpc.HoloPokemonMove[MoveArray[i] as MoveProto],
-          moveName: this.capitalize(MoveArray[i].replace('_FAST', '')),
-          proto: MoveArray[i],
+          moveId: +id,
+          moveName: this.capitalize(name.replace('_FAST', '')),
+          proto: name,
         }
       }
-    }
+    })
   }
 
   addMove(object: NiaMfObj) {
@@ -42,7 +41,7 @@ export default class Moves extends Masterfile {
         power: combatMove.power,
       }
     } catch (e) {
-      console.error(e, '\n', object)
+      console.warn(e, '\n', object)
     }
   }
 }

@@ -16,12 +16,16 @@ export default class Weather extends Masterfile {
   
   buildWeather() {
     Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach(proto => {
-      const [name, id] = proto
-      this.parsedWeather[id] = {
-        weatherId: +id,
-        weatherName: this.capitalize(name),
-        proto: name,
-        types: this.rawWeather[name] || []
+      try {
+        const [name, id] = proto
+        this.parsedWeather[id] = {
+          weatherId: +id,
+          weatherName: this.capitalize(name),
+          proto: name,
+          types: this.rawWeather[name] || []
+        }  
+      } catch (e) {
+        console.warn(e, proto)
       }
     })
   }

@@ -35,7 +35,7 @@ export default class Item extends Masterfile {
         }
       }
     } catch (e) {
-      console.error(e, '\n', object)
+      console.warn(e, '\n', object)
     }
   }
 }

@@ -49,11 +49,11 @@ export default class Pokemon extends Masterfile {
       },
       4: {
         name: 'Sinnoh',
-        range: [387, 494],
+        range: [387, 493],
       },
       5: {
         name: 'Unova',
-        range: [495, 649],
+        range: [494, 649],
       },
       6: {
         name: 'Kalos',
@@ -71,17 +71,21 @@ export default class Pokemon extends Masterfile {
   }
 
   pokemonName(id: number) {
-    switch (id) {
-      case 29:
-        return 'Nidoran♀'
-      case 32:
-        return 'Nidoran♂'
-      default:
-        return this.capitalize(Rpc.HoloPokemonId[id])
+    try {
+      switch (id) {
+        case 29:
+          return 'Nidoran♀'
+        case 32:
+          return 'Nidoran♂'
+        default:
+          return this.capitalize(Rpc.HoloPokemonId[id])
+      }
+    } catch (e) {
+      console.warn(e, `Failed to set pokemon name for ${id}`)
     }
   }
 
-  async pokeApi() {
+  async pokeApiStats() {
     const inconsistentStats: { [id: string]: { attack?: number; defense?: number; stamina?: number } } = {
       24: {
         attack: 167,
@@ -164,184 +168,236 @@ export default class Pokemon extends Masterfile {
 
     await Promise.all(
       Object.keys(this.parsedPokemon).map(async id => {
-        if (
-          !this.parsedPokemon[id].attack ||
-          !this.parsedPokemon[id].defense ||
-          !this.parsedPokemon[id].stamina ||
-          this.parsedPokemon[id].types.length === 0 ||
-          (this.options.pokeApiIds && this.options.pokeApiIds.includes(+id))
-        ) {
-          const evoData: SpeciesApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
-          const statsData: PogoApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+        try {
+          if (
+            !this.parsedPokemon[id].attack ||
+            !this.parsedPokemon[id].defense ||
+            !this.parsedPokemon[id].stamina ||
+            this.parsedPokemon[id].types.length === 0 ||
+            (this.options.pokeApiIds && this.options.pokeApiIds.includes(+id))
+          ) {
+            const statsData: PogoApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
 
-          const baseStats: { [stat: string]: number } = {}
-          statsData.stats.forEach(stat => {
-            baseStats[stat.stat.name] = stat.base_stat
-          })
-          const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
-            attack: attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
-            defense: defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
-            stamina: stamina(baseStats.hp),
-          }
-          initial.cp = cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
+            const baseStats: { [stat: string]: number } = {}
+            statsData.stats.forEach(stat => {
+              baseStats[stat.stat.name] = stat.base_stat
+            })
+            const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
+              attack: attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
+              defense: defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+              stamina: stamina(baseStats.hp),
+            }
+            initial.cp = cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
 
-          const nerfCheck = {
-            attack:
-              initial.cp > 4000
-                ? attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
-                : initial.attack,
-            defense:
-              initial.cp > 4000
-                ? defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
-                : initial.defense,
-            stamina: initial.cp > 4000 ? stamina(baseStats.hp, true) : initial.stamina,
-          }
-          this.parsedPokemon[id] = {
-            ...this.parsedPokemon[id],
-            attack: inconsistentStats[id] ? inconsistentStats[id].attack || nerfCheck.attack : nerfCheck.attack,
-            defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
-            stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
-            types: statsData.types.map(
-              type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
-            ),
-            unreleased: true,
-          }
-
-          if (evoData.evolves_from_species) {
-            const prevEvoId =
-              Rpc.HoloPokemonId[evoData.evolves_from_species.name.toUpperCase().replace('-', '_') as PokemonIdProto]
-            if (prevEvoId) {
-              if (!this.parsedPokemon[prevEvoId].evolutions) {
-                this.parsedPokemon[prevEvoId].evolutions = []
-              }
-              this.parsedPokemon[prevEvoId].evolutions.push({ evoId: +id })
-              this.evolvedPokemon.add(+id)
-            } else {
-              console.warn(
-                'Unable to find proto ID for',
-                evoData.evolves_from_species.name.toUpperCase().replace('-', '_')
-              )
+            const nerfCheck = {
+              attack:
+                initial.cp > 4000
+                  ? attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
+                  : initial.attack,
+              defense:
+                initial.cp > 4000
+                  ? defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
+                  : initial.defense,
+              stamina: initial.cp > 4000 ? stamina(baseStats.hp, true) : initial.stamina,
+            }
+            this.parsedPokemon[id] = {
+              ...this.parsedPokemon[id],
+              attack: inconsistentStats[id] ? inconsistentStats[id].attack || nerfCheck.attack : nerfCheck.attack,
+              defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
+              stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
+              types: statsData.types.map(
+                type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
+              ),
+              unreleased: true,
             }
           }
+        } catch (e) {
+          console.warn(e, `Failed to parse PokeApi Stats for #${id}`)
+        }
+      })
+    )
+  }
+
+  async pokeApiEvos() {
+    await Promise.all(
+      Object.keys(this.parsedPokemon).map(async id => {
+        try {
+          if (this.parsedPokemon[id].unreleased) {
+            const evoData: SpeciesApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+            if (evoData.evolves_from_species) {
+              const prevEvoId =
+                Rpc.HoloPokemonId[evoData.evolves_from_species.name.toUpperCase().replace('-', '_') as PokemonIdProto]
+              if (prevEvoId) {
+                if (!this.parsedPokemon[prevEvoId].evolutions) {
+                  this.parsedPokemon[prevEvoId].evolutions = []
+                }
+                this.parsedPokemon[prevEvoId].evolutions.push({ evoId: +id })
+                this.evolvedPokemon.add(+id)
+              } else {
+                console.warn(
+                  'Unable to find proto ID for',
+                  evoData.evolves_from_species.name.toUpperCase().replace('-', '_')
+                )
+              }
+            }
+          }
+        } catch (e) {
+          console.warn(e, `Failed to parse PokeApi Evolutions for #${id}`)
         }
       })
     )
   }
 
   formName(id: number, formName: string) {
-    const name = formName.substr(
-      id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
-        ? 8
-        : Rpc.HoloPokemonId[id].length + 1
-    )
-    return this.capitalize(name)
+    try {
+      const name = formName.substr(
+        id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
+          ? 8
+          : Rpc.HoloPokemonId[id].length + 1
+      )
+      return this.capitalize(name)
+    } catch (e) {
+      console.warn(e, `Failed to lookup form name for ${formName}, ID#`, id)
+    }
   }
 
   skipForms(formName: string) {
-    return this.formsToSkip.some(form => formName.toLowerCase() === form)
+    try {
+      return this.formsToSkip.some(form => formName.toLowerCase() === form)
+    } catch (e) {
+      console.warn(e, `Failed to skip forms for ${formName}`)
+    }
   }
 
   lookupPokemon(name: string) {
-    for (const key of Object.keys(Rpc.HoloPokemonId)) {
-      if (name.startsWith(`${key}_`)) {
-        return key
+    try {
+      for (const key of Object.keys(Rpc.HoloPokemonId)) {
+        if (name.startsWith(`${key}_`)) {
+          return key
+        }
       }
+    } catch (e) {
+      console.warn(e, `Failed to lookup pokemon for ${name}`)
     }
   }
 
   getGeneration(id: number) {
-    const genInfo: { genId?: number; generation?: string } = {}
-    genInfo.genId = +Object.keys(this.generations).find(gen => {
-      return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1]
-    })
-    if (genInfo.genId) {
-      genInfo.generation = this.generations[genInfo.genId].name
+    try {
+      const genInfo: { genId?: number; generation?: string } = {}
+      genInfo.genId = +Object.keys(this.generations).find(gen => {
+        return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1]
+      })
+      if (genInfo.genId) {
+        genInfo.generation = this.generations[genInfo.genId].name
+      }
+      return genInfo
+    } catch (e) {
+      console.warn(e, `Failed to lookup generation for ${id}`)
     }
-    return genInfo
   }
 
   getMoves(moves: string[]) {
-    if (moves) {
-      try {
-        return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto])
-      } catch (e) {
-        console.error(e, '\n', moves)
+    try {
+      if (moves) {
+        try {
+          return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto])
+        } catch (e) {
+          console.warn(e, '\n', moves)
+        }
       }
+      return []
+    } catch (e) {
+      console.warn(e, `Failed to lookup moves for ${moves}`)
     }
-    return []
   }
 
   compare(formData: number[], parentData: number[]) {
-    if (formData && parentData) {
-      try {
-        return formData.every((x, i) => x === parentData[i]) && formData.length === parentData.length
-      } catch (e) {
-        console.error(e, '\nForm:', formData, '\nParent:', parentData)
+    try {
+      if (formData && parentData) {
+        try {
+          return formData.every((x, i) => x === parentData[i]) && formData.length === parentData.length
+        } catch (e) {
+          console.warn(e, '\nForm:', formData, '\nParent:', parentData)
+        }
       }
+    } catch (e) {
+      console.warn(e, `Failed to compare ${formData} and ${parentData}`)
     }
   }
 
   getTypes(incomingTypes: string[]) {
-    if (incomingTypes) {
-      try {
-        if (!incomingTypes[1]) {
-          incomingTypes.pop()
+    try {
+      if (incomingTypes) {
+        try {
+          if (!incomingTypes[1]) {
+            incomingTypes.pop()
+          }
+          return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto])
+        } catch (e) {
+          console.warn(e, '\n', incomingTypes)
         }
-        return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto])
-      } catch (e) {
-        console.error(e, '\n', incomingTypes)
       }
+      return []
+    } catch (e) {
+      console.warn(e, `Failed to lookup types for ${incomingTypes}`)
     }
-    return []
   }
 
   compileEvos(mfObject: EvoBranch[]) {
-    const evolutions: Evolutions[] = []
-    mfObject.forEach(branch => {
-      if (branch.temporaryEvolution) {
-        return
-      } else if (branch.evolution) {
-        const id = Rpc.HoloPokemonId[branch.evolution as PokemonIdProto]
-        const formId = Rpc.PokemonDisplayProto.Form[branch.form as FormProto]
-        evolutions.push({
-          evoId: id,
-          formId: this.options.includeUnset ? formId || 0 : formId,
-          genderRequirement: this.options.genderString
-            ? this.genders[Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto]]
-            : Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto],
-        })
-        this.evolvedPokemon.add(id)
-      }
-    })
-    return evolutions
+    try {
+      const evolutions: Evolutions[] = []
+      mfObject.forEach(branch => {
+        if (branch.temporaryEvolution) {
+          return
+        } else if (branch.evolution) {
+          const id = Rpc.HoloPokemonId[branch.evolution as PokemonIdProto]
+          const formId = Rpc.PokemonDisplayProto.Form[branch.form as FormProto]
+          evolutions.push({
+            evoId: id,
+            formId: this.options.includeUnset ? formId || 0 : formId,
+            genderRequirement: this.options.genderString
+              ? this.genders[Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto]]
+              : Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto],
+          })
+          this.evolvedPokemon.add(id)
+        }
+      })
+      return evolutions
+    } catch (e) {
+      console.warn(e, `Failed to compile evos for ${mfObject}`)
+    }
   }
 
   compileTempEvos(mfObject: TempEvo[], primaryForm: SinglePokemon) {
-    const tempEvolutions: TempEvolutions[] = mfObject.map(tempEvo => {
-      const newTempEvolutions: TempEvolutions = {
-        tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
-      }
-      switch (true) {
-        case tempEvo.stats.baseAttack !== primaryForm.attack:
-        case tempEvo.stats.baseDefense !== primaryForm.defense:
-        case tempEvo.stats.baseStamina !== primaryForm.stamina:
-          newTempEvolutions.attack = tempEvo.stats.baseAttack
-          newTempEvolutions.defense = tempEvo.stats.baseDefense
-          newTempEvolutions.stamina = tempEvo.stats.baseStamina
-      }
-      if (tempEvo.averageHeightM !== primaryForm.height) {
-        newTempEvolutions.height = tempEvo.averageHeightM
-      }
-      if (tempEvo.averageWeightKg !== primaryForm.weight) {
-        newTempEvolutions.weight = tempEvo.averageWeightKg
-      }
-      const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2])
-      if (!this.compare(types, primaryForm.types)) {
-        newTempEvolutions.types = types
-      }
-      return newTempEvolutions
-    })
-    return tempEvolutions
+    try {
+      const tempEvolutions: TempEvolutions[] = mfObject.map(tempEvo => {
+        const newTempEvolutions: TempEvolutions = {
+          tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
+        }
+        switch (true) {
+          case tempEvo.stats.baseAttack !== primaryForm.attack:
+          case tempEvo.stats.baseDefense !== primaryForm.defense:
+          case tempEvo.stats.baseStamina !== primaryForm.stamina:
+            newTempEvolutions.attack = tempEvo.stats.baseAttack
+            newTempEvolutions.defense = tempEvo.stats.baseDefense
+            newTempEvolutions.stamina = tempEvo.stats.baseStamina
+        }
+        if (tempEvo.averageHeightM !== primaryForm.height) {
+          newTempEvolutions.height = tempEvo.averageHeightM
+        }
+        if (tempEvo.averageWeightKg !== primaryForm.weight) {
+          newTempEvolutions.weight = tempEvo.averageWeightKg
+        }
+        const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2])
+        if (!this.compare(types, primaryForm.types)) {
+          newTempEvolutions.types = types
+        }
+        return newTempEvolutions
+      })
+      return tempEvolutions
+    } catch (e) {
+      console.warn(e, `Failed to compile temp evos for ${mfObject}`)
+    }
   }
 
   generateProtoForms() {
@@ -392,7 +448,7 @@ export default class Pokemon extends Masterfile {
           }
         })
       } catch (e) {
-        console.error(e, '\n', proto)
+        console.warn(e, '\n', proto)
       }
     })
   }
@@ -444,7 +500,7 @@ export default class Pokemon extends Masterfile {
           }
         }
       } catch (e) {
-        console.error(e, '\n', object)
+        console.warn(e, '\n', object)
       }
     }
   }
@@ -457,222 +513,245 @@ export default class Pokemon extends Masterfile {
     const split = templateId.split('_')
     const id = Number(split[0].slice(1))
 
-    if (!this.parsedPokemon[id]) {
-      this.parsedPokemon[id] = {}
-    }
-    let formId: number = /^V\d{4}_POKEMON_/.test(templateId)
-      ? Rpc.PokemonDisplayProto.Form[templateId.substr('V9999_POKEMON_'.length) as FormProto]
-      : null
-
-    if (formId) {
-      if (!this.parsedPokemon[id].forms) {
-        this.parsedPokemon[id].forms = []
+    try {
+      if (!this.parsedPokemon[id]) {
+        this.parsedPokemon[id] = {}
       }
-      const primaryForm = this.parsedPokemon[id]
-      const formName = this.formName(id, split.filter((word, i) => i > 1 && word).join('_'))
+      let formId: number = /^V\d{4}_POKEMON_/.test(templateId)
+        ? Rpc.PokemonDisplayProto.Form[templateId.substr('V9999_POKEMON_'.length) as FormProto]
+        : null
 
-      if (!this.skipForms(formName)) {
-        if (!this.parsedForms[formId]) {
-          this.parsedForms[formId] = {
-            formName,
-            proto: templateId,
-            formId,
+      if (formId) {
+        if (!this.parsedPokemon[id].forms) {
+          this.parsedPokemon[id].forms = []
+        }
+        const primaryForm = this.parsedPokemon[id]
+        const formName = this.formName(id, split.filter((word, i) => i > 1 && word).join('_'))
+
+        if (!this.skipForms(formName)) {
+          if (!this.parsedForms[formId]) {
+            this.parsedForms[formId] = {
+              formName,
+              proto: templateId,
+              formId,
+            }
+          }
+          if (!this.parsedPokemon[id].forms.includes(formId)) {
+            this.parsedPokemon[id].forms.push(formId)
+          }
+          const form = this.parsedForms[formId]
+
+          switch (true) {
+            case pokemonSettings.stats.baseAttack !== primaryForm.attack:
+            case pokemonSettings.stats.baseDefense !== primaryForm.defense:
+            case pokemonSettings.stats.baseStamina !== primaryForm.stamina:
+              form.attack = pokemonSettings.stats.baseAttack
+              form.defense = pokemonSettings.stats.baseDefense
+              form.stamina = pokemonSettings.stats.baseStamina
+          }
+          switch (true) {
+            case object.data.pokemonSettings.pokedexHeightM !== primaryForm.height:
+            case object.data.pokemonSettings.pokedexWeightKg !== primaryForm.weight:
+              form.height = object.data.pokemonSettings.pokedexHeightM
+              form.weight = object.data.pokemonSettings.pokedexWeightKg
+          }
+
+          const qMoves = this.getMoves(pokemonSettings.quickMoves)
+          if (!this.compare(qMoves, primaryForm.quickMoves)) {
+            form.quickMoves = qMoves
+          }
+          const cMoves = this.getMoves(pokemonSettings.cinematicMoves)
+          if (!this.compare(cMoves, primaryForm.chargedMoves)) {
+            form.chargedMoves = cMoves
+          }
+          const types = this.getTypes([pokemonSettings.type, pokemonSettings.type2])
+          if (!this.compare(types, primaryForm.types)) {
+            form.types = types
+          }
+          const family = Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto]
+          if (family !== primaryForm.family) {
+            form.family = family
+          }
+          if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
+            if (!form.evolutions) {
+              form.evolutions = []
+            }
+            form.evolutions.push(...this.compileEvos(pokemonSettings.evolutionBranch))
+          }
+          if (pokemonSettings.tempEvoOverrides) {
+            form.tempEvolutions = this.compileTempEvos(pokemonSettings.tempEvoOverrides, this.parsedPokemon[id])
+          }
+          if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
+            form.tempEvolutions = []
+            Object.values(primaryForm.tempEvolutions).forEach(tempEvo => {
+              form.tempEvolutions.push(tempEvo)
+            })
           }
         }
-        if (!this.parsedPokemon[id].forms.includes(formId)) {
-          this.parsedPokemon[id].forms.push(formId)
-        }
-        const form = this.parsedForms[formId]
-
-        switch (true) {
-          case pokemonSettings.stats.baseAttack !== primaryForm.attack:
-          case pokemonSettings.stats.baseDefense !== primaryForm.defense:
-          case pokemonSettings.stats.baseStamina !== primaryForm.stamina:
-            form.attack = pokemonSettings.stats.baseAttack
-            form.defense = pokemonSettings.stats.baseDefense
-            form.stamina = pokemonSettings.stats.baseStamina
-        }
-        switch (true) {
-          case object.data.pokemonSettings.pokedexHeightM !== primaryForm.height:
-          case object.data.pokemonSettings.pokedexWeightKg !== primaryForm.weight:
-            form.height = object.data.pokemonSettings.pokedexHeightM
-            form.weight = object.data.pokemonSettings.pokedexWeightKg
-        }
-
-        const qMoves = this.getMoves(pokemonSettings.quickMoves)
-        if (!this.compare(qMoves, primaryForm.quickMoves)) {
-          form.quickMoves = qMoves
-        }
-        const cMoves = this.getMoves(pokemonSettings.cinematicMoves)
-        if (!this.compare(cMoves, primaryForm.chargedMoves)) {
-          form.chargedMoves = cMoves
-        }
-        const types = this.getTypes([pokemonSettings.type, pokemonSettings.type2])
-        if (!this.compare(types, primaryForm.types)) {
-          form.types = types
-        }
-        const family = Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto]
-        if (family !== primaryForm.family) {
-          form.family = family
+      } else {
+        this.parsedPokemon[id] = {
+          pokemonName: this.pokemonName(id),
+          forms: this.parsedPokemon[id].forms || [],
+          ...this.parsedPokemon[id],
+          pokedexId: id,
+          types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]),
+          attack: pokemonSettings.stats.baseAttack,
+          defense: pokemonSettings.stats.baseDefense,
+          stamina: pokemonSettings.stats.baseStamina,
+          height: pokemonSettings.pokedexHeightM,
+          weight: pokemonSettings.pokedexWeightKg,
+          quickMoves: this.getMoves(pokemonSettings.quickMoves),
+          chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
+          family: Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
+          fleeRate: pokemonSettings.encounter.baseFleeRate,
+          captureRate: pokemonSettings.encounter.baseCaptureRate,
+          legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY',
+          mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC',
+          buddyGroupNumber: pokemonSettings.buddyGroupNumber,
+          buddyDistance: pokemonSettings.kmBuddyDistance,
+          thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock,
+          thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock,
+          gymDefenderEligible: pokemonSettings.isDeployable,
+          ...this.getGeneration(id),
         }
         if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
-          if (!form.evolutions) {
-            form.evolutions = []
-          }
-          form.evolutions.push(...this.compileEvos(pokemonSettings.evolutionBranch))
+          this.parsedPokemon[id].evolutions = this.compileEvos(pokemonSettings.evolutionBranch)
         }
         if (pokemonSettings.tempEvoOverrides) {
-          form.tempEvolutions = this.compileTempEvos(pokemonSettings.tempEvoOverrides, this.parsedPokemon[id])
-        }
-        if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
-          form.tempEvolutions = []
-          Object.values(primaryForm.tempEvolutions).forEach(tempEvo => {
-            form.tempEvolutions.push(tempEvo)
-          })
+          this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
+            pokemonSettings.tempEvoOverrides,
+            this.parsedPokemon[id]
+          )
         }
       }
-    } else {
-      this.parsedPokemon[id] = {
-        pokemonName: this.pokemonName(id),
-        forms: this.parsedPokemon[id].forms || [],
-        ...this.parsedPokemon[id],
-        pokedexId: id,
-        types: this.getTypes([pokemonSettings.type, pokemonSettings.type2]),
-        attack: pokemonSettings.stats.baseAttack,
-        defense: pokemonSettings.stats.baseDefense,
-        stamina: pokemonSettings.stats.baseStamina,
-        height: pokemonSettings.pokedexHeightM,
-        weight: pokemonSettings.pokedexWeightKg,
-        quickMoves: this.getMoves(pokemonSettings.quickMoves),
-        chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
-        family: Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
-        fleeRate: pokemonSettings.encounter.baseFleeRate,
-        captureRate: pokemonSettings.encounter.baseCaptureRate,
-        legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY',
-        mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC',
-        buddyGroupNumber: pokemonSettings.buddyGroupNumber,
-        buddyDistance: pokemonSettings.kmBuddyDistance,
-        thirdMoveStardust: pokemonSettings.thirdMove.stardustToUnlock,
-        thirdMoveCandy: pokemonSettings.thirdMove.candyToUnlock,
-        gymDefenderEligible: pokemonSettings.isDeployable,
-        ...this.getGeneration(id),
-      }
-      if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some(evo => evo.evolution)) {
-        this.parsedPokemon[id].evolutions = this.compileEvos(pokemonSettings.evolutionBranch)
-      }
-      if (pokemonSettings.tempEvoOverrides) {
-        this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
-          pokemonSettings.tempEvoOverrides,
-          this.parsedPokemon[id]
-        )
-      }
+    } catch (e) {
+      console.warn(e, `Failed to parse Pokemon for ${id}`, object)
     }
   }
 
   megaInfo() {
-    const megaLookup: { [id: string]: number } = {
-      undefined: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA,
-      _X: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_X,
-      _Y: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_Y,
-    }
-    for (const { data } of megas.items) {
-      const match = /^V(\d{4})_POKEMON_.*_MEGA(_[XY])?$/.exec(data.templateId)
-      const pokemonId = parseInt(match[1])
-      if (!this.megaStats[pokemonId]) {
-        this.megaStats[pokemonId] = []
+    try {
+      const megaLookup: { [id: string]: number } = {
+        undefined: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA,
+        _X: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_X,
+        _Y: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_Y,
       }
-      this.megaStats[pokemonId].push({
-        tempEvoId: megaLookup[match[2]],
-        attack: data.pokemon.stats.baseAttack,
-        defense: data.pokemon.stats.baseDefense,
-        stamina: data.pokemon.stats.baseStamina,
-        type1: data.pokemon.type1,
-        type2: data.pokemon.type2,
-      })
+      for (const { data } of megas.items) {
+        const match = /^V(\d{4})_POKEMON_.*_MEGA(_[XY])?$/.exec(data.templateId)
+        const pokemonId = parseInt(match[1])
+        if (!this.megaStats[pokemonId]) {
+          this.megaStats[pokemonId] = []
+        }
+        this.megaStats[pokemonId].push({
+          tempEvoId: megaLookup[match[2]],
+          attack: data.pokemon.stats.baseAttack,
+          defense: data.pokemon.stats.baseDefense,
+          stamina: data.pokemon.stats.baseStamina,
+          type1: data.pokemon.type1,
+          type2: data.pokemon.type2,
+        })
+      }
+    } catch (e) {
+      console.warn(e, `Failed to parse Mega Info`)
     }
   }
 
   futurePokemon() {
     Object.values(Rpc.HoloPokemonId).forEach(id => {
-      if (id) {
-        this.parsedPokemon[id] = {
-          pokemonName: this.pokemonName(+id),
-          pokedexId: +id,
-          defaultFormId: 0,
-          ...this.getGeneration(+id),
-          ...this.parsedPokemon[id],
-        }
-        if (!this.parsedPokemon[id].forms) {
-          this.parsedPokemon[id].forms = [0]
-        } else if (this.parsedPokemon[id].forms.length === 0) {
-          this.parsedPokemon[id].forms.push(0)
-        }
-        const guessedMega = this.megaStats[id]
-        if (guessedMega && this.options.includeEstimatedPokemon) {
-          if (!this.parsedPokemon[id]) {
-            this.parsedPokemon[id] = { pokemonName: this.pokemonName(+id) }
+      try {
+        if (id) {
+          this.parsedPokemon[id] = {
+            pokemonName: this.pokemonName(+id),
+            pokedexId: +id,
+            defaultFormId: 0,
+            ...this.getGeneration(+id),
+            ...this.parsedPokemon[id],
           }
-          if (!this.parsedPokemon[id].tempEvolutions) {
-            this.parsedPokemon[id].tempEvolutions = []
+          if (!this.parsedPokemon[id].forms) {
+            this.parsedPokemon[id].forms = [0]
+          } else if (this.parsedPokemon[id].forms.length === 0) {
+            this.parsedPokemon[id].forms.push(0)
           }
-          for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
-            if (!this.parsedPokemon[id].tempEvolutions.some(evo => evo.tempEvoId === tempEvoId)) {
-              const types = this.getTypes([type1, type2])
-              const evo: TempEvolutions = {
-                tempEvoId,
-                attack,
-                defense,
-                stamina,
-                unreleased: true,
-              }
-              if (!this.compare(types, this.parsedPokemon[id].types)) {
-                evo.types = types
-              }
-              this.parsedPokemon[id].tempEvolutions.push(evo)
-              if (this.parsedPokemon[id].forms) {
-                this.parsedPokemon[id].forms.forEach(form => {
-                  if (this.parsedForms[form].formName === 'Normal' || this.parsedForms[form].formName === 'Purified') {
-                    if (!this.parsedForms[form].tempEvolutions) {
-                      this.parsedForms[form].tempEvolutions = []
+          const guessedMega = this.megaStats[id]
+          if (guessedMega && this.options.includeEstimatedPokemon) {
+            if (!this.parsedPokemon[id]) {
+              this.parsedPokemon[id] = { pokemonName: this.pokemonName(+id) }
+            }
+            if (!this.parsedPokemon[id].tempEvolutions) {
+              this.parsedPokemon[id].tempEvolutions = []
+            }
+            for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
+              if (!this.parsedPokemon[id].tempEvolutions.some(evo => evo.tempEvoId === tempEvoId)) {
+                const types = this.getTypes([type1, type2])
+                const evo: TempEvolutions = {
+                  tempEvoId,
+                  attack,
+                  defense,
+                  stamina,
+                  unreleased: true,
+                }
+                if (!this.compare(types, this.parsedPokemon[id].types)) {
+                  evo.types = types
+                }
+                this.parsedPokemon[id].tempEvolutions.push(evo)
+                if (this.parsedPokemon[id].forms) {
+                  this.parsedPokemon[id].forms.forEach(form => {
+                    if (
+                      this.parsedForms[form].formName === 'Normal' ||
+                      this.parsedForms[form].formName === 'Purified'
+                    ) {
+                      if (!this.parsedForms[form].tempEvolutions) {
+                        this.parsedForms[form].tempEvolutions = []
+                      }
+                      this.parsedForms[form].tempEvolutions.push(evo)
                     }
-                    this.parsedForms[form].tempEvolutions.push(evo)
-                  }
-                })
+                  })
+                }
               }
             }
           }
         }
+      } catch (e) {
+        console.warn(e, `Failed to parse Future Pokemon for ${id}`)
       }
     })
   }
 
   littleCup() {
-    if (this.lcBanList === undefined) {
-      console.warn('Missing little cup ban list from Masterfile')
-    } else {
-      this.lcBanList.add('FARFETCHD')
-      this.parsedForms[Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN].little = true
-    }
-    for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
-      const allowed = !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined
-      if (allowed || +id === Rpc.HoloPokemonId.DEERLING) {
-        pokemon.little = true
+    try {
+      if (this.lcBanList === undefined) {
+        console.warn('Missing little cup ban list from Masterfile')
+      } else {
+        this.lcBanList.add('FARFETCHD')
+        this.parsedForms[Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN].little = true
       }
+      for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
+        const allowed = !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined
+        if (allowed || +id === Rpc.HoloPokemonId.DEERLING) {
+          pokemon.little = true
+        }
+      }
+    } catch (e) {
+      console.warn(e, `Failed to parse Little Cup`)
     }
   }
 
   makeFormsSeparate() {
-    this.parsedPokeForms = {}
-    Object.values(this.parsedPokemon).forEach(pokemon => {
-      if (pokemon.forms) {
-        pokemon.forms.forEach(form => {
-          this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
-            ...pokemon,
-            ...this.parsedForms[form],
-            forms: [form],
-          }
-        })
-      }
-    })
+    try {
+      this.parsedPokeForms = {}
+      Object.values(this.parsedPokemon).forEach(pokemon => {
+        if (pokemon.forms) {
+          pokemon.forms.forEach(form => {
+            this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
+              ...pokemon,
+              ...this.parsedForms[form],
+              forms: [form],
+            }
+          })
+        }
+      })  
+    } catch (e) {
+      console.warn(e, `Failed to make forms separate`)
+    }
   }
 }

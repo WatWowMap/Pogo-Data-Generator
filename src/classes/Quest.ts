@@ -18,26 +18,34 @@ export default class Quests extends Masterfile {
   addQuest(category: string) {
     let parseTarget
     let protoTarget
-    switch (category) {
-      case 'types':
-        parseTarget = this.parsedQuestTypes
-        protoTarget = Rpc.QuestType
-        break
-      case 'rewards':
-        parseTarget = this.parsedRewardTypes
-        protoTarget = Rpc.QuestRewardProto.Type
-        break
-      case 'conditions':
-        parseTarget = this.parsedConditions
-        protoTarget = Rpc.QuestConditionProto.ConditionType
-        break
+    try {
+      switch (category) {
+        case 'types':
+          parseTarget = this.parsedQuestTypes
+          protoTarget = Rpc.QuestType
+          break
+        case 'rewards':
+          parseTarget = this.parsedRewardTypes
+          protoTarget = Rpc.QuestRewardProto.Type
+          break
+        case 'conditions':
+          parseTarget = this.parsedConditions
+          protoTarget = Rpc.QuestConditionProto.ConditionType
+          break
+      }
+    } catch (e) {
+      console.warn(e, `Failed to parse quest ${category}`)
     }
-    Object.entries(protoTarget).forEach(type => {
-      const [proto, id] = type
-      parseTarget[id] = {
-        id,
-        proto,
-        formatted: category === 'types' ? this.capitalize(proto.replace('QUEST_', '')) : this.capitalize(proto),
+    Object.entries(protoTarget).forEach(proto => {
+      try {
+        const [name, id] = proto
+        parseTarget[id] = {
+          id,
+          proto: name,
+          formatted: category === 'types' ? this.capitalize(name.replace('QUEST_', '')) : this.capitalize(name),
+        }  
+      } catch (e) {
+        console.warn(e, `Failed to parse quest ${proto}`)
       }
     })
   }
