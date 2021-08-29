@@ -183,7 +183,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
       const [localeCode, bool] = langCode
       if (bool) {
         AllTranslations.mergeManualTranslations(localeCode)
-        if (translations.options.useLanguageAsRef) {
+        if (typeof translations.options.useLanguageAsRef === 'string') {
           AllTranslations.languageRef(localeCode)
         }
         if (translations.options.mergeCategories) {
