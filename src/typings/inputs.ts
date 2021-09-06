@@ -26,7 +26,12 @@ export interface Options {
   skipNormalIfUnset?: boolean
   skipForms?: string[]
   includeProtos?: boolean
-  includeEstimatedPokemon?: boolean
+  includeEstimatedPokemon?:
+    | {
+        [key: string]: boolean
+        baseStats?: boolean
+      }
+    | true
   minTrainerLevel?: number
   placeholderData?: boolean
   masterfileLocale?: string
@@ -219,6 +224,7 @@ export interface Input {
   template?: FullTemplate
   test?: boolean
   raw?: boolean
+  pokeApi?: boolean
 }
 
 export interface FullTemplate {

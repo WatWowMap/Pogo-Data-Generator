@@ -9,8 +9,8 @@ export interface AllWeather {
 
 export interface AllTypes {
   [id: string]: {
-    typeId: number
-    typeName: string
+    typeId?: number
+    typeName?: string
     strengths?: number[]
     weaknesses?: number[]
     veryWeakAgainst?: number[]
@@ -120,7 +120,7 @@ interface SingleForm extends BaseStats {
 }
 
 export interface TempEvolutions extends BaseStats {
-  tempEvoId: number
+  tempEvoId: number | string
   unreleased?: boolean
   firstEnergyCost?: number
   subsequentEnergyCost?: number

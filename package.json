@@ -19,6 +19,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "generate": "node -e 'require(\"./dist/index\").generate({ test: true })'",
+    "pokeapi": "node -e 'require(\"./dist/index\").generate({ test: true, pokeApi: true })'",
+    "raw": "node -e 'require(\"./dist/index\").generate({ test: true, raw: true })'",
     "test": "./node_modules/.bin/jest"
   },
   "repository": {

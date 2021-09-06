@@ -46,6 +46,20 @@ export default class Masterfile {
     }
   }
 
+  compare(formData: number[], parentData: number[]) {
+    try {
+      if (formData && parentData) {
+        try {
+          return formData.every((x, i) => x === parentData[i]) && formData.length === parentData.length
+        } catch (e) {
+          console.warn(e, '\nForm:', formData, '\nParent:', parentData)
+        }
+      }
+    } catch (e) {
+      console.warn(e, `Failed to compare ${formData} and ${parentData}`)
+    }
+  }
+
   templater(data: any, settings: { template: any; options: Options }, reference: FinalResult = {}) {
     // loops through the raw data and outputs the desired template
     const { template, options } = settings

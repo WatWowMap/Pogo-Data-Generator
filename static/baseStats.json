@@ -1,0 +1,1061 @@
+{
+  "679": {
+    "attack": 135,
+    "defense": 139,
+    "stamina": 128,
+    "types": [
+      9,
+      8
+    ],
+    "unreleased": true
+  },
+  "680": {
+    "attack": 188,
+    "defense": 206,
+    "stamina": 153,
+    "types": [
+      9,
+      8
+    ],
+    "unreleased": true
+  },
+  "681": {
+    "attack": 97,
+    "defense": 272,
+    "stamina": 155,
+    "types": [
+      9,
+      8
+    ],
+    "unreleased": true
+  },
+  "718": {
+    "attack": 203,
+    "defense": 232,
+    "stamina": 239,
+    "types": [
+      16,
+      5
+    ],
+    "unreleased": true
+  },
+  "722": {
+    "attack": 102,
+    "defense": 99,
+    "stamina": 169,
+    "types": [
+      12,
+      3
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 723,
+        "formId": 0
+      }
+    ]
+  },
+  "723": {
+    "attack": 142,
+    "defense": 139,
+    "stamina": 186,
+    "types": [
+      12,
+      3
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 724,
+        "formId": 0
+      }
+    ]
+  },
+  "724": {
+    "attack": 210,
+    "defense": 179,
+    "stamina": 186,
+    "types": [
+      12,
+      8
+    ],
+    "unreleased": true
+  },
+  "725": {
+    "attack": 128,
+    "defense": 79,
+    "stamina": 128,
+    "types": [
+      10
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 726,
+        "formId": 0
+      }
+    ]
+  },
+  "726": {
+    "attack": 174,
+    "defense": 103,
+    "stamina": 163,
+    "types": [
+      10
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 727,
+        "formId": 0
+      }
+    ]
+  },
+  "727": {
+    "attack": 214,
+    "defense": 175,
+    "stamina": 216,
+    "types": [
+      10,
+      17
+    ],
+    "unreleased": true
+  },
+  "728": {
+    "attack": 120,
+    "defense": 103,
+    "stamina": 137,
+    "types": [
+      11
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 729,
+        "formId": 0
+      }
+    ]
+  },
+  "729": {
+    "attack": 168,
+    "defense": 145,
+    "stamina": 155,
+    "types": [
+      11
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 730,
+        "formId": 0
+      }
+    ]
+  },
+  "730": {
+    "attack": 232,
+    "defense": 195,
+    "stamina": 190,
+    "types": [
+      11,
+      18
+    ],
+    "unreleased": true
+  },
+  "731": {
+    "attack": 136,
+    "defense": 59,
+    "stamina": 111,
+    "types": [
+      1,
+      3
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 732,
+        "formId": 0
+      }
+    ]
+  },
+  "732": {
+    "attack": 159,
+    "defense": 100,
+    "stamina": 146,
+    "types": [
+      1,
+      3
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 733,
+        "formId": 0
+      }
+    ]
+  },
+  "733": {
+    "attack": 222,
+    "defense": 146,
+    "stamina": 190,
+    "types": [
+      1,
+      3
+    ],
+    "unreleased": true
+  },
+  "734": {
+    "attack": 122,
+    "defense": 56,
+    "stamina": 134,
+    "types": [
+      1
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 735,
+        "formId": 0
+      }
+    ]
+  },
+  "735": {
+    "attack": 194,
+    "defense": 113,
+    "stamina": 204,
+    "types": [
+      1
+    ],
+    "unreleased": true
+  },
+  "736": {
+    "attack": 115,
+    "defense": 85,
+    "stamina": 132,
+    "types": [
+      7
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 737,
+        "formId": 0
+      }
+    ]
+  },
+  "737": {
+    "attack": 145,
+    "defense": 161,
+    "stamina": 149,
+    "types": [
+      7,
+      13
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 738,
+        "formId": 0
+      }
+    ]
+  },
+  "738": {
+    "attack": 254,
+    "defense": 158,
+    "stamina": 184,
+    "types": [
+      7,
+      13
+    ],
+    "unreleased": true
+  },
+  "739": {
+    "attack": 150,
+    "defense": 104,
+    "stamina": 132,
+    "types": [
+      2
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 740,
+        "formId": 0
+      }
+    ]
+  },
+  "740": {
+    "attack": 231,
+    "defense": 138,
+    "stamina": 219,
+    "types": [
+      2,
+      15
+    ],
+    "unreleased": true
+  },
+  "741": {
+    "attack": 196,
+    "defense": 145,
+    "stamina": 181,
+    "types": [
+      10,
+      3
+    ],
+    "unreleased": true
+  },
+  "742": {
+    "attack": 110,
+    "defense": 81,
+    "stamina": 120,
+    "types": [
+      7,
+      18
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 743,
+        "formId": 0
+      }
+    ]
+  },
+  "743": {
+    "attack": 198,
+    "defense": 146,
+    "stamina": 155,
+    "types": [
+      7,
+      18
+    ],
+    "unreleased": true
+  },
+  "744": {
+    "attack": 117,
+    "defense": 78,
+    "stamina": 128,
+    "types": [
+      6
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 745,
+        "formId": 0
+      }
+    ]
+  },
+  "745": {
+    "attack": 231,
+    "defense": 140,
+    "stamina": 181,
+    "types": [
+      6
+    ],
+    "unreleased": true
+  },
+  "746": {
+    "attack": 46,
+    "defense": 43,
+    "stamina": 128,
+    "types": [
+      11
+    ],
+    "unreleased": true
+  },
+  "747": {
+    "attack": 98,
+    "defense": 110,
+    "stamina": 137,
+    "types": [
+      4,
+      11
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 748,
+        "formId": 0
+      }
+    ]
+  },
+  "748": {
+    "attack": 114,
+    "defense": 273,
+    "stamina": 137,
+    "types": [
+      4,
+      11
+    ],
+    "unreleased": true
+  },
+  "749": {
+    "attack": 175,
+    "defense": 121,
+    "stamina": 172,
+    "types": [
+      5
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 750,
+        "formId": 0
+      }
+    ]
+  },
+  "750": {
+    "attack": 214,
+    "defense": 174,
+    "stamina": 225,
+    "types": [
+      5
+    ],
+    "unreleased": true
+  },
+  "751": {
+    "attack": 72,
+    "defense": 117,
+    "stamina": 116,
+    "types": [
+      11,
+      7
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 752,
+        "formId": 0
+      }
+    ]
+  },
+  "752": {
+    "attack": 126,
+    "defense": 219,
+    "stamina": 169,
+    "types": [
+      11,
+      7
+    ],
+    "unreleased": true
+  },
+  "753": {
+    "attack": 100,
+    "defense": 64,
+    "stamina": 120,
+    "types": [
+      12
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 754,
+        "formId": 0
+      }
+    ]
+  },
+  "754": {
+    "attack": 192,
+    "defense": 169,
+    "stamina": 172,
+    "types": [
+      12
+    ],
+    "unreleased": true
+  },
+  "755": {
+    "attack": 108,
+    "defense": 119,
+    "stamina": 120,
+    "types": [
+      12,
+      18
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 756,
+        "formId": 0
+      }
+    ]
+  },
+  "756": {
+    "attack": 154,
+    "defense": 168,
+    "stamina": 155,
+    "types": [
+      12,
+      18
+    ],
+    "unreleased": true
+  },
+  "757": {
+    "attack": 136,
+    "defense": 80,
+    "stamina": 134,
+    "types": [
+      4,
+      10
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 758,
+        "formId": 0
+      }
+    ]
+  },
+  "758": {
+    "attack": 228,
+    "defense": 130,
+    "stamina": 169,
+    "types": [
+      4,
+      10
+    ],
+    "unreleased": true
+  },
+  "759": {
+    "attack": 136,
+    "defense": 95,
+    "stamina": 172,
+    "types": [
+      1,
+      2
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 760,
+        "formId": 0
+      }
+    ]
+  },
+  "760": {
+    "attack": 226,
+    "defense": 141,
+    "stamina": 260,
+    "types": [
+      1,
+      2
+    ],
+    "unreleased": true
+  },
+  "761": {
+    "attack": 55,
+    "defense": 69,
+    "stamina": 123,
+    "types": [
+      12
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 762,
+        "formId": 0
+      }
+    ]
+  },
+  "762": {
+    "attack": 78,
+    "defense": 94,
+    "stamina": 141,
+    "types": [
+      12
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 763,
+        "formId": 0
+      }
+    ]
+  },
+  "763": {
+    "attack": 222,
+    "defense": 195,
+    "stamina": 176,
+    "types": [
+      12
+    ],
+    "unreleased": true
+  },
+  "764": {
+    "attack": 165,
+    "defense": 215,
+    "stamina": 139,
+    "types": [
+      18
+    ],
+    "unreleased": true
+  },
+  "765": {
+    "attack": 168,
+    "defense": 192,
+    "stamina": 207,
+    "types": [
+      1,
+      14
+    ],
+    "unreleased": true
+  },
+  "766": {
+    "attack": 222,
+    "defense": 160,
+    "stamina": 225,
+    "types": [
+      2
+    ],
+    "unreleased": true
+  },
+  "767": {
+    "attack": 67,
+    "defense": 74,
+    "stamina": 93,
+    "types": [
+      7,
+      11
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 768,
+        "formId": 0
+      }
+    ]
+  },
+  "768": {
+    "attack": 218,
+    "defense": 226,
+    "stamina": 181,
+    "types": [
+      7,
+      11
+    ],
+    "unreleased": true
+  },
+  "769": {
+    "attack": 120,
+    "defense": 118,
+    "stamina": 146,
+    "types": [
+      8,
+      5
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 770,
+        "formId": 0
+      }
+    ]
+  },
+  "770": {
+    "attack": 178,
+    "defense": 178,
+    "stamina": 198,
+    "types": [
+      8,
+      5
+    ],
+    "unreleased": true
+  },
+  "771": {
+    "attack": 97,
+    "defense": 224,
+    "stamina": 146,
+    "types": [
+      11
+    ],
+    "unreleased": true
+  },
+  "772": {
+    "attack": 184,
+    "defense": 184,
+    "stamina": 216,
+    "types": [
+      1
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 773,
+        "formId": 0
+      }
+    ]
+  },
+  "773": {
+    "attack": 198,
+    "defense": 198,
+    "stamina": 216,
+    "types": [
+      1
+    ],
+    "unreleased": true
+  },
+  "774": {
+    "attack": 116,
+    "defense": 194,
+    "stamina": 155,
+    "types": [
+      6,
+      3
+    ],
+    "unreleased": true
+  },
+  "775": {
+    "attack": 216,
+    "defense": 165,
+    "stamina": 163,
+    "types": [
+      1
+    ],
+    "unreleased": true
+  },
+  "776": {
+    "attack": 165,
+    "defense": 215,
+    "stamina": 155,
+    "types": [
+      10,
+      16
+    ],
+    "unreleased": true
+  },
+  "777": {
+    "attack": 190,
+    "defense": 145,
+    "stamina": 163,
+    "types": [
+      13,
+      9
+    ],
+    "unreleased": true
+  },
+  "778": {
+    "attack": 177,
+    "defense": 199,
+    "stamina": 146,
+    "types": [
+      8,
+      18
+    ],
+    "unreleased": true
+  },
+  "779": {
+    "attack": 208,
+    "defense": 145,
+    "stamina": 169,
+    "types": [
+      11,
+      14
+    ],
+    "unreleased": true
+  },
+  "780": {
+    "attack": 231,
+    "defense": 164,
+    "stamina": 186,
+    "types": [
+      1,
+      16
+    ],
+    "unreleased": true
+  },
+  "781": {
+    "attack": 233,
+    "defense": 179,
+    "stamina": 172,
+    "types": [
+      8,
+      12
+    ],
+    "unreleased": true
+  },
+  "782": {
+    "attack": 102,
+    "defense": 108,
+    "stamina": 128,
+    "types": [
+      16
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 783,
+        "formId": 0
+      }
+    ]
+  },
+  "783": {
+    "attack": 145,
+    "defense": 162,
+    "stamina": 146,
+    "types": [
+      16,
+      2
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 784,
+        "formId": 0
+      }
+    ]
+  },
+  "784": {
+    "attack": 222,
+    "defense": 240,
+    "stamina": 181,
+    "types": [
+      16,
+      2
+    ],
+    "unreleased": true
+  },
+  "785": {
+    "attack": 250,
+    "defense": 181,
+    "stamina": 172,
+    "types": [
+      13,
+      18
+    ],
+    "unreleased": true
+  },
+  "786": {
+    "attack": 259,
+    "defense": 208,
+    "stamina": 172,
+    "types": [
+      14,
+      18
+    ],
+    "unreleased": true
+  },
+  "787": {
+    "attack": 249,
+    "defense": 215,
+    "stamina": 172,
+    "types": [
+      12,
+      18
+    ],
+    "unreleased": true
+  },
+  "788": {
+    "attack": 189,
+    "defense": 254,
+    "stamina": 172,
+    "types": [
+      11,
+      18
+    ],
+    "unreleased": true
+  },
+  "789": {
+    "attack": 54,
+    "defense": 57,
+    "stamina": 125,
+    "types": [
+      14
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 790,
+        "formId": 0
+      }
+    ]
+  },
+  "790": {
+    "attack": 54,
+    "defense": 242,
+    "stamina": 125,
+    "types": [
+      14
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 792,
+        "formId": 0
+      },
+      {
+        "evoId": 791,
+        "formId": 0
+      }
+    ]
+  },
+  "791": {
+    "attack": 255,
+    "defense": 191,
+    "stamina": 264,
+    "types": [
+      14,
+      9
+    ],
+    "unreleased": true
+  },
+  "792": {
+    "attack": 255,
+    "defense": 191,
+    "stamina": 264,
+    "types": [
+      14,
+      8
+    ],
+    "unreleased": true
+  },
+  "793": {
+    "attack": 249,
+    "defense": 210,
+    "stamina": 240,
+    "types": [
+      6,
+      4
+    ],
+    "unreleased": true
+  },
+  "794": {
+    "attack": 236,
+    "defense": 196,
+    "stamina": 216,
+    "types": [
+      7,
+      2
+    ],
+    "unreleased": true
+  },
+  "795": {
+    "attack": 316,
+    "defense": 85,
+    "stamina": 174,
+    "types": [
+      7,
+      2
+    ],
+    "unreleased": true
+  },
+  "796": {
+    "attack": 330,
+    "defense": 144,
+    "stamina": 195,
+    "types": [
+      13
+    ],
+    "unreleased": true
+  },
+  "797": {
+    "attack": 207,
+    "defense": 199,
+    "stamina": 219,
+    "types": [
+      9,
+      3
+    ],
+    "unreleased": true
+  },
+  "798": {
+    "attack": 323,
+    "defense": 182,
+    "stamina": 139,
+    "types": [
+      12,
+      9
+    ],
+    "unreleased": true
+  },
+  "799": {
+    "attack": 188,
+    "defense": 99,
+    "stamina": 440,
+    "types": [
+      17,
+      16
+    ],
+    "unreleased": true
+  },
+  "800": {
+    "attack": 251,
+    "defense": 195,
+    "stamina": 219,
+    "types": [
+      14
+    ],
+    "unreleased": true
+  },
+  "801": {
+    "attack": 246,
+    "defense": 225,
+    "stamina": 190,
+    "types": [
+      9,
+      18
+    ],
+    "unreleased": true
+  },
+  "802": {
+    "attack": 265,
+    "defense": 190,
+    "stamina": 207,
+    "types": [
+      2,
+      8
+    ],
+    "unreleased": true
+  },
+  "803": {
+    "attack": 145,
+    "defense": 133,
+    "stamina": 167,
+    "types": [
+      4
+    ],
+    "unreleased": true,
+    "evolutions": [
+      {
+        "evoId": 804,
+        "formId": 0
+      }
+    ]
+  },
+  "804": {
+    "attack": 263,
+    "defense": 159,
+    "stamina": 177,
+    "types": [
+      4,
+      16
+    ],
+    "unreleased": true
+  },
+  "805": {
+    "attack": 213,
+    "defense": 298,
+    "stamina": 156,
+    "types": [
+      6,
+      9
+    ],
+    "unreleased": true
+  },
+  "806": {
+    "attack": 315,
+    "defense": 148,
+    "stamina": 142,
+    "types": [
+      10,
+      8
+    ],
+    "unreleased": true
+  },
+  "807": {
+    "attack": 252,
+    "defense": 177,
+    "stamina": 204,
+    "types": [
+      13
+    ],
+    "unreleased": true
+  }
+}

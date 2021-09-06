@@ -1,0 +1,479 @@
+{
+  "0": {
+    "strengths": [],
+    "weaknesses": [],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [],
+    "resistances": []
+  },
+  "1": {
+    "strengths": [],
+    "weaknesses": [
+      2
+    ],
+    "veryWeakAgainst": [
+      8
+    ],
+    "immunes": [
+      8
+    ],
+    "weakAgainst": [
+      6,
+      9
+    ],
+    "resistances": []
+  },
+  "2": {
+    "strengths": [
+      1,
+      6,
+      9,
+      15,
+      17
+    ],
+    "weaknesses": [
+      3,
+      14,
+      18
+    ],
+    "veryWeakAgainst": [
+      8
+    ],
+    "immunes": [],
+    "weakAgainst": [
+      3,
+      4,
+      7,
+      14,
+      18
+    ],
+    "resistances": [
+      6,
+      7,
+      17
+    ]
+  },
+  "3": {
+    "strengths": [
+      2,
+      7,
+      12
+    ],
+    "weaknesses": [
+      6,
+      13,
+      15
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [
+      5
+    ],
+    "weakAgainst": [
+      6,
+      9,
+      13
+    ],
+    "resistances": [
+      2,
+      7,
+      12
+    ]
+  },
+  "4": {
+    "strengths": [
+      12,
+      18
+    ],
+    "weaknesses": [
+      5,
+      14
+    ],
+    "veryWeakAgainst": [
+      9
+    ],
+    "immunes": [],
+    "weakAgainst": [
+      4,
+      5,
+      6,
+      8
+    ],
+    "resistances": [
+      2,
+      4,
+      7,
+      12,
+      18
+    ]
+  },
+  "5": {
+    "strengths": [
+      4,
+      6,
+      9,
+      10,
+      13
+    ],
+    "weaknesses": [
+      11,
+      12,
+      15
+    ],
+    "veryWeakAgainst": [
+      3
+    ],
+    "immunes": [
+      13
+    ],
+    "weakAgainst": [
+      7,
+      12
+    ],
+    "resistances": [
+      4,
+      6
+    ]
+  },
+  "6": {
+    "strengths": [
+      3,
+      7,
+      10,
+      15
+    ],
+    "weaknesses": [
+      2,
+      5,
+      9,
+      11,
+      12
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      2,
+      5,
+      9
+    ],
+    "resistances": [
+      1,
+      3,
+      4,
+      10
+    ]
+  },
+  "7": {
+    "strengths": [
+      12,
+      14,
+      17
+    ],
+    "weaknesses": [
+      3,
+      6,
+      10
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      2,
+      3,
+      4,
+      8,
+      9,
+      10,
+      18
+    ],
+    "resistances": [
+      2,
+      5,
+      12
+    ]
+  },
+  "8": {
+    "strengths": [
+      8,
+      14
+    ],
+    "weaknesses": [
+      8,
+      17
+    ],
+    "veryWeakAgainst": [
+      1
+    ],
+    "immunes": [
+      1,
+      2
+    ],
+    "weakAgainst": [
+      17
+    ],
+    "resistances": [
+      4,
+      7
+    ]
+  },
+  "9": {
+    "strengths": [
+      6,
+      15,
+      18
+    ],
+    "weaknesses": [
+      2,
+      5,
+      10
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [
+      4
+    ],
+    "weakAgainst": [
+      9,
+      10,
+      11,
+      13
+    ],
+    "resistances": [
+      1,
+      3,
+      6,
+      7,
+      9,
+      12,
+      14,
+      15,
+      16,
+      18
+    ]
+  },
+  "10": {
+    "strengths": [
+      7,
+      9,
+      12,
+      15
+    ],
+    "weaknesses": [
+      5,
+      6,
+      11
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      6,
+      10,
+      11,
+      16
+    ],
+    "resistances": [
+      7,
+      9,
+      10,
+      12,
+      15,
+      18
+    ]
+  },
+  "11": {
+    "strengths": [
+      5,
+      6,
+      10
+    ],
+    "weaknesses": [
+      12,
+      13
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      11,
+      12,
+      16
+    ],
+    "resistances": [
+      9,
+      10,
+      11,
+      15
+    ]
+  },
+  "12": {
+    "strengths": [
+      5,
+      6,
+      11
+    ],
+    "weaknesses": [
+      3,
+      4,
+      7,
+      10,
+      15
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      3,
+      4,
+      7,
+      9,
+      10,
+      12,
+      16
+    ],
+    "resistances": [
+      5,
+      11,
+      12,
+      13
+    ]
+  },
+  "13": {
+    "strengths": [
+      3,
+      11
+    ],
+    "weaknesses": [
+      5
+    ],
+    "veryWeakAgainst": [
+      5
+    ],
+    "immunes": [],
+    "weakAgainst": [
+      12,
+      13,
+      16
+    ],
+    "resistances": [
+      3,
+      9,
+      13
+    ]
+  },
+  "14": {
+    "strengths": [
+      2,
+      4
+    ],
+    "weaknesses": [
+      7,
+      8,
+      17
+    ],
+    "veryWeakAgainst": [
+      17
+    ],
+    "immunes": [],
+    "weakAgainst": [
+      9,
+      14
+    ],
+    "resistances": [
+      2,
+      14
+    ]
+  },
+  "15": {
+    "strengths": [
+      3,
+      5,
+      12,
+      16
+    ],
+    "weaknesses": [
+      2,
+      6,
+      9,
+      10
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [],
+    "weakAgainst": [
+      9,
+      10,
+      11,
+      15
+    ],
+    "resistances": [
+      15
+    ]
+  },
+  "16": {
+    "strengths": [
+      16
+    ],
+    "weaknesses": [
+      15,
+      16,
+      18
+    ],
+    "veryWeakAgainst": [
+      18
+    ],
+    "immunes": [],
+    "weakAgainst": [
+      9
+    ],
+    "resistances": [
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  "17": {
+    "strengths": [
+      8,
+      14
+    ],
+    "weaknesses": [
+      2,
+      7,
+      18
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [
+      14
+    ],
+    "weakAgainst": [
+      2,
+      17,
+      18
+    ],
+    "resistances": [
+      8,
+      17
+    ]
+  },
+  "18": {
+    "strengths": [
+      2,
+      16,
+      17
+    ],
+    "weaknesses": [
+      4,
+      9
+    ],
+    "veryWeakAgainst": [],
+    "immunes": [
+      16
+    ],
+    "weakAgainst": [
+      4,
+      9,
+      10
+    ],
+    "resistances": [
+      2,
+      7,
+      17
+    ]
+  }
+}

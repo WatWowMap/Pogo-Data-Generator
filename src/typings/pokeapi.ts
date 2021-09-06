@@ -1,4 +1,4 @@
-export interface PokeApi {
+export interface PokeApiStats {
   abilities: {
     ability: {
       name: string
