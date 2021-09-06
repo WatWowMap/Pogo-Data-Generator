@@ -589,18 +589,18 @@ export default class Pokemon extends Masterfile {
   parsePokeApi(baseStats: AllPokemon, tempEvos: { [id: string]: AllPokemon }) {
     if (this.options.includeEstimatedPokemon === true || this.options.includeEstimatedPokemon.baseStats) {
       Object.keys(baseStats).forEach(id => {
-        const evolutions = baseStats[id].evolutions
-          ? baseStats[id].evolutions.map(evo => ({
-              ...evo,
-              formId: this.options.includeUnset ? 0 : undefined,
-            }))
-          : undefined
-        if (baseStats[id]) {
-          this.parsedPokemon[id] = {
-            ...this.parsedPokemon[id],
-            ...baseStats[id],
-            evolutions,
-          }
+        let evolutions = this.parsedPokemon[id].evolutions
+        if (baseStats[id].evolutions) {
+          const cleaned = baseStats[id].evolutions.map(evo => ({
+            evoId: evo.evoId,
+            formId: this.options.includeUnset ? 0 : undefined,
+          }))
+          evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
+        }
+        this.parsedPokemon[id] = {
+          ...this.parsedPokemon[id],
+          ...baseStats[id],
+          evolutions,
         }
       })
     }
@@ -608,8 +608,8 @@ export default class Pokemon extends Masterfile {
       if (this.options.includeEstimatedPokemon === true || this.options.includeEstimatedPokemon[category]) {
         Object.keys(tempEvos[category]).forEach(id => {
           const tempEvolutions = [
-            ...(this.parsedPokemon[id].tempEvolutions ? this.parsedPokemon[id].tempEvolutions : []),
             ...tempEvos[category][id].tempEvolutions,
+            ...(this.parsedPokemon[id].tempEvolutions ? this.parsedPokemon[id].tempEvolutions : []),
           ]
           this.parsedPokemon[id] = {
             ...this.parsedPokemon[id],

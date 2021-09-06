@@ -312,7 +312,13 @@ export default class PokeApi extends Masterfile {
             if (!this.tempEvos[type][pokemonId].tempEvolutions) {
               this.tempEvos[type][pokemonId].tempEvolutions = []
             }
-            this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
+            if (
+              !parsedPokemon[pokemonId].tempEvolutions ||
+              (parsedPokemon[pokemonId].tempEvolutions &&
+                !parsedPokemon[pokemonId].tempEvolutions.some(temp => temp.tempEvoId === newTheoretical.tempEvoId))
+            ) {
+              this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
+            }
           } catch (e) {
             console.warn(e, `Failed to parse PokeApi ${type} Evos for ${id}`)
           }
