@@ -77,7 +77,7 @@ export default class Masterfile {
             } else {
               returnValue[customKey] = child
             }
-          } else if (options.makeSingular[fieldKey]){
+          } else if (options.makeSingular[fieldKey]) {
             returnValue = child
           } else {
             returnValue.push(child)
@@ -99,13 +99,13 @@ export default class Masterfile {
       try {
         Object.entries(ref).forEach(subField => {
           let [subFieldKey, subFieldValue] = subField
-  
+
           if (templateChild[fieldKey] === subFieldKey) {
             // allows for singular returns
             returnedObj = subFieldValue
           } else if (templateChild[fieldKey][subFieldKey]) {
             const customKey = this.keyFormatter(subFieldKey, options)
-  
+
             if (typeof subFieldValue === 'object' || (reference[subFieldKey] && subFieldValue)) {
               if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
                 // Nidoran hack
@@ -120,7 +120,7 @@ export default class Masterfile {
               }
             }
           }
-        })  
+        })
       } catch (e) {
         console.warn(`Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`)
       }

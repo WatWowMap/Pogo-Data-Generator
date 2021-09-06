@@ -104,6 +104,8 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   }
 
   AllTypes.buildTypes()
+  await AllTypes.pokeApiTypes()
+
   if (pokemon.options.includeProtos || translations.options.includeProtos) {
     AllPokemon.generateProtoForms()
   }
@@ -240,7 +242,16 @@ export async function generate({ template, url, test, raw }: Input = {}) {
     }
   }
   if (types.enabled) {
-    final[types.options.topLevelName || 'types'] = raw ? localTypes : AllTypes.templater(localTypes, types)
+    final[types.options.topLevelName || 'types'] = raw
+      ? localTypes
+      : AllTypes.templater(localTypes, types, {
+          strengths: localTypes,
+          weaknesses: localTypes,
+          veryWeakAgainst: localTypes,
+          immunes: localTypes,
+          weakAgainst: localTypes,
+          resistances: localTypes,
+        })
   }
   if (costumes.enabled) {
     final[costumes.options.topLevelName || 'costumes'] = raw

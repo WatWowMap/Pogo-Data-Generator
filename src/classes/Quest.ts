@@ -43,7 +43,7 @@ export default class Quests extends Masterfile {
           id,
           proto: name,
           formatted: category === 'types' ? this.capitalize(name.replace('QUEST_', '')) : this.capitalize(name),
-        }  
+        }
       } catch (e) {
         console.warn(e, `Failed to parse quest ${proto}`)
       }
