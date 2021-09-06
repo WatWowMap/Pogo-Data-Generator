@@ -171,13 +171,34 @@
     }
   },
   "types": {
+    "0": {
+      "typeId": 0,
+      "typeName": "None",
+      "strengths": [],
+      "weaknesses": [],
+      "veryWeakAgainst": [],
+      "immunes": [],
+      "weakAgainst": [],
+      "resistances": []
+    },
     "1": {
       "typeId": 1,
-      "typeName": "Normal"
-    },
-    "2": {
-      "typeId": 2,
-      "typeName": "Fighting"
+      "typeName": "Normal",
+      "strengths": [],
+      "weaknesses": [
+        2
+      ],
+      "veryWeakAgainst": [
+        8
+      ],
+      "immunes": [
+        8
+      ],
+      "weakAgainst": [
+        6,
+        9
+      ],
+      "resistances": []
     }
   },
   "moves": {

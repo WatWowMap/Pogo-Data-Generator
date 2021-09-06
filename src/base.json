@@ -37,7 +37,12 @@
       "includeUnset": false,
       "skipNormalIfUnset": false,
       "skipForms": [],
-      "includeEstimatedPokemon": true,
+      "includeEstimatedPokemon": {
+        "baseStats": true,
+        "mega": true,
+        "primal": false,
+        "gmax": false
+      },
       "processFormsSeparately": false,
       "includeRawForms": false
     },
@@ -109,12 +114,7 @@
         "candyCost": false,
         "itemRequirement": false,
         "tradeBonus": false,
-        "questRequirement": {
-          "questType": false,
-          "target": false,
-          "i18n": false,
-          "translated": false
-        }
+        "questRequirement": false
       },
       "legendary": true,
       "mythic": true,

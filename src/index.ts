@@ -8,6 +8,7 @@ import Invasions from './classes/Invasion'
 import Types from './classes/Types'
 import Weather from './classes/Weather'
 import Translations from './classes/Translations'
+import PokeApi from './classes/PokeApi'
 import base from './base.json'
 
 import { Input, FullTemplate } from './typings/inputs'
@@ -52,7 +53,7 @@ const templateMerger = (template: { [key: string]: any }): FullTemplate => {
   return merged
 }
 
-export async function generate({ template, url, test, raw }: Input = {}) {
+export async function generate({ template, url, test, raw, pokeApi }: Input = {}) {
   const start: number = new Date().getTime()
   const final: FinalResult = {}
   const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
@@ -80,6 +81,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   const AllTypes = new Types()
   const AllWeather = new Weather()
   const AllTranslations = new Translations(translations.options)
+  const AllPokeApi = new PokeApi()
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
 
@@ -104,7 +106,6 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   }
 
   AllTypes.buildTypes()
-  await AllTypes.pokeApiTypes()
 
   if (pokemon.options.includeProtos || translations.options.includeProtos) {
     AllPokemon.generateProtoForms()
@@ -112,11 +113,27 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   AllPokemon.missingPokemon()
   AllPokemon.parseCostumes()
 
-  if (pokemon.options.includeEstimatedPokemon) {
-    await AllPokemon.pokeApiStats()
-    await AllPokemon.pokeApiEvos()
-    await AllPokemon.pokeApiMegas()
+  if (pokeApi) {
+    await AllPokeApi.baseStatsApi(AllPokemon.parsedPokemon, pokemon.options.pokeApiIds)
+    await AllPokeApi.evoApi(AllPokemon.evolvedPokemon)
+    await AllPokeApi.tempEvoApi(AllPokemon.parsedPokemon)
+    await AllPokeApi.typesApi()
   }
+
+  const getDataSource = async (category: 'baseStats' | 'tempEvos' | 'types') => {
+    if (pokeApi) return AllPokeApi[category]
+    if (test) return JSON.parse(fs.readFileSync(`static/${category}.json`).toString())
+    return AllPokeApi.fetch(
+      `https://https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`
+    )
+  }
+
+  AllTypes.parsePokeApi(await getDataSource('types'))
+
+  if (pokemon.options.includeEstimatedPokemon) {
+    AllPokemon.parsePokeApi(await getDataSource('baseStats'), await getDataSource('tempEvos'))
+  }
+
   if (pokemon.template.little) {
     AllPokemon.littleCup()
   }
@@ -299,6 +316,12 @@ export async function generate({ template, url, test, raw }: Input = {}) {
 
   if (test) {
     fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => {})
+
+    if (pokeApi) {
+      fs.writeFile('static/baseStats.json', JSON.stringify(AllPokeApi.baseStats, null, 2), 'utf8', () => {})
+      fs.writeFile('static/tempEvos.json', JSON.stringify(AllPokeApi.tempEvos, null, 2), 'utf8', () => {})
+      fs.writeFile('static/types.json', JSON.stringify(AllPokeApi.types, null, 2), 'utf8', () => {})
+    }
     console.log('Generated in ', new Date().getTime() - start)
   } else {
     return final

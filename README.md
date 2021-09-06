@@ -105,7 +105,9 @@ const customData = await generate({ template }) // returns custom templated data
 3. `tsc` will compile the TS into JS, then you can run `npm run generate`, which will generate a local `masterfile.json` for you to checkout
 
 - `tsc -w` will auto recompile the TypeScript during development
-- You can play with the input options by changing the script in `package.json` or modifying the `base.json` file.
+- You can play with the input options by changing the scripts in `package.json` or modifying the `base.json` file.
+- `npm run pokeapi`, which will generate a local `masterfile.json` and refresh the data in the `static` folder from PokeAPI
+- `npm run raw` will generate a local `masterfile.json` and with the raw data format
 
 The generate function accepts an object with the following properties:
 
@@ -114,6 +116,7 @@ The generate function accepts an object with the following properties:
 - `url` (string): Custom url to fetch the masterfile from, results not guaranteed
 - `test` (boolean): Writes the masterfile to a local json
 - `raw` (boolean): Returns the data in its raw format without any template processing
+- `pokeApi` (boolean): Fetches fresh data from PokeAPI
 
 To view some static examples of what this library can create, check out these repos:
 [Masterfiles](https://github.com/WatWowMap/Masterfile-Generator)

@@ -529,11 +529,7 @@
           "attack": 342,
           "defense": 235,
           "stamina": 137,
-          "unreleased": true,
-          "types": [
-            "Fairy",
-            "Rock"
-          ]
+          "unreleased": true
         }
       }
     }
