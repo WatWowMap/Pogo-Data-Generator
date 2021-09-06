@@ -124,7 +124,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     if (pokeApi) return AllPokeApi[category]
     if (test) return JSON.parse(fs.readFileSync(`static/${category}.json`).toString())
     return AllPokeApi.fetch(
-      `https://https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`
+      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`
     )
   }
 
