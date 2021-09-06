@@ -77,6 +77,8 @@ export default class Masterfile {
             } else {
               returnValue[customKey] = child
             }
+          } else if (options.makeSingular[fieldKey]){
+            returnValue = child
           } else {
             returnValue.push(child)
           }
@@ -103,7 +105,7 @@ export default class Masterfile {
         } else if (templateChild[fieldKey][subFieldKey]) {
           const customKey = this.keyFormatter(subFieldKey, options)
 
-          if (typeof subFieldValue === 'object') {
+          if (typeof subFieldValue === 'object' || (reference[subFieldKey] && subFieldValue)) {
             if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
               // Nidoran hack
               subFieldValue = data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
@@ -132,6 +134,7 @@ export default class Masterfile {
     Object.keys(data).forEach(id => {
       let parent: any = {}
       const mainKey = this.keyResolver('main', data[id], options)
+
       try {
         Object.entries(data[id]).forEach(field => {
           const [fieldKey, fieldValue] = field

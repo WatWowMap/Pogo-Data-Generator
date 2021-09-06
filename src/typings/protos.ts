@@ -17,3 +17,11 @@ export type FamilyProto = keyof typeof Rpc.HoloPokemonFamilyId
 export type MegaProto = keyof typeof Rpc.HoloTemporaryEvolutionId
 
 export type ItemProto = keyof typeof Rpc.Item
+
+export type QuestTypeProto = keyof typeof Rpc.QuestType
+
+export type QuestRewardProto = keyof typeof Rpc.QuestRewardProto.Type
+
+export type QuestConditionProto = keyof typeof Rpc.QuestConditionProto.ConditionType
+
+export type ActivityProto = keyof typeof Rpc.HoloActivityType

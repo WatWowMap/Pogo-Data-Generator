@@ -160,6 +160,10 @@ const template = {
         defense: 'stats',
         stamina: 'stats',
       },
+      makeSingular: {
+        // Makes the returned value singular, useful for referenced values that are returned as single item arrays
+        itemRequirement: true,
+      },
       genderString: true, // Returns "Male"/"Female" instead of 1/2
       snake_case: true, // Converts any and all camelCase (including custom) keys to snake case
       unsetDefaultForm: false, // If unset form is currently in use, this will become the default form
@@ -187,6 +191,18 @@ const template = {
           evoId: true,
           formId: true,
           genderRequirement: true,
+          candyCost: true,
+          itemRequirement: true,
+          tradeBonus: true,
+          mustBeBuddy: true,
+          onlyDaytime: true,
+          onlyNighttime: true,
+          questRequirement: {
+            questType: true,
+            target: true,
+            i18n: true,
+            translated: true,
+          },
         },
         tempEvolutions: {
           tempEvoId: false,
@@ -262,21 +278,55 @@ const template = {
           typeName: true,
         },
         unreleased: true,
+        firstEnergyCost: false,
+        subsequentEnergyCost: false,
       },
       evolutions: {
         evoId: true,
         formId: true,
         genderRequirement: true,
+        candyCost: true,
+        itemRequirement: true,
+        tradeBonus: true,
+        mustBeBuddy: true,
+        onlyDaytime: true,
+        onlyNighttime: true,
+        questRequirement: {
+          questType: true,
+          target: true,
+          i18n: true,
+          translated: true,
+        },
       },
       legendary: true,
       mythic: true,
       buddyGroupNumber: true,
-      kmBuddyDistance: true,
+      buddyDistance: true,
+      buddyMegaEnergy: false,
       thirdMoveStardust: true,
       thirdMoveCandy: true,
       gymDefenderEligible: true,
+      tradable: false,
+      transferable: false,
       family: true,
       little: true,
+      unreleased: false,
+      bonusCandyCapture: false,
+      bonusStardustCapture: false,
+    },
+  },
+  costumes: {
+    enabled: false,
+    options: {
+      keys: {
+        main: 'id',
+      },
+    },
+    template: {
+      id: true,
+      name: true,
+      proto: true,
+      noEvolve: true,
     },
   },
   translations: {

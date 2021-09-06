@@ -84,6 +84,7 @@ export interface SinglePokemon extends SingleForm {
   mythic?: boolean
   buddyGroupNumber?: number
   buddyDistance?: number
+  buddyMegaEnergy?: number
   thirdMoveStardust?: number
   thirdMoveCandy?: number
   gymDefenderEligible?: boolean
@@ -101,17 +102,32 @@ interface SingleForm extends BaseStats {
   chargedMoves?: number[]
   family?: number
   little?: boolean
+  purificationDust?: number
+  purificationCandy?: number
+  bonusCandyCapture?: number
+  bonusStardustCapture?: number
+  tradable?: boolean
+  transferable?: boolean
 }
 
 export interface TempEvolutions extends BaseStats {
   tempEvoId: number
   unreleased?: boolean
+  firstEnergyCost?: number
+  subsequentEnergyCost?: number
 }
 
 export interface Evolutions {
   evoId?: number
   formId?: number
   genderRequirement?: number | string
+  candyCost?: number
+  itemRequirement?: number
+  tradeBonus?: boolean
+  mustBeBuddy?: boolean
+  onlyDaytime?: boolean
+  onlyNighttime?: boolean
+  questRequirement?: string
 }
 
 type BaseStats = {

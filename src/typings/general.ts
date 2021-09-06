@@ -14,6 +14,13 @@ export interface Generation {
   }
 }
 
+export interface EvolutionQuest {
+  questType?: number
+  target?: number
+  i18n?: string
+  translated?: string
+}
+
 export interface NiaMfObj {
   templateId: string
   data: {
@@ -25,6 +32,8 @@ export interface NiaMfObj {
       encounter: {
         baseCaptureRate: number
         baseFleeRate: number
+        bonusCandyCaptureReward: number
+        bonusStardustCaptureReward: number
       }
       stats: {
         baseStamina: number
@@ -52,6 +61,10 @@ export interface NiaMfObj {
       buddyGroupNumber: number
       buddyWalkedMegaEnergyAward: number
       rarity: string
+      shadow: {
+        purificationStardustNeeded: number
+        purificationCandyNeeded: number
+      }
     }
     formSettings?: {
       pokemon: string
@@ -78,6 +91,27 @@ export interface NiaMfObj {
       weatherCondition: string
       pokemonType: string[]
     }
+    evolutionQuestTemplate?: {
+      questTemplateId: string
+      questType: string
+      goals: {
+        condition: {
+          type: string
+          withThrowType: {
+            throwType: string
+          }
+          withPokemonType: {
+            pokemonType: string[]
+          }
+        }[]
+        target: number
+      }[]
+      context: string
+      display: {
+        description: string
+        title: string
+      }
+    }
   }
 }
 
@@ -98,8 +132,19 @@ export interface EvoBranch {
   evolution: string
   candyCost: number
   form: string
-  temporaryEvolution: string
   genderRequirement: string
+  evolutionItemRequirement: string
+  temporaryEvolution: string
+  temporaryEvolutionEnergyCost: number
+  temporaryEvolutionEnergyCostSubsequent: number
+  noCandyCostViaTrade: boolean
+  buddyDistance: boolean
+  mustBeBuddy: boolean
+  onlyDaytime: boolean
+  onlyNighttime: boolean
+  questDisplay: {
+    questRequirementTemplateId: string
+  }[]
 }
 
 export interface SpeciesApi {
@@ -186,13 +231,13 @@ interface Sprites extends Sprite {
     }
     'official-artwork'?: {
       front_default: string
-    } 
+    }
   }
   versions: {
     [generation: string]: {
       [game: string]: Animated
     }
-  }  
+  }
 }
 
 interface Animated extends Sprite {
