@@ -8,7 +8,16 @@ export interface AllWeather {
 }
 
 export interface AllTypes {
-  [id: string]: { typeId: number; typeName: string }
+  [id: string]: {
+    typeId: number
+    typeName: string
+    strengths?: number[]
+    weaknesses?: number[]
+    veryWeakAgainst?: number[]
+    immunes?: number[]
+    weakAgainst?: number[]
+    resistances?: number[]
+  }
 }
 
 export interface AllInvasions {

@@ -282,10 +282,12 @@ export default class Translations extends Masterfile {
                 this.masterfile[category][id] = {
                   ...data[category][id],
                   i18n: questEvo,
-                  translated: questEvo.toString().replace(
-                    `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
-                    data[category][id].target
-                  ),
+                  translated: questEvo
+                    .toString()
+                    .replace(
+                      `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
+                      data[category][id].target
+                    ),
                 }
               } else if (this.options.prefix[category]) {
                 const actualId = category === 'pokemon' && formsSeparate ? data[category][id].pokedexId : id

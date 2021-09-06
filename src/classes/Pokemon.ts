@@ -1,16 +1,8 @@
 import { Rpc } from 'pogo-protos'
 
 import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes'
-import {
-  NiaMfObj,
-  Generation,
-  TempEvo,
-  EvoBranch,
-  GuessedMega,
-  PogoApi,
-  SpeciesApi,
-  EvolutionQuest,
-} from '../typings/general'
+import { NiaMfObj, Generation, TempEvo, EvoBranch, GuessedMega, SpeciesApi, EvolutionQuest } from '../typings/general'
+import { PokeApi } from '../typings/pokeapi'
 import Masterfile from './Masterfile'
 import megas from '../data/megas.json'
 import { Options } from '../typings/inputs'
@@ -199,7 +191,7 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id].types.length === 0 ||
             (this.options.pokeApiIds && this.options.pokeApiIds.includes(+id))
           ) {
-            const statsData: PogoApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+            const statsData: PokeApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
 
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach(stat => {

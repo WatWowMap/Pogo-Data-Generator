@@ -48,7 +48,7 @@ export default class Invasion extends Masterfile {
               this.customFieldNames.third || 'third',
             ]
             this.parsedInvasions[id].encounters = []
-  
+
             positions.forEach((position, i) => {
               pogoInfo.lineup.team[i].forEach(pkmn => {
                 this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })

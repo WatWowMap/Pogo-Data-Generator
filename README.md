@@ -405,6 +405,30 @@ const template = {
     template: {
       typeId: false,
       typeName: true,
+      strengths: {
+        typeId: false,
+        typeName: true,
+      },
+      weaknesses: {
+        typeId: false,
+        typeName: true,
+      },
+      veryWeakAgainst: {
+        typeId: false,
+        typeName: true,
+      },
+      immunes: {
+        typeId: false,
+        typeName: true,
+      },
+      weakAgainst: {
+        typeId: false,
+        typeName: true,
+      },
+      resistances: {
+        typeId: false,
+        typeName: true,
+      },
     },
   },
   moves: {
