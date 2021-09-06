@@ -32,11 +32,11 @@ export default class Moves extends Masterfile {
       data: { combatMove },
     } = object
     try {
-      const id: number = Rpc.HoloPokemonMove[templateId.substr(18) as MoveProto]
+      const id: number = Rpc.HoloPokemonMove[templateId.substring(18) as MoveProto]
       this.parsedMoves[id] = {
         moveId: id,
         moveName: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
-        proto: templateId.substr(18),
+        proto: templateId.substring(18),
         type: Rpc.HoloPokemonType[combatMove.type as TypeProto],
         power: combatMove.power,
       }

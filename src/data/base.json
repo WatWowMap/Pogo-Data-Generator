@@ -4,6 +4,7 @@
     "keys": {},
     "customChildObj": {},
     "customFields": {},
+    "makeSingular": {},
     "genderString": false,
     "snake_case": true,
     "includeProtos": true
@@ -19,13 +20,18 @@
         "tempEvolutions": "tempEvoId",
         "types": false,
         "quickMoves": false,
-        "chargedMoves": false
+        "chargedMoves": false,
+        "questRequirement": false
       },
       "customFields": {
         "evoId": "pokemon",
         "formId": "form",
         "formName": "name",
         "pokemonName": "name"
+      },
+      "makeSingular": {
+        "itemRequirement": false,
+        "questRequirement": false
       },
       "unsetDefaultForm": false,
       "includeUnset": false,
@@ -47,7 +53,11 @@
         "evolutions": {
           "evoId": true,
           "formId": true,
-          "genderRequirement": true
+          "genderRequirement": true,
+          "candyCost": false,
+          "itemRequirement": false,
+          "tradeBonus": false,
+          "questRequirement": false
         },
         "tempEvolutions": {},
         "attack": true,
@@ -59,7 +69,13 @@
         "quickMoves": "moveName",
         "chargedMoves": "moveName",
         "family": true,
-        "little": true
+        "little": true,
+        "purificationCandy": false,
+        "purificationDust": false,
+        "tradable": false,
+        "transferable": false,
+        "bonusCandyCapture": false,
+        "bonusStardustCapture": false
       },
       "defaultFormId": true,
       "genId": true,
@@ -82,23 +98,53 @@
         "height": true,
         "weight": true,
         "types": "typeName",
-        "unreleased": true
+        "unreleased": true,
+        "firstEnergyCost": false,
+        "subsequentEnergyCost": false
       },
       "evolutions": {
         "evoId": true,
         "formId": true,
-        "genderRequirement": true
+        "genderRequirement": true,
+        "candyCost": false,
+        "itemRequirement": false,
+        "tradeBonus": false,
+        "questRequirement": {
+          "questType": false,
+          "target": false,
+          "i18n": false,
+          "translated": false
+        }
       },
       "legendary": true,
       "mythic": true,
       "buddyGroupNumber": true,
       "buddyDistance": true,
+      "buddyMegaEnergy": false,
       "thirdMoveStardust": true,
       "thirdMoveCandy": true,
       "gymDefenderEligible": true,
+      "tradable": false,
+      "transferable": false,
       "family": true,
       "little": true,
-      "unreleased": false
+      "unreleased": false,
+      "bonusCandyCapture": false,
+      "bonusStardustCapture": false
+    }
+  },
+  "costumes": {
+    "enabled": false,
+    "options": {
+      "keys": {
+        "main": "id"
+      }
+    },
+    "template": {
+      "id": true,
+      "name": true,
+      "proto": true,
+      "noEvolve": true
     }
   },
   "types": {

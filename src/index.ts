@@ -59,6 +59,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   const {
     pokemon,
     types,
+    costumes,
     moves,
     items,
     questTypes,
@@ -95,6 +96,8 @@ export async function generate({ template, url, test, raw }: Input = {}) {
         AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon)
       } else if (data[i].data.weatherAffinities) {
         AllWeather.addWeather(data[i])
+      } else if (data[i].data.evolutionQuestTemplate) {
+        AllPokemon.addEvolutionQuest(data[i])
       }
     }
   }
@@ -105,6 +108,8 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   }
   AllPokemon.megaInfo()
   AllPokemon.futurePokemon()
+  AllPokemon.parseCostumes()
+
   if (pokemon.options.includeEstimatedPokemon) {
     await AllPokemon.pokeApiStats()
     await AllPokemon.pokeApiEvos()
@@ -175,6 +180,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
               questConditions: AllQuests.parsedConditions,
               questRewardTypes: AllQuests.parsedRewardTypes,
             })
+            AllTranslations.parseEvoQuests(localeCode, AllPokemon.evolutionQuests)
           }
         }
       })
@@ -195,6 +201,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
       AllTranslations.translateMasterfile(
         {
           pokemon: AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon,
+          evolutionQuests: AllPokemon.evolutionQuests,
           moves: AllMoves.parsedMoves,
           items: AllItems.parsedItems,
           forms: AllPokemon.parsedForms,
@@ -214,6 +221,7 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms
   const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems
   const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather
+  const localEvolutionQuests = localeCheck ? AllTranslations.masterfile.evolutionQuests : AllPokemon.evolutionQuests
 
   if (pokemon.enabled) {
     final[pokemon.options.topLevelName || 'pokemon'] = raw
@@ -223,20 +231,23 @@ export async function generate({ template, url, test, raw }: Input = {}) {
           chargedMoves: localMoves,
           types: localTypes,
           forms: localForms,
+          itemRequirement: localItems,
+          questRequirement: localEvolutionQuests,
         })
     if (pokemon.options.includeRawForms || raw) {
       final.forms = localForms
     }
   }
   if (types.enabled) {
-    final[types.options.topLevelName || 'types'] = raw
-      ? localTypes
-      : AllTypes.templater(localTypes, types)
+    final[types.options.topLevelName || 'types'] = raw ? localTypes : AllTypes.templater(localTypes, types)
+  }
+  if (costumes.enabled) {
+    final[costumes.options.topLevelName || 'costumes'] = raw
+      ? AllPokemon.parsedCostumes
+      : AllPokemon.templater(AllPokemon.parsedCostumes, costumes)
   }
   if (items.enabled) {
-    final[items.options.topLevelName || 'items'] = raw
-      ? localItems
-      : AllItems.templater(localItems, items)
+    final[items.options.topLevelName || 'items'] = raw ? localItems : AllItems.templater(localItems, items)
   }
   if (moves.enabled) {
     final[moves.options.topLevelName || 'moves'] = raw

@@ -1,5 +1,6 @@
 import { Rpc } from 'pogo-protos'
 import { AllForms, AllInvasions, AllPokemon, AllQuests, FinalResult, TranslationKeys } from '../typings/dataTypes'
+import { EvolutionQuest } from '../typings/general'
 import { Options } from '../typings/inputs'
 import { TypeProto } from '../typings/protos'
 
@@ -122,6 +123,7 @@ export default class Translations extends Masterfile {
       questTypes: {},
       questConditions: {},
       questRewardTypes: {},
+      evolutionQuests: {},
       types: {},
       weather: {},
       grunts: {},
@@ -275,7 +277,12 @@ export default class Translations extends Masterfile {
             this.masterfile[category] = {}
 
             Object.keys(data[category]).forEach(id => {
-              if (this.options.prefix[category]) {
+              if (category == 'evolutionQuests') {
+                this.masterfile[category][id] = {
+                  ...data[category][id],
+                  translated: ref[data[category][id].i18n],
+                }
+              } else if (this.options.prefix[category]) {
                 const actualId = category === 'pokemon' && formsSeparate ? data[category][id].pokedexId : id
 
                 if (ref[`${this.options.prefix[category]}${actualId}`] !== undefined) {
@@ -617,5 +624,17 @@ export default class Translations extends Masterfile {
     } catch (e) {
       console.warn(e, '\n', `Unable to translate quests for ${locale}`)
     }
+  }
+
+  parseEvoQuests(locale: string, evoQuests: { [id: string]: EvolutionQuest }) {
+    this.parsedTranslations[locale].evolutionQuests = {}
+    Object.values(evoQuests).forEach(info => {
+      try {
+        const translated = this.rawTranslations[locale][info.i18n].replace('{0}', info.target.toString())
+        this.parsedTranslations[locale].evolutionQuests[info.i18n] = translated
+      } catch (e) {
+        console.warn(e, '\n', `Unable to translate evo quests for ${info} in ${locale}`)
+      }
+    })
   }
 }

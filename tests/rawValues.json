@@ -35,14 +35,18 @@
       "mythic": false,
       "buddyGroupNumber": 2,
       "buddyDistance": 3,
+      "buddyMegaEnergy": 15,
       "thirdMoveStardust": 10000,
       "thirdMoveCandy": 25,
+      "tradable": true,
+      "transferable": true,
       "gymDefenderEligible": true,
       "genId": 1,
       "evolutions": [
         {
           "evoId": 2,
-          "formId": 166
+          "formId": 166,
+          "candyCost": 25
         }
       ],
       "generation": "Kanto",
@@ -79,12 +83,17 @@
       "family": 4,
       "fleeRate": 0.05,
       "captureRate": 0.05,
+      "bonusCandyCapture": 7,
+      "bonusStardustCapture": 400,
       "legendary": false,
       "mythic": false,
       "buddyGroupNumber": 3,
       "buddyDistance": 3,
+      "buddyMegaEnergy": 15,
       "thirdMoveStardust": 10000,
       "thirdMoveCandy": 25,
+      "tradable": true,
+      "transferable": true,
       "gymDefenderEligible": true,
       "genId": 1,
       "tempEvolutions": [
@@ -94,6 +103,8 @@
           "defense": 213,
           "stamina": 186,
           "weight": 110.5,
+          "firstEnergyCost": 200,
+          "subsequentEnergyCost": 40,
           "types": [
             10,
             16
@@ -104,7 +115,9 @@
           "attack": 319,
           "defense": 212,
           "stamina": 186,
-          "weight": 100.5
+          "weight": 100.5,
+          "firstEnergyCost": 200,
+          "subsequentEnergyCost": 40
         }
       ],
       "generation": "Kanto"

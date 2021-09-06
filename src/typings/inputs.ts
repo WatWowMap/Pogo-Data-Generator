@@ -9,6 +9,9 @@ export interface Options {
   customChildObj?: {
     [key: string]: string
   }
+  makeSingular?: {
+    [key: string]: boolean
+  }
   prefix?: {
     [key: string]: string
   }
@@ -48,13 +51,26 @@ interface PokemonTemplate extends Form {
   generation?: boolean
   fleeRate?: boolean
   captureRate?: boolean
+  bonusCandyCapture?: boolean
+  bonusStardustCapture?: boolean
   legendary?: boolean
   mythic?: boolean
   buddyGroupNumber?: boolean
-  kmBuddyDistance?: boolean
+  buddyDistance?: boolean
+  buddyMegaEnergy?: number
   thirdMoveStardust?: boolean
   thirdMoveCandy?: boolean
   gymDefenderEligible?: boolean
+  tradable?: boolean
+  transferable?: boolean
+  unreleased?: boolean
+}
+
+interface CostumeTemplate {
+  id?: boolean
+  name?: boolean
+  proto?: boolean
+  noEvolve?: boolean
 }
 
 interface Form extends BaseStats {
@@ -66,6 +82,14 @@ interface Form extends BaseStats {
     evoId?: boolean
     formId?: boolean
     genderRequirement?: boolean
+    candyCost?: boolean
+    itemRequirement?: boolean
+    tradeBonus?: boolean
+    questRequirement?: {
+      target?: boolean
+      i18n?: boolean
+      questType?: boolean
+    }
   }
   tempEvolutions?: TempEvolution
   quickMoves?: Move
@@ -187,6 +211,11 @@ export interface FullTemplate {
     enabled?: boolean
     options: Options
     template: PokemonTemplate
+  }
+  costumes?: {
+    enabled?: boolean
+    options: Options
+    template: CostumeTemplate
   }
   types?: {
     enabled?: boolean
