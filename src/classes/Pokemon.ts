@@ -96,7 +96,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  formName(id: number, formName: string) {
+  formName(id: number, formName: string): string {
     try {
       const name = formName.substr(
         id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
@@ -109,7 +109,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  skipForms(formName: string) {
+  skipForms(formName: string): boolean {
     try {
       return this.formsToSkip.some(form => formName.toLowerCase() === form)
     } catch (e) {
@@ -117,7 +117,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  lookupPokemon(name: string) {
+  lookupPokemon(name: string): string {
     try {
       for (const key of Object.keys(Rpc.HoloPokemonId)) {
         if (name.startsWith(`${key}_`)) {
@@ -129,7 +129,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  getGeneration(id: number) {
+  getGeneration(id: number): { genId?: number; generation?: string } {
     try {
       const genInfo: { genId?: number; generation?: string } = {}
       genInfo.genId = +Object.keys(this.generations).find(gen => {
@@ -144,7 +144,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  getMoves(moves: string[]) {
+  getMoves(moves: string[]): number[] {
     try {
       if (moves) {
         try {
@@ -159,7 +159,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  getTypes(incomingTypes: string[]) {
+  getTypes(incomingTypes: string[]): number[] {
     try {
       if (incomingTypes) {
         try {
@@ -177,7 +177,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  compileEvos(mfObject: EvoBranch[]) {
+  compileEvos(mfObject: EvoBranch[]): Evolutions[] {
     try {
       const evolutions: Evolutions[] = []
       mfObject.forEach(branch => {
@@ -209,7 +209,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  compileTempEvos(mfObject: TempEvo[], evoBranch: EvoBranch[], primaryForm: SinglePokemon) {
+  compileTempEvos(mfObject: TempEvo[], evoBranch: EvoBranch[], primaryForm: SinglePokemon): TempEvolutions[] {
     try {
       const tempEvolutions: TempEvolutions[] = mfObject.map(tempEvo => {
         const newTempEvolution: TempEvolutions = {
@@ -589,10 +589,17 @@ export default class Pokemon extends Masterfile {
   parsePokeApi(baseStats: AllPokemon, tempEvos: { [id: string]: AllPokemon }) {
     if (this.options.includeEstimatedPokemon === true || this.options.includeEstimatedPokemon.baseStats) {
       Object.keys(baseStats).forEach(id => {
+        const evolutions = baseStats[id].evolutions
+          ? baseStats[id].evolutions.map(evo => ({
+              ...evo,
+              formId: this.options.includeUnset ? 0 : undefined,
+            }))
+          : undefined
         if (baseStats[id]) {
           this.parsedPokemon[id] = {
             ...this.parsedPokemon[id],
             ...baseStats[id],
+            evolutions,
           }
         }
       })
