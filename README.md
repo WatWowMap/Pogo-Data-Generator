@@ -4,6 +4,7 @@ Generates templated data for Pokemon GO related projects, including:
 
 - Pokemon
 - Forms
+- Costumes
 - Moves
 - Items
 - Team Rocket Invasions
@@ -28,7 +29,6 @@ Usage:
 ```js
 // commonJS
 const { generate } = require('pogo-data-generator')
-
 // es6
 import { generate } from 'pogo-data-generator'
 
@@ -121,7 +121,7 @@ To view some static examples of what this library can create, check out these re
 
 ## Full Template
 
-This is the full template example with notes on each field. The default template if you simply call `generate()` is `src/data/base.json`
+This is the full template example with notes on each field. The default template if you simply call `generate()` is located at `src/data/base.json`
 
 ```js
 const template = {
@@ -201,6 +201,7 @@ const template = {
             questType: true,
             target: true,
             i18n: true,
+            assetsRef: true,
             translated: true,
           },
         },
@@ -295,6 +296,7 @@ const template = {
           questType: true,
           target: true,
           i18n: true,
+          assetsRef: true,
           translated: true,
         },
       },

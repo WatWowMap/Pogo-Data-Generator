@@ -497,10 +497,10 @@ export default class Pokemon extends Masterfile {
       this.evolutionQuests[object.templateId] = {
         questType: Rpc.QuestType[evolutionQuestTemplate.questType as QuestTypeProto],
         target: evolutionQuestTemplate.goals[0].target,
-        i18n: evolutionQuestTemplate.display.description.toLowerCase(),
+        assetsRef: evolutionQuestTemplate.display.description.toLowerCase(),
       }
       if (this.evolutionQuests[object.templateId].target) {
-        this.evolutionQuests[object.templateId].i18n = this.evolutionQuests[object.templateId].i18n.replace(
+        this.evolutionQuests[object.templateId].assetsRef = this.evolutionQuests[object.templateId].assetsRef.replace(
           'single',
           'plural'
         )
@@ -818,6 +818,8 @@ export default class Pokemon extends Masterfile {
           pokemon.forms.forEach(form => {
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
+              evolutions: form === 0 ? pokemon.evolutions : undefined,
+              tempEvolutions: form === 0 ? pokemon.tempEvolutions : undefined,
               ...this.parsedForms[form],
               forms: [form],
             }

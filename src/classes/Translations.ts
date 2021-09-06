@@ -277,10 +277,15 @@ export default class Translations extends Masterfile {
             this.masterfile[category] = {}
 
             Object.keys(data[category]).forEach(id => {
-              if (category == 'evolutionQuests') {
+              const questEvo = ref[data[category][id].assetsRef]
+              if (category == 'evolutionQuests' && questEvo) {
                 this.masterfile[category][id] = {
                   ...data[category][id],
-                  translated: ref[data[category][id].i18n],
+                  i18n: questEvo,
+                  translated: questEvo.toString().replace(
+                    `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
+                    data[category][id].target
+                  ),
                 }
               } else if (this.options.prefix[category]) {
                 const actualId = category === 'pokemon' && formsSeparate ? data[category][id].pokedexId : id
@@ -630,8 +635,11 @@ export default class Translations extends Masterfile {
     this.parsedTranslations[locale].evolutionQuests = {}
     Object.values(evoQuests).forEach(info => {
       try {
-        const translated = this.rawTranslations[locale][info.i18n].replace('{0}', info.target.toString())
-        this.parsedTranslations[locale].evolutionQuests[info.i18n] = translated
+        const translated = this.rawTranslations[locale][info.assetsRef].replace(
+          '{0}',
+          `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`
+        )
+        this.parsedTranslations[locale].evolutionQuests[info.assetsRef] = translated
       } catch (e) {
         console.warn(e, '\n', `Unable to translate evo quests for ${info} in ${locale}`)
       }
