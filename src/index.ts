@@ -39,8 +39,9 @@ const templateMerger = (template: { [key: string]: any }): FullTemplate => {
       })
     }
     if (category === 'translations' && template.translations) {
-      if (!template.translations.options.prefix) {
-        merged.translations.options.prefix = {}
+      merged.translations.options.questVariables = {
+        ...base.translations.options.questVariables,
+        ...template.translations.options.questVariables,
       }
       merged.translations.options.prefix = {
         ...base.translations.options.prefix,

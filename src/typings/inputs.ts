@@ -85,15 +85,22 @@ interface Form extends BaseStats {
     candyCost?: boolean
     itemRequirement?: boolean
     tradeBonus?: boolean
-    questRequirement?: {
-      target?: boolean
-      i18n?: boolean
-      questType?: boolean
-    }
+    mustBeBuddy?: boolean
+    onlyDaytime?: boolean
+    onlyNighttime?: boolean
+    questRequirement?:
+      | {
+          target?: boolean
+          assetsRef?: boolean
+          i18n?: boolean
+          questType?: boolean
+          translated?: boolean
+        }
+      | string
   }
-  tempEvolutions?: TempEvolution
-  quickMoves?: Move
-  chargedMoves?: Move
+  tempEvolutions?: TempEvolution | string
+  quickMoves?: Move | string
+  chargedMoves?: Move | string
   family?: boolean
   little?: boolean
 }
@@ -101,13 +108,20 @@ interface Form extends BaseStats {
 type Move = {
   moveId?: boolean
   moveName?: boolean
-  typeId?: boolean
-  type?: boolean
+  proto?: boolean
+  type:
+    | {
+        typeId?: boolean
+        type?: boolean
+      }
+    | string
 }
 
 interface TempEvolution extends BaseStats {
   tempEvoId?: boolean
   unreleased?: boolean
+  firstEnergyCost?: boolean
+  subsequentEnergyCost?: boolean
 }
 
 type BaseStats = {
@@ -129,7 +143,7 @@ export interface TypesTempOpt {
 }
 
 type TypesTemplate = {
-  typeId: boolean
+  typeId?: boolean
   typeName?: boolean
 }
 
@@ -137,7 +151,12 @@ type MoveTemplate = {
   moveId?: boolean
   moveName?: boolean
   proto?: boolean
-  type?: boolean
+  type?:
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | string
   power?: boolean
 }
 
@@ -162,7 +181,11 @@ type InvasionTemplate = {
   gender?: boolean
   grunt?: boolean
   secondReward?: boolean
-  encounters?: boolean
+  encounters?: {
+    id: boolean
+    formId: boolean
+    position: boolean
+  }
 }
 
 type WeatherTemplate = {

@@ -17,6 +17,7 @@ export interface Generation {
 export interface EvolutionQuest {
   questType?: number
   target?: number
+  assetsRef?: string
   i18n?: string
   translated?: string
 }

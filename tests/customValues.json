@@ -1,11 +1,12 @@
 {
   "pokemon": {
-    "6_%_951": {
-      "id": 6,
+    "6_%_178": {
       "name": "Glurak",
+      "id": 6,
+      "generation": "Kanto",
       "form": {
-        "formName": "Copy 2019",
-        "id": 951
+        "formName": "Normal",
+        "id": 178
       },
       "types": [
         {
@@ -35,8 +36,7 @@
       "tempEvolutions": [
         2,
         3
-      ],
-      "generation": "Kanto"
+      ]
     },
     "52_%_710": {
       "id": 52,

@@ -96,30 +96,34 @@ export default class Masterfile {
       let returnedObj: any = {}
       const ref = reference[fieldKey] ? reference[fieldKey][x] : x
 
-      Object.entries(ref).forEach(subField => {
-        let [subFieldKey, subFieldValue] = subField
-
-        if (templateChild[fieldKey] === subFieldKey) {
-          // allows for singular returns
-          returnedObj = subFieldValue
-        } else if (templateChild[fieldKey][subFieldKey]) {
-          const customKey = this.keyFormatter(subFieldKey, options)
-
-          if (typeof subFieldValue === 'object' || (reference[subFieldKey] && subFieldValue)) {
-            if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
-              // Nidoran hack
-              subFieldValue = data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
-            }
-            returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey], data)
-          } else {
-            if (options.customChildObj[subFieldKey]) {
-              customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
-            } else if (subFieldValue !== undefined) {
-              returnedObj[customKey] = subFieldValue
+      try {
+        Object.entries(ref).forEach(subField => {
+          let [subFieldKey, subFieldValue] = subField
+  
+          if (templateChild[fieldKey] === subFieldKey) {
+            // allows for singular returns
+            returnedObj = subFieldValue
+          } else if (templateChild[fieldKey][subFieldKey]) {
+            const customKey = this.keyFormatter(subFieldKey, options)
+  
+            if (typeof subFieldValue === 'object' || (reference[subFieldKey] && subFieldValue)) {
+              if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
+                // Nidoran hack
+                subFieldValue = data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
+              }
+              returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey], data)
+            } else {
+              if (options.customChildObj[subFieldKey]) {
+                customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
+              } else if (subFieldValue !== undefined) {
+                returnedObj[customKey] = subFieldValue
+              }
             }
           }
-        }
-      })
+        })  
+      } catch (e) {
+        console.warn(`Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`)
+      }
       return returnedObj
     }
 
