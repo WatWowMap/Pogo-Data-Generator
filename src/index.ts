@@ -8,7 +8,7 @@ import Invasions from './classes/Invasion'
 import Types from './classes/Types'
 import Weather from './classes/Weather'
 import Translations from './classes/Translations'
-import base from './data/base.json'
+import base from './base.json'
 
 import { Input, FullTemplate } from './typings/inputs'
 import { FinalResult } from './typings/dataTypes'
@@ -109,13 +109,13 @@ export async function generate({ template, url, test, raw }: Input = {}) {
   if (pokemon.options.includeProtos || translations.options.includeProtos) {
     AllPokemon.generateProtoForms()
   }
-  AllPokemon.megaInfo()
-  AllPokemon.futurePokemon()
+  AllPokemon.missingPokemon()
   AllPokemon.parseCostumes()
 
   if (pokemon.options.includeEstimatedPokemon) {
     await AllPokemon.pokeApiStats()
     await AllPokemon.pokeApiEvos()
+    await AllPokemon.pokeApiMegas()
   }
   if (pokemon.template.little) {
     AllPokemon.littleCup()

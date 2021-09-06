@@ -121,7 +121,7 @@ To view some static examples of what this library can create, check out these re
 
 ## Full Template
 
-This is the full template example with notes on each field. The default template if you simply call `generate()` is located at `src/data/base.json`
+This is the full template example with notes on each field. The default template if you simply call `generate()` is located at `src/base.json`
 
 ```js
 const template = {

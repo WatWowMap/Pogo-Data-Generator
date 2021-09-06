@@ -1,10 +1,9 @@
 import { Rpc } from 'pogo-protos'
 
+import Masterfile from './Masterfile'
 import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes'
 import { NiaMfObj, Generation, TempEvo, EvoBranch, GuessedMega, SpeciesApi, EvolutionQuest } from '../typings/general'
 import { PokeApi } from '../typings/pokeapi'
-import Masterfile from './Masterfile'
-import megas from '../data/megas.json'
 import { Options } from '../typings/inputs'
 import {
   FamilyProto,
@@ -100,6 +99,30 @@ export default class Pokemon extends Masterfile {
     }
   }
 
+  attack(normal: number, special: number, speed: number, nerf: boolean = false) {
+    return Math.round(
+      Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
+        (1 + (speed - 75) / 500) *
+        (nerf ? 0.91 : 1)
+    )
+  }
+
+  defense(normal: number, special: number, speed: number, nerf: boolean = false) {
+    return Math.round(
+      Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
+        (1 + (speed - 75) / 500) *
+        (nerf ? 0.91 : 1)
+    )
+  }
+
+  stamina(hp: number, nerf: boolean = false) {
+    return nerf ? Math.round((1.75 * hp + 50) * 0.91) : Math.floor(1.75 * hp + 50)
+  }
+
+  cp(atk: number, def: number, sta: number, cpm: number) {
+    return Math.floor(((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10)
+  }
+
   async pokeApiStats() {
     const inconsistentStats: { [id: string]: { attack?: number; defense?: number; stamina?: number } } = {
       24: {
@@ -161,26 +184,6 @@ export default class Pokemon extends Masterfile {
         stamina: 264,
       },
     }
-    const attack = (normal: number, special: number, speed: number, nerf: boolean = false) =>
-      Math.round(
-        Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
-          (1 + (speed - 75) / 500) *
-          (nerf ? 0.91 : 1)
-      )
-
-    const defense = (normal: number, special: number, speed: number, nerf: boolean = false) =>
-      Math.round(
-        Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
-          (1 + (speed - 75) / 500) *
-          (nerf ? 0.91 : 1)
-      )
-
-    const stamina = (hp: number, nerf: boolean = false) =>
-      nerf ? Math.round((1.75 * hp + 50) * 0.91) : Math.floor(1.75 * hp + 50)
-
-    const cp = (atk: number, def: number, sta: number, cpm: number) =>
-      Math.floor(((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10)
-
     await Promise.all(
       Object.keys(this.parsedPokemon).map(async id => {
         try {
@@ -198,22 +201,22 @@ export default class Pokemon extends Masterfile {
               baseStats[stat.stat.name] = stat.base_stat
             })
             const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
-              attack: attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
-              defense: defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
-              stamina: stamina(baseStats.hp),
+              attack: this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
+              defense: this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+              stamina: this.stamina(baseStats.hp),
             }
-            initial.cp = cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
+            initial.cp = this.cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
 
             const nerfCheck = {
               attack:
                 initial.cp > 4000
-                  ? attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
+                  ? this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
                   : initial.attack,
               defense:
                 initial.cp > 4000
-                  ? defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
+                  ? this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
                   : initial.defense,
-              stamina: initial.cp > 4000 ? stamina(baseStats.hp, true) : initial.stamina,
+              stamina: initial.cp > 4000 ? this.stamina(baseStats.hp, true) : initial.stamina,
             }
             this.parsedPokemon[id] = {
               ...this.parsedPokemon[id],
@@ -261,6 +264,81 @@ export default class Pokemon extends Masterfile {
           }
         } catch (e) {
           console.warn(e, `Failed to parse PokeApi Evolutions for #${id}`)
+        }
+      })
+    )
+  }
+
+  async pokeApiMegas() {
+    const missingMegas = [
+      'alakazam-mega',
+      'kangaskhan-mega',
+      'pinsir-mega',
+      'aerodactyl-mega',
+      'mewtwo-mega-x',
+      'mewtwo-mega-y',
+      'steelix-mega',
+      'scizor-mega',
+      'heracross-mega',
+      'tyranitar-mega',
+      'sceptile-mega',
+      'blaziken-mega',
+      'swampert-mega',
+      'gardevoir-mega',
+      'sableye-mega',
+      'mawile-mega',
+      'aggron-mega',
+      'medicham-mega',
+      'sharpedo-mega',
+      'camerupt-mega',
+      'banette-mega',
+      'absol-mega',
+      'glalie-mega',
+      'garchomp-mega',
+      'lucario-mega',
+      'latias-mega',
+      'latios-mega',
+      'rayquaza-mega',
+      'metagross-mega',
+      'salamence-mega',
+      'gallade-mega',
+      'audino-mega',
+      'diancie-mega',
+      'kyogre-primal',
+      'groudon-primal',
+    ]
+    await Promise.all(
+      missingMegas.map(async id => {
+        try {
+          const statsData: PokeApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+
+          const baseStats: { [stat: string]: number } = {}
+          statsData.stats.forEach(stat => {
+            baseStats[stat.stat.name] = stat.base_stat
+          })
+          const pokemonId = Rpc.HoloPokemonId[id.split('-')[0].toUpperCase() as PokemonIdProto]
+          const types = statsData.types.map(
+            type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
+          )
+          const newMega = {
+            tempEvoId: id.endsWith('x') ? 2 : id.endsWith('y') ? 3 : 1,
+            attack: this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
+            defense: this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+            stamina: this.stamina(baseStats.hp),
+            types: this.compare(types, this.parsedPokemon[pokemonId].types) ? undefined : types,
+            unreleased: true,
+          }
+          if (!this.parsedPokemon[pokemonId]) {
+            this.parsedPokemon[pokemonId] = {}
+          }
+          if (!this.parsedPokemon[pokemonId].tempEvolutions) {
+            this.parsedPokemon[pokemonId].tempEvolutions = []
+          }
+          if (!this.parsedPokemon[pokemonId].tempEvolutions.some(evo => evo.tempEvoId === newMega.tempEvoId)) {
+            this.parsedPokemon[pokemonId].tempEvolutions.push(newMega)
+          }
+        } catch (e) {
+          console.warn(e, `Failed to parse PokeApi Mega Evos for ${id}`)
         }
       })
     )
@@ -695,34 +773,7 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  megaInfo() {
-    try {
-      const megaLookup: { [id: string]: number } = {
-        undefined: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA,
-        _X: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_X,
-        _Y: Rpc.HoloTemporaryEvolutionId.TEMP_EVOLUTION_MEGA_Y,
-      }
-      for (const { data } of megas.items) {
-        const match = /^V(\d{4})_POKEMON_.*_MEGA(_[XY])?$/.exec(data.templateId)
-        const pokemonId = parseInt(match[1])
-        if (!this.megaStats[pokemonId]) {
-          this.megaStats[pokemonId] = []
-        }
-        this.megaStats[pokemonId].push({
-          tempEvoId: megaLookup[match[2]],
-          attack: data.pokemon.stats.baseAttack,
-          defense: data.pokemon.stats.baseDefense,
-          stamina: data.pokemon.stats.baseStamina,
-          type1: data.pokemon.type1,
-          type2: data.pokemon.type2,
-        })
-      }
-    } catch (e) {
-      console.warn(e, `Failed to parse Mega Info`)
-    }
-  }
-
-  futurePokemon() {
+  missingPokemon() {
     Object.values(Rpc.HoloPokemonId).forEach(id => {
       try {
         if (id) {
@@ -737,44 +788,6 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id].forms = [0]
           } else if (this.parsedPokemon[id].forms.length === 0) {
             this.parsedPokemon[id].forms.push(0)
-          }
-          const guessedMega = this.megaStats[id]
-          if (guessedMega && this.options.includeEstimatedPokemon) {
-            if (!this.parsedPokemon[id]) {
-              this.parsedPokemon[id] = { pokemonName: this.pokemonName(+id) }
-            }
-            if (!this.parsedPokemon[id].tempEvolutions) {
-              this.parsedPokemon[id].tempEvolutions = []
-            }
-            for (const { tempEvoId, attack, defense, stamina, type1, type2 } of guessedMega) {
-              if (!this.parsedPokemon[id].tempEvolutions.some(evo => evo.tempEvoId === tempEvoId)) {
-                const types = this.getTypes([type1, type2])
-                const evo: TempEvolutions = {
-                  tempEvoId,
-                  attack,
-                  defense,
-                  stamina,
-                  unreleased: true,
-                }
-                if (!this.compare(types, this.parsedPokemon[id].types)) {
-                  evo.types = types
-                }
-                this.parsedPokemon[id].tempEvolutions.push(evo)
-                if (this.parsedPokemon[id].forms) {
-                  this.parsedPokemon[id].forms.forEach(form => {
-                    if (
-                      this.parsedForms[form].formName === 'Normal' ||
-                      this.parsedForms[form].formName === 'Purified'
-                    ) {
-                      if (!this.parsedForms[form].tempEvolutions) {
-                        this.parsedForms[form].tempEvolutions = []
-                      }
-                      this.parsedForms[form].tempEvolutions.push(evo)
-                    }
-                  })
-                }
-              }
-            }
           }
         }
       } catch (e) {
