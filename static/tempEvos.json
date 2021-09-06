@@ -675,14 +675,14 @@
     "849": {
       "tempEvolutions": [
         {
-          "tempEvoId": "Amped Gmax",
+          "tempEvoId": "Low Key Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
           "unreleased": true
         },
         {
-          "tempEvoId": "Low Key Gmax",
+          "tempEvoId": "Amped Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
