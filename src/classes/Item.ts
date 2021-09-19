@@ -23,7 +23,7 @@ export default class Item extends Masterfile {
           itemSettings: { itemId, itemType, category, dropTrainerLevel },
         },
       } = object
-      if (!this.options.minTrainerLevel || dropTrainerLevel <= this.options.minTrainerLevel) {
+      if (!this.options.minTrainerLevel || !dropTrainerLevel || dropTrainerLevel <= this.options.minTrainerLevel) {
         const id = Rpc.Item[itemId as ItemProto]
         this.parsedItems[id] = {
           itemId: id,
