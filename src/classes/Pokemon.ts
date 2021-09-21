@@ -584,6 +584,21 @@ export default class Pokemon extends Masterfile {
         noEvolve: name.endsWith('_NOEVOLVE'),
       }
     })
+    // add fake costumes until Furtif fixes
+    const fakeCostumes = {
+      FASHION_2021_NOEVOLVE: 48,
+      HALLOWEEN_2021_NOEVOLVE: 49,
+      GEMS_2021_NOEVOLVE: 50,
+      HOLIDAY_2021_NOEVOLVE: 51,
+    }
+    Object.entries(fakeCostumes).forEach(([name, id]) => {
+      this.parsedCostumes[id] = {
+        id: +id,
+        name: this.capitalize(name),
+        proto: name,
+        noEvolve: true,
+      }
+    })
   }
 
   parsePokeApi(baseStats: AllPokemon, tempEvos: { [id: string]: AllPokemon }) {
