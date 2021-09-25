@@ -131,8 +131,15 @@ export default class Translations extends Masterfile {
       misc: {},
     }
     try {
+      if (!this.codes[locale]) {
+        console.warn(`Game assets unavailable for ${locale}, using English`)
+      }
+      if (!this.generics[locale]) {
+        this.generics[locale] = this.generics.en
+        console.warn(`Generics unavailable for ${locale}, using English`)
+      }
       const { data }: { data: string[] } = await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale]}.json`
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale] || 'english'}.json`
       )
 
       for (let i = 0; i < data.length; i += 2) {
