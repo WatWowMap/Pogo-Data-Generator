@@ -129,7 +129,7 @@
       "transferable": false,
       "family": true,
       "little": true,
-      "jungle": true,
+      "jungle": false,
       "unreleased": false,
       "bonusCandyCapture": false,
       "bonusStardustCapture": false

@@ -324,6 +324,7 @@ const template = {
       unreleased: false,
       bonusCandyCapture: false,
       bonusStardustCapture: false,
+      jungle: true,
     },
   },
   costumes: {
