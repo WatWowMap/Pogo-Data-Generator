@@ -45,6 +45,7 @@ export interface Options {
   unsetFormName?: string
   allUnset?: boolean
   pokeApiIds?: number[]
+  noFormPlaceholders?: boolean
 }
 
 interface PokemonTemplate extends Form {
@@ -69,6 +70,7 @@ interface PokemonTemplate extends Form {
   tradable?: boolean
   transferable?: boolean
   unreleased?: boolean
+  jungle?: boolean
 }
 
 interface CostumeTemplate {
@@ -292,4 +294,13 @@ export interface FullTemplate {
     template: TranslationsTemplate
     locales: { [code: string]: boolean }
   }
+}
+
+export interface InvasionsOnly {
+  template?: {
+    enabled: boolean
+    options: Options
+    template: InvasionTemplate
+  }
+  test?: boolean
 }

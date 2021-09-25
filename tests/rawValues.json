@@ -144,7 +144,9 @@
     "2507": {
       "formName": "Normal",
       "proto": "CURSOLA_NORMAL",
-      "formId": 2507
+      "formId": 2507,
+      "purificationCandy": 3,
+      "purificationDust": 3000
     },
     "2583": {
       "formName": "Galarian",
@@ -155,6 +157,8 @@
       "stamina": 216,
       "height": 1.6,
       "weight": 70.5,
+      "purificationCandy": 3,
+      "purificationDust": 3000,
       "quickMoves": [
         235,
         224

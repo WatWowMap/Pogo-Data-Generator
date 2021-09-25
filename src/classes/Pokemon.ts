@@ -28,6 +28,7 @@ export default class Pokemon extends Masterfile {
   formsToSkip: string[]
   evolutionQuests: { [id: string]: EvolutionQuest }
   parsedCostumes: { [id: string]: { id: number; name: string; proto: string; noEvolve: boolean } }
+  jungleCupRules: { types: number[]; banned: number[] }
 
   constructor(options: Options) {
     super()
@@ -79,6 +80,7 @@ export default class Pokemon extends Masterfile {
     }
     this.evolutionQuests = {}
     this.parsedCostumes = {}
+    this.jungleCupRules = { types: [], banned: [] }
   }
 
   pokemonName(id: number) {
@@ -262,7 +264,7 @@ export default class Pokemon extends Masterfile {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
                   pokemonName: this.pokemonName(id),
-                  forms: this.options.includeUnset ? [0] : [],
+                  forms: this.options.includeUnset && !this.options.noFormPlaceholders ? [0] : [],
                   pokedexId: id,
                   ...this.getGeneration(+id),
                 }
@@ -350,7 +352,7 @@ export default class Pokemon extends Masterfile {
                 isCostume: forms[i].isCostume,
               }
             }
-            if (this.options.allUnset) {
+            if (this.options.allUnset && !this.options.noFormPlaceholders) {
               this.parsedPokemon[id].forms.push(0)
             }
           }
@@ -363,7 +365,7 @@ export default class Pokemon extends Masterfile {
               ...this.getGeneration(+id),
             }
           }
-          if (this.options.includeUnset) {
+          if (this.options.includeUnset && !this.options.noFormPlaceholders) {
             this.parsedPokemon[id].forms.push(0)
           }
         }
@@ -523,8 +525,8 @@ export default class Pokemon extends Masterfile {
             ...this.parsedPokemon[id],
           }
           if (!this.parsedPokemon[id].forms) {
-            this.parsedPokemon[id].forms = [0]
-          } else if (this.parsedPokemon[id].forms.length === 0) {
+            this.parsedPokemon[id].forms = this.options.noFormPlaceholders ? [] : [0]
+          } else if (this.parsedPokemon[id].forms.length === 0 && !this.options.noFormPlaceholders) {
             this.parsedPokemon[id].forms.push(0)
           }
         }
@@ -551,6 +553,32 @@ export default class Pokemon extends Masterfile {
     } catch (e) {
       console.warn(e, `Failed to parse Little Cup`)
     }
+  }
+
+  jungleCup(object: NiaMfObj) {
+    const {
+      data: {
+        combatLeague: { pokemonCondition, bannedPokemon },
+      },
+    } = object
+    pokemonCondition.forEach(condition => {
+      if (condition.type === 'WITH_POKEMON_TYPE') {
+        condition.withPokemonType.pokemonType.forEach(type => {
+          this.jungleCupRules.types.push(Rpc.HoloPokemonType[type as TypeProto])
+        })
+      }
+    })
+    this.jungleCupRules.banned = bannedPokemon.map(poke => {
+      return Rpc.HoloPokemonId[poke as PokemonIdProto]
+    })
+  }
+
+  jungleEligibility() {
+    Object.entries(this.parsedPokemon).forEach(([id, pokemon]) => {
+      const allowed = this.jungleCupRules.types.some(type => pokemon.types.includes(type))
+        && !this.jungleCupRules.banned.includes(+id)
+      if (allowed) pokemon.jungle = true
+    })
   }
 
   makeFormsSeparate() {
@@ -608,7 +636,7 @@ export default class Pokemon extends Masterfile {
         if (baseStats[id].evolutions) {
           const cleaned = baseStats[id].evolutions.map(evo => ({
             evoId: evo.evoId,
-            formId: this.options.includeUnset ? 0 : undefined,
+            formId: this.options.includeUnset && !this.options.noFormPlaceholders ? 0 : undefined,
           }))
           evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
         }

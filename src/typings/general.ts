@@ -87,6 +87,15 @@ export interface NiaMfObj {
     }
     combatLeague: {
       bannedPokemon: string[]
+      pokemonCondition: {
+        type: string
+        withPokemonCpLimit: {
+          maxCp: number
+        }
+        withPokemonType: {
+          pokemonType: string[]
+        }
+      }[]
     }
     weatherAffinities?: {
       weatherCondition: string

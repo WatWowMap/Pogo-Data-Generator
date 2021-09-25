@@ -37,6 +37,7 @@
       "includeUnset": false,
       "skipNormalIfUnset": false,
       "skipForms": [],
+      "noFormPlaceholders": false,
       "includeEstimatedPokemon": {
         "baseStats": true,
         "mega": true,
@@ -128,6 +129,7 @@
       "transferable": false,
       "family": true,
       "little": true,
+      "jungle": false,
       "unreleased": false,
       "bonusCandyCapture": false,
       "bonusStardustCapture": false

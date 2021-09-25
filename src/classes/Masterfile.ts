@@ -65,6 +65,15 @@ export default class Masterfile {
   templater(data: any, settings: { template: any; options: Options }, reference: FinalResult = {}) {
     // loops through the raw data and outputs the desired template
     const { template, options } = settings
+    if (!options.customFields) {
+      options.customFields = {}
+    }
+    if (!options.customChildObj) {
+      options.customChildObj = {}
+    }
+    if (!options.makeSingular) {
+      options.makeSingular = {}
+    }
     const resolved: any = options.keys.main ? {} : []
 
     const parseData = (fieldKey: string, fieldValue: any, templateChild: any, data: any) => {
