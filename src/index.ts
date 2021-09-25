@@ -101,6 +101,8 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
         AllWeather.addWeather(data[i])
       } else if (data[i].data.evolutionQuestTemplate) {
         AllPokemon.addEvolutionQuest(data[i])
+      } else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE') {
+        AllPokemon.jungleCup(data[i])
       }
     }
   }
@@ -136,6 +138,9 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
 
   if (pokemon.template.little) {
     AllPokemon.littleCup()
+  }
+  if (pokemon.template.jungle) {
+    AllPokemon.jungleEligibility()
   }
   if (pokemon.options.processFormsSeparately) {
     AllPokemon.makeFormsSeparate()

@@ -70,6 +70,7 @@ interface PokemonTemplate extends Form {
   tradable?: boolean
   transferable?: boolean
   unreleased?: boolean
+  jungle?: boolean
 }
 
 interface CostumeTemplate {
