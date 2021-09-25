@@ -11,7 +11,7 @@ import Translations from './classes/Translations'
 import PokeApi from './classes/PokeApi'
 import base from './base.json'
 
-import { Input, FullTemplate } from './typings/inputs'
+import { Input, FullTemplate, InvasionsOnly } from './typings/inputs'
 import { FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
@@ -323,6 +323,21 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
       fs.writeFile('static/types.json', JSON.stringify(AllPokeApi.types, null, 2), 'utf8', () => {})
     }
     console.log('Generated in ', new Date().getTime() - start)
+  } else {
+    return final
+  }
+}
+
+export async function invasions({ template, test }: InvasionsOnly = {}) {
+  const finalTemplate = template || base.invasions
+  const AllInvasions = new Invasions(finalTemplate.options)
+  const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
+    'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
+  )
+  AllInvasions.invasions(invasionData)
+  const final = AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
+  if (test) {
+    fs.writeFile('./invasions.json', JSON.stringify(final, null, 2), 'utf8', () => {})
   } else {
     return final
   }

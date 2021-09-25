@@ -21,6 +21,7 @@
     "generate": "node -e 'require(\"./dist/index\").generate({ test: true })'",
     "pokeapi": "node -e 'require(\"./dist/index\").generate({ test: true, pokeApi: true })'",
     "raw": "node -e 'require(\"./dist/index\").generate({ test: true, raw: true })'",
+    "invasions": "node -e 'require(\"./dist/index\").invasions({ test: true })'",
     "test": "./node_modules/.bin/jest"
   },
   "repository": {

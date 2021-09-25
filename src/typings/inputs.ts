@@ -293,3 +293,12 @@ export interface FullTemplate {
     locales: { [code: string]: boolean }
   }
 }
+
+export interface InvasionsOnly {
+  template?: {
+    enabled: boolean
+    options: Options
+    template: InvasionTemplate
+  }
+  test?: boolean
+}
