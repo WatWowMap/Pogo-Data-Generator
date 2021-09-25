@@ -32,12 +32,11 @@
     "url": "https://github.com/WatWowMap/Pogo-Data-Generator/issues"
   },
   "dependencies": {
-    "@types/node-fetch": "^2.5.12",
     "node-fetch": "^2.6.1",
     "pogo-protos": "github:Furtif/pogo-protos"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "jest": "^27.0.6"
+    "@types/node-fetch": "^2.5.12",
+    "jest": "^27.2.1"
   }
 }
