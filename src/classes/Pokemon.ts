@@ -262,7 +262,7 @@ export default class Pokemon extends Masterfile {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
                   pokemonName: this.pokemonName(id),
-                  forms: this.options.includeUnset ? [0] : [],
+                  forms: this.options.includeUnset && !this.options.noFormPlaceholders ? [0] : [],
                   pokedexId: id,
                   ...this.getGeneration(+id),
                 }
@@ -350,7 +350,7 @@ export default class Pokemon extends Masterfile {
                 isCostume: forms[i].isCostume,
               }
             }
-            if (this.options.allUnset) {
+            if (this.options.allUnset && !this.options.noFormPlaceholders) {
               this.parsedPokemon[id].forms.push(0)
             }
           }
@@ -363,7 +363,7 @@ export default class Pokemon extends Masterfile {
               ...this.getGeneration(+id),
             }
           }
-          if (this.options.includeUnset) {
+          if (this.options.includeUnset && !this.options.noFormPlaceholders) {
             this.parsedPokemon[id].forms.push(0)
           }
         }
@@ -523,8 +523,8 @@ export default class Pokemon extends Masterfile {
             ...this.parsedPokemon[id],
           }
           if (!this.parsedPokemon[id].forms) {
-            this.parsedPokemon[id].forms = [0]
-          } else if (this.parsedPokemon[id].forms.length === 0) {
+            this.parsedPokemon[id].forms = this.options.noFormPlaceholders ? [] : [0]
+          } else if (this.parsedPokemon[id].forms.length === 0 && !this.options.noFormPlaceholders) {
             this.parsedPokemon[id].forms.push(0)
           }
         }
@@ -608,7 +608,7 @@ export default class Pokemon extends Masterfile {
         if (baseStats[id].evolutions) {
           const cleaned = baseStats[id].evolutions.map(evo => ({
             evoId: evo.evoId,
-            formId: this.options.includeUnset ? 0 : undefined,
+            formId: this.options.includeUnset && !this.options.noFormPlaceholders ? 0 : undefined,
           }))
           evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
         }

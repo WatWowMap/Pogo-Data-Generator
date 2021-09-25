@@ -29,8 +29,8 @@ Usage:
 ```js
 // commonJS
 const { generate } = require('pogo-data-generator')
-// es6
-import { generate } from 'pogo-data-generator'
+// es6 with invasion function
+import { generate, invasions } from 'pogo-data-generator'
 
 const data = await generate() // returns the default settings
 
@@ -96,6 +96,9 @@ const template = {
   },
 }
 const customData = await generate({ template }) // returns custom templated data
+
+const tr = await invasions()
+// returns the default settings
 ```
 
 **Local Usage/Testing**
@@ -125,6 +128,8 @@ To view some static examples of what this library can create, check out these re
 ## Full Template
 
 This is the full template example with notes on each field. The default template if you simply call `generate()` is located at `src/base.json`
+
+Invasions function only needs the invasion template object
 
 ```js
 const template = {
@@ -179,6 +184,7 @@ const template = {
       includeUnset: false, //includes Pokemon that have unset forms
       unsetFormName: '', // Form name to use for unset forms
       allUnset: false, // Includes all unset forms, even if they are not being used anymore
+      noFormPlaceholders: false, // Removes all form unset/form 0 place holders
     },
     template: {
       pokedexId: true,

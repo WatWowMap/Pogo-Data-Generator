@@ -45,6 +45,7 @@ export interface Options {
   unsetFormName?: string
   allUnset?: boolean
   pokeApiIds?: number[]
+  noFormPlaceholders?: boolean
 }
 
 interface PokemonTemplate extends Form {
