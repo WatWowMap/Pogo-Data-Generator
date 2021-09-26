@@ -420,17 +420,6 @@ export default class Translations extends Masterfile {
       const [name, id] = proto
       this.parsedTranslations[locale].costumes[`${this.options.prefix.costumes}${id}`] = this.capitalize(name)
     })
-    // fake costumes until furtif fixes
-    const fakeCostumes = {
-      FASHION_2021_NOEVOLVE: 48,
-      HALLOWEEN_2021_NOEVOLVE: 49,
-      GEMS_2021_NOEVOLVE: 50,
-      HOLIDAY_2021_NOEVOLVE: 51,
-    }
-    Object.entries(fakeCostumes).forEach(([name, id]) => {
-      this.parsedTranslations[locale].costumes[`${this.options.prefix.costumes}${id}`] = this.capitalize(name)
-    })
-
   }
 
   pokemonCategories(locale: string) {
