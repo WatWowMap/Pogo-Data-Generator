@@ -1,7 +1,11 @@
+import { InvasionInfo } from './pogoinfo'
+
+type StringBool = string | boolean
+
 export interface Options {
   topLevelName?: string
   keys?: {
-    [key: string]: string
+    [key: string]: StringBool
   }
   customFields?: {
     [key: string]: string
@@ -34,21 +38,22 @@ export interface Options {
     | true
   minTrainerLevel?: number
   placeholderData?: boolean
-  masterfileLocale?: string
+  masterfileLocale?: StringBool
   manualTranslations?: boolean
   mergeCategories?: boolean
   processFormsSeparately?: boolean
   includeRawForms?: boolean
   includeBalloons?: boolean
-  useLanguageAsRef?: string
+  useLanguageAsRef?: StringBool
   includeUnset?: boolean
   unsetFormName?: string
   allUnset?: boolean
   pokeApiIds?: number[]
   noFormPlaceholders?: boolean
+  customInvasions?: InvasionInfo | boolean
 }
 
-interface PokemonTemplate extends Form {
+export interface PokemonTemplate extends Form {
   pokedexId?: boolean
   pokemonName?: boolean
   forms?: Form
@@ -63,7 +68,7 @@ interface PokemonTemplate extends Form {
   mythic?: boolean
   buddyGroupNumber?: boolean
   buddyDistance?: boolean
-  buddyMegaEnergy?: number
+  buddyMegaEnergy?: boolean
   thirdMoveStardust?: boolean
   thirdMoveCandy?: boolean
   gymDefenderEligible?: boolean
@@ -85,29 +90,31 @@ interface Form extends BaseStats {
   proto?: boolean
   formId?: boolean
   isCostume?: boolean
-  evolutions?: {
-    evoId?: boolean
-    formId?: boolean
-    genderRequirement?: boolean
-    candyCost?: boolean
-    itemRequirement?: boolean
-    tradeBonus?: boolean
-    mustBeBuddy?: boolean
-    onlyDaytime?: boolean
-    onlyNighttime?: boolean
-    questRequirement?:
-      | {
-          target?: boolean
-          assetsRef?: boolean
-          i18n?: boolean
-          questType?: boolean
-          translated?: boolean
-        }
-      | string
-  }
-  tempEvolutions?: TempEvolution | string
-  quickMoves?: Move | string
-  chargedMoves?: Move | string
+  evolutions?:
+    | {
+        evoId?: boolean
+        formId?: boolean
+        genderRequirement?: boolean
+        candyCost?: boolean
+        itemRequirement?: boolean
+        tradeBonus?: boolean
+        mustBeBuddy?: boolean
+        onlyDaytime?: boolean
+        onlyNighttime?: boolean
+        questRequirement?:
+          | {
+              target?: boolean
+              assetsRef?: boolean
+              i18n?: boolean
+              questType?: boolean
+              translated?: boolean
+            }
+          | StringBool
+      }
+    | StringBool
+  tempEvolutions?: TempEvolution | StringBool
+  quickMoves?: Move | StringBool
+  chargedMoves?: Move | StringBool
   family?: boolean
   little?: boolean
 }
@@ -121,7 +128,7 @@ type Move = {
         typeId?: boolean
         type?: boolean
       }
-    | string
+    | StringBool
 }
 
 interface TempEvolution extends BaseStats {
@@ -137,10 +144,12 @@ type BaseStats = {
   stamina?: boolean
   height?: boolean
   weight?: boolean
-  types?: {
-    typeId?: boolean
-    typeName?: boolean
-  }
+  types?:
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | StringBool
 }
 
 export interface TypesTempOpt {
@@ -149,12 +158,12 @@ export interface TypesTempOpt {
   template?: TypesTemplate
 }
 
-type TypesTemplate = {
+export interface TypesTemplate {
   typeId?: boolean
   typeName?: boolean
 }
 
-type MoveTemplate = {
+export interface MoveTemplate {
   moveId?: boolean
   moveName?: boolean
   proto?: boolean
@@ -163,11 +172,11 @@ type MoveTemplate = {
         typeId?: boolean
         typeName?: boolean
       }
-    | string
+    | StringBool
   power?: boolean
 }
 
-type ItemTemplate = {
+export interface ItemTemplate {
   itemId?: boolean
   itemName?: boolean
   proto?: boolean
@@ -176,36 +185,40 @@ type ItemTemplate = {
   minTrainerLevel?: boolean
 }
 
-type QuestTemplate = {
+export interface QuestTemplate {
   id?: boolean
   proto?: boolean
   formatted?: boolean
 }
 
-type InvasionTemplate = {
+export interface InvasionTemplate {
   id?: boolean
   type?: boolean
   gender?: boolean
   grunt?: boolean
   secondReward?: boolean
-  encounters?: {
-    id: boolean
-    formId: boolean
-    position: boolean
-  }
+  encounters?:
+    | {
+        id: boolean
+        formId: boolean
+        position: boolean
+      }
+    | StringBool
 }
 
-type WeatherTemplate = {
+export interface WeatherTemplate {
   weatherId?: boolean
   weatherName?: boolean
   proto?: boolean
-  types?: {
-    typeId?: boolean
-    typeName?: boolean
-  }
+  types?:
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | StringBool
 }
 
-type TranslationsTemplate = {
+export interface TranslationsTemplate {
   pokemon?: {
     names?: boolean
     forms?: boolean
@@ -241,52 +254,52 @@ export interface FullTemplate {
   pokemon?: {
     enabled?: boolean
     options: Options
-    template: PokemonTemplate
+    template: PokemonTemplate | string
   }
   costumes?: {
     enabled?: boolean
     options: Options
-    template: CostumeTemplate
+    template: CostumeTemplate | string
   }
   types?: {
     enabled?: boolean
     options: Options
-    template: TypesTemplate
+    template: TypesTemplate | string
   }
   moves?: {
     enabled?: boolean
     options: Options
-    template: MoveTemplate
+    template: MoveTemplate | string
   }
   items?: {
     enabled?: boolean
     options: Options
-    template: ItemTemplate
+    template: ItemTemplate | string
   }
   questTypes?: {
     enabled?: boolean
     options: Options
-    template: QuestTemplate
+    template: QuestTemplate | string
   }
   questConditions?: {
     enabled?: boolean
     options: Options
-    template: QuestTemplate
+    template: QuestTemplate | string
   }
   questRewardTypes?: {
     enabled?: boolean
     options: Options
-    template: QuestTemplate
+    template: QuestTemplate | string
   }
   invasions?: {
     enabled?: boolean
     options: Options
-    template: InvasionTemplate
+    template: InvasionTemplate | string
   }
   weather?: {
     enabled?: boolean
     options: Options
-    template: WeatherTemplate
+    template: WeatherTemplate | string
   }
   translations?: {
     enabled?: boolean

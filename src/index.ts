@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 
+import Masterfile from './classes/Masterfile'
 import Pokemon from './classes/Pokemon'
 import Items from './classes/Item'
 import Moves from './classes/Move'
@@ -11,47 +12,10 @@ import Translations from './classes/Translations'
 import PokeApi from './classes/PokeApi'
 import base from './base.json'
 
-import { Input, FullTemplate, InvasionsOnly } from './typings/inputs'
+import { Input, InvasionsOnly, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
 import { FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
-
-const templateMerger = (template: { [key: string]: any }): FullTemplate => {
-  const baseline: { [key: string]: any } = base
-  const merged: { [key: string]: any } = {}
-  Object.keys(base).forEach(category => {
-    merged[category] = template[category] || {}
-    Object.keys(baseline[category]).forEach(subKey => {
-      if (merged[category][subKey] === undefined) {
-        merged[category][subKey] = typeof baseline[category][subKey] === 'boolean' ? false : baseline[category][subKey]
-      }
-    })
-    if (category !== 'globalOptions') {
-      const globalOptions = template.globalOptions || baseline.globalOptions
-      Object.entries(globalOptions).forEach(option => {
-        const [optionKey, optionValue] = option
-        if (merged[category].options[optionKey] === undefined) {
-          if (template.globalOptions) {
-            merged[category].options[optionKey] = optionValue
-          } else {
-            merged[category].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
-          }
-        }
-      })
-    }
-    if (category === 'translations' && template.translations) {
-      merged.translations.options.questVariables = {
-        ...base.translations.options.questVariables,
-        ...template.translations.options.questVariables,
-      }
-      merged.translations.options.prefix = {
-        ...base.translations.options.prefix,
-        ...template.translations.options.prefix,
-      }
-    }
-  })
-  return merged
-}
 
 export async function generate({ template, url, test, raw, pokeApi }: Input = {}) {
   const start: number = new Date().getTime()
@@ -70,7 +34,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     invasions,
     weather,
     translations,
-  } = templateMerger(template || base)
+  } = Masterfile.templateMerger(template || base, base)
   const localeCheck = translations.enabled && translations.options.masterfileLocale
 
   const AllPokemon = new Pokemon(pokemon.options)
@@ -136,10 +100,10 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     AllPokemon.parsePokeApi(await getDataSource('baseStats'), await getDataSource('tempEvos'))
   }
 
-  if (pokemon.template.little) {
+  if ((pokemon.template as PokemonTemplate).little) {
     AllPokemon.littleCup()
   }
-  if (pokemon.template.jungle) {
+  if ((pokemon.template as PokemonTemplate).jungle) {
     AllPokemon.jungleEligibility()
   }
   if (pokemon.options.processFormsSeparately) {
@@ -152,11 +116,11 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     AllMoves.protoMoves()
   }
   AllWeather.buildWeather()
-  if (invasions.enabled || translations.template.characters) {
-    const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
+  if (invasions.enabled || (translations.template as TranslationsTemplate).characters) {
+    const invasionData: InvasionInfo = await AllInvasions.fetch(
       'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
     )
-    AllInvasions.invasions(invasionData)
+    AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
   }
 
   if (translations.enabled) {
@@ -233,7 +197,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
           types: AllTypes.parsedTypes,
           weather: AllWeather.parsedWeather,
         },
-        translations.options.masterfileLocale,
+        (translations.options.masterfileLocale as string),
         pokemon.options.processFormsSeparately
       )
     }
@@ -336,10 +300,10 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
 export async function invasions({ template, test }: InvasionsOnly = {}) {
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
-  const invasionData: { [id: string]: InvasionInfo } = await AllInvasions.fetch(
+  const invasionData: InvasionInfo = await AllInvasions.fetch(
     'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
   )
-  AllInvasions.invasions(invasionData)
+  AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
   const final = AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
   if (test) {
     fs.writeFile('./invasions.json', JSON.stringify(final, null, 2), 'utf8', () => {})
