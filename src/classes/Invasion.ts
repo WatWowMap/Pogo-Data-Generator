@@ -15,6 +15,37 @@ export default class Invasion extends Masterfile {
     this.parsedInvasions = {}
   }
 
+  async customInvasions(override: boolean = false): Promise<InvasionInfo> {
+    try {
+      if (this.options.customInvasions === true || (this.options.customInvasions === undefined && override)) {
+        return this.fetch(
+          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json'
+        )
+      } else if (this.options.customInvasions) {
+        return this.options.customInvasions as InvasionInfo
+      } else {
+        return {}
+      }
+    } catch (e) {
+      console.warn(e, 'Unable to get custom invasions')
+    }
+  }
+
+  mergeInvasions(existing: InvasionInfo, custom: InvasionInfo = {}) {
+    const invasions = existing
+    Object.entries(custom).forEach(([key, info]) => {
+      if (invasions[key] === undefined) {
+        invasions[key] = info
+      } else {
+        invasions[key] = {
+          ...invasions[key],
+          ...info,
+        }
+      }
+    })
+    return invasions
+  }
+
   formatGrunts(character: string) {
     const base = character.replace('CHARACTER_', '').replace('_MALE', '').replace('_FEMALE', '')
     const type = base.replace('EXECUTIVE_', '').replace('_GRUNT', '').replace('EVENT_', '')
@@ -30,7 +61,7 @@ export default class Invasion extends Masterfile {
     }
   }
 
-  invasions(invasionData: { [id: string]: InvasionInfo }) {
+  invasions(invasionData: InvasionInfo) {
     Object.entries(Rpc.EnumWrapper.InvasionCharacter).forEach(proto => {
       try {
         const [name, id] = proto

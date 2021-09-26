@@ -1,9 +1,11 @@
 export interface InvasionInfo {
-  active?: boolean
-  character?: Character
-  lineup?: {
-    rewards: number[]
-    team: InvasionTeam[][]
+  [id: string]: {
+    active?: boolean
+    character?: Character
+    lineup?: {
+      rewards: number[]
+      team: InvasionTeam[][]
+    }  
   }
 }
 

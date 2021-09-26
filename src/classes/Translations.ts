@@ -240,7 +240,7 @@ export default class Translations extends Masterfile {
   languageRef(locale: string) {
     try {
       if (!this.reference) {
-        this.reference = this.parsedTranslations[this.options.useLanguageAsRef]
+        this.reference = this.parsedTranslations[(this.options.useLanguageAsRef as string)]
       }
       const languageRef: TranslationKeys = {}
       Object.keys(this.parsedTranslations[locale]).forEach(category => {

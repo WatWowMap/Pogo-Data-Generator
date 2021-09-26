@@ -131,6 +131,8 @@ This is the full template example with notes on each field. The default template
 
 Invasions function only needs the invasion template object
 
+Custom invasions can be added by setting the customInvasions object using the same format as PogoInfo's grunts JSON.
+
 ```js
 const template = {
   globalOptions: {
@@ -178,7 +180,12 @@ const template = {
       skipNormalIfUnset: false, // If form is unset, Normal form will be skipped
       skipForms: [], // Can be used to skip forms, such as Shadow/Purified
       includeProtos: true, // Adds unreleased forms from the protos
-      includeEstimatedPokemon: true, // Includes mega info for Mega Evos that do not officially exist in Pogo as well as Pokemon data from the PokeAPI for Pokemon that are in the protos but not in the GM yet.
+      includeEstimatedPokemon: {
+        // Includes mega info for Mega Evos that do not officially exist in Pogo as well as Pokemon data from the PokeAPI for Pokemon that are in the protos but not in the GM yet.baseStats: true,
+        mega: true,
+        primal: true,
+        gmax: true,
+      },
       processFormsSeparately: false, // Full Pokemon obj for each form
       includeRawForms: false, // Returns a "forms" obj with all individual forms
       includeUnset: false, //includes Pokemon that have unset forms
@@ -556,6 +563,7 @@ const template = {
       genderString: false,
       placeholderData: false,
       snake_case: false,
+      customInvasions: {},
     },
     template: {
       id: false,

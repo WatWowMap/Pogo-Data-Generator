@@ -1,6 +1,6 @@
 import Fetch from 'node-fetch'
 
-import { Options } from '../typings/inputs'
+import { Options, FullTemplate } from '../typings/inputs'
 import { FinalResult } from '../typings/dataTypes'
 export default class Masterfile {
   customFieldNames: { [id: string]: string }
@@ -14,14 +14,54 @@ export default class Masterfile {
     }
   }
 
-  async fetch(url: string): Promise<any> {
-    return new Promise(resolve => {
-      Fetch(url)
-        .then(res => res.json())
-        .then((json: any) => {
-          return resolve(json)
+  static templateMerger(template: { [key: string]: any }, base: FullTemplate): FullTemplate {
+    const baseline: { [key: string]: any } = base
+    const merged: { [key: string]: any } = {}
+    Object.keys(base).forEach(category => {
+      merged[category] = template[category] || {}
+      Object.keys(baseline[category]).forEach(subKey => {
+        if (merged[category][subKey] === undefined) {
+          merged[category][subKey] =
+            typeof baseline[category][subKey] === 'boolean' ? false : baseline[category][subKey]
+        }
+      })
+      if (category !== 'globalOptions') {
+        const globalOptions = template.globalOptions || baseline.globalOptions
+        Object.entries(globalOptions).forEach(option => {
+          const [optionKey, optionValue] = option
+          if (merged[category].options[optionKey] === undefined) {
+            if (template.globalOptions) {
+              merged[category].options[optionKey] = optionValue
+            } else {
+              merged[category].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
+            }
+          }
         })
+      }
+      if (category === 'translations' && template.translations) {
+        merged.translations.options.questVariables = {
+          ...base.translations.options.questVariables,
+          ...template.translations.options.questVariables,
+        }
+        merged.translations.options.prefix = {
+          ...base.translations.options.prefix,
+          ...template.translations.options.prefix,
+        }
+      }
     })
+    return merged
+  }
+
+  async fetch(url: string): Promise<any> {
+    try {
+      const data = await Fetch(url)
+      if (!data.ok) {
+        throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
+      }
+      return await data.json()
+    } catch (e) {
+      console.error(e, `Unable to fetch ${url}`)
+    }
   }
 
   capitalize(string: string) {
@@ -44,7 +84,7 @@ export default class Masterfile {
         }
       } catch (e) {
         console.warn(e, '\n', string)
-      }  
+      }
     }
   }
 
@@ -212,7 +252,7 @@ export default class Masterfile {
     // combines values together if parent objects have custom keys
     try {
       if (options.keys[key]) {
-        const split = options.keys[key].split(' ')
+        const split = (options.keys[key] as string).split(' ')
         let newKey = ''
         if (split.length === 1) {
           newKey = data[split[0]]
