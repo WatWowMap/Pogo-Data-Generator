@@ -303,7 +303,7 @@ export async function invasions({ template, test }: InvasionsOnly = {}) {
   const invasionData: InvasionInfo = await AllInvasions.fetch(
     'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
   )
-  AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
+  AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions(true)))
   const final = AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
   if (test) {
     fs.writeFile('./invasions.json', JSON.stringify(final, null, 2), 'utf8', () => {})

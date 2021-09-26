@@ -259,8 +259,7 @@
         "second": "second",
         "third": "third"
       },
-      "placeholderData": true,
-      "customInvasions": {}
+      "placeholderData": true
     },
     "template": {
       "id": false,

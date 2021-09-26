@@ -53,13 +53,15 @@ export default class Masterfile {
   }
 
   async fetch(url: string): Promise<any> {
-    return new Promise(resolve => {
-      Fetch(url)
-        .then(res => res.json())
-        .then((json: any) => {
-          return resolve(json)
-        })
-    })
+    try {
+      const data = await Fetch(url)
+      if (!data.ok) {
+        throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
+      }
+      return await data.json()
+    } catch (e) {
+      console.error(e, `Unable to fetch ${url}`)
+    }
   }
 
   capitalize(string: string) {

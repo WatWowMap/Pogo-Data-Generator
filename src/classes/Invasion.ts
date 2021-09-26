@@ -15,13 +15,19 @@ export default class Invasion extends Masterfile {
     this.parsedInvasions = {}
   }
 
-  async customInvasions(): Promise<InvasionInfo> {
-    if (this.options.customInvasions === true) {
-      return this.fetch('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json')
-    } else if (this.options.customInvasions) {
-      return this.options.customInvasions as InvasionInfo
-    } else {
-      return {}
+  async customInvasions(override: boolean = false): Promise<InvasionInfo> {
+    try {
+      if (this.options.customInvasions === true || (this.options.customInvasions === undefined && override)) {
+        return this.fetch(
+          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json'
+        )
+      } else if (this.options.customInvasions) {
+        return this.options.customInvasions as InvasionInfo
+      } else {
+        return {}
+      }
+    } catch (e) {
+      console.warn(e, 'Unable to get custom invasions')
     }
   }
 
