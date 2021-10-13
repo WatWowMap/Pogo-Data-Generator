@@ -17,23 +17,11 @@
         },
         "164": {
           "name": "Shadow",
-          "proto": "BULBASAUR_SHADOW",
-          "evolutions": [
-            {
-              "pokemon": 2,
-              "form": 167
-            }
-          ]
+          "proto": "BULBASAUR_SHADOW"
         },
         "165": {
           "name": "Purified",
-          "proto": "BULBASAUR_PURIFIED",
-          "evolutions": [
-            {
-              "pokemon": 2,
-              "form": 168
-            }
-          ]
+          "proto": "BULBASAUR_PURIFIED"
         },
         "897": {
           "name": "Fall 2019",
@@ -98,11 +86,7 @@
         },
         "180": {
           "name": "Purified",
-          "proto": "CHARIZARD_PURIFIED",
-          "temp_evolutions": {
-            "2": {},
-            "3": {}
-          }
+          "proto": "CHARIZARD_PURIFIED"
         },
         "951": {
           "name": "Copy 2019",
@@ -191,23 +175,11 @@
         },
         "709": {
           "name": "Shadow",
-          "proto": "MEOWTH_SHADOW",
-          "evolutions": [
-            {
-              "pokemon": 53,
-              "form": 711
-            }
-          ]
+          "proto": "MEOWTH_SHADOW"
         },
         "710": {
           "name": "Purified",
-          "proto": "MEOWTH_PURIFIED",
-          "evolutions": [
-            {
-              "pokemon": 53,
-              "form": 712
-            }
-          ]
+          "proto": "MEOWTH_PURIFIED"
         },
         "2335": {
           "name": "Galarian",

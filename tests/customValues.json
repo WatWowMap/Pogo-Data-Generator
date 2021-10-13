@@ -66,12 +66,6 @@
         "280": "Schmarotzer"
       },
       "family": 52,
-      "evolutions": [
-        {
-          "evoId": 53,
-          "id": 712
-        }
-      ],
       "generation": "Kanto",
       "little": true
     },
