@@ -100,7 +100,7 @@ export default class Pokemon extends Masterfile {
 
   formName(id: number, formName: string): string {
     try {
-      const name = formName.substr(
+      const name = formName.substring(
         id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
           ? 8
           : Rpc.HoloPokemonId[id].length + 1
@@ -122,7 +122,9 @@ export default class Pokemon extends Masterfile {
   lookupPokemon(name: string): string {
     try {
       for (const key of Object.keys(Rpc.HoloPokemonId)) {
-        if (name.startsWith(`${key}_`)) {
+        if (name.startsWith('PORYGON_Z_')) {
+          return 'PORYGON_Z'
+        } else if (name.startsWith(`${key}_`)) {
           return key
         }
       }
