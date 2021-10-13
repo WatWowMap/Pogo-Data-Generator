@@ -123,6 +123,7 @@ export default class Translations extends Masterfile {
       questTypes: {},
       questConditions: {},
       questRewardTypes: {},
+      questTitles: {},
       evolutionQuests: {},
       types: {},
       weather: {},
@@ -139,7 +140,9 @@ export default class Translations extends Masterfile {
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
       const { data }: { data: string[] } = await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale] || 'english'}.json`
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${
+          this.codes[locale] || 'english'
+        }.json`
       )
 
       for (let i = 0; i < data.length; i += 2) {
@@ -183,6 +186,10 @@ export default class Translations extends Masterfile {
             } else if (key.startsWith('quest_reward_')) {
               this.manualTranslations[locale].questRewardTypes[
                 key.replace('quest_reward_', this.options.prefix.questRewardTypes || 'quest_reward_')
+              ] = newValue
+            } else if (key.startsWith('quest_title_')) {
+              this.manualTranslations[locale].questRewardTypes[
+                key.replace('quest_title_', this.options.prefix.questTitles || 'quest_title_')
               ] = newValue
             } else {
               this.manualTranslations[locale].questTypes[
@@ -240,7 +247,7 @@ export default class Translations extends Masterfile {
   languageRef(locale: string) {
     try {
       if (!this.reference) {
-        this.reference = this.parsedTranslations[(this.options.useLanguageAsRef as string)]
+        this.reference = this.parsedTranslations[this.options.useLanguageAsRef as string]
       }
       const languageRef: TranslationKeys = {}
       Object.keys(this.parsedTranslations[locale]).forEach(category => {
@@ -634,6 +641,20 @@ export default class Translations extends Masterfile {
           const value = data[category][proto].formatted.replace('With ', '')
           this.parsedTranslations[locale][category][`${this.options.prefix[category]}${proto}`] = value
         })
+      })
+      this.parsedTranslations[locale].questTitles = {}
+      Object.keys(this.rawTranslations[locale]).forEach(key => {
+        const value = this.rawTranslations[locale][key]
+          .replace(/{/g, `${this.options.questVariables.prefix}amount_`)
+          .replace(/\}/g, this.options.questVariables.suffix)
+        if (
+          key.startsWith('quest_') &&
+          this.options.questTitleTermsToSkip.every(term => !key.includes(term)) &&
+          !value.includes('%PLAYERNAME%')
+        ) {
+          const newKey = key.replace('quest_', this.options.prefix.questTitles)
+          this.parsedTranslations[locale].questTitles[newKey] = value
+        }
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate quests for ${locale}`)

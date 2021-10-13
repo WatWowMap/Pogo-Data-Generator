@@ -47,6 +47,9 @@ export default class Masterfile {
           ...base.translations.options.prefix,
           ...template.translations.options.prefix,
         }
+        if (!template.translations.options.questTitleTermsToSkip) {
+          merged.translations.options.questTitleTermsToSkip = base.translations.options.questTitleTermsToSkip
+        }
       }
     })
     return merged
