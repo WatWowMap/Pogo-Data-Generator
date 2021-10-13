@@ -369,12 +369,17 @@ const template = {
         lures: 'lure_',
         throwTypes: 'throw_type_',
         pokemonCategories: 'pokemon_categories_',
+        questTypes: 'quest_',
+        questConditions: 'quest_condition_',
+        questRewardTypes: 'quest_reward_',
+        questTitles: 'quest_title_',
       },
       questVariables: {
         // Some translations have variables for i18n to dynamically adjust, these will set those variables
         prefix: '{{',
         suffix: '}}',
       },
+      questTitleTermsToSkip: [], // Allows you to skip undesirable quest_titles from special events or things that are no longer relevant
       masterfileLocale: 'en', // If you want *most* of the Masterfile to be translated
       manualTranslations: true, // Grabs unofficial translations created by the community
       mergeCategories: true, // Translations will be merged into one obj

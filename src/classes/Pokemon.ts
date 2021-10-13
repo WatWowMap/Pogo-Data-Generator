@@ -577,8 +577,9 @@ export default class Pokemon extends Masterfile {
 
   jungleEligibility() {
     Object.entries(this.parsedPokemon).forEach(([id, pokemon]) => {
-      const allowed = this.jungleCupRules.types.some(type => pokemon.types.includes(type))
-        && !this.jungleCupRules.banned.includes(+id)
+      const allowed =
+        this.jungleCupRules.types.some(type => pokemon.types.includes(type)) &&
+        !this.jungleCupRules.banned.includes(+id)
       if (allowed) pokemon.jungle = true
     })
   }

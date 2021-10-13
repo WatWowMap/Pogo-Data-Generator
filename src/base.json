@@ -311,12 +311,14 @@
         "pokemonCategories": "pokemon_categories_",
         "questTypes": "quest_",
         "questConditions": "quest_condition_",
-        "questRewardTypes": "quest_reward_"
+        "questRewardTypes": "quest_reward_",
+        "questTitles": "quest_title_"
       },
       "questVariables": {
         "prefix": "{{",
         "suffix": "}}"
       },
+      "questTitleTermsToSkip": ["gofest", "gotour", "dialog", "title", "summer_return", "_complete_"],
       "masterfileLocale": false,
       "manualTranslations": true,
       "mergeCategories": true,

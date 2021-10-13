@@ -51,6 +51,7 @@ export interface Options {
   pokeApiIds?: number[]
   noFormPlaceholders?: boolean
   customInvasions?: InvasionInfo | boolean
+  questTitleTermsToSkip?: string[]
 }
 
 export interface PokemonTemplate extends Form {
