@@ -139,6 +139,8 @@ export default class Masterfile {
               // edge case for encounters
               if (returnValue[customKey]) {
                 returnValue[customKey].push(child)
+              } else if (typeof child === 'object') {
+                returnValue[customKey] = []
               } else {
                 returnValue[customKey] = [child]
               }

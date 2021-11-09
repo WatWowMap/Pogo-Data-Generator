@@ -62,6 +62,11 @@ export default class Invasion extends Masterfile {
   }
 
   invasions(invasionData: InvasionInfo) {
+    const positions = [
+      this.customFieldNames.first || 'first',
+      this.customFieldNames.second || 'second',
+      this.customFieldNames.third || 'third',
+    ]
     Object.entries(Rpc.EnumWrapper.InvasionCharacter).forEach(proto => {
       try {
         const [name, id] = proto
@@ -73,11 +78,6 @@ export default class Invasion extends Masterfile {
           }
           if (pogoInfo && pogoInfo.active) {
             this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.length === 2
-            const positions = [
-              this.customFieldNames.first || 'first',
-              this.customFieldNames.second || 'second',
-              this.customFieldNames.third || 'third',
-            ]
             this.parsedInvasions[id].encounters = []
 
             positions.forEach((position, i) => {
@@ -87,7 +87,7 @@ export default class Invasion extends Masterfile {
             })
           } else if (this.options.placeholderData) {
             this.parsedInvasions[id].secondReward = false
-            this.parsedInvasions[id].encounters = []
+            this.parsedInvasions[id].encounters = positions.map(position => ({ position }))
           }
         }
       } catch (e) {

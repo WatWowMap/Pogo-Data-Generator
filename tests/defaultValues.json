@@ -576,21 +576,33 @@
       "gender": 0,
       "grunt": "Unset",
       "second_reward": false,
-      "encounters": {}
+      "encounters": {
+        "first": [],
+        "second": [],
+        "third": []
+      }
     },
     "4": {
       "type": "Mixed",
       "gender": 1,
       "grunt": "Grunt",
       "second_reward": false,
-      "encounters": {}
+      "encounters": {
+        "first": [],
+        "second": [],
+        "third": []
+      }
     },
     "11": {
       "type": "Dark",
       "gender": 1,
       "grunt": "Grunt",
       "second_reward": false,
-      "encounters": {}
+      "encounters": {
+        "first": [],
+        "second": [],
+        "third": []
+      }
     }
   },
   "weather": {
