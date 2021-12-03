@@ -61,7 +61,7 @@ export default class Masterfile {
       if (!data.ok) {
         throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
       }
-      return await data.json()
+      return data.json()
     } catch (e) {
       console.error(e, `Unable to fetch ${url}`)
     }

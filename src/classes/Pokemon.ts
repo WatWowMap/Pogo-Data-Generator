@@ -152,7 +152,7 @@ export default class Pokemon extends Masterfile {
     try {
       if (moves) {
         try {
-          return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto])
+          return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto]).sort((a, b) => a - b)
         } catch (e) {
           console.warn(e, '\n', moves)
         }
@@ -170,7 +170,7 @@ export default class Pokemon extends Masterfile {
           if (!incomingTypes[1]) {
             incomingTypes.pop()
           }
-          return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto])
+          return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto]).sort((a, b) => a - b)
         } catch (e) {
           console.warn(e, '\n', incomingTypes)
         }
@@ -207,7 +207,7 @@ export default class Pokemon extends Masterfile {
           this.evolvedPokemon.add(id)
         }
       })
-      return evolutions
+      return evolutions.sort((a, b) => a.evoId - b.evoId)
     } catch (e) {
       console.warn(e, `Failed to compile evos for ${mfObject}`)
     }
@@ -244,7 +244,7 @@ export default class Pokemon extends Masterfile {
         }
         return newTempEvolution
       })
-      return tempEvolutions
+      return tempEvolutions.sort((a, b) => (a.tempEvoId as number) - (b.tempEvoId as number))
     } catch (e) {
       console.warn(e, `Failed to compile temp evos for ${mfObject}`)
     }
@@ -458,10 +458,7 @@ export default class Pokemon extends Masterfile {
             )
           }
           if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
-            form.tempEvolutions = []
-            Object.values(primaryForm.tempEvolutions).forEach(tempEvo => {
-              form.tempEvolutions.push(tempEvo)
-            })
+            form.tempEvolutions = Object.values(primaryForm.tempEvolutions).map(tempEvo => tempEvo)
           }
           if (pokemonSettings.shadow) {
             form.purificationDust = pokemonSettings.shadow.purificationStardustNeeded
@@ -534,6 +531,18 @@ export default class Pokemon extends Masterfile {
         }
       } catch (e) {
         console.warn(e, `Failed to parse Future Pokemon for ${id}`)
+      }
+    })
+  }
+
+  sortForms() {
+    Object.values(this.parsedPokemon).forEach(pokemon => {
+      try {
+        if (pokemon.forms) {
+          pokemon.forms.sort((a, b) => a - b)
+        }
+      } catch (e) {
+        console.warn(e, `Failed to sort forms for ${pokemon.pokemonName}`)
       }
     })
   }

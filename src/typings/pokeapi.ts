@@ -99,31 +99,18 @@ type Sprite = {
   front_shiny_female?: string
 }
 
+type PokeApiType = {
+  name: string
+  url: string
+}
+
 export interface PokeApiTypes {
   damage_relations: {
-    double_damage_from: {
-      name: string
-      url: string
-    }[]
-    double_damage_to: {
-      name: string
-      url: string
-    }[]
-    half_damage_from: {
-      name: string
-      url: string
-    }[]
-    half_damage_to: {
-      name: string
-      url: string
-    }[]
-    no_damage_from: {
-      name: string
-      url: string
-    }[]
-    no_damage_to: {
-      name: string
-      url: string
-    }[]
+    double_damage_from: PokeApiType[]
+    double_damage_to: PokeApiType[]
+    half_damage_from: PokeApiType[]
+    half_damage_to: PokeApiType[]
+    no_damage_from: PokeApiType[]
+    no_damage_to: PokeApiType[]
   }
 }

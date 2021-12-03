@@ -84,6 +84,7 @@ export default class Invasion extends Masterfile {
               pogoInfo.lineup.team[i].forEach(pkmn => {
                 this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
               })
+              this.parsedInvasions[id].encounters.sort((a, b) => a.id - b.id)
             })
           } else if (this.options.placeholderData) {
             this.parsedInvasions[id].secondReward = false

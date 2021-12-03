@@ -38,6 +38,6 @@ export default class Weather extends Masterfile {
     } = object
     this.rawWeather[weatherCondition] = pokemonType.map(type => {
       return Rpc.HoloPokemonType[type as TypeProto]
-    })
+    }).sort((a, b) => a - b)
   }
 }

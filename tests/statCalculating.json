@@ -4,8 +4,8 @@
       "pokemonName": "Bulbasaur",
       "pokedexId": 1,
       "types": [
-        "Grass",
-        "Poison"
+        "Poison",
+        "Grass"
       ],
       "attack": 118,
       "defense": 111,
@@ -15,8 +15,8 @@
       "pokemonName": "Ivysaur",
       "pokedexId": 2,
       "types": [
-        "Grass",
-        "Poison"
+        "Poison",
+        "Grass"
       ],
       "attack": 151,
       "defense": 143,
@@ -26,8 +26,8 @@
       "pokemonName": "Venusaur",
       "pokedexId": 3,
       "types": [
-        "Grass",
-        "Poison"
+        "Poison",
+        "Grass"
       ],
       "attack": 198,
       "defense": 189,
@@ -57,8 +57,8 @@
       "pokemonName": "Charizard",
       "pokedexId": 6,
       "types": [
-        "Fire",
-        "Flying"
+        "Flying",
+        "Fire"
       ],
       "attack": 223,
       "defense": 173,
@@ -118,8 +118,8 @@
       "pokemonName": "Togetic",
       "pokedexId": 176,
       "types": [
-        "Fairy",
-        "Flying"
+        "Flying",
+        "Fairy"
       ],
       "attack": 139,
       "defense": 181,
@@ -129,8 +129,8 @@
       "pokemonName": "Mantine",
       "pokedexId": 226,
       "types": [
-        "Water",
-        "Flying"
+        "Flying",
+        "Water"
       ],
       "attack": 148,
       "defense": 226,
@@ -140,8 +140,8 @@
       "pokemonName": "Skarmory",
       "pokedexId": 227,
       "types": [
-        "Steel",
-        "Flying"
+        "Flying",
+        "Steel"
       ],
       "attack": 148,
       "defense": 226,
@@ -173,8 +173,8 @@
       "pokemonName": "Zarude",
       "pokedexId": 893,
       "types": [
-        "Dark",
-        "Grass"
+        "Grass",
+        "Dark"
       ],
       "attack": 242,
       "defense": 215,
@@ -224,8 +224,8 @@
       "pokemonName": "Calyrex",
       "pokedexId": 898,
       "types": [
-        "Psychic",
-        "Grass"
+        "Grass",
+        "Psychic"
       ],
       "attack": 162,
       "defense": 162,
