@@ -30,8 +30,8 @@
         }
       },
       "types": [
-        "Grass",
-        "Poison"
+        "Poison",
+        "Grass"
       ],
       "attack": 118,
       "defense": 111,
@@ -43,8 +43,8 @@
         "Tackle"
       ],
       "charged_moves": [
-        "Sludge Bomb",
         "Seed Bomb",
+        "Sludge Bomb",
         "Power Whip"
       ],
       "family": 1,
@@ -94,8 +94,8 @@
         }
       },
       "types": [
-        "Fire",
-        "Flying"
+        "Flying",
+        "Fire"
       ],
       "attack": 223,
       "defense": 173,
@@ -103,12 +103,12 @@
       "height": 1.7,
       "weight": 90.5,
       "quick_moves": [
-        "Fire Spin",
-        "Air Slash"
+        "Air Slash",
+        "Fire Spin"
       ],
       "charged_moves": [
-        "Fire Blast",
         "Dragon Claw",
+        "Fire Blast",
         "Overheat"
       ],
       "family": 4,
@@ -194,9 +194,9 @@
             "Metal Claw"
           ],
           "charged_moves": [
+            "Dig",
             "Night Slash",
-            "Gyro Ball",
-            "Dig"
+            "Gyro Ball"
           ],
           "types": [
             "Steel"
@@ -218,12 +218,12 @@
       "height": 0.4,
       "weight": 4.2,
       "quick_moves": [
-        "Scratch",
-        "Bite"
+        "Bite",
+        "Scratch"
       ],
       "charged_moves": [
-        "Night Slash",
         "Dark Pulse",
+        "Night Slash",
         "Foul Play"
       ],
       "family": 52,
@@ -285,9 +285,9 @@
         "Zen Headbutt"
       ],
       "charged_moves": [
+        "Hyper Beam",
         "Disarming Voice",
-        "Dazzling Gleam",
-        "Hyper Beam"
+        "Dazzling Gleam"
       ],
       "family": 531,
       "flee_rate": 0.05,
@@ -332,13 +332,13 @@
       "height": 0.4,
       "weight": 9,
       "quick_moves": [
-        "Take Down",
-        "Vine Whip"
+        "Vine Whip",
+        "Take Down"
       ],
       "charged_moves": [
-        "Gyro Ball",
         "Seed Bomb",
-        "Body Slam"
+        "Body Slam",
+        "Gyro Ball"
       ],
       "family": 650,
       "flee_rate": 0.1,
@@ -380,8 +380,8 @@
         }
       },
       "types": [
-        "Fire",
-        "Normal"
+        "Normal",
+        "Fire"
       ],
       "attack": 221,
       "defense": 149,
@@ -389,14 +389,14 @@
       "height": 1.5,
       "weight": 81.5,
       "quick_moves": [
+        "Ember",
         "Fire Fang",
-        "Take Down",
-        "Ember"
+        "Take Down"
       ],
       "charged_moves": [
+        "Dark Pulse",
         "Flame Charge",
         "Solar Beam",
-        "Dark Pulse",
         "Overheat"
       ],
       "family": 667,
@@ -436,16 +436,16 @@
         "Ground"
       ],
       "quick_moves": [
-        "Dragon Tail",
         "Bite",
-        "Zen Headbutt"
+        "Zen Headbutt",
+        "Dragon Tail"
       ],
       "charged_moves": [
-        "Outrage",
-        "Earthquake",
-        "Crunch",
         "Hyper Beam",
-        "Bulldoze"
+        "Earthquake",
+        "Bulldoze",
+        "Outrage",
+        "Crunch"
       ],
       "family": 718,
       "flee_rate": 0.1,
@@ -485,8 +485,8 @@
       ],
       "charged_moves": [
         "Rock Slide",
-        "Moonblast",
-        "Power Gem"
+        "Power Gem",
+        "Moonblast"
       ],
       "family": 719,
       "flee_rate": 0.1,
@@ -613,9 +613,9 @@
     "1": {
       "name": "Clear",
       "types": [
-        "Grass",
         "Ground",
-        "Fire"
+        "Fire",
+        "Grass"
       ]
     }
   },

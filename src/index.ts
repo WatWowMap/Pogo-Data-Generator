@@ -13,11 +13,11 @@ import PokeApi from './classes/PokeApi'
 import base from './base.json'
 
 import { Input, InvasionsOnly, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
-import { FinalResult } from './typings/dataTypes'
+import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 
-export async function generate({ template, url, test, raw, pokeApi }: Input = {}) {
+export async function generate({ template, url, test, raw, pokeApi }: Input = {}): Promise<FinalResult> {
   const start: number = new Date().getTime()
   const final: FinalResult = {}
   const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
@@ -78,6 +78,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   }
   AllPokemon.missingPokemon()
   AllPokemon.parseCostumes()
+  AllPokemon.sortForms()
 
   if (pokeApi) {
     await AllPokeApi.baseStatsApi(AllPokemon.parsedPokemon, pokemon.options.pokeApiIds)
@@ -124,13 +125,13 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   }
 
   if (translations.enabled) {
+    const availableManualTranslations = await AllTranslations.fetch(
+      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json'
+    )
     await Promise.all(
       Object.entries(translations.locales).map(async langCode => {
         const [localeCode, bool] = langCode
         if (bool) {
-          const availableManualTranslations = await AllTranslations.fetch(
-            'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json'
-          )
           await AllTranslations.fetchTranslations(localeCode, availableManualTranslations)
 
           if (translations.template.misc) {
@@ -297,7 +298,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   }
 }
 
-export async function invasions({ template, test }: InvasionsOnly = {}) {
+export async function invasions({ template, test }: InvasionsOnly = {}): Promise<AllInvasions> {
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(

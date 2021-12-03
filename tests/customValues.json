@@ -10,12 +10,12 @@
       },
       "types": [
         {
-          "typeId": 10,
-          "typeName": "Feuer"
-        },
-        {
           "typeId": 3,
           "typeName": "Flug"
+        },
+        {
+          "typeId": 10,
+          "typeName": "Feuer"
         }
       ],
       "stats": {

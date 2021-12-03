@@ -17,7 +17,7 @@ export default class PokeApi extends Masterfile {
     this.types = {}
   }
 
-  attack(normal: number, special: number, speed: number, nerf: boolean = false) {
+  attack(normal: number, special: number, speed: number, nerf: boolean = false): number {
     return Math.round(
       Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
         (1 + (speed - 75) / 500) *
@@ -25,7 +25,7 @@ export default class PokeApi extends Masterfile {
     )
   }
 
-  defense(normal: number, special: number, speed: number, nerf: boolean = false) {
+  defense(normal: number, special: number, speed: number, nerf: boolean = false): number {
     return Math.round(
       Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
         (1 + (speed - 75) / 500) *
@@ -33,20 +33,19 @@ export default class PokeApi extends Masterfile {
     )
   }
 
-  stamina(hp: number, nerf: boolean = false) {
+  stamina(hp: number, nerf: boolean = false): number {
     return nerf ? Math.round((1.75 * hp + 50) * 0.91) : Math.floor(1.75 * hp + 50)
   }
 
-  cp(atk: number, def: number, sta: number, cpm: number) {
+  cp(atk: number, def: number, sta: number, cpm: number): number {
     return Math.floor(((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10)
   }
 
-  megaLookup(id: string, type: string) {
+  megaLookup(id: string, type: string): string | 1 | 2 | 3 {
     switch (true) {
-      case id.endsWith('strike-gmax'):
-      case id.endsWith('strike-gmax'):
-      case id.endsWith('key-gmax'):
       case id.endsWith('amped-gmax'):
+      case id.endsWith('key-gmax'):
+      case id.endsWith('strike-gmax'):
         return this.capitalize(
           id
             .split('-')
@@ -162,9 +161,9 @@ export default class PokeApi extends Masterfile {
               attack: inconsistentStats[id] ? inconsistentStats[id].attack || nerfCheck.attack : nerfCheck.attack,
               defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
               stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
-              types: statsData.types.map(
-                type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
-              ),
+              types: statsData.types
+                .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+                .sort((a, b) => a - b),
               unreleased: true,
             }
           }
@@ -192,6 +191,7 @@ export default class PokeApi extends Masterfile {
                   evoId: +id,
                   formId: 0,
                 })
+                this.baseStats[prevEvoId].evolutions.sort((a, b) => a.evoId - b.evoId)
                 evolvedPokemon.add(+id)
               } else {
                 console.warn(
@@ -295,9 +295,10 @@ export default class PokeApi extends Masterfile {
             statsData.stats.forEach(stat => {
               baseStats[stat.stat.name] = stat.base_stat
             })
-            const types = statsData.types.map(
-              type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto]
-            )
+            const types = statsData.types
+              .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+              .sort((a, b) => a - b)
+
             const newTheoretical: TempEvolutions = {
               tempEvoId: this.megaLookup(id, type),
               attack: this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
@@ -329,7 +330,9 @@ export default class PokeApi extends Masterfile {
 
   async typesApi() {
     const getTypeIds = (types: { name: string }[]) =>
-      types.map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto])
+      types
+        .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto])
+        .sort((a, b) => a - b)
 
     await Promise.all(
       Object.entries(Rpc.HoloPokemonType).map(async ([type, id]) => {

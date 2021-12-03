@@ -4,15 +4,15 @@
       "pokedexId": 1,
       "pokemonName": "Bulbasaur",
       "forms": [
-        897,
         163,
         164,
-        165
+        165,
+        897
       ],
       "defaultFormId": 163,
       "types": [
-        12,
-        4
+        4,
+        12
       ],
       "attack": 118,
       "defense": 111,
@@ -24,8 +24,8 @@
         221
       ],
       "chargedMoves": [
-        90,
         59,
+        90,
         118
       ],
       "family": 1,
@@ -56,15 +56,15 @@
       "pokedexId": 6,
       "pokemonName": "Charizard",
       "forms": [
-        951,
         178,
         179,
-        180
+        180,
+        951
       ],
       "defaultFormId": 178,
       "types": [
-        10,
-        3
+        3,
+        10
       ],
       "attack": 223,
       "defense": 173,
@@ -72,12 +72,12 @@
       "height": 1.7,
       "weight": 90.5,
       "quickMoves": [
-        269,
-        255
+        255,
+        269
       ],
       "chargedMoves": [
-        103,
         83,
+        103,
         270
       ],
       "family": 4,
@@ -129,12 +129,12 @@
       "proto": "CASTFORM_SNOWY",
       "formId": 32,
       "quickMoves": [
-        244,
-        221
+        221,
+        244
       ],
       "chargedMoves": [
-        40,
         39,
+        40,
         293
       ],
       "types": [
@@ -160,13 +160,13 @@
       "purificationCandy": 3,
       "purificationDust": 3000,
       "quickMoves": [
-        235,
-        224
+        224,
+        235
       ],
       "chargedMoves": [
-        247,
+        90,
         108,
-        90
+        247
       ],
       "types": [
         4,
@@ -269,9 +269,9 @@
       "weatherName": "Clear",
       "proto": "CLEAR",
       "types": [
-        12,
         5,
-        10
+        10,
+        12
       ]
     }
   }

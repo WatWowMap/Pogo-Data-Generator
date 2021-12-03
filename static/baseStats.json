@@ -4,8 +4,8 @@
     "defense": 139,
     "stamina": 128,
     "types": [
-      9,
-      8
+      8,
+      9
     ],
     "unreleased": true
   },
@@ -14,8 +14,8 @@
     "defense": 206,
     "stamina": 153,
     "types": [
-      9,
-      8
+      8,
+      9
     ],
     "unreleased": true
   },
@@ -24,8 +24,8 @@
     "defense": 272,
     "stamina": 155,
     "types": [
-      9,
-      8
+      8,
+      9
     ],
     "unreleased": true
   },
@@ -34,8 +34,8 @@
     "defense": 232,
     "stamina": 239,
     "types": [
-      16,
-      5
+      5,
+      16
     ],
     "unreleased": true
   },
@@ -44,8 +44,8 @@
     "defense": 99,
     "stamina": 169,
     "types": [
-      12,
-      3
+      3,
+      12
     ],
     "unreleased": true,
     "evolutions": [
@@ -60,8 +60,8 @@
     "defense": 139,
     "stamina": 186,
     "types": [
-      12,
-      3
+      3,
+      12
     ],
     "unreleased": true,
     "evolutions": [
@@ -76,8 +76,8 @@
     "defense": 179,
     "stamina": 186,
     "types": [
-      12,
-      8
+      8,
+      12
     ],
     "unreleased": true
   },
@@ -298,8 +298,8 @@
     "defense": 145,
     "stamina": 181,
     "types": [
-      10,
-      3
+      3,
+      10
     ],
     "unreleased": true
   },
@@ -417,8 +417,8 @@
     "defense": 117,
     "stamina": 116,
     "types": [
-      11,
-      7
+      7,
+      11
     ],
     "unreleased": true,
     "evolutions": [
@@ -433,8 +433,8 @@
     "defense": 219,
     "stamina": 169,
     "types": [
-      11,
-      7
+      7,
+      11
     ],
     "unreleased": true
   },
@@ -638,8 +638,8 @@
     "defense": 118,
     "stamina": 146,
     "types": [
-      8,
-      5
+      5,
+      8
     ],
     "unreleased": true,
     "evolutions": [
@@ -654,8 +654,8 @@
     "defense": 178,
     "stamina": 198,
     "types": [
-      8,
-      5
+      5,
+      8
     ],
     "unreleased": true
   },
@@ -697,8 +697,8 @@
     "defense": 194,
     "stamina": 155,
     "types": [
-      6,
-      3
+      3,
+      6
     ],
     "unreleased": true
   },
@@ -726,8 +726,8 @@
     "defense": 145,
     "stamina": 163,
     "types": [
-      13,
-      9
+      9,
+      13
     ],
     "unreleased": true
   },
@@ -791,8 +791,8 @@
     "defense": 162,
     "stamina": 146,
     "types": [
-      16,
-      2
+      2,
+      16
     ],
     "unreleased": true,
     "evolutions": [
@@ -807,8 +807,8 @@
     "defense": 240,
     "stamina": 181,
     "types": [
-      16,
-      2
+      2,
+      16
     ],
     "unreleased": true
   },
@@ -877,11 +877,11 @@
     "unreleased": true,
     "evolutions": [
       {
-        "evoId": 792,
+        "evoId": 791,
         "formId": 0
       },
       {
-        "evoId": 791,
+        "evoId": 792,
         "formId": 0
       }
     ]
@@ -891,8 +891,8 @@
     "defense": 191,
     "stamina": 264,
     "types": [
-      14,
-      9
+      9,
+      14
     ],
     "unreleased": true
   },
@@ -901,8 +901,8 @@
     "defense": 191,
     "stamina": 264,
     "types": [
-      14,
-      8
+      8,
+      14
     ],
     "unreleased": true
   },
@@ -911,8 +911,8 @@
     "defense": 210,
     "stamina": 240,
     "types": [
-      6,
-      4
+      4,
+      6
     ],
     "unreleased": true
   },
@@ -921,8 +921,8 @@
     "defense": 196,
     "stamina": 216,
     "types": [
-      7,
-      2
+      2,
+      7
     ],
     "unreleased": true
   },
@@ -931,8 +931,8 @@
     "defense": 85,
     "stamina": 174,
     "types": [
-      7,
-      2
+      2,
+      7
     ],
     "unreleased": true
   },
@@ -950,8 +950,8 @@
     "defense": 199,
     "stamina": 219,
     "types": [
-      9,
-      3
+      3,
+      9
     ],
     "unreleased": true
   },
@@ -960,8 +960,8 @@
     "defense": 182,
     "stamina": 139,
     "types": [
-      12,
-      9
+      9,
+      12
     ],
     "unreleased": true
   },
@@ -970,8 +970,8 @@
     "defense": 99,
     "stamina": 440,
     "types": [
-      17,
-      16
+      16,
+      17
     ],
     "unreleased": true
   },
@@ -1044,8 +1044,8 @@
     "defense": 148,
     "stamina": 142,
     "types": [
-      10,
-      8
+      8,
+      10
     ],
     "unreleased": true
   },
