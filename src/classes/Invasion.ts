@@ -85,6 +85,7 @@ export default class Invasion extends Masterfile {
                 this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
               })
               this.parsedInvasions[id].encounters.sort((a, b) => a.id - b.id)
+              this.parsedInvasions[id].encounters.sort((a, b) => a.position.localeCompare(b.position))
             })
           } else if (this.options.placeholderData) {
             this.parsedInvasions[id].secondReward = false
