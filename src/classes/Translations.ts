@@ -648,13 +648,13 @@ export default class Translations extends Masterfile {
           .replace(/{/g, `${this.options.questVariables.prefix}amount_`)
           .replace(/\}/g, this.options.questVariables.suffix)
         if (
-          (key.startsWith('quest_') || key.startsWith('score') || key.startsWith('geotarget_quest')) &&
+          (key.startsWith('quest_') || key.startsWith('score') || key.startsWith('geotarget_quest') || key.startsWith('challenge')) &&
           this.options.questTitleTermsToSkip.every(term => !key.includes(term)) &&
           !value.includes('%PLAYERNAME%')
         ) {
-          const newKey = key.startsWith('score') || key.startsWith('geotarget_quest')
-            ? `${this.options.prefix.questTitles}${key}`
-            : key.replace('quest_', this.options.prefix.questTitles)
+          const newKey = key.startsWith('quest_')
+            ? key.replace('quest_', this.options.prefix.questTitles)
+            : `${this.options.prefix.questTitles}${key}`
           this.parsedTranslations[locale].questTitles[newKey] = value
         }
       })

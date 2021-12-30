@@ -318,7 +318,7 @@
         "prefix": "{{",
         "suffix": "}}"
       },
-      "questTitleTermsToSkip": ["gofest", "gotour", "dialog", "title", "summer_return", "_complete_"],
+      "questTitleTermsToSkip": ["gofest", "gotour", "dialog", "title", "summer_return", "_complete_", "location", "vote"],
       "masterfileLocale": false,
       "manualTranslations": true,
       "mergeCategories": true,
