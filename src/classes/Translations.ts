@@ -12,6 +12,7 @@ export default class Translations extends Masterfile {
   manualTranslations: { [key: string]: TranslationKeys }
   parsedTranslations: { [key: string]: TranslationKeys }
   codes: { [id: string]: string }
+  latestRemoteLocales: { [id: string]: string }
   masterfile: FinalResult
   generics: { [key: string]: { [key: string]: string } }
   reference: TranslationKeys
@@ -38,6 +39,19 @@ export default class Translations extends Masterfile {
       ru: 'russian',
       th: 'thai',
       'zh-tw': 'chinesetraditional',
+    }
+    this.latestRemoteLocales = {
+      de: 'German',
+      en: 'English',
+      es: 'Spanish',
+      fr: 'French',
+      it: 'Italian',
+      ja: 'Japanese',
+      ko: 'Korean',
+      'pt-br': 'BrazilianPortuguese',
+      ru: 'Russian',
+      th: 'Thai',
+      'zh-tw': 'ChineseTraditional',
     }
     this.generics = {
       de: {
@@ -148,6 +162,18 @@ export default class Translations extends Masterfile {
       for (let i = 0; i < data.length; i += 2) {
         this.rawTranslations[locale][data[i]] = data[i + 1]
       }
+
+      const textFile = await this.fetch(
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/${this.latestRemoteLocales[locale] || 'English'}.txt`,
+        true
+      )
+      const splitText = textFile.split('\n')
+    
+      splitText.forEach((line: string, i: number) => {
+        if (line?.startsWith('RESOURCE ID')) {
+          this.rawTranslations[locale][line.replace('RESOURCE ID: ', '')] = splitText[i + 1].replace('TEXT: ', '')
+        }
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to process ${locale} from GM`)
     }
@@ -648,7 +674,10 @@ export default class Translations extends Masterfile {
           .replace(/{/g, `${this.options.questVariables.prefix}amount_`)
           .replace(/\}/g, this.options.questVariables.suffix)
         if (
-          (key.startsWith('quest_') || key.startsWith('score') || key.startsWith('geotarget_quest') || key.startsWith('challenge')) &&
+          (key.startsWith('quest_') ||
+            key.startsWith('score') ||
+            key.startsWith('geotarget_quest') ||
+            key.startsWith('challenge')) &&
           this.options.questTitleTermsToSkip.every(term => !key.includes(term)) &&
           !value.includes('%PLAYERNAME%')
         ) {

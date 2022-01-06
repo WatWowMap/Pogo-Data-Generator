@@ -38,15 +38,7 @@
       ]
     },
     "142": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 292,
-          "defense": 210,
-          "stamina": 190,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "150": {
       "tempEvolutions": [
@@ -659,14 +651,14 @@
     "849": {
       "tempEvolutions": [
         {
-          "tempEvoId": "Amped Gmax",
+          "tempEvoId": "Low Key Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
           "unreleased": true
         },
         {
-          "tempEvoId": "Low Key Gmax",
+          "tempEvoId": "Amped Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
