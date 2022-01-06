@@ -55,13 +55,13 @@ export default class Masterfile {
     return merged
   }
 
-  async fetch(url: string): Promise<any> {
+  async fetch(url: string, text = false): Promise<any> {
     try {
       const data = await Fetch(url)
       if (!data.ok) {
         throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
       }
-      return data.json()
+      return text ? data.text() : data.json()
     } catch (e) {
       console.error(e, `Unable to fetch ${url}`)
     }
