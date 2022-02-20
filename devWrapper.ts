@@ -19,7 +19,6 @@ const main = async () => {
       fs.writeFile('./invasions.json', JSON.stringify(await invasions(), null, 2), 'utf8', () => { })
     }
     if (data?.AllPokeApi) {
-      console.log(data.AllPokeApi)
       const { baseStats, tempEvos, types } = data.AllPokeApi
       fs.writeFile('./static/baseStats.json', JSON.stringify(baseStats, null, 2), 'utf8', () => { })
       fs.writeFile('./static/tempEvos.json', JSON.stringify(tempEvos, null, 2), 'utf8', () => { })
