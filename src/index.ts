@@ -1,5 +1,3 @@
-import * as fs from 'fs'
-
 import Masterfile from './classes/Masterfile'
 import Pokemon from './classes/Pokemon'
 import Items from './classes/Item'
@@ -10,15 +8,14 @@ import Types from './classes/Types'
 import Weather from './classes/Weather'
 import Translations from './classes/Translations'
 import PokeApi from './classes/PokeApi'
-import base from './base.json'
+import base from './base'
 
 import { Input, InvasionsOnly, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
 import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 
-export async function generate({ template, url, test, raw, pokeApi }: Input = {}): Promise<FinalResult> {
-  const start: number = new Date().getTime()
+export async function generate({ template, url, raw, pokeApi, test }: Input = {}): Promise<FinalResult> {
   const final: FinalResult = {}
   const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
 
@@ -80,7 +77,7 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   AllPokemon.parseCostumes()
   AllPokemon.sortForms()
 
-  if (pokeApi) {
+  if (pokeApi === true) {
     await AllPokeApi.baseStatsApi(AllPokemon.parsedPokemon, pokemon.options.pokeApiIds)
     await AllPokeApi.evoApi(AllPokemon.evolvedPokemon)
     await AllPokeApi.tempEvoApi(AllPokemon.parsedPokemon)
@@ -88,8 +85,8 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   }
 
   const getDataSource = async (category: 'baseStats' | 'tempEvos' | 'types') => {
-    if (pokeApi) return AllPokeApi[category]
-    if (test) return JSON.parse(fs.readFileSync(`static/${category}.json`).toString())
+    if (pokeApi === true) return AllPokeApi[category]
+    if (pokeApi) return pokeApi[category]
     return AllPokeApi.fetch(
       `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`
     )
@@ -217,13 +214,13 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     final[pokemon.options.topLevelName || 'pokemon'] = raw
       ? localPokemon
       : AllPokemon.templater(localPokemon, pokemon, {
-          quickMoves: localMoves,
-          chargedMoves: localMoves,
-          types: localTypes,
-          forms: localForms,
-          itemRequirement: localItems,
-          questRequirement: localEvolutionQuests,
-        })
+        quickMoves: localMoves,
+        chargedMoves: localMoves,
+        types: localTypes,
+        forms: localForms,
+        itemRequirement: localItems,
+        questRequirement: localEvolutionQuests,
+      })
     if (pokemon.options.includeRawForms || raw) {
       final.forms = localForms
     }
@@ -232,13 +229,13 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     final[types.options.topLevelName || 'types'] = raw
       ? localTypes
       : AllTypes.templater(localTypes, types, {
-          strengths: localTypes,
-          weaknesses: localTypes,
-          veryWeakAgainst: localTypes,
-          immunes: localTypes,
-          weakAgainst: localTypes,
-          resistances: localTypes,
-        })
+        strengths: localTypes,
+        weaknesses: localTypes,
+        veryWeakAgainst: localTypes,
+        immunes: localTypes,
+        weakAgainst: localTypes,
+        resistances: localTypes,
+      })
   }
   if (costumes.enabled) {
     final[costumes.options.topLevelName || 'costumes'] = raw
@@ -252,8 +249,8 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
     final[moves.options.topLevelName || 'moves'] = raw
       ? localMoves
       : AllMoves.templater(localMoves, moves, {
-          type: localTypes,
-        })
+        type: localTypes,
+      })
   }
   if (questTypes.enabled) {
     final[questTypes.options.topLevelName || 'questTypes'] = raw
@@ -283,32 +280,18 @@ export async function generate({ template, url, test, raw, pokeApi }: Input = {}
   if (translations.enabled) {
     final[translations.options.topLevelName || 'translations'] = AllTranslations.parsedTranslations
   }
-
-  if (test) {
-    fs.writeFile('./masterfile.json', JSON.stringify(final, null, 2), 'utf8', () => {})
-
-    if (pokeApi) {
-      fs.writeFile('static/baseStats.json', JSON.stringify(AllPokeApi.baseStats, null, 2), 'utf8', () => {})
-      fs.writeFile('static/tempEvos.json', JSON.stringify(AllPokeApi.tempEvos, null, 2), 'utf8', () => {})
-      fs.writeFile('static/types.json', JSON.stringify(AllPokeApi.types, null, 2), 'utf8', () => {})
-    }
-    console.log('Generated in ', new Date().getTime() - start)
-  } else {
-    return final
+  if (test && pokeApi === true) {
+    final.AllPokeApi = AllPokeApi
   }
+  return final
 }
 
-export async function invasions({ template, test }: InvasionsOnly = {}): Promise<AllInvasions> {
+export async function invasions({ template }: InvasionsOnly = {}): Promise<AllInvasions> {
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
     'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
   )
   AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions(true)))
-  const final = AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
-  if (test) {
-    fs.writeFile('./invasions.json', JSON.stringify(final, null, 2), 'utf8', () => {})
-  } else {
-    return final
-  }
+  return AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
 }

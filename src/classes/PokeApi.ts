@@ -290,7 +290,7 @@ export default class PokeApi extends Masterfile {
         ids.map(async id => {
           try {
             const pokemonId = Rpc.HoloPokemonId[id.split('-')[0].toUpperCase() as PokemonIdProto]
-            const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+            const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/venusaur-gmax/`)
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach(stat => {
               baseStats[stat.stat.name] = stat.base_stat

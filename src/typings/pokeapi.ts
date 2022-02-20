@@ -1,3 +1,5 @@
+import { AllPokemon, AllTypes } from './dataTypes'
+
 export interface PokeApiStats {
   abilities: {
     ability: {
@@ -113,4 +115,10 @@ export interface PokeApiTypes {
     no_damage_from: PokeApiType[]
     no_damage_to: PokeApiType[]
   }
+}
+
+export interface PokeApi {
+  baseStats: AllPokemon
+  tempEvos: { [id: string]: AllPokemon }
+  types: AllTypes
 }

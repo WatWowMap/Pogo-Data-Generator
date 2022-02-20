@@ -1,6 +1,7 @@
 # Pogo Data Generator
+
 [![npm version](https://badge.fury.io/js/pogo-data-generator.svg)](https://badge.fury.io/js/pogo-data-generator)
-[![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)  
+[![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)
 
 Generates templated data for Pokemon GO related projects, including:
 
@@ -20,9 +21,9 @@ Generates templated data for Pokemon GO related projects, including:
 
 ## Installing/Usage
 
-**Package**
+### Package
 
-```
+```markdown
 // with npm
 npm install pogo-data-generator
 
@@ -107,14 +108,14 @@ const tr = await invasions()
 // returns the default settings
 ```
 
-**Local Usage/Testing**
+### Local Usage/Testing
 
 1. Clone the repo
 2. Install TypeScript compiler `npm install -g typescript`
 3. `tsc` will compile the TS into JS, then you can run `npm run generate`, which will generate a local `masterfile.json` for you to checkout
 
 - `tsc -w` will auto recompile the TypeScript during development
-- You can play with the input options by changing the scripts in `package.json` or modifying the `base.json` file.
+- You can play with the input options by changing the scripts in `package.json` or modifying the `base.ts` file.
 - `npm run pokeapi`, which will generate a local `masterfile.json` and refresh the data in the `static` folder from PokeAPI
 - `npm run raw` will generate a local `masterfile.json` and with the raw data format
 

@@ -237,26 +237,6 @@
       "minTrainerLevel": 1
     }
   },
-  "invasions": {
-    "4": {
-      "id": 4,
-      "type": "Mixed",
-      "gender": 1,
-      "grunt": "Grunt",
-      "secondReward": false,
-      "encounters": [
-        {
-          "position": "first"
-        },
-        {
-          "position": "second"
-        },
-        {
-          "position": "third"
-        }
-      ]
-    }
-  },
   "weather": {
     "0": {
       "weatherId": 0,
