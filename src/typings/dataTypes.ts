@@ -1,3 +1,5 @@
+import PokeApi from "../classes/PokeApi"
+
 export interface AllWeather {
   [id: string]: {
     weatherId: number
@@ -165,4 +167,5 @@ export interface FinalResult {
   questConditions?: AllQuests
   invasions?: AllInvasions
   translations?: { [locale: string]: TranslationKeys }
+  AllPokeApi?: PokeApi
 }

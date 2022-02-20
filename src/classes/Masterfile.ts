@@ -1,4 +1,4 @@
-import Fetch from 'node-fetch'
+import fetch from 'node-fetch'
 
 import { Options, FullTemplate } from '../typings/inputs'
 import { FinalResult } from '../typings/dataTypes'
@@ -57,7 +57,7 @@ export default class Masterfile {
 
   async fetch(url: string, text = false): Promise<any> {
     try {
-      const data = await Fetch(url)
+      const data = await fetch(url)
       if (!data.ok) {
         throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
       }

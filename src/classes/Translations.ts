@@ -154,8 +154,7 @@ export default class Translations extends Masterfile {
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
       const { data }: { data: string[] } = await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${
-          this.codes[locale] || 'english'
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale] || 'english'
         }.json`
       )
 
@@ -168,7 +167,7 @@ export default class Translations extends Masterfile {
         true
       )
       const splitText = textFile.split('\n')
-    
+
       splitText.forEach((line: string, i: number) => {
         if (line?.startsWith('RESOURCE ID')) {
           this.rawTranslations[locale][line.replace('RESOURCE ID: ', '')] = splitText[i + 1].replace('TEXT: ', '')
@@ -202,8 +201,8 @@ export default class Translations extends Masterfile {
             const newValue =
               value.includes('%{') && this.options.questVariables
                 ? value
-                    .replace(/%\{/g, this.options.questVariables.prefix)
-                    .replace(/\}/g, this.options.questVariables.suffix)
+                  .replace(/%\{/g, this.options.questVariables.prefix)
+                  .replace(/\}/g, this.options.questVariables.suffix)
                 : value
             if (key.startsWith('quest_condition_')) {
               this.manualTranslations[locale].questConditions[
@@ -551,9 +550,8 @@ export default class Translations extends Masterfile {
         let shortRef
         switch (info.grunt) {
           case 'Grunt':
-            const base = `${
-              this.rawTranslations[locale][info.type === 'Decoy' ? 'combat_grunt_decoy_name' : 'combat_grunt_name']
-            } (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`
+            const base = `${this.rawTranslations[locale][info.type === 'Decoy' ? 'combat_grunt_decoy_name' : 'combat_grunt_name']
+              } (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`
             const type = this.rawTranslations[locale][`pokemon_type_${info.type.replace(' Balloon', '').toLowerCase()}`]
             assetRef = type ? `${type} - ${base}` : base
             shortRef = assetRef
@@ -681,10 +679,7 @@ export default class Translations extends Masterfile {
           this.options.questTitleTermsToSkip.every(term => !key.includes(term)) &&
           !value.includes('%PLAYERNAME%')
         ) {
-          const newKey = key.startsWith('quest_')
-            ? key.replace('quest_', this.options.prefix.questTitles)
-            : `${this.options.prefix.questTitles}${key}`
-          this.parsedTranslations[locale].questTitles[newKey] = value
+          this.parsedTranslations[locale].questTitles[`${this.options.prefix.questTitles}${key}`] = value
         }
       })
     } catch (e) {

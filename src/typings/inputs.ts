@@ -1,4 +1,5 @@
 import { InvasionInfo } from './pogoinfo'
+import { PokeApi } from './pokeapi'
 
 type StringBool = string | boolean
 
@@ -31,11 +32,11 @@ export interface Options {
   skipForms?: string[]
   includeProtos?: boolean
   includeEstimatedPokemon?:
-    | {
-        [key: string]: boolean
-        baseStats?: boolean
-      }
-    | true
+  | {
+    [key: string]: boolean
+    baseStats?: boolean
+  }
+  | true
   minTrainerLevel?: number
   placeholderData?: boolean
   masterfileLocale?: StringBool
@@ -63,8 +64,6 @@ export interface PokemonTemplate extends Form {
   generation?: boolean
   fleeRate?: boolean
   captureRate?: boolean
-  bonusCandyCapture?: boolean
-  bonusStardustCapture?: boolean
   legendary?: boolean
   mythic?: boolean
   buddyGroupNumber?: boolean
@@ -73,8 +72,6 @@ export interface PokemonTemplate extends Form {
   thirdMoveStardust?: boolean
   thirdMoveCandy?: boolean
   gymDefenderEligible?: boolean
-  tradable?: boolean
-  transferable?: boolean
   unreleased?: boolean
   jungle?: boolean
 }
@@ -92,32 +89,38 @@ interface Form extends BaseStats {
   formId?: boolean
   isCostume?: boolean
   evolutions?:
+  | {
+    evoId?: boolean
+    formId?: boolean
+    genderRequirement?: boolean
+    candyCost?: boolean
+    itemRequirement?: boolean
+    tradeBonus?: boolean
+    mustBeBuddy?: boolean
+    onlyDaytime?: boolean
+    onlyNighttime?: boolean
+    questRequirement?:
     | {
-        evoId?: boolean
-        formId?: boolean
-        genderRequirement?: boolean
-        candyCost?: boolean
-        itemRequirement?: boolean
-        tradeBonus?: boolean
-        mustBeBuddy?: boolean
-        onlyDaytime?: boolean
-        onlyNighttime?: boolean
-        questRequirement?:
-          | {
-              target?: boolean
-              assetsRef?: boolean
-              i18n?: boolean
-              questType?: boolean
-              translated?: boolean
-            }
-          | StringBool
-      }
+      target?: boolean
+      assetsRef?: boolean
+      i18n?: boolean
+      questType?: boolean
+      translated?: boolean
+    }
     | StringBool
+  }
+  | StringBool
   tempEvolutions?: TempEvolution | StringBool
   quickMoves?: Move | StringBool
   chargedMoves?: Move | StringBool
   family?: boolean
   little?: boolean
+  purificationCandy?: boolean
+  purificationDust?: boolean
+  bonusCandyCapture?: boolean
+  bonusStardustCapture?: boolean
+  tradable?: boolean
+  transferable?: boolean
 }
 
 type Move = {
@@ -125,11 +128,11 @@ type Move = {
   moveName?: boolean
   proto?: boolean
   type:
-    | {
-        typeId?: boolean
-        type?: boolean
-      }
-    | StringBool
+  | {
+    typeId?: boolean
+    type?: boolean
+  }
+  | StringBool
 }
 
 interface TempEvolution extends BaseStats {
@@ -146,11 +149,11 @@ type BaseStats = {
   height?: boolean
   weight?: boolean
   types?:
-    | {
-        typeId?: boolean
-        typeName?: boolean
-      }
-    | StringBool
+  | {
+    typeId?: boolean
+    typeName?: boolean
+  }
+  | StringBool
 }
 
 export interface TypesTempOpt {
@@ -169,11 +172,11 @@ export interface MoveTemplate {
   moveName?: boolean
   proto?: boolean
   type?:
-    | {
-        typeId?: boolean
-        typeName?: boolean
-      }
-    | StringBool
+  | {
+    typeId?: boolean
+    typeName?: boolean
+  }
+  | StringBool
   power?: boolean
 }
 
@@ -199,12 +202,12 @@ export interface InvasionTemplate {
   grunt?: boolean
   secondReward?: boolean
   encounters?:
-    | {
-        id: boolean
-        formId: boolean
-        position: boolean
-      }
-    | StringBool
+  | {
+    id: boolean
+    formId: boolean
+    position: boolean
+  }
+  | StringBool
 }
 
 export interface WeatherTemplate {
@@ -212,11 +215,11 @@ export interface WeatherTemplate {
   weatherName?: boolean
   proto?: boolean
   types?:
-    | {
-        typeId?: boolean
-        typeName?: boolean
-      }
-    | StringBool
+  | {
+    typeId?: boolean
+    typeName?: boolean
+  }
+  | StringBool
 }
 
 export interface TranslationsTemplate {
@@ -240,7 +243,7 @@ export interface Input {
   template?: FullTemplate
   test?: boolean
   raw?: boolean
-  pokeApi?: boolean
+  pokeApi?: boolean | PokeApi
 }
 
 export interface FullTemplate {
