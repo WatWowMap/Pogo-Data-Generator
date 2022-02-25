@@ -99,6 +99,7 @@ export default class Pokemon extends Masterfile {
   }
 
   formName(id: number, formName: string): string {
+    if (!formName) return ''
     try {
       const name = formName.substring(
         id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
@@ -112,6 +113,7 @@ export default class Pokemon extends Masterfile {
   }
 
   skipForms(formName: string): boolean {
+    if (!formName) return false
     try {
       return this.formsToSkip.some(form => formName.toLowerCase() === form)
     } catch (e) {
@@ -120,6 +122,7 @@ export default class Pokemon extends Masterfile {
   }
 
   lookupPokemon(name: string): string {
+    if (!name) return ''
     try {
       for (const key of Object.keys(Rpc.HoloPokemonId)) {
         if (name.startsWith('PORYGON_Z_')) {
@@ -149,33 +152,29 @@ export default class Pokemon extends Masterfile {
   }
 
   getMoves(moves: string[]): number[] {
+    if (!moves) return []
     try {
-      if (moves) {
-        try {
-          return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto]).sort((a, b) => a - b)
-        } catch (e) {
-          console.warn(e, '\n', moves)
-        }
+      try {
+        return moves.map(move => Rpc.HoloPokemonMove[move as MoveProto]).sort((a, b) => a - b)
+      } catch (e) {
+        console.warn(e, '\n', moves)
       }
-      return []
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
     }
   }
 
   getTypes(incomingTypes: string[]): number[] {
+    if (!incomingTypes) return []
     try {
-      if (incomingTypes) {
-        try {
-          if (!incomingTypes[1]) {
-            incomingTypes.pop()
-          }
-          return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto]).sort((a, b) => a - b)
-        } catch (e) {
-          console.warn(e, '\n', incomingTypes)
+      try {
+        if (!incomingTypes[1]) {
+          incomingTypes.pop()
         }
+        return incomingTypes.map(type => Rpc.HoloPokemonType[type as TypeProto]).sort((a, b) => a - b)
+      } catch (e) {
+        console.warn(e, '\n', incomingTypes)
       }
-      return []
     } catch (e) {
       console.warn(e, `Failed to lookup types for ${incomingTypes}`)
     }
