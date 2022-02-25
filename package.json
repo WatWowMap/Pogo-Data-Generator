@@ -22,7 +22,7 @@
     "pokeapi": "ts-node devWrapper.ts --test --pokeapi",
     "raw": "ts-node devWrapper.ts --test --raw",
     "invasions": "ts-node devWrapper.ts --test --invasions",
-    "test": "./node_modules/.bin/jest"
+    "test": "tsc && ./node_modules/.bin/jest"
   },
   "repository": {
     "type": "git",
