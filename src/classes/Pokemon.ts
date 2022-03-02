@@ -339,7 +339,7 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id].forms = []
           }
           for (let i = 0; i < forms.length; i += 1) {
-            const formId: number = Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
+            const formId: number = Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto] || 0
             this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
