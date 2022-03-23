@@ -39,6 +39,7 @@ export default class Translations extends Masterfile {
       ru: 'russian',
       th: 'thai',
       'zh-tw': 'chinesetraditional',
+      tr: 'turkish',
     }
     this.latestRemoteLocales = {
       de: 'German',
@@ -52,6 +53,7 @@ export default class Translations extends Masterfile {
       ru: 'Russian',
       th: 'Thai',
       'zh-tw': 'ChineseTraditional',
+      tr: 'Turkish',
     }
     this.generics = {
       de: {
@@ -119,6 +121,12 @@ export default class Translations extends Masterfile {
         normal: '正常',
         unknown: '不明',
         substitute: '代替',
+      },
+      tr: {
+        none: 'Hiçbiri',
+        normal: 'Normal',
+        unknown: 'Bilinmiyor',
+        substitute: 'Değiştir',
       },
     }
   }
