@@ -336,6 +336,7 @@ const baseTemplate: FullTemplate = {
       ru: false,
       th: false,
       'zh-tw': false,
+      tr: false,
     },
     template: {
       pokemon: {
