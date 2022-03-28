@@ -654,7 +654,7 @@ export default class Translations extends Masterfile {
           name.replace('TEMP_EVOLUTION_', '')
         )
       })
-      Object.entries(Rpc.PokemonAlignment).forEach(proto => {
+      Object.entries(Rpc.PokemonDisplayProto.Alignment).forEach(proto => {
         const [name, id] = proto
         this.parsedTranslations[locale].misc[`${this.options.prefix.alignment}${id}`] = this.capitalize(
           name.replace('POKEMON_ALIGNMENT_', '')
