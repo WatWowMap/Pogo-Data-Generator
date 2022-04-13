@@ -2,6 +2,8 @@ import { Rpc } from 'pogo-protos'
 
 export type WeatherProto = keyof typeof Rpc.GameplayWeatherProto.WeatherCondition
 
+export type CostumeProto = keyof typeof Rpc.PokemonDisplayProto.Costume
+
 export type TypeProto = keyof typeof Rpc.HoloPokemonType
 
 export type PokemonIdProto = keyof typeof Rpc.HoloPokemonId

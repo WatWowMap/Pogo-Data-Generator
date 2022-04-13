@@ -32,11 +32,11 @@ export interface Options {
   skipForms?: string[]
   includeProtos?: boolean
   includeEstimatedPokemon?:
-  | {
-    [key: string]: boolean
-    baseStats?: boolean
-  }
-  | true
+    | {
+        [key: string]: boolean
+        baseStats?: boolean
+      }
+    | true
   minTrainerLevel?: number
   placeholderData?: boolean
   masterfileLocale?: StringBool
@@ -89,27 +89,27 @@ interface Form extends BaseStats {
   formId?: boolean
   isCostume?: boolean
   evolutions?:
-  | {
-    evoId?: boolean
-    formId?: boolean
-    genderRequirement?: boolean
-    candyCost?: boolean
-    itemRequirement?: boolean
-    tradeBonus?: boolean
-    mustBeBuddy?: boolean
-    onlyDaytime?: boolean
-    onlyNighttime?: boolean
-    questRequirement?:
     | {
-      target?: boolean
-      assetsRef?: boolean
-      i18n?: boolean
-      questType?: boolean
-      translated?: boolean
-    }
+        evoId?: boolean
+        formId?: boolean
+        genderRequirement?: boolean
+        candyCost?: boolean
+        itemRequirement?: boolean
+        tradeBonus?: boolean
+        mustBeBuddy?: boolean
+        onlyDaytime?: boolean
+        onlyNighttime?: boolean
+        questRequirement?:
+          | {
+              target?: boolean
+              assetsRef?: boolean
+              i18n?: boolean
+              questType?: boolean
+              translated?: boolean
+            }
+          | StringBool
+      }
     | StringBool
-  }
-  | StringBool
   tempEvolutions?: TempEvolution | StringBool
   quickMoves?: Move | StringBool
   chargedMoves?: Move | StringBool
@@ -121,6 +121,13 @@ interface Form extends BaseStats {
   bonusStardustCapture?: boolean
   tradable?: boolean
   transferable?: boolean
+  costumeOverrideEvos?: CostumeOverrideEvo | StringBool
+}
+
+type CostumeOverrideEvo = {
+  costumeId?: boolean
+  costumeProto?: boolean
+  costumeName?: boolean
 }
 
 type Move = {
@@ -128,11 +135,11 @@ type Move = {
   moveName?: boolean
   proto?: boolean
   type:
-  | {
-    typeId?: boolean
-    type?: boolean
-  }
-  | StringBool
+    | {
+        typeId?: boolean
+        type?: boolean
+      }
+    | StringBool
 }
 
 interface TempEvolution extends BaseStats {
@@ -149,11 +156,11 @@ type BaseStats = {
   height?: boolean
   weight?: boolean
   types?:
-  | {
-    typeId?: boolean
-    typeName?: boolean
-  }
-  | StringBool
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | StringBool
 }
 
 export interface TypesTempOpt {
@@ -172,11 +179,11 @@ export interface MoveTemplate {
   moveName?: boolean
   proto?: boolean
   type?:
-  | {
-    typeId?: boolean
-    typeName?: boolean
-  }
-  | StringBool
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | StringBool
   power?: boolean
 }
 
@@ -202,12 +209,12 @@ export interface InvasionTemplate {
   grunt?: boolean
   secondReward?: boolean
   encounters?:
-  | {
-    id: boolean
-    formId: boolean
-    position: boolean
-  }
-  | StringBool
+    | {
+        id: boolean
+        formId: boolean
+        position: boolean
+      }
+    | StringBool
 }
 
 export interface WeatherTemplate {
@@ -215,11 +222,11 @@ export interface WeatherTemplate {
   weatherName?: boolean
   proto?: boolean
   types?:
-  | {
-    typeId?: boolean
-    typeName?: boolean
-  }
-  | StringBool
+    | {
+        typeId?: boolean
+        typeName?: boolean
+      }
+    | StringBool
 }
 
 export interface TranslationsTemplate {

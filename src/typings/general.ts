@@ -66,6 +66,7 @@ export interface NiaMfObj {
         purificationStardustNeeded: number
         purificationCandyNeeded: number
       }
+      obCostumeSettings: string[]
     }
     formSettings?: {
       pokemon: string

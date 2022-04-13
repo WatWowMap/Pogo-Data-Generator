@@ -1,4 +1,4 @@
-import PokeApi from "../classes/PokeApi"
+import PokeApi from '../classes/PokeApi'
 
 export interface AllWeather {
   [id: string]: {
@@ -120,6 +120,11 @@ interface SingleForm extends BaseStats {
   bonusStardustCapture?: number
   tradable?: boolean
   transferable?: boolean
+  costumeOverrideEvos?: {
+    costumeId: number
+    costumeProto: string
+    costumeName: string
+  }[]
 }
 
 export interface TempEvolutions extends BaseStats {
