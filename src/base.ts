@@ -22,6 +22,7 @@ const baseTemplate: FullTemplate = {
         quickMoves: false,
         chargedMoves: false,
         questRequirement: false,
+        costumeOverrideEvos: false,
       },
       customFields: {
         evoId: 'pokemon',
@@ -82,6 +83,11 @@ const baseTemplate: FullTemplate = {
         transferable: false,
         bonusCandyCapture: false,
         bonusStardustCapture: false,
+        costumeOverrideEvos: {
+          costumeId: true,
+          costumeProto: true,
+          costumeName: true,
+        },
       },
       defaultFormId: true,
       genId: true,
@@ -108,6 +114,7 @@ const baseTemplate: FullTemplate = {
         firstEnergyCost: false,
         subsequentEnergyCost: false,
       },
+      costumeOverrideEvos: 'costumeId',
       evolutions: {
         evoId: true,
         formId: true,
