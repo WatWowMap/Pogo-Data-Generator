@@ -554,9 +554,9 @@ export default class Pokemon extends Masterfile {
             form.purificationCandy =
               pokemonSettings.shadow.purificationCandyNeeded
           }
-          if (pokemonSettings.obCostumeSettings) {
+          if (pokemonSettings.obCostumeEvolution) {
             form.costumeOverrideEvos = this.getCostumeOverrides(
-              pokemonSettings.obCostumeSettings,
+              pokemonSettings.obCostumeEvolution,
             )
           }  
         }
@@ -608,9 +608,9 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id],
           )
         }
-        if (pokemonSettings.obCostumeSettings) {
+        if (pokemonSettings.obCostumeEvolution) {
           this.parsedPokemon[id].costumeOverrideEvos = this.getCostumeOverrides(
-            pokemonSettings.obCostumeSettings,
+            pokemonSettings.obCostumeEvolution,
           )
         }
       }
