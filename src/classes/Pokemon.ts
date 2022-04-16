@@ -311,6 +311,7 @@ export default class Pokemon extends Masterfile {
   generateProtoForms() {
     Object.entries(Rpc.PokemonDisplayProto.Form).forEach((proto) => {
       const [name, formId] = proto
+
       try {
         const pokemon: string[] = name.startsWith('NIDORAN_')
           ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
@@ -407,11 +408,11 @@ export default class Pokemon extends Masterfile {
           }
           for (let i = 0; i < forms.length; i += 1) {
             const formId: number =
-              Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
+              Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto] || 0
             this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
-              this.parsedPokemon[id].defaultFormId = formId || 0
+              this.parsedPokemon[id].defaultFormId = formId
             }
             if (!this.skipForms(name)) {
               this.parsedForms[formId] = {
@@ -636,7 +637,7 @@ export default class Pokemon extends Masterfile {
               : [0]
           } else if (
             this.parsedPokemon[id].forms.length === 0 &&
-            !this.options.noFormPlaceholders
+            !this.options.noFormPlaceholders || this.parsedPokemon[id].defaultFormId === 0
           ) {
             this.parsedPokemon[id].forms.push(0)
           }
