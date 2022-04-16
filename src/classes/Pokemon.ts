@@ -408,11 +408,11 @@ export default class Pokemon extends Masterfile {
           }
           for (let i = 0; i < forms.length; i += 1) {
             const formId: number =
-              Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto] || 0
+              Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
             this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
-              this.parsedPokemon[id].defaultFormId = formId
+              this.parsedPokemon[id].defaultFormId = formId || 0
             }
             if (!this.skipForms(name)) {
               this.parsedForms[formId] = {
