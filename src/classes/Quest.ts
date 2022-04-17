@@ -36,7 +36,7 @@ export default class Quests extends Masterfile {
     } catch (e) {
       console.warn(e, `Failed to parse quest ${category}`)
     }
-    Object.entries(protoTarget).forEach(proto => {
+    Object.entries(protoTarget).forEach((proto) => {
       try {
         const [name, id] = proto
         parseTarget[id] = {

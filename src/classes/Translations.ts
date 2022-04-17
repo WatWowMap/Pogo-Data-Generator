@@ -21,7 +21,10 @@ export default class Translations extends Masterfile {
 
   constructor(options: Options) {
     super()
-    this.collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+    this.collator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    })
     this.options = options
     this.rawTranslations = {}
     this.manualTranslations = {}
@@ -162,8 +165,9 @@ export default class Translations extends Masterfile {
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
       const { data }: { data: string[] } = await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${this.codes[locale] || 'english'
-        }.json`
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${
+          this.codes[locale] || 'english'
+        }.json`,
       )
 
       for (let i = 0; i < data.length; i += 2) {
@@ -171,8 +175,10 @@ export default class Translations extends Masterfile {
       }
 
       const textFile = await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/${this.latestRemoteLocales[locale] || 'English'}.txt`,
-        true
+        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/${
+          this.latestRemoteLocales[locale] || 'English'
+        }.txt`,
+        true,
       )
       const splitText = textFile.split('\n')
 
@@ -187,10 +193,10 @@ export default class Translations extends Masterfile {
     try {
       if (this.options.manualTranslations && availableManualTranslations.includes(`${locale}.json`)) {
         const manual: { [key: string]: string } = await this.fetch(
-          `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/manual/${locale}.json`
+          `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/manual/${locale}.json`,
         )
 
-        Object.entries(manual).forEach(pair => {
+        Object.entries(manual).forEach((pair) => {
           const [key, value] = pair
           let trimmedKey
           if (key.startsWith('poke_type')) {
@@ -209,8 +215,8 @@ export default class Translations extends Masterfile {
             const newValue =
               value.includes('%{') && this.options.questVariables
                 ? value
-                  .replace(/%\{/g, this.options.questVariables.prefix)
-                  .replace(/\}/g, this.options.questVariables.suffix)
+                    .replace(/%\{/g, this.options.questVariables.prefix)
+                    .replace(/\}/g, this.options.questVariables.suffix)
                 : value
             if (key.startsWith('quest_condition_')) {
               this.manualTranslations[locale].questConditions[
@@ -258,7 +264,7 @@ export default class Translations extends Masterfile {
       }
       const merged: TranslationKeys = {}
       const sorted: TranslationKeys = {}
-      Object.keys(this.parsedTranslations[locale]).forEach(category => {
+      Object.keys(this.parsedTranslations[locale]).forEach((category) => {
         merged[category] = {
           ...this.enFallback[category],
           ...this.parsedTranslations[locale][category],
@@ -266,7 +272,7 @@ export default class Translations extends Masterfile {
         }
         sorted[category] = {}
         const sortedKeys = Object.keys(merged[category]).sort(this.collator.compare)
-        sortedKeys.forEach(key => {
+        sortedKeys.forEach((key) => {
           sorted[category][key] = merged[category][key]
         })
         merged[category] = sorted[category]
@@ -283,9 +289,9 @@ export default class Translations extends Masterfile {
         this.reference = this.parsedTranslations[this.options.useLanguageAsRef as string]
       }
       const languageRef: TranslationKeys = {}
-      Object.keys(this.parsedTranslations[locale]).forEach(category => {
+      Object.keys(this.parsedTranslations[locale]).forEach((category) => {
         languageRef[category] = {}
-        Object.keys(this.parsedTranslations[locale][category]).forEach(x => {
+        Object.keys(this.parsedTranslations[locale][category]).forEach((x) => {
           if (this.reference[category][x] && !languageRef[category][this.reference[category][x]]) {
             languageRef[category][this.reference[category][x]] = this.parsedTranslations[locale][category][x]
           }
@@ -300,7 +306,7 @@ export default class Translations extends Masterfile {
   mergeCategories(locale: string) {
     try {
       let merged: any = {}
-      Object.keys(this.parsedTranslations[locale]).forEach(category => {
+      Object.keys(this.parsedTranslations[locale]).forEach((category) => {
         merged = {
           ...merged,
           ...this.parsedTranslations[locale][category],
@@ -317,13 +323,13 @@ export default class Translations extends Masterfile {
       const language = this.parsedTranslations[locale]
 
       if (language) {
-        Object.keys(data).forEach(category => {
+        Object.keys(data).forEach((category) => {
           const ref = this.options.mergeCategories ? language : language[category]
 
           if (ref) {
             this.masterfile[category] = {}
 
-            Object.keys(data[category]).forEach(id => {
+            Object.keys(data[category]).forEach((id) => {
               const questEvo = ref[data[category][id].assetsRef]
               if (category == 'evolutionQuests' && questEvo) {
                 this.masterfile[category][id] = {
@@ -333,7 +339,7 @@ export default class Translations extends Masterfile {
                     .toString()
                     .replace(
                       `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
-                      data[category][id].target
+                      data[category][id].target,
                     ),
                 }
               } else if (this.options.prefix[category]) {
@@ -343,7 +349,7 @@ export default class Translations extends Masterfile {
                   const fieldKey =
                     category === 'pokemon' && formsSeparate
                       ? 'pokemonName'
-                      : Object.keys(data[category][id]).find(field => field.includes('Name'))
+                      : Object.keys(data[category][id]).find((field) => field.includes('Name'))
 
                   if (fieldKey) {
                     this.masterfile[category][id] = {
@@ -380,7 +386,7 @@ export default class Translations extends Masterfile {
     subItems: { [id: string]: boolean },
     pokemon: AllPokemon,
     forms: AllForms,
-    unsetFormName?: string
+    unsetFormName?: string,
   ) {
     this.parsedTranslations[locale].pokemon = {
       [`${this.options.prefix.pokemon}0`]: this.generics[locale].substitute,
@@ -393,7 +399,7 @@ export default class Translations extends Masterfile {
     }
     this.parsedTranslations[locale].costumes = {}
 
-    Object.keys(pokemon).forEach(id => {
+    Object.keys(pokemon).forEach((id) => {
       try {
         const name = this.rawTranslations[locale][`pokemon_name_${String(id).padStart(4, '0')}`]
         const description = `pokemon_desc_${String(id).padStart(4, '0')}`
@@ -406,7 +412,7 @@ export default class Translations extends Masterfile {
               this.rawTranslations[locale][description]
           }
           if (pokemon[id] && pokemon[id].forms) {
-            pokemon[id].forms.forEach(formId => {
+            pokemon[id].forms.forEach((formId) => {
               const formName = forms[formId].formName
               const formDescription = this.rawTranslations[locale][`${description}_${String(formId).padStart(4, '0')}`]
 
@@ -456,7 +462,7 @@ export default class Translations extends Masterfile {
         console.warn(e, '\n', `Unable to translate pokemon ${id} for ${locale}`)
       }
     })
-    Object.entries(Rpc.PokemonDisplayProto.Costume).forEach(proto => {
+    Object.entries(Rpc.PokemonDisplayProto.Costume).forEach((proto) => {
       const [name, id] = proto
       this.parsedTranslations[locale].costumes[`${this.options.prefix.costumes}${id}`] = this.capitalize(name)
     })
@@ -465,11 +471,11 @@ export default class Translations extends Masterfile {
   pokemonCategories(locale: string) {
     try {
       this.parsedTranslations[locale].pokemonCategories = {}
-      Object.keys(this.rawTranslations[locale]).forEach(key => {
+      Object.keys(this.rawTranslations[locale]).forEach((key) => {
         if (key.startsWith(`pokemon_category_`)) {
           const split = key.replace('pokemon_category_', '').split('_')
           this.parsedTranslations[locale].pokemonCategories[
-            `${this.options.prefix.pokemonCategories}${split.map(x => +x || x).join('_')}`
+            `${this.options.prefix.pokemonCategories}${split.map((x) => +x || x).join('_')}`
           ] = this.rawTranslations[locale][key]
         }
       })
@@ -483,7 +489,7 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].moves = {
         [`${this.options.prefix.moves}0`]: this.generics[locale].unknown,
       }
-      Object.entries(Rpc.HoloPokemonMove).forEach(proto => {
+      Object.entries(Rpc.HoloPokemonMove).forEach((proto) => {
         const [name, id] = proto
         if (!id) return
 
@@ -501,7 +507,7 @@ export default class Translations extends Masterfile {
         [`${this.options.prefix.items}0`]: this.generics[locale].unknown,
       }
       this.parsedTranslations[locale].lures = {}
-      Object.entries(Rpc.Item).forEach(proto => {
+      Object.entries(Rpc.Item).forEach((proto) => {
         const [name, id] = proto
         if (!id) return
 
@@ -513,12 +519,12 @@ export default class Translations extends Masterfile {
           if (name === 'ITEM_TROY_DISK') {
             this.parsedTranslations[locale].lures[`${this.options.prefix.lures}${id}`] = this.generics[locale].normal
           } else {
-            base.forEach(word => {
+            base.forEach((word) => {
               item = item.replace(word, '')
             })
             item = item.replace('Mód. ', '')
             this.parsedTranslations[locale].lures[`${this.options.prefix.lures}${id}`] = this.capitalize(
-              item.replace('-', '').trim()
+              item.replace('-', '').trim(),
             )
           }
         }
@@ -533,7 +539,7 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].types = {
         [`${this.options.prefix.types}0`]: this.generics[locale].none,
       }
-      Object.entries(Rpc.HoloPokemonType).forEach(proto => {
+      Object.entries(Rpc.HoloPokemonType).forEach((proto) => {
         const [name, id] = proto
         const type = this.rawTranslations[locale][`pokemon_type_${name.replace('POKEMON_TYPE_', '').toLowerCase()}`]
         if (type) {
@@ -552,34 +558,36 @@ export default class Translations extends Masterfile {
         [`${this.options.prefix.gruntsAlt}0`]: this.generics[locale].none,
       }
       this.parsedTranslations[locale].characterCategories = {}
-      Object.entries(parsedInvasions).forEach(grunt => {
-        const [id, info] = grunt
+      Object.entries(parsedInvasions).forEach(([id, info]) => {
         let assetRef
         let shortRef
         switch (info.grunt) {
           case 'Grunt':
-            const base = `${this.rawTranslations[locale][info.type === 'Decoy' ? 'combat_grunt_decoy_name' : 'combat_grunt_name']
-              } (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`
+            const base = `${
+              this.rawTranslations[locale][info.type === 'Decoy' ? 'combat_grunt_decoy_name' : 'combat_grunt_name']
+            } (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`
             const type = this.rawTranslations[locale][`pokemon_type_${info.type.replace(' Balloon', '').toLowerCase()}`]
             assetRef = type ? `${type} - ${base}` : base
-            shortRef = assetRef
-              .replace(
-                ` (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`,
-                info.gender === 1 ? ' ♂' : ' ♀'
-              )
-              .replace(` - ${this.rawTranslations[locale]['combat_grunt_name']}`, '')
+            shortRef =
+              assetRef
+                .replace(
+                  ` (${this.rawTranslations[locale][`gender_${info.gender === 1 ? 'male' : 'female'}`]})`,
+                  info.gender === 1 ? ' ♂' : ' ♀',
+                )
+                .replace(` - ${this.rawTranslations[locale]['combat_grunt_name']}`, '') || info.type
             break
           case 'Executive':
-            assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`]
+            assetRef = this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`] || info.type
             break
           case 'Event':
-            assetRef = this.rawTranslations[locale][`event_npc${info.type.split(' ')[1].padStart(2, '0')}_name`]
+            assetRef =
+              this.rawTranslations[locale][`event_npc${info.type.split(' ')[1].padStart(2, '0')}_name`] || info.type
             break
           default:
             assetRef =
               this.rawTranslations[locale][`combat_${info.type.toLowerCase()}`] ||
               this.rawTranslations[locale][`combat_${info.type.toLowerCase()}_name`] ||
-              this.capitalize(info.type)
+              info.type
         }
         if (assetRef) {
           this.parsedTranslations[locale].grunts[`${this.options.prefix.grunts}${id}`] = assetRef
@@ -590,7 +598,7 @@ export default class Translations extends Masterfile {
           this.parsedTranslations[locale].grunts[`${this.options.prefix.gruntsAlt}${id}`] = assetRef
         }
       })
-      Object.entries(Rpc.EnumWrapper.CharacterCategory).forEach(proto => {
+      Object.entries(Rpc.EnumWrapper.CharacterCategory).forEach((proto) => {
         const [name, id] = proto
         this.parsedTranslations[locale].characterCategories[`${this.options.prefix.characterCategories}${id}`] =
           this.capitalize(name)
@@ -605,7 +613,7 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].weather = {
         [`${this.options.prefix.weather}0`]: this.generics[locale].none,
       }
-      Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach(proto => {
+      Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach((proto) => {
         const [name, id] = proto
         const type = id
           ? this.rawTranslations[locale][`weather_${name.toLowerCase()}`]
@@ -630,7 +638,7 @@ export default class Translations extends Masterfile {
         legendary: this.rawTranslations[locale].filter_key_legendary,
         mythical: this.rawTranslations[locale].filter_key_mythical,
       }
-      Object.keys(this.parsedTranslations[locale].misc).forEach(entry => {
+      Object.keys(this.parsedTranslations[locale].misc).forEach((entry) => {
         this.parsedTranslations[locale].misc[entry] = this.capitalize(this.parsedTranslations[locale].misc[entry])
       })
       for (let i = 0; i < 4; i += 1) {
@@ -640,24 +648,24 @@ export default class Translations extends Masterfile {
           ? teamName.split(' ')[1] || teamName.split(' ')[0]
           : teamName
       }
-      Object.entries(Rpc.HoloActivityType).forEach(proto => {
+      Object.entries(Rpc.HoloActivityType).forEach((proto) => {
         const [name, id] = proto
         if (name.endsWith('THROW') || name.endsWith('CURVEBALL')) {
           this.parsedTranslations[locale].misc[`${this.options.prefix.throwTypes}${id}`] = this.capitalize(
-            name.replace('ACTIVITY_CATCH_', '').replace('_THROW', '')
+            name.replace('ACTIVITY_CATCH_', '').replace('_THROW', ''),
           )
         }
       })
-      Object.entries(Rpc.HoloTemporaryEvolutionId).forEach(proto => {
+      Object.entries(Rpc.HoloTemporaryEvolutionId).forEach((proto) => {
         const [name, id] = proto
         this.parsedTranslations[locale].misc[`${this.options.prefix.evolutions}${id}`] = this.capitalize(
-          name.replace('TEMP_EVOLUTION_', '')
+          name.replace('TEMP_EVOLUTION_', ''),
         )
       })
-      Object.entries(Rpc.PokemonDisplayProto.Alignment).forEach(proto => {
+      Object.entries(Rpc.PokemonDisplayProto.Alignment).forEach((proto) => {
         const [name, id] = proto
         this.parsedTranslations[locale].misc[`${this.options.prefix.alignment}${id}`] = this.capitalize(
-          name.replace('POKEMON_ALIGNMENT_', '')
+          name.replace('POKEMON_ALIGNMENT_', ''),
         )
       })
     } catch (e) {
@@ -667,15 +675,15 @@ export default class Translations extends Masterfile {
 
   quests(locale: string, data: { [category: string]: AllQuests }) {
     try {
-      Object.keys(data).forEach(category => {
+      Object.keys(data).forEach((category) => {
         this.parsedTranslations[locale][category] = {}
-        Object.keys(data[category]).forEach(proto => {
+        Object.keys(data[category]).forEach((proto) => {
           const value = data[category][proto].formatted.replace('With ', '')
           this.parsedTranslations[locale][category][`${this.options.prefix[category]}${proto}`] = value
         })
       })
       this.parsedTranslations[locale].questTitles = {}
-      Object.keys(this.rawTranslations[locale]).forEach(key => {
+      Object.keys(this.rawTranslations[locale]).forEach((key) => {
         const value = this.rawTranslations[locale][key]
           .replace(/{/g, `${this.options.questVariables.prefix}amount_`)
           .replace(/\}/g, this.options.questVariables.suffix)
@@ -684,7 +692,7 @@ export default class Translations extends Masterfile {
             key.startsWith('score') ||
             key.startsWith('geotarget_quest') ||
             key.startsWith('challenge')) &&
-          this.options.questTitleTermsToSkip.every(term => !key.includes(term)) &&
+          this.options.questTitleTermsToSkip.every((term) => !key.includes(term)) &&
           !value.includes('%PLAYERNAME%')
         ) {
           this.parsedTranslations[locale].questTitles[`${this.options.prefix.questTitles}${key}`] = value
@@ -697,11 +705,11 @@ export default class Translations extends Masterfile {
 
   parseEvoQuests(locale: string, evoQuests: { [id: string]: EvolutionQuest }) {
     this.parsedTranslations[locale].evolutionQuests = {}
-    Object.values(evoQuests).forEach(info => {
+    Object.values(evoQuests).forEach((info) => {
       try {
         const translated = this.rawTranslations[locale][info.assetsRef].replace(
           '{0}',
-          `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`
+          `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
         )
         this.parsedTranslations[locale].evolutionQuests[info.assetsRef] = translated
       } catch (e) {

@@ -15,7 +15,7 @@ export default class Weather extends Masterfile {
   }
 
   buildWeather() {
-    Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach(proto => {
+    Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach((proto) => {
       try {
         const [name, id] = proto
         this.parsedWeather[id] = {
@@ -36,8 +36,10 @@ export default class Weather extends Masterfile {
         weatherAffinities: { weatherCondition, pokemonType },
       },
     } = object
-    this.rawWeather[weatherCondition] = pokemonType.map(type => {
-      return Rpc.HoloPokemonType[type as TypeProto]
-    }).sort((a, b) => a - b)
+    this.rawWeather[weatherCondition] = pokemonType
+      .map((type) => {
+        return Rpc.HoloPokemonType[type as TypeProto]
+      })
+      .sort((a, b) => a - b)
   }
 }

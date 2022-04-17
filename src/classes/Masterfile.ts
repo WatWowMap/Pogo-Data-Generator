@@ -17,9 +17,9 @@ export default class Masterfile {
   static templateMerger(template: { [key: string]: any }, base: FullTemplate): FullTemplate {
     const baseline: { [key: string]: any } = base
     const merged: { [key: string]: any } = {}
-    Object.keys(base).forEach(category => {
+    Object.keys(base).forEach((category) => {
       merged[category] = template[category] || {}
-      Object.keys(baseline[category]).forEach(subKey => {
+      Object.keys(baseline[category]).forEach((subKey) => {
         if (merged[category][subKey] === undefined) {
           merged[category][subKey] =
             typeof baseline[category][subKey] === 'boolean' ? false : baseline[category][subKey]
@@ -27,7 +27,7 @@ export default class Masterfile {
       })
       if (category !== 'globalOptions') {
         const globalOptions = template.globalOptions || baseline.globalOptions
-        Object.entries(globalOptions).forEach(option => {
+        Object.entries(globalOptions).forEach((option) => {
           const [optionKey, optionValue] = option
           if (merged[category].options[optionKey] === undefined) {
             if (template.globalOptions) {
@@ -167,7 +167,7 @@ export default class Masterfile {
       const ref = reference[fieldKey] ? reference[fieldKey][x] : x
 
       try {
-        Object.entries(ref).forEach(subField => {
+        Object.entries(ref).forEach((subField) => {
           let [subFieldKey, subFieldValue] = subField
 
           if (templateChild[fieldKey] === subFieldKey) {
@@ -205,12 +205,12 @@ export default class Masterfile {
       target[customObj][customKey] = field
     }
 
-    Object.keys(data).forEach(id => {
+    Object.keys(data).forEach((id) => {
       let parent: any = {}
       const mainKey = this.keyResolver('main', data[id], options)
 
       try {
-        Object.entries(data[id]).forEach(field => {
+        Object.entries(data[id]).forEach((field) => {
           const [fieldKey, fieldValue] = field
 
           if (template === fieldKey || template[fieldKey] === fieldKey) {

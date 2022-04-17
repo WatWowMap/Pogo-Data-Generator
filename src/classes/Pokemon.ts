@@ -1,20 +1,8 @@
 import { Rpc } from 'pogo-protos'
 
 import Masterfile from './Masterfile'
-import {
-  AllPokemon,
-  TempEvolutions,
-  Evolutions,
-  SinglePokemon,
-  AllForms,
-} from '../typings/dataTypes'
-import {
-  NiaMfObj,
-  Generation,
-  TempEvo,
-  EvoBranch,
-  EvolutionQuest,
-} from '../typings/general'
+import { AllPokemon, TempEvolutions, Evolutions, SinglePokemon, AllForms } from '../typings/dataTypes'
+import { NiaMfObj, Generation, TempEvo, EvoBranch, EvolutionQuest } from '../typings/general'
 import { Options } from '../typings/inputs'
 import {
   CostumeProto,
@@ -48,9 +36,7 @@ export default class Pokemon extends Masterfile {
   constructor(options: Options) {
     super()
     this.options = options
-    this.formsToSkip = this.options.skipForms
-      ? this.options.skipForms.map((name) => name.toLowerCase())
-      : []
+    this.formsToSkip = this.options.skipForms ? this.options.skipForms.map((name) => name.toLowerCase()) : []
     this.parsedPokemon = {}
     this.parsedForms = {
       0: {
@@ -119,8 +105,7 @@ export default class Pokemon extends Masterfile {
     if (!formName) return ''
     try {
       const name = formName.substring(
-        id === Rpc.HoloPokemonId.NIDORAN_FEMALE ||
-          id === Rpc.HoloPokemonId.NIDORAN_MALE
+        id === Rpc.HoloPokemonId.NIDORAN_FEMALE || id === Rpc.HoloPokemonId.NIDORAN_MALE
           ? 8
           : Rpc.HoloPokemonId[id].length + 1,
       )
@@ -158,10 +143,7 @@ export default class Pokemon extends Masterfile {
     try {
       const genInfo: { genId?: number; generation?: string } = {}
       genInfo.genId = +Object.keys(this.generations).find((gen) => {
-        return (
-          id >= this.generations[gen].range[0] &&
-          id <= this.generations[gen].range[1]
-        )
+        return id >= this.generations[gen].range[0] && id <= this.generations[gen].range[1]
       })
       if (genInfo.genId) {
         genInfo.generation = this.generations[genInfo.genId].name
@@ -176,9 +158,7 @@ export default class Pokemon extends Masterfile {
     if (!moves) return []
     try {
       try {
-        return moves
-          .map((move) => Rpc.HoloPokemonMove[move as MoveProto])
-          .sort((a, b) => a - b)
+        return moves.map((move) => Rpc.HoloPokemonMove[move as MoveProto]).sort((a, b) => a - b)
       } catch (e) {
         console.warn(e, '\n', moves)
       }
@@ -194,9 +174,7 @@ export default class Pokemon extends Masterfile {
         if (!incomingTypes[1]) {
           incomingTypes.pop()
         }
-        return incomingTypes
-          .map((type) => Rpc.HoloPokemonType[type as TypeProto])
-          .sort((a, b) => a - b)
+        return incomingTypes.map((type) => Rpc.HoloPokemonType[type as TypeProto]).sort((a, b) => a - b)
       } catch (e) {
         console.warn(e, '\n', incomingTypes)
       }
@@ -230,24 +208,15 @@ export default class Pokemon extends Masterfile {
             evoId: id,
             formId: this.options.includeUnset ? formId || 0 : formId,
             genderRequirement: this.options.genderString
-              ? this.genders[
-                  Rpc.PokemonDisplayProto.Gender[
-                    branch.genderRequirement as GenderProto
-                  ]
-                ]
-              : Rpc.PokemonDisplayProto.Gender[
-                  branch.genderRequirement as GenderProto
-                ],
+              ? this.genders[Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto]]
+              : Rpc.PokemonDisplayProto.Gender[branch.genderRequirement as GenderProto],
             candyCost: branch.candyCost,
-            itemRequirement:
-              Rpc.Item[branch.evolutionItemRequirement as ItemProto],
+            itemRequirement: Rpc.Item[branch.evolutionItemRequirement as ItemProto],
             tradeBonus: branch.noCandyCostViaTrade,
             mustBeBuddy: branch.mustBeBuddy,
             onlyDaytime: branch.onlyDaytime,
             onlyNighttime: branch.onlyNighttime,
-            questRequirement: branch.questDisplay
-              ? branch.questDisplay[0].questRequirementTemplateId
-              : undefined,
+            questRequirement: branch.questDisplay ? branch.questDisplay[0].questRequirementTemplateId : undefined,
           })
           this.evolvedPokemon.add(id)
         }
@@ -258,16 +227,11 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  compileTempEvos(
-    mfObject: TempEvo[],
-    evoBranch: EvoBranch[],
-    primaryForm: SinglePokemon,
-  ): TempEvolutions[] {
+  compileTempEvos(mfObject: TempEvo[], evoBranch: EvoBranch[], primaryForm: SinglePokemon): TempEvolutions[] {
     try {
       const tempEvolutions: TempEvolutions[] = mfObject.map((tempEvo) => {
         const newTempEvolution: TempEvolutions = {
-          tempEvoId:
-            Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
+          tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
         }
         switch (true) {
           case tempEvo.stats.baseAttack !== primaryForm.attack:
@@ -283,26 +247,18 @@ export default class Pokemon extends Masterfile {
         if (tempEvo.averageWeightKg !== primaryForm.weight) {
           newTempEvolution.weight = tempEvo.averageWeightKg
         }
-        const types = this.getTypes([
-          tempEvo.typeOverride1,
-          tempEvo.typeOverride2,
-        ])
+        const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2])
         if (!this.compare(types, primaryForm.types)) {
           newTempEvolution.types = types
         }
-        const energy = evoBranch.find(
-          (branch) => branch.temporaryEvolution === tempEvo.tempEvoId,
-        )
+        const energy = evoBranch.find((branch) => branch.temporaryEvolution === tempEvo.tempEvoId)
         if (energy) {
           newTempEvolution.firstEnergyCost = energy.temporaryEvolutionEnergyCost
-          newTempEvolution.subsequentEnergyCost =
-            energy.temporaryEvolutionEnergyCostSubsequent
+          newTempEvolution.subsequentEnergyCost = energy.temporaryEvolutionEnergyCostSubsequent
         }
         return newTempEvolution
       })
-      return tempEvolutions.sort(
-        (a, b) => (a.tempEvoId as number) - (b.tempEvoId as number),
-      )
+      return tempEvolutions.sort((a, b) => (a.tempEvoId as number) - (b.tempEvoId as number))
     } catch (e) {
       console.warn(e, `Failed to compile temp evos for ${mfObject}`)
     }
@@ -325,20 +281,14 @@ export default class Pokemon extends Masterfile {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
                   pokemonName: this.pokemonName(id),
-                  forms:
-                    this.options.includeUnset &&
-                    !this.options.noFormPlaceholders
-                      ? [0]
-                      : [],
+                  forms: this.options.includeUnset && !this.options.noFormPlaceholders ? [0] : [],
                   pokedexId: id,
                   ...this.getGeneration(+id),
                 }
               }
               if (this.parsedPokemon[id].defaultFormId === undefined) {
                 this.parsedPokemon[id].defaultFormId =
-                  this.options.unsetDefaultForm &&
-                  this.options.includeUnset &&
-                  this.parsedPokemon[id].forms.includes(0)
+                  this.options.unsetDefaultForm && this.options.includeUnset && this.parsedPokemon[id].forms.includes(0)
                     ? 0
                     : +formId
               }
@@ -372,17 +322,15 @@ export default class Pokemon extends Masterfile {
     try {
       const { evolutionQuestTemplate } = object.data
       this.evolutionQuests[object.templateId] = {
-        questType:
-          Rpc.QuestType[evolutionQuestTemplate.questType as QuestTypeProto],
+        questType: Rpc.QuestType[evolutionQuestTemplate.questType as QuestTypeProto],
         target: evolutionQuestTemplate.goals[0].target,
         assetsRef: evolutionQuestTemplate.display.description.toLowerCase(),
       }
       if (this.evolutionQuests[object.templateId].target) {
-        this.evolutionQuests[object.templateId].assetsRef =
-          this.evolutionQuests[object.templateId].assetsRef.replace(
-            'single',
-            'plural',
-          )
+        this.evolutionQuests[object.templateId].assetsRef = this.evolutionQuests[object.templateId].assetsRef.replace(
+          'single',
+          'plural',
+        )
       }
       if (evolutionQuestTemplate.goals[1]) {
         console.warn(`Second quest goal detected, fix it. ${object.templateId}`)
@@ -407,8 +355,7 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id].forms = []
           }
           for (let i = 0; i < forms.length; i += 1) {
-            const formId: number =
-              Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
+            const formId: number = Rpc.PokemonDisplayProto.Form[forms[i].form as FormProto]
             this.formsRef[forms[i].form] = object.data.formSettings.pokemon
             const name = this.formName(id, forms[i].form)
             if (i === 0) {
@@ -458,9 +405,7 @@ export default class Pokemon extends Masterfile {
         this.parsedPokemon[id] = {}
       }
       let formId: number = /^V\d{4}_POKEMON_/.test(templateId)
-        ? Rpc.PokemonDisplayProto.Form[
-            templateId.substring('V9999_POKEMON_'.length) as FormProto
-          ]
+        ? Rpc.PokemonDisplayProto.Form[templateId.substring('V9999_POKEMON_'.length) as FormProto]
         : null
 
       if (formId) {
@@ -468,10 +413,7 @@ export default class Pokemon extends Masterfile {
           this.parsedPokemon[id].forms = []
         }
         const primaryForm = this.parsedPokemon[id]
-        const formName = this.formName(
-          id,
-          split.filter((word, i) => i > 1 && word).join('_'),
-        )
+        const formName = this.formName(id, split.filter((word, i) => i > 1 && word).join('_'))
 
         if (!this.skipForms(formName)) {
           if (!this.parsedForms[formId]) {
@@ -495,10 +437,8 @@ export default class Pokemon extends Masterfile {
               form.stamina = pokemonSettings.stats.baseStamina
           }
           switch (true) {
-            case object.data.pokemonSettings.pokedexHeightM !==
-              primaryForm.height:
-            case object.data.pokemonSettings.pokedexWeightKg !==
-              primaryForm.weight:
+            case object.data.pokemonSettings.pokedexHeightM !== primaryForm.height:
+            case object.data.pokemonSettings.pokedexWeightKg !== primaryForm.weight:
               form.height = object.data.pokemonSettings.pokedexHeightM
               form.weight = object.data.pokemonSettings.pokedexWeightKg
           }
@@ -511,28 +451,19 @@ export default class Pokemon extends Masterfile {
           if (!this.compare(cMoves, primaryForm.chargedMoves)) {
             form.chargedMoves = cMoves
           }
-          const types = this.getTypes([
-            pokemonSettings.type,
-            pokemonSettings.type2,
-          ])
+          const types = this.getTypes([pokemonSettings.type, pokemonSettings.type2])
           if (!this.compare(types, primaryForm.types)) {
             form.types = types
           }
-          const family =
-            Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto]
+          const family = Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto]
           if (family !== primaryForm.family) {
             form.family = family
           }
-          if (
-            pokemonSettings.evolutionBranch &&
-            pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
-          ) {
+          if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some((evo) => evo.evolution)) {
             if (!form.evolutions) {
               form.evolutions = []
             }
-            form.evolutions.push(
-              ...this.compileEvos(pokemonSettings.evolutionBranch),
-            )
+            form.evolutions.push(...this.compileEvos(pokemonSettings.evolutionBranch))
           }
           if (pokemonSettings.tempEvoOverrides) {
             form.tempEvolutions = this.compileTempEvos(
@@ -541,25 +472,16 @@ export default class Pokemon extends Masterfile {
               this.parsedPokemon[id],
             )
           }
-          if (
-            (form.formName === 'Normal' || form.formName === 'Purified') &&
-            primaryForm.tempEvolutions
-          ) {
-            form.tempEvolutions = Object.values(primaryForm.tempEvolutions).map(
-              (tempEvo) => tempEvo,
-            )
+          if ((form.formName === 'Normal' || form.formName === 'Purified') && primaryForm.tempEvolutions) {
+            form.tempEvolutions = Object.values(primaryForm.tempEvolutions).map((tempEvo) => tempEvo)
           }
           if (pokemonSettings.shadow) {
-            form.purificationDust =
-              pokemonSettings.shadow.purificationStardustNeeded
-            form.purificationCandy =
-              pokemonSettings.shadow.purificationCandyNeeded
+            form.purificationDust = pokemonSettings.shadow.purificationStardustNeeded
+            form.purificationCandy = pokemonSettings.shadow.purificationCandyNeeded
           }
           if (pokemonSettings.obCostumeEvolution) {
-            form.costumeOverrideEvos = this.getCostumeOverrides(
-              pokemonSettings.obCostumeEvolution,
-            )
-          }  
+            form.costumeOverrideEvos = this.getCostumeOverrides(pokemonSettings.obCostumeEvolution)
+          }
         }
       } else {
         this.parsedPokemon[id] = {
@@ -575,13 +497,11 @@ export default class Pokemon extends Masterfile {
           weight: pokemonSettings.pokedexWeightKg,
           quickMoves: this.getMoves(pokemonSettings.quickMoves),
           chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
-          family:
-            Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
+          family: Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
           fleeRate: pokemonSettings.encounter.baseFleeRate,
           captureRate: pokemonSettings.encounter.baseCaptureRate,
           bonusCandyCapture: pokemonSettings.encounter.bonusCandyCaptureReward,
-          bonusStardustCapture:
-            pokemonSettings.encounter.bonusStardustCaptureReward,
+          bonusStardustCapture: pokemonSettings.encounter.bonusStardustCaptureReward,
           legendary: pokemonSettings.rarity === 'POKEMON_RARITY_LEGENDARY',
           mythic: pokemonSettings.rarity === 'POKEMON_RARITY_MYTHIC',
           buddyGroupNumber: pokemonSettings.buddyGroupNumber,
@@ -594,13 +514,8 @@ export default class Pokemon extends Masterfile {
           transferable: pokemonSettings.isTransferable,
           ...this.getGeneration(id),
         }
-        if (
-          pokemonSettings.evolutionBranch &&
-          pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
-        ) {
-          this.parsedPokemon[id].evolutions = this.compileEvos(
-            pokemonSettings.evolutionBranch,
-          )
+        if (pokemonSettings.evolutionBranch && pokemonSettings.evolutionBranch.some((evo) => evo.evolution)) {
+          this.parsedPokemon[id].evolutions = this.compileEvos(pokemonSettings.evolutionBranch)
         }
         if (pokemonSettings.tempEvoOverrides) {
           this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
@@ -610,9 +525,7 @@ export default class Pokemon extends Masterfile {
           )
         }
         if (pokemonSettings.obCostumeEvolution) {
-          this.parsedPokemon[id].costumeOverrideEvos = this.getCostumeOverrides(
-            pokemonSettings.obCostumeEvolution,
-          )
+          this.parsedPokemon[id].costumeOverrideEvos = this.getCostumeOverrides(pokemonSettings.obCostumeEvolution)
         }
       }
     } catch (e) {
@@ -632,12 +545,10 @@ export default class Pokemon extends Masterfile {
             ...this.parsedPokemon[id],
           }
           if (!this.parsedPokemon[id].forms) {
-            this.parsedPokemon[id].forms = this.options.noFormPlaceholders
-              ? []
-              : [0]
+            this.parsedPokemon[id].forms = this.options.noFormPlaceholders ? [] : [0]
           } else if (
-            this.parsedPokemon[id].forms.length === 0 &&
-            !this.options.noFormPlaceholders || this.parsedPokemon[id].defaultFormId === 0
+            (this.parsedPokemon[id].forms.length === 0 && !this.options.noFormPlaceholders) ||
+            this.parsedPokemon[id].defaultFormId === 0
           ) {
             this.parsedPokemon[id].forms.push(0)
           }
@@ -666,13 +577,10 @@ export default class Pokemon extends Masterfile {
         console.warn('Missing little cup ban list from Masterfile')
       } else {
         this.lcBanList.add('FARFETCHD')
-        this.parsedForms[
-          Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN
-        ].little = true
+        this.parsedForms[Rpc.PokemonDisplayProto.Form.FARFETCHD_GALARIAN].little = true
       }
       for (const [id, pokemon] of Object.entries(this.parsedPokemon)) {
-        const allowed =
-          !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined
+        const allowed = !this.evolvedPokemon.has(+id) && pokemon.evolutions !== undefined
         if (allowed || +id === Rpc.HoloPokemonId.DEERLING) {
           pokemon.little = true
         }
@@ -703,9 +611,8 @@ export default class Pokemon extends Masterfile {
   jungleEligibility() {
     Object.entries(this.parsedPokemon).forEach(([id, pokemon]) => {
       const allowed =
-        this.jungleCupRules.types.some((type) =>
-          pokemon.types.includes(type),
-        ) && !this.jungleCupRules.banned.includes(+id)
+        this.jungleCupRules.types.some((type) => pokemon.types.includes(type)) &&
+        !this.jungleCupRules.banned.includes(+id)
       if (allowed) pokemon.jungle = true
     })
   }
@@ -744,19 +651,13 @@ export default class Pokemon extends Masterfile {
   }
 
   parsePokeApi(baseStats: AllPokemon, tempEvos: { [id: string]: AllPokemon }) {
-    if (
-      this.options.includeEstimatedPokemon === true ||
-      this.options.includeEstimatedPokemon.baseStats
-    ) {
+    if (this.options.includeEstimatedPokemon === true || this.options.includeEstimatedPokemon.baseStats) {
       Object.keys(baseStats).forEach((id) => {
         let evolutions = this.parsedPokemon[id].evolutions
         if (baseStats[id].evolutions) {
           const cleaned = baseStats[id].evolutions.map((evo) => ({
             evoId: evo.evoId,
-            formId:
-              this.options.includeUnset && !this.options.noFormPlaceholders
-                ? 0
-                : undefined,
+            formId: this.options.includeUnset && !this.options.noFormPlaceholders ? 0 : undefined,
           }))
           evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
         }
@@ -768,16 +669,11 @@ export default class Pokemon extends Masterfile {
       })
     }
     Object.keys(tempEvos).forEach((category) => {
-      if (
-        this.options.includeEstimatedPokemon === true ||
-        this.options.includeEstimatedPokemon[category]
-      ) {
+      if (this.options.includeEstimatedPokemon === true || this.options.includeEstimatedPokemon[category]) {
         Object.keys(tempEvos[category]).forEach((id) => {
           const tempEvolutions = [
             ...tempEvos[category][id].tempEvolutions,
-            ...(this.parsedPokemon[id].tempEvolutions
-              ? this.parsedPokemon[id].tempEvolutions
-              : []),
+            ...(this.parsedPokemon[id].tempEvolutions ? this.parsedPokemon[id].tempEvolutions : []),
           ]
           this.parsedPokemon[id] = {
             ...this.parsedPokemon[id],
@@ -785,10 +681,7 @@ export default class Pokemon extends Masterfile {
           }
           if (this.parsedPokemon[id].forms) {
             this.parsedPokemon[id].forms.forEach((form) => {
-              if (
-                this.parsedForms[form].formName === 'Normal' ||
-                this.parsedForms[form].formName === 'Purified'
-              ) {
+              if (this.parsedForms[form].formName === 'Normal' || this.parsedForms[form].formName === 'Purified') {
                 this.parsedForms[form].tempEvolutions = tempEvolutions
               }
             })
