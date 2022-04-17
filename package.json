@@ -22,7 +22,8 @@
     "pokeapi": "ts-node devWrapper.ts --test --pokeapi",
     "raw": "ts-node devWrapper.ts --test --raw",
     "invasions": "ts-node devWrapper.ts --test --invasions",
-    "test": "tsc && ./node_modules/.bin/jest"
+    "test": "tsc && ./node_modules/.bin/jest",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@types/node-fetch": "^2.6.1",
     "jest": "^27.5.1",
+    "prettier": "^2.6.2",
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
   }

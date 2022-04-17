@@ -11,7 +11,7 @@ export default class Types extends Masterfile {
   }
 
   buildTypes() {
-    Object.entries(Rpc.HoloPokemonType).forEach(proto => {
+    Object.entries(Rpc.HoloPokemonType).forEach((proto) => {
       try {
         const [name, id] = proto
         this.parsedTypes[id] = {
@@ -25,7 +25,7 @@ export default class Types extends Masterfile {
   }
 
   parsePokeApi(types: AllTypes) {
-    Object.keys(types).forEach(typeId => {
+    Object.keys(types).forEach((typeId) => {
       this.parsedTypes[typeId] = {
         ...this.parsedTypes[typeId],
         ...types[typeId],

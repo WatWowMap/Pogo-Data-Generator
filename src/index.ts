@@ -88,7 +88,7 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     if (pokeApi === true) return AllPokeApi[category]
     if (pokeApi) return pokeApi[category]
     return AllPokeApi.fetch(
-      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`
+      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`,
     )
   }
 
@@ -116,17 +116,17 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   AllWeather.buildWeather()
   if (invasions.enabled || (translations.template as TranslationsTemplate).characters) {
     const invasionData: InvasionInfo = await AllInvasions.fetch(
-      'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
+      'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json',
     )
     AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
   }
 
   if (translations.enabled) {
     const availableManualTranslations = await AllTranslations.fetch(
-      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json'
+      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json',
     )
     await Promise.all(
-      Object.entries(translations.locales).map(async langCode => {
+      Object.entries(translations.locales).map(async (langCode) => {
         const [localeCode, bool] = langCode
         if (bool) {
           await AllTranslations.fetchTranslations(localeCode, availableManualTranslations)
@@ -143,7 +143,7 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
               translations.template.pokemon,
               AllPokemon.parsedPokemon,
               AllPokemon.parsedForms,
-              pokemon.options.unsetFormName
+              pokemon.options.unsetFormName,
             )
           }
           if (translations.template.moves) {
@@ -170,9 +170,9 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
             AllTranslations.parseEvoQuests(localeCode, AllPokemon.evolutionQuests)
           }
         }
-      })
+      }),
     )
-    Object.entries(translations.locales).forEach(langCode => {
+    Object.entries(translations.locales).forEach((langCode) => {
       const [localeCode, bool] = langCode
       if (bool) {
         AllTranslations.mergeManualTranslations(localeCode)
@@ -195,8 +195,8 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
           types: AllTypes.parsedTypes,
           weather: AllWeather.parsedWeather,
         },
-        (translations.options.masterfileLocale as string),
-        pokemon.options.processFormsSeparately
+        translations.options.masterfileLocale as string,
+        pokemon.options.processFormsSeparately,
       )
     }
   }
@@ -214,13 +214,13 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     final[pokemon.options.topLevelName || 'pokemon'] = raw
       ? localPokemon
       : AllPokemon.templater(localPokemon, pokemon, {
-        quickMoves: localMoves,
-        chargedMoves: localMoves,
-        types: localTypes,
-        forms: localForms,
-        itemRequirement: localItems,
-        questRequirement: localEvolutionQuests,
-      })
+          quickMoves: localMoves,
+          chargedMoves: localMoves,
+          types: localTypes,
+          forms: localForms,
+          itemRequirement: localItems,
+          questRequirement: localEvolutionQuests,
+        })
     if (pokemon.options.includeRawForms || raw) {
       final.forms = localForms
     }
@@ -229,13 +229,13 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     final[types.options.topLevelName || 'types'] = raw
       ? localTypes
       : AllTypes.templater(localTypes, types, {
-        strengths: localTypes,
-        weaknesses: localTypes,
-        veryWeakAgainst: localTypes,
-        immunes: localTypes,
-        weakAgainst: localTypes,
-        resistances: localTypes,
-      })
+          strengths: localTypes,
+          weaknesses: localTypes,
+          veryWeakAgainst: localTypes,
+          immunes: localTypes,
+          weakAgainst: localTypes,
+          resistances: localTypes,
+        })
   }
   if (costumes.enabled) {
     final[costumes.options.topLevelName || 'costumes'] = raw
@@ -249,8 +249,8 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     final[moves.options.topLevelName || 'moves'] = raw
       ? localMoves
       : AllMoves.templater(localMoves, moves, {
-        type: localTypes,
-      })
+          type: localTypes,
+        })
   }
   if (questTypes.enabled) {
     final[questTypes.options.topLevelName || 'questTypes'] = raw
@@ -290,7 +290,7 @@ export async function invasions({ template }: InvasionsOnly = {}): Promise<AllIn
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
-    'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json'
+    'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json',
   )
   AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions(true)))
   return AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)

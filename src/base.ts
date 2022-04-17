@@ -1,4 +1,4 @@
-import { FullTemplate } from "./typings/inputs";
+import { FullTemplate } from './typings/inputs'
 
 const baseTemplate: FullTemplate = {
   globalOptions: {

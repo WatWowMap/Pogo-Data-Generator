@@ -5,7 +5,7 @@ export interface InvasionInfo {
     lineup?: {
       rewards: number[]
       team: InvasionTeam[][]
-    }  
+    }
   }
 }
 

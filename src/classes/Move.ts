@@ -14,7 +14,7 @@ export default class Moves extends Masterfile {
   }
 
   protoMoves() {
-    Object.entries(Rpc.HoloPokemonMove).forEach(proto => {
+    Object.entries(Rpc.HoloPokemonMove).forEach((proto) => {
       const [name, id] = proto
       if (!this.parsedMoves[id]) {
         this.parsedMoves[id] = {

@@ -21,7 +21,7 @@ export default class PokeApi extends Masterfile {
     return Math.round(
       Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
         (1 + (speed - 75) / 500) *
-        (nerf ? 0.91 : 1)
+        (nerf ? 0.91 : 1),
     )
   }
 
@@ -29,7 +29,7 @@ export default class PokeApi extends Masterfile {
     return Math.round(
       Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
         (1 + (speed - 75) / 500) *
-        (nerf ? 0.91 : 1)
+        (nerf ? 0.91 : 1),
     )
   }
 
@@ -50,7 +50,7 @@ export default class PokeApi extends Masterfile {
           id
             .split('-')
             .filter((word, i) => (i ? word : false))
-            .join('_')
+            .join('_'),
         )
       case id.endsWith('mega-y'):
         return 3
@@ -124,7 +124,7 @@ export default class PokeApi extends Masterfile {
       },
     }
     await Promise.all(
-      Object.keys(parsedPokemon).map(async id => {
+      Object.keys(parsedPokemon).map(async (id) => {
         try {
           if (
             !parsedPokemon[id].attack ||
@@ -136,7 +136,7 @@ export default class PokeApi extends Masterfile {
             const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
 
             const baseStats: { [stat: string]: number } = {}
-            statsData.stats.forEach(stat => {
+            statsData.stats.forEach((stat) => {
               baseStats[stat.stat.name] = stat.base_stat
             })
             const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
@@ -162,7 +162,7 @@ export default class PokeApi extends Masterfile {
               defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
               stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
               types: statsData.types
-                .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+                .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
                 .sort((a, b) => a - b),
               unreleased: true,
             }
@@ -170,13 +170,13 @@ export default class PokeApi extends Masterfile {
         } catch (e) {
           console.warn(e, `Failed to parse PokeApi Stats for #${id}`)
         }
-      })
+      }),
     )
   }
 
   async evoApi(evolvedPokemon: Set<number>) {
     await Promise.all(
-      Object.keys(this.baseStats).map(async id => {
+      Object.keys(this.baseStats).map(async (id) => {
         try {
           if (!evolvedPokemon.has(+id)) {
             const evoData: SpeciesApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
@@ -196,7 +196,7 @@ export default class PokeApi extends Masterfile {
               } else {
                 console.warn(
                   'Unable to find proto ID for',
-                  evoData.evolves_from_species.name.toUpperCase().replace('-', '_')
+                  evoData.evolves_from_species.name.toUpperCase().replace('-', '_'),
                 )
               }
             }
@@ -204,7 +204,7 @@ export default class PokeApi extends Masterfile {
         } catch (e) {
           console.warn(e, `Failed to parse PokeApi Evolutions for #${id}`)
         }
-      })
+      }),
     )
   }
 
@@ -287,16 +287,16 @@ export default class PokeApi extends Masterfile {
     for (const [type, ids] of Object.entries(theoretical)) {
       this.tempEvos[type] = {}
       await Promise.all(
-        ids.map(async id => {
+        ids.map(async (id) => {
           try {
             const pokemonId = Rpc.HoloPokemonId[id.split('-')[0].toUpperCase() as PokemonIdProto]
             const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
             const baseStats: { [stat: string]: number } = {}
-            statsData.stats.forEach(stat => {
+            statsData.stats.forEach((stat) => {
               baseStats[stat.stat.name] = stat.base_stat
             })
             const types = statsData.types
-              .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+              .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
               .sort((a, b) => a - b)
 
             const newTheoretical: TempEvolutions = {
@@ -316,14 +316,14 @@ export default class PokeApi extends Masterfile {
             if (
               !parsedPokemon[pokemonId].tempEvolutions ||
               (parsedPokemon[pokemonId].tempEvolutions &&
-                !parsedPokemon[pokemonId].tempEvolutions.some(temp => temp.tempEvoId === newTheoretical.tempEvoId))
+                !parsedPokemon[pokemonId].tempEvolutions.some((temp) => temp.tempEvoId === newTheoretical.tempEvoId))
             ) {
               this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
             }
           } catch (e) {
             console.warn(e, `Failed to parse PokeApi ${type} Evos for ${id}`)
           }
-        })
+        }),
       )
     }
   }
@@ -331,7 +331,7 @@ export default class PokeApi extends Masterfile {
   async typesApi() {
     const getTypeIds = (types: { name: string }[]) =>
       types
-        .map(type => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto])
+        .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto])
         .sort((a, b) => a - b)
 
     await Promise.all(
@@ -360,7 +360,7 @@ export default class PokeApi extends Masterfile {
         } catch (e) {
           console.warn(`Unable to fetch ${type}`, e)
         }
-      })
+      }),
     )
   }
 }

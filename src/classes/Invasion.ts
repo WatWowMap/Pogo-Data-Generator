@@ -19,7 +19,7 @@ export default class Invasion extends Masterfile {
     try {
       if (this.options.customInvasions === true || (this.options.customInvasions === undefined && override)) {
         return this.fetch(
-          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json'
+          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json',
         )
       } else if (this.options.customInvasions) {
         return this.options.customInvasions as InvasionInfo
@@ -67,7 +67,7 @@ export default class Invasion extends Masterfile {
       this.customFieldNames.second || 'second',
       this.customFieldNames.third || 'third',
     ]
-    Object.entries(Rpc.EnumWrapper.InvasionCharacter).forEach(proto => {
+    Object.entries(Rpc.EnumWrapper.InvasionCharacter).forEach((proto) => {
       try {
         const [name, id] = proto
         if ((this.options.includeBalloons && name.includes('BALLOON')) || !name.includes('BALLOON_')) {
@@ -81,7 +81,7 @@ export default class Invasion extends Masterfile {
             this.parsedInvasions[id].encounters = []
 
             positions.forEach((position, i) => {
-              pogoInfo.lineup.team[i].forEach(pkmn => {
+              pogoInfo.lineup.team[i].forEach((pkmn) => {
                 this.parsedInvasions[id].encounters.push({ id: pkmn.id, formId: pkmn.form, position })
               })
               this.parsedInvasions[id].encounters.sort((a, b) => a.id - b.id)
@@ -89,7 +89,7 @@ export default class Invasion extends Masterfile {
             })
           } else if (this.options.placeholderData) {
             this.parsedInvasions[id].secondReward = false
-            this.parsedInvasions[id].encounters = positions.map(position => ({ position }))
+            this.parsedInvasions[id].encounters = positions.map((position) => ({ position }))
           }
         }
       } catch (e) {
