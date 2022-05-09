@@ -210,9 +210,9 @@ export interface InvasionTemplate {
   secondReward?: boolean
   encounters?:
     | {
-        id: boolean
-        formId: boolean
-        position: boolean
+        id?: boolean
+        formId?: boolean
+        position?: boolean
       }
     | StringBool
 }
