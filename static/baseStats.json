@@ -38,15 +38,5 @@
       16
     ],
     "unreleased": true
-  },
-  "741": {
-    "attack": 196,
-    "defense": 145,
-    "stamina": 181,
-    "types": [
-      3,
-      10
-    ],
-    "unreleased": true
   }
 }

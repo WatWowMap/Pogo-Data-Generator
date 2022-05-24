@@ -75,6 +75,7 @@ export default class Invasion extends Masterfile {
           this.parsedInvasions[id] = {
             id: +id,
             ...this.formatGrunts(name),
+            active: Boolean(pogoInfo?.active),
           }
           if (pogoInfo && pogoInfo.active) {
             this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.length === 2

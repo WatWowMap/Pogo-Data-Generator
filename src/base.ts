@@ -269,6 +269,7 @@ const baseTemplate: FullTemplate = {
       placeholderData: true,
     },
     template: {
+      active: true,
       id: false,
       type: true,
       gender: true,

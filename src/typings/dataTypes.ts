@@ -33,6 +33,7 @@ type SingleInvasion = {
   grunt: string
   secondReward?: boolean
   encounters?: InvasionTeam[]
+  active: boolean
 }
 
 type InvasionTeam = {
