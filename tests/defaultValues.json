@@ -576,6 +576,7 @@
       "gender": 0,
       "grunt": "Unset",
       "second_reward": false,
+      "active": false,
       "encounters": {
         "first": [],
         "second": [],
