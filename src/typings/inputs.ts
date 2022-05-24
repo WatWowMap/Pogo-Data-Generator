@@ -215,6 +215,7 @@ export interface InvasionTemplate {
         position?: boolean
       }
     | StringBool
+  active?: boolean
 }
 
 export interface WeatherTemplate {

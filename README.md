@@ -111,13 +111,13 @@ const tr = await invasions()
 ### Local Usage/Testing
 
 1. Clone the repo
-2. Install TypeScript compiler `npm install -g typescript`
-3. `tsc` will compile the TS into JS, then you can run `npm run generate`, which will generate a local `masterfile.json` for you to checkout
+2. `yarn install`
+3. `tsc` will compile the TS into JS, then you can run `yarn generate`, which will generate a local `masterfile.json` for you to checkout
 
 - `tsc -w` will auto recompile the TypeScript during development
 - You can play with the input options by changing the scripts in `package.json` or modifying the `base.ts` file.
-- `npm run pokeapi`, which will generate a local `masterfile.json` and refresh the data in the `static` folder from PokeAPI
-- `npm run raw` will generate a local `masterfile.json` and with the raw data format
+- `yarn pokeapi`, which will generate a local `masterfile.json` and refresh the data in the `static` folder from PokeAPI
+- `yarn raw` will generate a local `masterfile.json` and with the raw data format
 
 The generate function accepts an object with the following properties:
 
