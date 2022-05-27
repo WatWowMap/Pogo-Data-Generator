@@ -2211,10 +2211,10 @@ pkg-dir@^4.2.0:
     find-up "^4.0.0"
 
 "pogo-protos@github:Furtif/pogo-protos":
-  version "2.56.4"
-  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/0fb82b48d021b21425cc910680c5451792bd0b45"
+  version "2.56.5"
+  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/0e83f55dd0d48fd40480509eae92903a1b77498b"
   dependencies:
-    protobufjs "^6.11.2"
+    protobufjs "^6.11.3"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -2243,7 +2243,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-protobufjs@^6.11.2:
+protobufjs@^6.11.3:
   version "6.11.3"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.3.tgz#637a527205a35caa4f3e2a9a4a13ddffe0e7af74"
   integrity sha512-xL96WDdCZYdU7Slin569tFX712BxsxslWwAfAhCYjQKGTq7dAU91Lomy6nLLhh/dyGhk/YH4TwTSRxTzhuHyZg==

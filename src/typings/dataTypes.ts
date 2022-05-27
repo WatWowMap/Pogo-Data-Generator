@@ -94,6 +94,7 @@ export interface SinglePokemon extends SingleForm {
   captureRate?: number
   legendary?: boolean
   mythic?: boolean
+  ultraBeast?: boolean
   buddyGroupNumber?: number
   buddyDistance?: number
   buddyMegaEnergy?: number

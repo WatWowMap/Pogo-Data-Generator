@@ -66,6 +66,7 @@ export interface PokemonTemplate extends Form {
   captureRate?: boolean
   legendary?: boolean
   mythic?: boolean
+  ultraBeast?: boolean
   buddyGroupNumber?: boolean
   buddyDistance?: boolean
   buddyMegaEnergy?: boolean
