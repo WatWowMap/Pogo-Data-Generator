@@ -1,3 +1,5 @@
+import { Rpc } from 'pogo-protos'
+
 export interface GuessedMega {
   attack?: number
   defense?: number
@@ -62,6 +64,7 @@ export interface NiaMfObj {
       buddyGroupNumber: number
       buddyWalkedMegaEnergyAward: number
       rarity: string
+      pokemonClass: keyof typeof Rpc.HoloPokemonClass
       shadow: {
         purificationStardustNeeded: number
         purificationCandyNeeded: number
