@@ -134,6 +134,10 @@ export default class Translations extends Masterfile {
     }
   }
 
+  removeEscapes(str: string) {
+    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
+  }
+
   async fetchTranslations(locale: string, availableManualTranslations: string[]) {
     this.rawTranslations[locale] = {}
     this.parsedTranslations[locale] = {}
@@ -171,7 +175,7 @@ export default class Translations extends Masterfile {
       )
 
       for (let i = 0; i < data.length; i += 2) {
-        this.rawTranslations[locale][data[i]] = data[i + 1]
+        this.rawTranslations[locale][data[i]] = this.removeEscapes(data[i + 1])
       }
 
       const textFile = await this.fetch(
@@ -184,7 +188,7 @@ export default class Translations extends Masterfile {
 
       splitText.forEach((line: string, i: number) => {
         if (line?.startsWith('RESOURCE ID')) {
-          this.rawTranslations[locale][line.replace('RESOURCE ID: ', '')] = splitText[i + 1].replace('TEXT: ', '')
+          this.rawTranslations[locale][this.removeEscapes(line.replace('RESOURCE ID: ', ''))] = this.removeEscapes(splitText[i + 1].replace('TEXT: ', ''))
         }
       })
     } catch (e) {
