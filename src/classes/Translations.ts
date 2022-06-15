@@ -188,7 +188,9 @@ export default class Translations extends Masterfile {
 
       splitText.forEach((line: string, i: number) => {
         if (line?.startsWith('RESOURCE ID')) {
-          this.rawTranslations[locale][this.removeEscapes(line.replace('RESOURCE ID: ', ''))] = this.removeEscapes(splitText[i + 1].replace('TEXT: ', ''))
+          this.rawTranslations[locale][this.removeEscapes(line.replace('RESOURCE ID: ', ''))] = this.removeEscapes(
+            splitText[i + 1].replace('TEXT: ', ''),
+          )
         }
       })
     } catch (e) {
@@ -405,7 +407,7 @@ export default class Translations extends Masterfile {
 
     Object.keys(pokemon).forEach((id) => {
       try {
-        const name = this.rawTranslations[locale][`pokemon_name_${String(id).padStart(4, '0')}`]
+        const name = this.rawTranslations[locale][`pokemon_name_${String(id).padStart(4, '0')}`] || pokemon[id].pokemonName
         const description = `pokemon_desc_${String(id).padStart(4, '0')}`
         if (id) {
           if (name && subItems.names) {
@@ -515,7 +517,7 @@ export default class Translations extends Masterfile {
         const [name, id] = proto
         if (!id) return
 
-        let item = this.rawTranslations[locale][`${name.toLowerCase()}_name`]
+        let item = this.rawTranslations[locale][`${name.toLowerCase()}_name`] || this.capitalize(name)
         this.parsedTranslations[locale].items[`${this.options.prefix.items}${id}`] =
           item || this.capitalize(name.replace('ITEM_', ''))
         if (name.startsWith('ITEM_TROY_DISK')) {
