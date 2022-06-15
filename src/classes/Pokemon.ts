@@ -223,44 +223,46 @@ export default class Pokemon extends Masterfile {
       })
       return evolutions.sort((a, b) => a.evoId - b.evoId)
     } catch (e) {
-      console.warn(e, `Failed to compile evos for ${mfObject}`)
+      console.warn(e, `Failed to compile evos for ${JSON.stringify(mfObject, null, 2)}`)
     }
   }
 
   compileTempEvos(mfObject: TempEvo[], evoBranch: EvoBranch[], primaryForm: SinglePokemon): TempEvolutions[] {
     try {
-      const tempEvolutions: TempEvolutions[] = mfObject.map((tempEvo) => {
-        const newTempEvolution: TempEvolutions = {
-          tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
-        }
-        switch (true) {
-          case tempEvo.stats.baseAttack !== primaryForm.attack:
-          case tempEvo.stats.baseDefense !== primaryForm.defense:
-          case tempEvo.stats.baseStamina !== primaryForm.stamina:
-            newTempEvolution.attack = tempEvo.stats.baseAttack
-            newTempEvolution.defense = tempEvo.stats.baseDefense
-            newTempEvolution.stamina = tempEvo.stats.baseStamina
-        }
-        if (tempEvo.averageHeightM !== primaryForm.height) {
-          newTempEvolution.height = tempEvo.averageHeightM
-        }
-        if (tempEvo.averageWeightKg !== primaryForm.weight) {
-          newTempEvolution.weight = tempEvo.averageWeightKg
-        }
-        const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2])
-        if (!this.compare(types, primaryForm.types)) {
-          newTempEvolution.types = types
-        }
-        const energy = evoBranch.find((branch) => branch.temporaryEvolution === tempEvo.tempEvoId)
-        if (energy) {
-          newTempEvolution.firstEnergyCost = energy.temporaryEvolutionEnergyCost
-          newTempEvolution.subsequentEnergyCost = energy.temporaryEvolutionEnergyCostSubsequent
-        }
-        return newTempEvolution
-      })
+      const tempEvolutions: TempEvolutions[] = mfObject
+        .filter((tempEvo) => tempEvo.stats)
+        .map((tempEvo) => {
+          const newTempEvolution: TempEvolutions = {
+            tempEvoId: Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
+          }
+          switch (true) {
+            case tempEvo.stats.baseAttack !== primaryForm.attack:
+            case tempEvo.stats.baseDefense !== primaryForm.defense:
+            case tempEvo.stats.baseStamina !== primaryForm.stamina:
+              newTempEvolution.attack = tempEvo.stats.baseAttack
+              newTempEvolution.defense = tempEvo.stats.baseDefense
+              newTempEvolution.stamina = tempEvo.stats.baseStamina
+          }
+          if (tempEvo.averageHeightM !== primaryForm.height) {
+            newTempEvolution.height = tempEvo.averageHeightM
+          }
+          if (tempEvo.averageWeightKg !== primaryForm.weight) {
+            newTempEvolution.weight = tempEvo.averageWeightKg
+          }
+          const types = this.getTypes([tempEvo.typeOverride1, tempEvo.typeOverride2])
+          if (!this.compare(types, primaryForm.types)) {
+            newTempEvolution.types = types
+          }
+          const energy = evoBranch.find((branch) => branch.temporaryEvolution === tempEvo.tempEvoId)
+          if (energy) {
+            newTempEvolution.firstEnergyCost = energy.temporaryEvolutionEnergyCost
+            newTempEvolution.subsequentEnergyCost = energy.temporaryEvolutionEnergyCostSubsequent
+          }
+          return newTempEvolution
+        })
       return tempEvolutions.sort((a, b) => (a.tempEvoId as number) - (b.tempEvoId as number))
     } catch (e) {
-      console.warn(e, `Failed to compile temp evos for ${mfObject}`)
+      console.warn(e, `Failed to compile temp evos for ${JSON.stringify(mfObject, null, 2)}`)
     }
   }
 
@@ -336,7 +338,7 @@ export default class Pokemon extends Masterfile {
         console.warn(`Second quest goal detected, fix it. ${object.templateId}`)
       }
     } catch (e) {
-      console.warn(e, `Failed to add evolution quest for ${object}`)
+      console.warn(e, `Failed to add evolution quest for ${JSON.stringify(object, null, 2)}`)
     }
   }
 
@@ -387,7 +389,7 @@ export default class Pokemon extends Masterfile {
           }
         }
       } catch (e) {
-        console.warn(e, '\n', object)
+        console.warn(e, '\n', JSON.stringify(object, null, 2))
       }
     }
   }
@@ -530,7 +532,7 @@ export default class Pokemon extends Masterfile {
         }
       }
     } catch (e) {
-      console.warn(e, `Failed to parse Pokemon for ${id}`, object)
+      console.warn(e, `Failed to parse Pokemon for ${id}`, JSON.stringify(object, null, 2))
     }
   }
 
