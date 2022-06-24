@@ -184,6 +184,9 @@ export default class PokeApi extends Masterfile {
               const prevEvoId =
                 Rpc.HoloPokemonId[evoData.evolves_from_species.name.toUpperCase().replace('-', '_') as PokemonIdProto]
               if (prevEvoId) {
+                if (!this.baseStats[prevEvoId]) {
+                  this.baseStats[prevEvoId] = {}
+                }
                 if (!this.baseStats[prevEvoId].evolutions) {
                   this.baseStats[prevEvoId].evolutions = []
                 }
