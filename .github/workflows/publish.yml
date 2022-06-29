@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Publish
 
 on:
   release:
@@ -9,21 +9,35 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
-     - run: yarn
-     - run: yarn test
+
+      - name: Install Dependencies
+      - run: yarn
+
+      - name: Test
+      - run: yarn test
 
   publish-npm:
     needs: build
     name: Publish to NPM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
