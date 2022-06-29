@@ -2217,7 +2217,7 @@ pkg-dir@^4.2.0:
 
 "pogo-protos@github:Furtif/pogo-protos":
   version "2.56.6"
-  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/2882ec92c133573e44edf77822cecd109826819b"
+  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/03db4a7fb79caa4a5e399745cb8762710211f160"
   dependencies:
     protobufjs "^6.11.3"
 
