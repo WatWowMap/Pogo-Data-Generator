@@ -1,0 +1,29 @@
+name: Test
+on: [push]
+
+jobs:
+  lint:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Generate Check
+        run: yarn generate
+
+      - name: Invasion Check
+        run: yarn invasions
+
+      - name: Run Tests
+        run: yarn test

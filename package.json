@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -23,7 +23,8 @@
     "raw": "ts-node devWrapper.ts --test --raw",
     "invasions": "ts-node devWrapper.ts --test --invasions",
     "test": "tsc && ./node_modules/.bin/jest",
-    "format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "publishBuild": "rm -r dist && tsc"
   },
   "repository": {
     "type": "git",
