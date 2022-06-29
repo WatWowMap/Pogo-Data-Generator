@@ -21,10 +21,10 @@ jobs:
           cache: 'yarn'
 
       - name: Install Dependencies
-      - run: yarn
+        run: yarn
 
       - name: Test
-      - run: yarn test
+        run: yarn test
 
   publish-npm:
     needs: build
