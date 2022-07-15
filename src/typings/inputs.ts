@@ -58,7 +58,7 @@ export interface Options {
 export interface PokemonTemplate extends Form {
   pokedexId?: boolean
   pokemonName?: boolean
-  forms?: Form
+  forms?: Form | string
   defaultFormId?: boolean
   genId?: boolean
   generation?: boolean
