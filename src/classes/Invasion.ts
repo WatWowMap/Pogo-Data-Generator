@@ -75,6 +75,7 @@ export default class Invasion extends Masterfile {
           this.parsedInvasions[id] = {
             id: +id,
             ...this.formatGrunts(name),
+            proto: name,
             active: Boolean(pogoInfo?.active),
           }
           if (pogoInfo && pogoInfo.active) {

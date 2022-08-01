@@ -209,6 +209,7 @@ export interface InvasionTemplate {
   gender?: boolean
   grunt?: boolean
   secondReward?: boolean
+  proto?: boolean
   encounters?:
     | {
         id?: boolean
