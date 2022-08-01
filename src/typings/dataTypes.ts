@@ -34,6 +34,7 @@ type SingleInvasion = {
   secondReward?: boolean
   encounters?: InvasionTeam[]
   active: boolean
+  proto: string
 }
 
 type InvasionTeam = {
