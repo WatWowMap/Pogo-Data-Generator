@@ -166,7 +166,6 @@ describe('Testing Custom Template', () => {
             type: true,
             gender: true,
             grunt: true,
-            secondReward: true,
             encounters: {
               id: true,
               formId: true,
