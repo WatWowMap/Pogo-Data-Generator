@@ -116,7 +116,7 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   AllWeather.buildWeather()
   if (invasions.enabled || (translations.template as TranslationsTemplate).characters) {
     const invasionData: InvasionInfo = await AllInvasions.fetch(
-      'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json',
+      'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
     )
     AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
   }
@@ -290,7 +290,7 @@ export async function invasions({ template }: InvasionsOnly = {}): Promise<AllIn
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
-    'https://raw.githubusercontent.com/ccev/pogoinfo/v2/active/grunts.json',
+    'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
   )
   AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions(true)))
   return AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)

@@ -575,7 +575,9 @@
       "type": "Unset",
       "gender": 0,
       "grunt": "Unset",
+      "first_reward": false,
       "second_reward": false,
+      "third_reward": false,
       "active": false,
       "encounters": {
         "first": [],

@@ -31,7 +31,9 @@ type SingleInvasion = {
   type: string
   gender: number | string
   grunt: string
-  secondReward?: boolean
+  firstReward: boolean
+  secondReward: boolean
+  thirdReward: boolean
   encounters?: InvasionTeam[]
   active: boolean
   proto: string

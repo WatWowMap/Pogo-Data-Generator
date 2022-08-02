@@ -76,10 +76,15 @@ export default class Invasion extends Masterfile {
             id: +id,
             ...this.formatGrunts(name),
             proto: name,
-            active: Boolean(pogoInfo?.active),
+            active: !!pogoInfo?.active,
+            firstReward: false,
+            secondReward: false,
+            thirdReward: false,
           }
           if (pogoInfo && pogoInfo.active) {
-            this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.length === 2
+            this.parsedInvasions[id].firstReward = pogoInfo.lineup.rewards.includes(0)
+            this.parsedInvasions[id].secondReward = pogoInfo.lineup.rewards.includes(1)
+            this.parsedInvasions[id].thirdReward = pogoInfo.lineup.rewards.includes(2)
             this.parsedInvasions[id].encounters = []
 
             positions.forEach((position, i) => {
@@ -90,7 +95,6 @@ export default class Invasion extends Masterfile {
               this.parsedInvasions[id].encounters.sort((a, b) => a.position.localeCompare(b.position))
             })
           } else if (this.options.placeholderData) {
-            this.parsedInvasions[id].secondReward = false
             this.parsedInvasions[id].encounters = positions.map((position) => ({ position }))
           }
         }
