@@ -700,9 +700,9 @@
   integrity sha512-6qKpDtoaYLM+5+AFChLhHermMQxc3TOEFIDzrZLPRGHPrLEwqFkkT5Kx3ju05g6X7uDPazz3jHbKPX0KzCjntg==
 
 "@types/node@>=13.7.0":
-  version "18.7.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.6.tgz#31743bc5772b6ac223845e18c3fc26f042713c83"
-  integrity sha512-EdxgKRXgYsNITy5mjjXjVE/CS8YENSdhiagGrLqjG0pvA2owgJ6i4l7wy/PFZGC0B1/H20lWKN7ONVDNYDZm7A==
+  version "18.7.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.13.tgz#23e6c5168333480d454243378b69e861ab5c011a"
+  integrity sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==
 
 "@types/prettier@^2.1.5":
   version "2.6.4"
@@ -2219,8 +2219,8 @@ pkg-dir@^4.2.0:
     find-up "^4.0.0"
 
 "pogo-protos@github:Furtif/pogo-protos":
-  version "2.56.8"
-  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/8d831b68a60cc90b1e6ae840fbde220d28f3d0f2"
+  version "2.56.9"
+  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/d0c36220dccb990322adb71415c71a777b9c1f78"
   dependencies:
     protobufjs "^6.11.3"
 
