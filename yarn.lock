@@ -2095,7 +2095,7 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-"pogo-protos@github:Furtif/pogo-protos":
+"pogo-protos@github:Furtif/pogo-protos#c080222":
   version "2.57.2"
   resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/c08022270aa453004611f44811245c487d92fa09"
   dependencies:
