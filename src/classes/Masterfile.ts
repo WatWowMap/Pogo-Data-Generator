@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { Options, FullTemplate } from '../typings/inputs'
 import { FinalResult } from '../typings/dataTypes'
 export default class Masterfile {
