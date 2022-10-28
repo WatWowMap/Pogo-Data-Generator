@@ -451,6 +451,8 @@
       "flee_rate": 0.1,
       "capture_rate": 0.02,
       "legendary": true,
+      "height": 5,
+      "weight": 305,
       "mythic": false,
       "buddy_distance": 20,
       "third_move_stardust": 100000,
