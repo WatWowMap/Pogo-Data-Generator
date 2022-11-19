@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "node-fetch": "2.6.7",
-    "pogo-protos": "github:Furtif/pogo-protos#687bd4e"
+    "pogo-protos": "github:Furtif/pogo-protos#06a4d37"
   },
   "engines": {
     "node": ">=16.0.0"
