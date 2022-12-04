@@ -364,19 +364,11 @@
       "forms": {
         "2587": {
           "name": "Normal",
-          "proto": "PYROAR_NORMAL",
-          "quick_moves": [
-            "Fire Fang",
-            "Take Down"
-          ]
+          "proto": "PYROAR_NORMAL"
         },
         "2588": {
           "name": "Female",
-          "proto": "PYROAR_FEMALE",
-          "quick_moves": [
-            "Fire Fang",
-            "Take Down"
-          ]
+          "proto": "PYROAR_FEMALE"
         }
       },
       "types": [
@@ -391,7 +383,8 @@
       "quick_moves": [
         "Ember",
         "Fire Fang",
-        "Take Down"
+        "Take Down",
+        "Incinerate"
       ],
       "charged_moves": [
         "Dark Pulse",

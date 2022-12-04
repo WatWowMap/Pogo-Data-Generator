@@ -17,28 +17,50 @@ export default class PokeApi extends Masterfile {
     this.types = {}
   }
 
-  attack(normal: number, special: number, speed: number, nerf: boolean = false): number {
+  attack(
+    normal: number,
+    special: number,
+    speed: number,
+    nerf: boolean = false,
+  ): number {
     return Math.round(
-      Math.round(2 * (0.875 * Math.max(normal, special) + 0.125 * Math.min(normal, special))) *
+      Math.round(
+        2 *
+          (0.875 * Math.max(normal, special) +
+            0.125 * Math.min(normal, special)),
+      ) *
         (1 + (speed - 75) / 500) *
         (nerf ? 0.91 : 1),
     )
   }
 
-  defense(normal: number, special: number, speed: number, nerf: boolean = false): number {
+  defense(
+    normal: number,
+    special: number,
+    speed: number,
+    nerf: boolean = false,
+  ): number {
     return Math.round(
-      Math.round(2 * (0.625 * Math.max(normal, special) + 0.375 * Math.min(normal, special))) *
+      Math.round(
+        2 *
+          (0.625 * Math.max(normal, special) +
+            0.375 * Math.min(normal, special)),
+      ) *
         (1 + (speed - 75) / 500) *
         (nerf ? 0.91 : 1),
     )
   }
 
   stamina(hp: number, nerf: boolean = false): number {
-    return nerf ? Math.round((1.75 * hp + 50) * 0.91) : Math.floor(1.75 * hp + 50)
+    return nerf
+      ? Math.round((1.75 * hp + 50) * 0.91)
+      : Math.floor(1.75 * hp + 50)
   }
 
   cp(atk: number, def: number, sta: number, cpm: number): number {
-    return Math.floor(((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10)
+    return Math.floor(
+      ((atk + 15) * (def + 15) ** 0.5 * (sta + 15) ** 0.5 * cpm ** 2) / 10,
+    )
   }
 
   megaLookup(id: string, type: string): string | 1 | 2 | 3 {
@@ -63,7 +85,9 @@ export default class PokeApi extends Masterfile {
   }
 
   async baseStatsApi(parsedPokemon: AllPokemon, pokeApiIds: number[]) {
-    const inconsistentStats: { [id: string]: { attack?: number; defense?: number; stamina?: number } } = {
+    const inconsistentStats: {
+      [id: string]: { attack?: number; defense?: number; stamina?: number }
+    } = {
       24: {
         attack: 167,
       },
@@ -133,36 +157,80 @@ export default class PokeApi extends Masterfile {
             parsedPokemon[id].types.length === 0 ||
             (pokeApiIds && pokeApiIds.includes(+id))
           ) {
-            const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+            const statsData: PokeApiStats = await this.fetch(
+              `https://pokeapi.co/api/v2/pokemon/${id}/`,
+            )
 
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach((stat) => {
               baseStats[stat.stat.name] = stat.base_stat
             })
-            const initial: { attack: number; defense: number; stamina: number; cp?: number } = {
-              attack: this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
-              defense: this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+            const initial: {
+              attack: number
+              defense: number
+              stamina: number
+              cp?: number
+            } = {
+              attack: this.attack(
+                baseStats.attack,
+                baseStats['special-attack'],
+                baseStats.speed,
+              ),
+              defense: this.defense(
+                baseStats.defense,
+                baseStats['special-defense'],
+                baseStats.speed,
+              ),
               stamina: this.stamina(baseStats.hp),
             }
-            initial.cp = this.cp(initial.attack, initial.defense, initial.stamina, 0.79030001)
+            initial.cp = this.cp(
+              initial.attack,
+              initial.defense,
+              initial.stamina,
+              0.79030001,
+            )
 
             const nerfCheck = {
               attack:
                 initial.cp > 4000
-                  ? this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed, true)
+                  ? this.attack(
+                      baseStats.attack,
+                      baseStats['special-attack'],
+                      baseStats.speed,
+                      true,
+                    )
                   : initial.attack,
               defense:
                 initial.cp > 4000
-                  ? this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed, true)
+                  ? this.defense(
+                      baseStats.defense,
+                      baseStats['special-defense'],
+                      baseStats.speed,
+                      true,
+                    )
                   : initial.defense,
-              stamina: initial.cp > 4000 ? this.stamina(baseStats.hp, true) : initial.stamina,
+              stamina:
+                initial.cp > 4000
+                  ? this.stamina(baseStats.hp, true)
+                  : initial.stamina,
             }
             this.baseStats[id] = {
-              attack: inconsistentStats[id] ? inconsistentStats[id].attack || nerfCheck.attack : nerfCheck.attack,
-              defense: inconsistentStats[id] ? inconsistentStats[id].defense || nerfCheck.defense : nerfCheck.defense,
-              stamina: inconsistentStats[id] ? inconsistentStats[id].stamina || nerfCheck.stamina : nerfCheck.stamina,
+              attack: inconsistentStats[id]
+                ? inconsistentStats[id].attack || nerfCheck.attack
+                : nerfCheck.attack,
+              defense: inconsistentStats[id]
+                ? inconsistentStats[id].defense || nerfCheck.defense
+                : nerfCheck.defense,
+              stamina: inconsistentStats[id]
+                ? inconsistentStats[id].stamina || nerfCheck.stamina
+                : nerfCheck.stamina,
               types: statsData.types
-                .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+                .map(
+                  (type) =>
+                    Rpc.HoloPokemonType[
+                      `POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto
+                    ],
+                )
                 .sort((a, b) => a - b),
               unreleased: true,
             }
@@ -179,10 +247,16 @@ export default class PokeApi extends Masterfile {
       Object.keys(this.baseStats).map(async (id) => {
         try {
           if (!evolvedPokemon.has(+id)) {
-            const evoData: SpeciesApi = await this.fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+            const evoData: SpeciesApi = await this.fetch(
+              `https://pokeapi.co/api/v2/pokemon-species/${id}`,
+            )
             if (evoData.evolves_from_species) {
               const prevEvoId =
-                Rpc.HoloPokemonId[evoData.evolves_from_species.name.toUpperCase().replace('-', '_') as PokemonIdProto]
+                Rpc.HoloPokemonId[
+                  evoData.evolves_from_species.name
+                    .toUpperCase()
+                    .replace('-', '_') as PokemonIdProto
+                ]
               if (prevEvoId) {
                 if (!this.baseStats[prevEvoId]) {
                   this.baseStats[prevEvoId] = {}
@@ -194,12 +268,16 @@ export default class PokeApi extends Masterfile {
                   evoId: +id,
                   formId: 0,
                 })
-                this.baseStats[prevEvoId].evolutions.sort((a, b) => a.evoId - b.evoId)
+                this.baseStats[prevEvoId].evolutions.sort(
+                  (a, b) => a.evoId - b.evoId,
+                )
                 evolvedPokemon.add(+id)
               } else {
                 console.warn(
                   'Unable to find proto ID for',
-                  evoData.evolves_from_species.name.toUpperCase().replace('-', '_'),
+                  evoData.evolves_from_species.name
+                    .toUpperCase()
+                    .replace('-', '_'),
                 )
               }
             }
@@ -292,22 +370,42 @@ export default class PokeApi extends Masterfile {
       await Promise.all(
         ids.map(async (id) => {
           try {
-            const pokemonId = Rpc.HoloPokemonId[id.split('-')[0].toUpperCase() as PokemonIdProto]
-            const statsData: PokeApiStats = await this.fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+            const pokemonId =
+              Rpc.HoloPokemonId[
+                id.split('-')[0].toUpperCase() as PokemonIdProto
+              ]
+            const statsData: PokeApiStats = await this.fetch(
+              `https://pokeapi.co/api/v2/pokemon/${id}/`,
+            )
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach((stat) => {
               baseStats[stat.stat.name] = stat.base_stat
             })
             const types = statsData.types
-              .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto])
+              .map(
+                (type) =>
+                  Rpc.HoloPokemonType[
+                    `POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto
+                  ],
+              )
               .sort((a, b) => a - b)
 
             const newTheoretical: TempEvolutions = {
               tempEvoId: this.megaLookup(id, type),
-              attack: this.attack(baseStats.attack, baseStats['special-attack'], baseStats.speed),
-              defense: this.defense(baseStats.defense, baseStats['special-defense'], baseStats.speed),
+              attack: this.attack(
+                baseStats.attack,
+                baseStats['special-attack'],
+                baseStats.speed,
+              ),
+              defense: this.defense(
+                baseStats.defense,
+                baseStats['special-defense'],
+                baseStats.speed,
+              ),
               stamina: this.stamina(baseStats.hp),
-              types: this.compare(types, parsedPokemon[pokemonId].types) ? undefined : types,
+              types: this.compare(types, parsedPokemon[pokemonId].types)
+                ? undefined
+                : types,
               unreleased: true,
             }
             if (!this.tempEvos[type][pokemonId]) {
@@ -319,7 +417,9 @@ export default class PokeApi extends Masterfile {
             if (
               !parsedPokemon[pokemonId].tempEvolutions ||
               (parsedPokemon[pokemonId].tempEvolutions &&
-                !parsedPokemon[pokemonId].tempEvolutions.some((temp) => temp.tempEvoId === newTheoretical.tempEvoId))
+                !parsedPokemon[pokemonId].tempEvolutions.some(
+                  (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
+                ))
             ) {
               this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
             }
@@ -334,7 +434,12 @@ export default class PokeApi extends Masterfile {
   async typesApi() {
     const getTypeIds = (types: { name: string }[]) =>
       types
-        .map((type) => Rpc.HoloPokemonType[`POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto])
+        .map(
+          (type) =>
+            Rpc.HoloPokemonType[
+              `POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto
+            ],
+        )
         .sort((a, b) => a - b)
 
     await Promise.all(
@@ -350,7 +455,11 @@ export default class PokeApi extends Masterfile {
               no_damage_to,
             },
           }: PokeApiTypes = id
-            ? await this.fetch(`https://pokeapi.co/api/v2/type/${type.substring(13).toLowerCase()}`)
+            ? await this.fetch(
+                `https://pokeapi.co/api/v2/type/${type
+                  .substring(13)
+                  .toLowerCase()}`,
+              )
             : { damage_relations: {} }
           this.types[id] = {
             strengths: id ? getTypeIds(double_damage_to) : [],

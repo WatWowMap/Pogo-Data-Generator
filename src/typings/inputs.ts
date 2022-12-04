@@ -321,9 +321,26 @@ export interface FullTemplate {
     enabled?: boolean
     options: Options
     template: TranslationsTemplate
-    locales: { [code: string]: boolean }
+    locales: { [key in Locales[number]]: boolean }
   }
 }
+
+export type Locales = [
+  'de',
+  'en',
+  'es',
+  'fr',
+  'hi',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'pt-br',
+  'ru',
+  'th',
+  'tr',
+  'zh-tw',
+]
 
 export interface InvasionsOnly {
   template?: {

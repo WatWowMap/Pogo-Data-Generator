@@ -1,7 +1,10 @@
-import fetch from 'node-fetch'
-
 import { Options, FullTemplate } from '../typings/inputs'
 import { FinalResult } from '../typings/dataTypes'
+
+if (typeof fetch === 'undefined') {
+  global.fetch = require('node-fetch')
+}
+
 export default class Masterfile {
   customFieldNames: { [id: string]: string }
   genders: { [id: string]: string }
@@ -14,7 +17,10 @@ export default class Masterfile {
     }
   }
 
-  static templateMerger(template: { [key: string]: any }, base: FullTemplate): FullTemplate {
+  static templateMerger(
+    template: { [key: string]: any },
+    base: FullTemplate,
+  ): FullTemplate {
     const baseline: { [key: string]: any } = base
     const merged: { [key: string]: any } = {}
     Object.keys(base).forEach((category) => {
@@ -22,7 +28,9 @@ export default class Masterfile {
       Object.keys(baseline[category]).forEach((subKey) => {
         if (merged[category][subKey] === undefined) {
           merged[category][subKey] =
-            typeof baseline[category][subKey] === 'boolean' ? false : baseline[category][subKey]
+            typeof baseline[category][subKey] === 'boolean'
+              ? false
+              : baseline[category][subKey]
         }
       })
       if (category !== 'globalOptions') {
@@ -33,7 +41,8 @@ export default class Masterfile {
             if (template.globalOptions) {
               merged[category].options[optionKey] = optionValue
             } else {
-              merged[category].options[optionKey] = typeof optionValue === 'boolean' ? false : optionValue
+              merged[category].options[optionKey] =
+                typeof optionValue === 'boolean' ? false : optionValue
             }
           }
         })
@@ -48,7 +57,8 @@ export default class Masterfile {
           ...template.translations.options.prefix,
         }
         if (!template.translations.options.questTitleTermsToSkip) {
-          merged.translations.options.questTitleTermsToSkip = base.translations.options.questTitleTermsToSkip
+          merged.translations.options.questTitleTermsToSkip =
+            base.translations.options.questTitleTermsToSkip
         }
       }
     })
@@ -63,7 +73,9 @@ export default class Masterfile {
       }
       return text ? data.text() : data.json()
     } catch (e) {
-      console.error(e, `Unable to fetch ${url}`)
+      if (e instanceof Error) {
+        console.warn(e.message, `Unable to fetch ${url}`)
+      }
     }
   }
 
@@ -86,7 +98,9 @@ export default class Masterfile {
           return string.charAt(0).toUpperCase() + string.slice(1)
         }
       } catch (e) {
-        console.warn(e, '\n', string)
+        if (e instanceof Error) {
+          console.warn(e.message, '\n', string)
+        }
       }
     }
   }
@@ -95,7 +109,10 @@ export default class Masterfile {
     try {
       if (formData && parentData) {
         try {
-          return formData.every((x, i) => x === parentData[i]) && formData.length === parentData.length
+          return (
+            formData.every((x, i) => x === parentData[i]) &&
+            formData.length === parentData.length
+          )
         } catch (e) {
           console.warn(e, '\nForm:', formData, '\nParent:', parentData)
         }
@@ -105,7 +122,11 @@ export default class Masterfile {
     }
   }
 
-  templater(data: any, settings: { template: any; options: Options }, reference: FinalResult = {}) {
+  templater(
+    data: any,
+    settings: { template: any; options: Options },
+    reference: FinalResult = {},
+  ) {
     // loops through the raw data and outputs the desired template
     const { template, options } = settings
     if (!options.customFields) {
@@ -119,7 +140,12 @@ export default class Masterfile {
     }
     const resolved: any = options.keys.main ? {} : []
 
-    const parseData = (fieldKey: string, fieldValue: any, templateChild: any, data: any) => {
+    const parseData = (
+      fieldKey: string,
+      fieldValue: any,
+      templateChild: any,
+      data: any,
+    ) => {
       // turns integer references into values
       const isObj = options.keys[fieldKey]
       let returnValue: any = isObj ? {} : []
@@ -149,7 +175,7 @@ export default class Masterfile {
             }
           } else if (options.makeSingular[fieldKey]) {
             returnValue = child
-          } else {
+          } else if (Array.isArray(returnValue)) {
             returnValue.push(child)
           }
         }
@@ -161,7 +187,12 @@ export default class Masterfile {
       return fieldKey === 'type' && !isObj ? returnValue[0] : returnValue
     }
 
-    const loopFields = (fieldKey: string, x: number, templateChild: any, data: any) => {
+    const loopFields = (
+      fieldKey: string,
+      x: number,
+      templateChild: any,
+      data: any,
+    ) => {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
       const ref = reference[fieldKey] ? reference[fieldKey][x] : x
@@ -176,15 +207,32 @@ export default class Masterfile {
           } else if (templateChild[fieldKey][subFieldKey]) {
             const customKey = this.keyFormatter(subFieldKey, options)
 
-            if (typeof subFieldValue === 'object' || (reference[subFieldKey] && subFieldValue)) {
-              if (subFieldKey === 'evolutions' && (x === 776 || x === 777 || x === 778)) {
+            if (
+              typeof subFieldValue === 'object' ||
+              (reference[subFieldKey] && subFieldValue)
+            ) {
+              if (
+                subFieldKey === 'evolutions' &&
+                (x === 776 || x === 777 || x === 778)
+              ) {
                 // Nidoran hack
-                subFieldValue = data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
+                subFieldValue =
+                  data.pokedexId === 29 ? ref.evolutions[0] : ref.evolutions[1]
               }
-              returnedObj[customKey] = parseData(subFieldKey, subFieldValue, templateChild[fieldKey], data)
+              returnedObj[customKey] = parseData(
+                subFieldKey,
+                subFieldValue,
+                templateChild[fieldKey],
+                data,
+              )
             } else {
               if (options.customChildObj[subFieldKey]) {
-                customChildObj(returnedObj, subFieldKey, customKey, subFieldValue)
+                customChildObj(
+                  returnedObj,
+                  subFieldKey,
+                  customKey,
+                  subFieldValue,
+                )
               } else if (subFieldValue !== undefined) {
                 returnedObj[customKey] = subFieldValue
               }
@@ -192,12 +240,19 @@ export default class Masterfile {
           }
         })
       } catch (e) {
-        console.warn(`Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`)
+        console.warn(
+          `Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`,
+        )
       }
       return returnedObj
     }
 
-    const customChildObj = (target: any, key: string, customKey: string, field: any) => {
+    const customChildObj = (
+      target: any,
+      key: string,
+      customKey: string,
+      field: any,
+    ) => {
       const customObj = options.customChildObj[key]
       if (!target[customObj]) {
         target[customObj] = {}
@@ -220,7 +275,12 @@ export default class Masterfile {
             const customKey = this.keyFormatter(fieldKey, options)
 
             if (typeof fieldValue === 'object' || reference[fieldKey]) {
-              parent[customKey] = parseData(fieldKey, fieldValue, template, data[id])
+              parent[customKey] = parseData(
+                fieldKey,
+                fieldValue,
+                template,
+                data[id],
+              )
             } else {
               if (options.customChildObj[fieldKey]) {
                 customChildObj(parent, fieldKey, customKey, fieldValue)
@@ -232,7 +292,7 @@ export default class Masterfile {
         })
         if (mainKey !== undefined && mainKey !== null) {
           resolved[mainKey] = parent
-        } else {
+        } else if (Array.isArray(resolved)) {
           resolved.push(parent)
         }
       } catch (e) {
@@ -265,7 +325,9 @@ export default class Masterfile {
           split.forEach((field: string) => {
             newKey +=
               data[field] || data[field] === 0
-                ? `${data[field].toString().replace(' ', options.keyJoiner)}${options.keyJoiner}`
+                ? `${data[field].toString().replace(' ', options.keyJoiner)}${
+                    options.keyJoiner
+                  }`
                 : ''
           })
           if (newKey.endsWith(options.keyJoiner)) {

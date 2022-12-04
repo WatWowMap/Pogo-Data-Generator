@@ -7,30 +7,6 @@
       }
     ]
   },
-  "211": {
-    "evolutions": [
-      {
-        "evoId": 904,
-        "formId": 0
-      }
-    ]
-  },
-  "215": {
-    "evolutions": [
-      {
-        "evoId": 903,
-        "formId": 0
-      }
-    ]
-  },
-  "217": {
-    "evolutions": [
-      {
-        "evoId": 901,
-        "formId": 0
-      }
-    ]
-  },
   "234": {
     "evolutions": [
       {
@@ -107,16 +83,6 @@
     ],
     "unreleased": true
   },
-  "901": {
-    "attack": 243,
-    "defense": 181,
-    "stamina": 277,
-    "types": [
-      1,
-      5
-    ],
-    "unreleased": true
-  },
   "902": {
     "attack": 217,
     "defense": 144,
@@ -124,26 +90,6 @@
     "types": [
       8,
       11
-    ],
-    "unreleased": true
-  },
-  "903": {
-    "attack": 259,
-    "defense": 158,
-    "stamina": 190,
-    "types": [
-      2,
-      4
-    ],
-    "unreleased": true
-  },
-  "904": {
-    "attack": 222,
-    "defense": 171,
-    "stamina": 198,
-    "types": [
-      4,
-      17
     ],
     "unreleased": true
   },

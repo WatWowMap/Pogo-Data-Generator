@@ -10,15 +10,28 @@ import Translations from './classes/Translations'
 import PokeApi from './classes/PokeApi'
 import base from './base'
 
-import { Input, InvasionsOnly, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
+import {
+  Input,
+  InvasionsOnly,
+  Locales,
+  PokemonTemplate,
+  TranslationsTemplate,
+} from './typings/inputs'
 import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 
-export async function generate({ template, url, raw, pokeApi, test }: Input = {}): Promise<FinalResult> {
+export async function generate({
+  template,
+  url,
+  raw,
+  pokeApi,
+  test,
+}: Input = {}): Promise<FinalResult> {
   const final: FinalResult = {}
-  const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
-
+  const urlToFetch =
+    url ||
+    'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
   const {
     pokemon,
     types,
@@ -32,7 +45,8 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     weather,
     translations,
   } = Masterfile.templateMerger(template || base, base)
-  const localeCheck = translations.enabled && translations.options.masterfileLocale
+  const localeCheck =
+    translations.enabled && translations.options.masterfileLocale
 
   const AllPokemon = new Pokemon(pokemon.options)
   const AllItems = new Items(items.options)
@@ -56,13 +70,17 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
         AllItems.addItem(data[i])
       } else if (data[i].data.combatMove) {
         AllMoves.addMove(data[i])
-      } else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE') {
+      } else if (
+        data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE'
+      ) {
         AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon)
       } else if (data[i].data.weatherAffinities) {
         AllWeather.addWeather(data[i])
       } else if (data[i].data.evolutionQuestTemplate) {
         AllPokemon.addEvolutionQuest(data[i])
-      } else if (data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE') {
+      } else if (
+        data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE'
+      ) {
         AllPokemon.jungleCup(data[i])
       }
     }
@@ -78,13 +96,18 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   AllPokemon.sortForms()
 
   if (pokeApi === true) {
-    await AllPokeApi.baseStatsApi(AllPokemon.parsedPokemon, pokemon.options.pokeApiIds)
+    await AllPokeApi.baseStatsApi(
+      AllPokemon.parsedPokemon,
+      pokemon.options.pokeApiIds,
+    )
     await AllPokeApi.evoApi(AllPokemon.evolvedPokemon)
     await AllPokeApi.tempEvoApi(AllPokemon.parsedPokemon)
     await AllPokeApi.typesApi()
   }
 
-  const getDataSource = async (category: 'baseStats' | 'tempEvos' | 'types') => {
+  const getDataSource = async (
+    category: 'baseStats' | 'tempEvos' | 'types',
+  ) => {
     if (pokeApi === true) return AllPokeApi[category]
     if (pokeApi) return pokeApi[category]
     return AllPokeApi.fetch(
@@ -95,7 +118,10 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   AllTypes.parsePokeApi(await getDataSource('types'))
 
   if (pokemon.options.includeEstimatedPokemon) {
-    AllPokemon.parsePokeApi(await getDataSource('baseStats'), await getDataSource('tempEvos'))
+    AllPokemon.parsePokeApi(
+      await getDataSource('baseStats'),
+      await getDataSource('tempEvos'),
+    )
   }
 
   if ((pokemon.template as PokemonTemplate).little) {
@@ -114,11 +140,19 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
     AllMoves.protoMoves()
   }
   AllWeather.buildWeather()
-  if (invasions.enabled || (translations.template as TranslationsTemplate).characters) {
+  if (
+    invasions.enabled ||
+    (translations.template as TranslationsTemplate).characters
+  ) {
     const invasionData: InvasionInfo = await AllInvasions.fetch(
       'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
     )
-    AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions()))
+    AllInvasions.invasions(
+      AllInvasions.mergeInvasions(
+        invasionData,
+        await AllInvasions.customInvasions(),
+      ),
+    )
   }
 
   if (translations.enabled) {
@@ -129,7 +163,10 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
       Object.entries(translations.locales).map(async (langCode) => {
         const [localeCode, bool] = langCode
         if (bool) {
-          await AllTranslations.fetchTranslations(localeCode, availableManualTranslations)
+          await AllTranslations.fetchTranslations(
+            localeCode as Locales[number],
+            availableManualTranslations,
+          )
 
           if (translations.template.misc) {
             AllTranslations.misc(localeCode)
@@ -167,7 +204,10 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
               questConditions: AllQuests.parsedConditions,
               questRewardTypes: AllQuests.parsedRewardTypes,
             })
-            AllTranslations.parseEvoQuests(localeCode, AllPokemon.evolutionQuests)
+            AllTranslations.parseEvoQuests(
+              localeCode,
+              AllPokemon.evolutionQuests,
+            )
           }
         }
       }),
@@ -203,12 +243,24 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   const localPokemon = localeCheck
     ? AllTranslations.masterfile.pokemon
     : AllPokemon.parsedPokeForms || AllPokemon.parsedPokemon
-  const localTypes = localeCheck ? AllTranslations.masterfile.types : AllTypes.parsedTypes
-  const localMoves = localeCheck ? AllTranslations.masterfile.moves : AllMoves.parsedMoves
-  const localForms = localeCheck ? AllTranslations.masterfile.forms : AllPokemon.parsedForms
-  const localItems = localeCheck ? AllTranslations.masterfile.items : AllItems.parsedItems
-  const localWeather = localeCheck ? AllTranslations.masterfile.weather : AllWeather.parsedWeather
-  const localEvolutionQuests = localeCheck ? AllTranslations.masterfile.evolutionQuests : AllPokemon.evolutionQuests
+  const localTypes = localeCheck
+    ? AllTranslations.masterfile.types
+    : AllTypes.parsedTypes
+  const localMoves = localeCheck
+    ? AllTranslations.masterfile.moves
+    : AllMoves.parsedMoves
+  const localForms = localeCheck
+    ? AllTranslations.masterfile.forms
+    : AllPokemon.parsedForms
+  const localItems = localeCheck
+    ? AllTranslations.masterfile.items
+    : AllItems.parsedItems
+  const localWeather = localeCheck
+    ? AllTranslations.masterfile.weather
+    : AllWeather.parsedWeather
+  const localEvolutionQuests = localeCheck
+    ? AllTranslations.masterfile.evolutionQuests
+    : AllPokemon.evolutionQuests
 
   if (pokemon.enabled) {
     final[pokemon.options.topLevelName || 'pokemon'] = raw
@@ -243,7 +295,9 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
       : AllPokemon.templater(AllPokemon.parsedCostumes, costumes)
   }
   if (items.enabled) {
-    final[items.options.topLevelName || 'items'] = raw ? localItems : AllItems.templater(localItems, items)
+    final[items.options.topLevelName || 'items'] = raw
+      ? localItems
+      : AllItems.templater(localItems, items)
   }
   if (moves.enabled) {
     final[moves.options.topLevelName || 'moves'] = raw
@@ -278,7 +332,8 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
       : AllWeather.templater(localWeather, weather, { types: localTypes })
   }
   if (translations.enabled) {
-    final[translations.options.topLevelName || 'translations'] = AllTranslations.parsedTranslations
+    final[translations.options.topLevelName || 'translations'] =
+      AllTranslations.parsedTranslations
   }
   if (test && pokeApi === true) {
     final.AllPokeApi = AllPokeApi
@@ -286,12 +341,19 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
   return final
 }
 
-export async function invasions({ template }: InvasionsOnly = {}): Promise<AllInvasions> {
+export async function invasions({
+  template,
+}: InvasionsOnly = {}): Promise<AllInvasions> {
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
     'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
   )
-  AllInvasions.invasions(AllInvasions.mergeInvasions(invasionData, await AllInvasions.customInvasions(true)))
+  AllInvasions.invasions(
+    AllInvasions.mergeInvasions(
+      invasionData,
+      await AllInvasions.customInvasions(true),
+    ),
+  )
   return AllInvasions.templater(AllInvasions.parsedInvasions, finalTemplate)
 }

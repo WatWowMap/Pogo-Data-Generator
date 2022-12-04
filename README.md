@@ -19,6 +19,10 @@ Generates templated data for Pokemon GO related projects, including:
 - Quest Reward Types
 - Future Pokemon via PokeAPI
 
+## Current Status
+- Internally the typing is strong, however, the return results are typed pretty horribly due to this being my first TypeScript project. Going to work on this in the 2.0 release.
+
+
 ## Installing/Usage
 
 ### Package

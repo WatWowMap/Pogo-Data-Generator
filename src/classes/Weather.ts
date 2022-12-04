@@ -15,19 +15,21 @@ export default class Weather extends Masterfile {
   }
 
   buildWeather() {
-    Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach((proto) => {
-      try {
-        const [name, id] = proto
-        this.parsedWeather[id] = {
-          weatherId: +id,
-          weatherName: this.capitalize(name),
-          proto: name,
-          types: this.rawWeather[name] || [],
+    Object.entries(Rpc.GameplayWeatherProto.WeatherCondition).forEach(
+      (proto) => {
+        try {
+          const [name, id] = proto
+          this.parsedWeather[id] = {
+            weatherId: +id,
+            weatherName: this.capitalize(name),
+            proto: name,
+            types: this.rawWeather[name] || [],
+          }
+        } catch (e) {
+          console.warn(e, proto)
         }
-      } catch (e) {
-        console.warn(e, proto)
-      }
-    })
+      },
+    )
   }
 
   addWeather(object: NiaMfObj) {
