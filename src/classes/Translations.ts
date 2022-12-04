@@ -1,7 +1,7 @@
 import { Rpc } from 'pogo-protos'
 import { AllForms, AllInvasions, AllPokemon, AllQuests, FinalResult, TranslationKeys } from '../typings/dataTypes'
 import { EvolutionQuest } from '../typings/general'
-import { Options } from '../typings/inputs'
+import { Options, Locales } from '../typings/inputs'
 import { TypeProto } from '../typings/protos'
 
 import Masterfile from './Masterfile'
@@ -11,8 +11,7 @@ export default class Translations extends Masterfile {
   rawTranslations: TranslationKeys
   manualTranslations: { [key: string]: TranslationKeys }
   parsedTranslations: { [key: string]: TranslationKeys }
-  codes: { [id: string]: string }
-  latestRemoteLocales: { [id: string]: string }
+  codes: { [key in Locales[number]]: string }
   masterfile: FinalResult
   generics: { [key: string]: { [key: string]: string } }
   reference: TranslationKeys
@@ -31,24 +30,12 @@ export default class Translations extends Masterfile {
     this.parsedTranslations = {}
     this.masterfile = {}
     this.codes = {
-      de: 'german',
-      en: 'english',
-      es: 'spanish',
-      fr: 'french',
-      it: 'italian',
-      ja: 'japanese',
-      ko: 'korean',
-      'pt-br': 'brazilianportuguese',
-      ru: 'russian',
-      th: 'thai',
-      'zh-tw': 'chinesetraditional',
-      tr: 'turkish',
-    }
-    this.latestRemoteLocales = {
       de: 'German',
       en: 'English',
       es: 'Spanish',
       fr: 'French',
+      hi: 'Hindi',
+      id: 'Indonesian',
       it: 'Italian',
       ja: 'Japanese',
       ko: 'Korean',
@@ -82,6 +69,18 @@ export default class Translations extends Masterfile {
         normal: 'Normal',
         unknown: 'Inconnu',
         substitute: 'Substitution',
+      },
+      hi: {
+        none: 'कोई नहीं',
+        normal: 'सामान्य',
+        unknown: 'अज्ञात',
+        substitute: 'बदलना',
+      },
+      id: {
+        none: 'Tidak ada',
+        normal: 'Normal',
+        unknown: 'Tidak diketahui',
+        substitute: 'Pengganti',
       },
       it: {
         none: 'Nessuno',
@@ -138,7 +137,7 @@ export default class Translations extends Masterfile {
     return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
   }
 
-  async fetchTranslations(locale: string, availableManualTranslations: string[]) {
+  async fetchTranslations(locale: Locales[number], availableManualTranslations: string[]) {
     this.rawTranslations[locale] = {}
     this.parsedTranslations[locale] = {}
     this.manualTranslations[locale] = {
@@ -170,20 +169,20 @@ export default class Translations extends Masterfile {
       }
       const { data }: { data: string[] } = await this.fetch(
         `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${
-          this.codes[locale] || 'english'
+          this.codes[locale]?.toLowerCase() || 'english'
         }.json`,
-      )
+      ) || { data: [] }
 
       for (let i = 0; i < data.length; i += 2) {
         this.rawTranslations[locale][data[i]] = this.removeEscapes(data[i + 1])
       }
 
-      const textFile = await this.fetch(
+      const textFile = ['hi', 'id'].includes(locale) ? '' : await this.fetch(
         `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/${
-          this.latestRemoteLocales[locale] || 'English'
+          this.codes[locale] || 'English'
         }.txt`,
         true,
-      )
+      ) || ''
       const splitText = textFile.split('\n')
 
       splitText.forEach((line: string, i: number) => {

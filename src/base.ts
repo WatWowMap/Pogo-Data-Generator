@@ -339,6 +339,8 @@ const baseTemplate: FullTemplate = {
       en: true,
       es: false,
       fr: true,
+      hi: true,
+      id: true,
       it: false,
       ja: false,
       ko: false,

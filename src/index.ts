@@ -10,7 +10,7 @@ import Translations from './classes/Translations'
 import PokeApi from './classes/PokeApi'
 import base from './base'
 
-import { Input, InvasionsOnly, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
+import { Input, InvasionsOnly, Locales, PokemonTemplate, TranslationsTemplate } from './typings/inputs'
 import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
@@ -18,7 +18,6 @@ import { NiaMfObj } from './typings/general'
 export async function generate({ template, url, raw, pokeApi, test }: Input = {}): Promise<FinalResult> {
   const final: FinalResult = {}
   const urlToFetch = url || 'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
-
   const {
     pokemon,
     types,
@@ -129,7 +128,7 @@ export async function generate({ template, url, raw, pokeApi, test }: Input = {}
       Object.entries(translations.locales).map(async (langCode) => {
         const [localeCode, bool] = langCode
         if (bool) {
-          await AllTranslations.fetchTranslations(localeCode, availableManualTranslations)
+          await AllTranslations.fetchTranslations(localeCode as Locales[number], availableManualTranslations)
 
           if (translations.template.misc) {
             AllTranslations.misc(localeCode)
