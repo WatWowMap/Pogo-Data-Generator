@@ -9,22 +9,51 @@ const main = async () => {
   const data = await generate({
     raw: process.argv.includes('--raw'),
     test: process.argv.includes('--test'),
-    pokeApi: process.argv.includes('--pokeapi') || { baseStats, tempEvos, types },
+    pokeApi: process.argv.includes('--pokeapi') || {
+      baseStats,
+      tempEvos,
+      types,
+    },
   })
 
   if (process.argv.includes('--test')) {
     if (process.argv.includes('--invasions')) {
-      fs.writeFile('./invasions.json', JSON.stringify(await invasions(), null, 2), 'utf8', () => {})
+      fs.writeFile(
+        './invasions.json',
+        JSON.stringify(await invasions(), null, 2),
+        'utf8',
+        () => {},
+      )
     }
     if (data?.AllPokeApi) {
       const { baseStats, tempEvos, types } = data.AllPokeApi
-      fs.writeFile('./static/baseStats.json', JSON.stringify(baseStats, null, 2), 'utf8', () => {})
-      fs.writeFile('./static/tempEvos.json', JSON.stringify(tempEvos, null, 2), 'utf8', () => {})
-      fs.writeFile('./static/types.json', JSON.stringify(types, null, 2), 'utf8', () => {})
+      fs.writeFile(
+        './static/baseStats.json',
+        JSON.stringify(baseStats, null, 2),
+        'utf8',
+        () => {},
+      )
+      fs.writeFile(
+        './static/tempEvos.json',
+        JSON.stringify(tempEvos, null, 2),
+        'utf8',
+        () => {},
+      )
+      fs.writeFile(
+        './static/types.json',
+        JSON.stringify(types, null, 2),
+        'utf8',
+        () => {},
+      )
       delete data.AllPokeApi
     }
     if (data) {
-      fs.writeFile('./masterfile.json', JSON.stringify(data, null, 2), 'utf8', () => {})
+      fs.writeFile(
+        './masterfile.json',
+        JSON.stringify(data, null, 2),
+        'utf8',
+        () => {},
+      )
     }
   }
   console.timeEnd('Generated in')

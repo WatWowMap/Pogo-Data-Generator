@@ -25,7 +25,8 @@
     "invasions": "ts-node devWrapper.ts --test --invasions",
     "test": "tsc && ./node_modules/.bin/jest",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "publishBuild": "rm -r dist && tsc"
+    "publishBuild": "rm -r dist && tsc",
+    "prettier": "prettier --write \"**/*.ts\""
   },
   "repository": {
     "type": "git",

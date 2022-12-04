@@ -126,7 +126,7 @@ export default class Pokemon extends Masterfile {
         id === Rpc.HoloPokemonId.NIDORAN_FEMALE ||
           id === Rpc.HoloPokemonId.NIDORAN_MALE
           ? 8
-          : Rpc.HoloPokemonId[id].length + 1
+          : Rpc.HoloPokemonId[id].length + 1,
       )
       return this.capitalize(name)
     } catch (e) {
@@ -260,7 +260,7 @@ export default class Pokemon extends Masterfile {
     } catch (e) {
       console.warn(
         e,
-        `Failed to compile evos for ${JSON.stringify(mfObject, null, 2)}`
+        `Failed to compile evos for ${JSON.stringify(mfObject, null, 2)}`,
       )
     }
   }
@@ -268,7 +268,7 @@ export default class Pokemon extends Masterfile {
   compileTempEvos(
     mfObject: TempEvo[],
     evoBranch: EvoBranch[],
-    primaryForm: SinglePokemon
+    primaryForm: SinglePokemon,
   ): TempEvolutions[] {
     try {
       const tempEvolutions: TempEvolutions[] = mfObject
@@ -300,7 +300,7 @@ export default class Pokemon extends Masterfile {
             newTempEvolution.types = types
           }
           const energy = evoBranch.find(
-            (branch) => branch.temporaryEvolution === tempEvo.tempEvoId
+            (branch) => branch.temporaryEvolution === tempEvo.tempEvoId,
           )
           if (energy) {
             newTempEvolution.firstEnergyCost =
@@ -311,12 +311,12 @@ export default class Pokemon extends Masterfile {
           return newTempEvolution
         })
       return tempEvolutions.sort(
-        (a, b) => (a.tempEvoId as number) - (b.tempEvoId as number)
+        (a, b) => (a.tempEvoId as number) - (b.tempEvoId as number),
       )
     } catch (e) {
       console.warn(
         e,
-        `Failed to compile temp evos for ${JSON.stringify(mfObject, null, 2)}`
+        `Failed to compile temp evos for ${JSON.stringify(mfObject, null, 2)}`,
       )
     }
   }
@@ -394,7 +394,7 @@ export default class Pokemon extends Masterfile {
         this.evolutionQuests[object.templateId].assetsRef =
           this.evolutionQuests[object.templateId].assetsRef.replace(
             'single',
-            'plural'
+            'plural',
           )
       }
       if (evolutionQuestTemplate.goals[1]) {
@@ -403,7 +403,7 @@ export default class Pokemon extends Masterfile {
     } catch (e) {
       console.warn(
         e,
-        `Failed to add evolution quest for ${JSON.stringify(object, null, 2)}`
+        `Failed to add evolution quest for ${JSON.stringify(object, null, 2)}`,
       )
     }
   }
@@ -486,7 +486,7 @@ export default class Pokemon extends Masterfile {
         const primaryForm = this.parsedPokemon[id]
         const formName = this.formName(
           id,
-          split.filter((word, i) => i > 1 && word).join('_')
+          split.filter((word, i) => i > 1 && word).join('_'),
         )
 
         if (!this.skipForms(formName)) {
@@ -547,14 +547,14 @@ export default class Pokemon extends Masterfile {
               form.evolutions = []
             }
             form.evolutions.push(
-              ...this.compileEvos(pokemonSettings.evolutionBranch)
+              ...this.compileEvos(pokemonSettings.evolutionBranch),
             )
           }
           if (pokemonSettings.tempEvoOverrides) {
             form.tempEvolutions = this.compileTempEvos(
               pokemonSettings.tempEvoOverrides,
               pokemonSettings.evolutionBranch,
-              this.parsedPokemon[id]
+              this.parsedPokemon[id],
             )
           }
           if (
@@ -562,7 +562,7 @@ export default class Pokemon extends Masterfile {
             primaryForm.tempEvolutions
           ) {
             form.tempEvolutions = Object.values(primaryForm.tempEvolutions).map(
-              (tempEvo) => tempEvo
+              (tempEvo) => tempEvo,
             )
           }
           if (pokemonSettings.shadow) {
@@ -573,7 +573,7 @@ export default class Pokemon extends Masterfile {
           }
           if (pokemonSettings.obCostumeEvolution) {
             form.costumeOverrideEvos = this.getCostumeOverrides(
-              pokemonSettings.obCostumeEvolution
+              pokemonSettings.obCostumeEvolution,
             )
           }
         }
@@ -616,19 +616,19 @@ export default class Pokemon extends Masterfile {
           pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
         ) {
           this.parsedPokemon[id].evolutions = this.compileEvos(
-            pokemonSettings.evolutionBranch
+            pokemonSettings.evolutionBranch,
           )
         }
         if (pokemonSettings.tempEvoOverrides) {
           this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
             pokemonSettings.tempEvoOverrides,
             pokemonSettings.evolutionBranch,
-            this.parsedPokemon[id]
+            this.parsedPokemon[id],
           )
         }
         if (pokemonSettings.obCostumeEvolution) {
           this.parsedPokemon[id].costumeOverrideEvos = this.getCostumeOverrides(
-            pokemonSettings.obCostumeEvolution
+            pokemonSettings.obCostumeEvolution,
           )
         }
       }
@@ -636,7 +636,7 @@ export default class Pokemon extends Masterfile {
       console.warn(
         e,
         `Failed to parse Pokemon for ${id}`,
-        JSON.stringify(object, null, 2)
+        JSON.stringify(object, null, 2),
       )
     }
   }
@@ -729,7 +729,7 @@ export default class Pokemon extends Masterfile {
     Object.entries(this.parsedPokemon).forEach(([id, pokemon]) => {
       const allowed =
         this.jungleCupRules.types.some((type) =>
-          pokemon.types.includes(type)
+          pokemon.types.includes(type),
         ) && !this.jungleCupRules.banned.includes(+id)
       if (allowed) pokemon.jungle = true
     })
@@ -815,31 +815,31 @@ export default class Pokemon extends Masterfile {
         ) {
           Object.keys(tempEvos[category]).forEach((id) => {
             try {
-            const tempEvolutions = [
-              ...tempEvos[category][id].tempEvolutions,
-              ...(this.parsedPokemon[id].tempEvolutions
-                ? this.parsedPokemon[id].tempEvolutions
-                : []),
-            ]
-            this.parsedPokemon[id] = {
-              ...this.parsedPokemon[id],
-              tempEvolutions,
-            }
-            if (this.parsedPokemon[id].forms) {
-              this.parsedPokemon[id].forms.forEach((form) => {
-                if (
-                  this.parsedForms[form].formName === 'Normal' ||
-                  this.parsedForms[form].formName === 'Purified'
-                ) {
-                  this.parsedForms[form].tempEvolutions = tempEvolutions
-                }
-              })
-            }
+              const tempEvolutions = [
+                ...tempEvos[category][id].tempEvolutions,
+                ...(this.parsedPokemon[id].tempEvolutions
+                  ? this.parsedPokemon[id].tempEvolutions
+                  : []),
+              ]
+              this.parsedPokemon[id] = {
+                ...this.parsedPokemon[id],
+                tempEvolutions,
+              }
+              if (this.parsedPokemon[id].forms) {
+                this.parsedPokemon[id].forms.forEach((form) => {
+                  if (
+                    this.parsedForms[form].formName === 'Normal' ||
+                    this.parsedForms[form].formName === 'Purified'
+                  ) {
+                    this.parsedForms[form].tempEvolutions = tempEvolutions
+                  }
+                })
+              }
             } catch (e) {
               console.warn(e, `Failed to parse temp evos for ${category}-${id}`)
             }
           })
-        }  
+        }
       } catch (e) {
         console.warn(e, `Failed to parse temp evos for ${category}`)
       }

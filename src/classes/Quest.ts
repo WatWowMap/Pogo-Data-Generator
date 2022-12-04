@@ -42,7 +42,10 @@ export default class Quests extends Masterfile {
         parseTarget[id] = {
           id,
           proto: name,
-          formatted: category === 'types' ? this.capitalize(name.replace('QUEST_', '')) : this.capitalize(name),
+          formatted:
+            category === 'types'
+              ? this.capitalize(name.replace('QUEST_', ''))
+              : this.capitalize(name),
         }
       } catch (e) {
         console.warn(e, `Failed to parse quest ${proto}`)

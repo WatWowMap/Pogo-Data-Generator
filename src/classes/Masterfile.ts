@@ -8,8 +8,7 @@ if (typeof fetch === 'undefined') {
 export default class Masterfile {
   customFieldNames: { [id: string]: string }
   genders: { [id: string]: string }
-  protos: any
-  
+
   constructor() {
     this.customFieldNames = {}
     this.genders = {
@@ -20,7 +19,7 @@ export default class Masterfile {
 
   static templateMerger(
     template: { [key: string]: any },
-    base: FullTemplate
+    base: FullTemplate,
   ): FullTemplate {
     const baseline: { [key: string]: any } = base
     const merged: { [key: string]: any } = {}
@@ -126,7 +125,7 @@ export default class Masterfile {
   templater(
     data: any,
     settings: { template: any; options: Options },
-    reference: FinalResult = {}
+    reference: FinalResult = {},
   ) {
     // loops through the raw data and outputs the desired template
     const { template, options } = settings
@@ -145,7 +144,7 @@ export default class Masterfile {
       fieldKey: string,
       fieldValue: any,
       templateChild: any,
-      data: any
+      data: any,
     ) => {
       // turns integer references into values
       const isObj = options.keys[fieldKey]
@@ -192,7 +191,7 @@ export default class Masterfile {
       fieldKey: string,
       x: number,
       templateChild: any,
-      data: any
+      data: any,
     ) => {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
@@ -224,7 +223,7 @@ export default class Masterfile {
                 subFieldKey,
                 subFieldValue,
                 templateChild[fieldKey],
-                data
+                data,
               )
             } else {
               if (options.customChildObj[subFieldKey]) {
@@ -232,7 +231,7 @@ export default class Masterfile {
                   returnedObj,
                   subFieldKey,
                   customKey,
-                  subFieldValue
+                  subFieldValue,
                 )
               } else if (subFieldValue !== undefined) {
                 returnedObj[customKey] = subFieldValue
@@ -242,7 +241,7 @@ export default class Masterfile {
         })
       } catch (e) {
         console.warn(
-          `Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`
+          `Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`,
         )
       }
       return returnedObj
@@ -252,7 +251,7 @@ export default class Masterfile {
       target: any,
       key: string,
       customKey: string,
-      field: any
+      field: any,
     ) => {
       const customObj = options.customChildObj[key]
       if (!target[customObj]) {
@@ -280,7 +279,7 @@ export default class Masterfile {
                 fieldKey,
                 fieldValue,
                 template,
-                data[id]
+                data[id],
               )
             } else {
               if (options.customChildObj[fieldKey]) {

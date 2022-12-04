@@ -325,7 +325,22 @@ export interface FullTemplate {
   }
 }
 
-export type Locales = ['de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja', 'ko', 'pt-br', 'ru', 'th', 'tr', 'zh-tw']
+export type Locales = [
+  'de',
+  'en',
+  'es',
+  'fr',
+  'hi',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'pt-br',
+  'ru',
+  'th',
+  'tr',
+  'zh-tw',
+]
 
 export interface InvasionsOnly {
   template?: {
