@@ -31,7 +31,9 @@
       8,
       9
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": false,
+    "mythic": false
   },
   "680": {
     "attack": 188,
@@ -61,7 +63,9 @@
       5,
       16
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": true,
+    "mythic": false
   },
   "899": {
     "attack": 206,
@@ -71,7 +75,9 @@
       1,
       14
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": false,
+    "mythic": false
   },
   "900": {
     "attack": 253,
@@ -81,7 +87,9 @@
       6,
       7
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": false,
+    "mythic": false
   },
   "902": {
     "attack": 217,
@@ -91,7 +99,9 @@
       8,
       11
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": false,
+    "mythic": false
   },
   "905": {
     "attack": 281,
@@ -101,6 +111,8 @@
       3,
       18
     ],
-    "unreleased": true
+    "unreleased": true,
+    "legendary": true,
+    "mythic": false
   }
 }
