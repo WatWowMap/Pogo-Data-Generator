@@ -166,4 +166,6 @@ export interface SpeciesApi {
     name: string
     url: string
   }
+  is_legendary: boolean
+  is_mythical: boolean
 }

@@ -250,6 +250,8 @@ export default class PokeApi extends Masterfile {
             const evoData: SpeciesApi = await this.fetch(
               `https://pokeapi.co/api/v2/pokemon-species/${id}`,
             )
+            this.baseStats[id].legendary = evoData.is_legendary
+            this.baseStats[id].mythic = evoData.is_mythical
             if (evoData.evolves_from_species) {
               const prevEvoId =
                 Rpc.HoloPokemonId[
