@@ -55,6 +55,7 @@ export interface SingleMove {
   proto?: string
   type?: number
   power?: number
+  fast?: boolean
 }
 
 export interface AllItems {

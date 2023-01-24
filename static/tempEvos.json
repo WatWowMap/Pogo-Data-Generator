@@ -162,15 +162,7 @@
       "tempEvolutions": []
     },
     "373": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 310,
-          "defense": 251,
-          "stamina": 216,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "376": {
       "tempEvolutions": [
@@ -556,14 +548,14 @@
     "849": {
       "tempEvolutions": [
         {
-          "tempEvoId": "Low Key Gmax",
+          "tempEvoId": "Amped Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
           "unreleased": true
         },
         {
-          "tempEvoId": "Amped Gmax",
+          "tempEvoId": "Low Key Gmax",
           "attack": 224,
           "defense": 140,
           "stamina": 181,
@@ -640,17 +632,6 @@
     "892": {
       "tempEvolutions": [
         {
-          "tempEvoId": "Single Strike Gmax",
-          "attack": 254,
-          "defense": 177,
-          "stamina": 225,
-          "types": [
-            2,
-            17
-          ],
-          "unreleased": true
-        },
-        {
           "tempEvoId": "Rapid Strike Gmax",
           "attack": 254,
           "defense": 177,
@@ -658,6 +639,17 @@
           "types": [
             2,
             11
+          ],
+          "unreleased": true
+        },
+        {
+          "tempEvoId": "Single Strike Gmax",
+          "attack": 254,
+          "defense": 177,
+          "stamina": 225,
+          "types": [
+            2,
+            17
           ],
           "unreleased": true
         }

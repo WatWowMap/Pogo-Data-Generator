@@ -135,6 +135,7 @@ type Move = {
   moveId?: boolean
   moveName?: boolean
   proto?: boolean
+  fast?: boolean
   type:
     | {
         typeId?: boolean

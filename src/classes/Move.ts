@@ -21,6 +21,7 @@ export default class Moves extends Masterfile {
           moveId: +id,
           moveName: this.capitalize(name.replace('_FAST', '')),
           proto: name,
+          fast: name.includes('_FAST'),
         }
       }
     })
