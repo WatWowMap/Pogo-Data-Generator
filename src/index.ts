@@ -100,6 +100,16 @@ export async function generate({
       AllPokemon.parsedPokemon,
       pokemon.options.pokeApiIds,
     )
+    await AllPokeApi.extraPokemon(AllPokemon.parsedPokemon).then(() => {
+      Object.values(AllPokemon.parsedPokemon).forEach((pokemon) => {
+        pokemon.quickMoves = pokemon.quickMoves.filter(
+          (move) => AllMoves.parsedMoves[move].power,
+        )
+        pokemon.chargedMoves = pokemon.chargedMoves.filter(
+          (move) => AllMoves.parsedMoves[move].power,
+        )
+      })
+    })
     await AllPokeApi.evoApi(AllPokemon.evolvedPokemon)
     await AllPokeApi.tempEvoApi(AllPokemon.parsedPokemon)
     await AllPokeApi.typesApi()

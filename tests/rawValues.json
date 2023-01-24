@@ -211,7 +211,8 @@
     "17": {
       "moveId": 17,
       "moveName": "Smog",
-      "proto": "SMOG"
+      "proto": "SMOG",
+      "fast": false
     },
     "72": {
       "moveId": 72,
