@@ -800,6 +800,14 @@ export default class Pokemon extends Masterfile {
           this.parsedPokemon[id] = {
             ...this.parsedPokemon[id],
             ...baseStats[id],
+            pokemonName:
+              this.parsedPokemon[id].pokemonName || baseStats[id].pokemonName,
+            quickMoves: this.parsedPokemon[id].quickMoves.length
+              ? this.parsedPokemon[id].quickMoves
+              : baseStats[id].quickMoves,
+            chargedMoves: this.parsedPokemon[id].chargedMoves.length
+              ? this.parsedPokemon[id].chargedMoves
+              : baseStats[id].chargedMoves,
             evolutions,
           }
         } catch (e) {
