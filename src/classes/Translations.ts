@@ -859,6 +859,23 @@ export default class Translations extends Masterfile {
           `${this.options.prefix.alignment}${id}`
         ] = this.capitalize(name.replace('POKEMON_ALIGNMENT_', ''))
       })
+      Object.entries(Rpc.RaidLevel).forEach((proto) => {
+        const [name, id] = proto
+        const shortened = this.capitalize(name.replace('RAID_LEVEL_', ''))
+        const isLevel = !!+shortened
+        this.parsedTranslations[locale].misc[
+          `${this.options.prefix.raidLevel}${id}`
+        ] = `${shortened}${isLevel ?  ' Star' : ''} Raid`
+        this.parsedTranslations[locale].misc[
+          `${this.options.prefix.raidLevel}${id}_plural`
+        ] = `${shortened}${isLevel ?  ' Star' : ''} Raids`
+        this.parsedTranslations[locale].misc[
+          `${this.options.prefix.eggLevel}${id}`
+        ] = `${shortened}${isLevel ?  ' Star' : ''} Egg`
+        this.parsedTranslations[locale].misc[
+          `${this.options.prefix.eggLevel}${id}_plural`
+        ] = `${shortened}${isLevel ?  ' Star' : ''} Eggs`
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate misc for ${locale}`)
     }
