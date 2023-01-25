@@ -780,6 +780,10 @@ export default class Pokemon extends Masterfile {
               pokemonName: this.pokemonName(+id),
               pokedexId: +id,
               defaultFormId: 0,
+              forms:
+                this.options.includeUnset && !this.options.noFormPlaceholders
+                  ? [0]
+                  : [],
               types: [],
               quickMoves: [],
               chargedMoves: [],
