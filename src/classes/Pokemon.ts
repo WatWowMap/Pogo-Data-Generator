@@ -330,10 +330,11 @@ export default class Pokemon extends Masterfile {
           ? ['NIDORAN_FEMALE', 'NIDORAN_MALE']
           : [this.formsRef[name] || this.lookupPokemon(name)]
 
-        pokemon.forEach((pkmn) => {
+        for (const pkmn of pokemon) {
           if (pkmn) {
             const id: number = Rpc.HoloPokemonId[pkmn as PokemonIdProto]
             const formName = this.formName(id, name)
+
             if (!this.skipForms(formName)) {
               if (!this.parsedPokemon[id]) {
                 this.parsedPokemon[id] = {
@@ -374,7 +375,7 @@ export default class Pokemon extends Masterfile {
               }
             }
           }
-        })
+        }
       } catch (e) {
         console.warn(e, '\n', proto)
       }
@@ -790,15 +791,18 @@ export default class Pokemon extends Masterfile {
               ...this.getGeneration(+id),
             }
           }
-          let evolutions = this.parsedPokemon[id].evolutions
+          let { evolutions } = this.parsedPokemon[id]
           if (baseStats[id].evolutions) {
-            const cleaned = baseStats[id].evolutions.map((evo) => ({
-              evoId: evo.evoId,
-              formId:
-                this.options.includeUnset && !this.options.noFormPlaceholders
-                  ? 0
-                  : undefined,
-            }))
+            const cleaned = baseStats[id].evolutions.map((evo) => {
+              return {
+                evoId: evo.evoId,
+                formId:
+                  evo.formId ||
+                  (this.options.includeUnset && !this.options.noFormPlaceholders
+                    ? 0
+                    : undefined),
+              }
+            })
             evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
           }
           this.parsedPokemon[id] = {

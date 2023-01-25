@@ -1,6 +1,11 @@
 import { Rpc } from 'pogo-protos'
 import Masterfile from './Masterfile'
-import { AllPokemon, AllTypes, TempEvolutions } from '../typings/dataTypes'
+import {
+  AllMoves,
+  AllPokemon,
+  AllTypes,
+  TempEvolutions,
+} from '../typings/dataTypes'
 import { TypeProto, PokemonIdProto, MoveProto } from '../typings/protos'
 import { PokeApiStats, PokeApiTypes } from '../typings/pokeapi'
 import { SpeciesApi } from '../typings/general'
@@ -13,6 +18,7 @@ export default class PokeApi extends Masterfile {
   inconsistentStats: {
     [id: string]: { attack?: number; defense?: number; stamina?: number }
   }
+  moveReference: AllMoves
 
   constructor() {
     super()
@@ -80,6 +86,9 @@ export default class PokeApi extends Masterfile {
         stamina: 264,
       },
     }
+  }
+  set moves(parsed: AllMoves) {
+    this.moveReference = parsed
   }
 
   attack(
@@ -245,7 +254,7 @@ export default class PokeApi extends Masterfile {
                   .replace(/-/g, '_')}_FAST` as MoveProto
               ],
           )
-          .filter(Boolean)
+          .filter((move) => this.moveReference[move]?.power)
           .sort((a, b) => a - b),
         chargedMoves: statsData.moves
           .map(
@@ -254,7 +263,7 @@ export default class PokeApi extends Masterfile {
                 move.move.name.toUpperCase().replace(/-/g, '_') as MoveProto
               ],
           )
-          .filter(Boolean)
+          .filter((move) => this.moveReference[move]?.power)
           .sort((a, b) => a - b),
         attack: this.inconsistentStats[id]
           ? this.inconsistentStats[id].attack || nerfCheck.attack
@@ -280,7 +289,7 @@ export default class PokeApi extends Masterfile {
     }
   }
 
-  async evoApi(evolvedPokemon: Set<number>) {
+  async evoApi(evolvedPokemon: Set<number>, parsedPokemon: AllPokemon) {
     await Promise.all(
       Object.keys(this.baseStats).map(async (id) => {
         try {
@@ -306,7 +315,10 @@ export default class PokeApi extends Masterfile {
                 }
                 this.baseStats[prevEvoId].evolutions.push({
                   evoId: +id,
-                  formId: 0,
+                  formId:
+                    parsedPokemon[id]?.defaultFormId ||
+                    +Object.keys(parsedPokemon[id]?.forms || {})[0] ||
+                    0,
                 })
                 this.baseStats[prevEvoId].evolutions.sort(
                   (a, b) => a.evoId - b.evoId,
