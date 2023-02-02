@@ -723,9 +723,11 @@ export default class Translations extends Masterfile {
             })`
             const type =
               this.rawTranslations[locale][
-                `pokemon_type_${info.type
-                  .replace(' Balloon', '')
-                  .toLowerCase()}`
+                `pokemon_type_${
+                  info.type === 'Metal'
+                    ? 'steel'
+                    : info.type.replace(' Balloon', '').toLowerCase()
+                }`
               ]
             assetRef = type ? `${type} - ${base}` : base
             shortRef =
@@ -865,16 +867,16 @@ export default class Translations extends Masterfile {
         const isLevel = !!+shortened
         this.parsedTranslations[locale].misc[
           `${this.options.prefix.raidLevel}${id}`
-        ] = `${shortened}${isLevel ?  ' Star' : ''} Raid`
+        ] = `${shortened}${isLevel ? ' Star' : ''} Raid`
         this.parsedTranslations[locale].misc[
           `${this.options.prefix.raidLevel}${id}_plural`
-        ] = `${shortened}${isLevel ?  ' Star' : ''} Raids`
+        ] = `${shortened}${isLevel ? ' Star' : ''} Raids`
         this.parsedTranslations[locale].misc[
           `${this.options.prefix.eggLevel}${id}`
-        ] = `${shortened}${isLevel ?  ' Star' : ''} Egg`
+        ] = `${shortened}${isLevel ? ' Star' : ''} Egg`
         this.parsedTranslations[locale].misc[
           `${this.options.prefix.eggLevel}${id}_plural`
-        ] = `${shortened}${isLevel ?  ' Star' : ''} Eggs`
+        ] = `${shortened}${isLevel ? ' Star' : ''} Eggs`
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate misc for ${locale}`)
