@@ -84,15 +84,7 @@
       "tempEvolutions": []
     },
     "282": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 326,
-          "defense": 229,
-          "stamina": 169,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "302": {
       "tempEvolutions": [
@@ -247,34 +239,6 @@
           "attack": 342,
           "defense": 235,
           "stamina": 137,
-          "unreleased": true
-        }
-      ]
-    }
-  },
-  "primal": {
-    "382": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": "Primal",
-          "attack": 364,
-          "defense": 276,
-          "stamina": 225,
-          "unreleased": true
-        }
-      ]
-    },
-    "383": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": "Primal",
-          "attack": 364,
-          "defense": 276,
-          "stamina": 225,
-          "types": [
-            5,
-            10
-          ],
           "unreleased": true
         }
       ]

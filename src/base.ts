@@ -42,7 +42,6 @@ const baseTemplate: FullTemplate = {
       includeEstimatedPokemon: {
         baseStats: true,
         mega: true,
-        primal: false,
         gmax: false,
       },
       processFormsSeparately: false,

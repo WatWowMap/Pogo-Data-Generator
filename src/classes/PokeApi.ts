@@ -378,7 +378,6 @@ export default class PokeApi extends Masterfile {
         'audino-mega',
         'diancie-mega',
       ],
-      primal: ['kyogre-primal', 'groudon-primal'],
       gmax: [
         'snorlax-gmax',
         'charizard-gmax',
