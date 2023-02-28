@@ -649,10 +649,10 @@ export default class Translations extends Masterfile {
 
         let item =
           this.rawTranslations[locale][`${name.toLowerCase()}_name`] ||
-          this.capitalize(name)
+          this.capitalize(name.replace('ITEM_', '').replace('TROY_DISK_', ''))
         this.parsedTranslations[locale].items[
           `${this.options.prefix.items}${id}`
-        ] = item || this.capitalize(name.replace('ITEM_', ''))
+        ] = item
         if (name.startsWith('ITEM_TROY_DISK')) {
           const base =
             this.rawTranslations[locale].item_troy_disk_name.split(' ')
@@ -664,7 +664,11 @@ export default class Translations extends Masterfile {
             base.forEach((word) => {
               item = item.replace(word, '')
             })
-            item = item.replace('Mód. ', '')
+            item = item
+              .replace('Item', '')
+              .replace('Troy', '')
+              .replace('Disk', '')
+              .replace('Mód. ', '')
             this.parsedTranslations[locale].lures[
               `${this.options.prefix.lures}${id}`
             ] = this.capitalize(item.replace('-', '').trim())
