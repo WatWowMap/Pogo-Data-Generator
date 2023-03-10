@@ -166,7 +166,11 @@ export default class Masterfile {
               if (returnValue[customKey]) {
                 returnValue[customKey].push(child)
               } else if (typeof child === 'object') {
-                returnValue[customKey] = []
+                if (Object.keys(child || {}).length) {
+                  returnValue[customKey] = [child]
+                } else {
+                  returnValue[customKey] = []
+                }
               } else {
                 returnValue[customKey] = [child]
               }
