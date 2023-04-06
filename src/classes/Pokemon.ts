@@ -28,6 +28,7 @@ import {
   QuestTypeProto,
   TypeProto,
 } from '../typings/protos'
+import PokeApi from "./PokeApi";
 
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
@@ -470,16 +471,34 @@ export default class Pokemon extends Masterfile {
               ) {
                 return
               }
-              if (formId == Rpc.PokemonDisplayProto.Form.SLIGGOO_HISUIAN) {
-                if (this.parsedForms[formId].evolutions) {
-                  console.warn('Hisuian Sliggoo added')
-                } else {
-                  this.parsedForms[formId].evolutions = [{
-                    evoId: Rpc.HoloPokemonId.GOODRA,
-                    formId: Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN,
-                    candyCost: 100,
-                  }]
-                }
+              switch (formId) {
+                case Rpc.PokemonDisplayProto.Form.TYPHLOSION_HISUIAN:
+                  this.addFormBaseStats(formId, 73, 84, 78, 119, 85, 95)
+                  break
+                case Rpc.PokemonDisplayProto.Form.SAMUROTT_HISUIAN:
+                  this.addFormBaseStats(formId, 90, 108, 80, 100, 65, 85)
+                  break
+                case Rpc.PokemonDisplayProto.Form.LILLIGANT_HISUIAN:
+                  this.addFormBaseStats(formId, 70, 105, 75, 50, 75, 105)
+                  break
+                case Rpc.PokemonDisplayProto.Form.SLIGGOO_HISUIAN:
+                  this.addFormBaseStats(formId, 58, 75, 83, 83, 123, 40)
+                  if (this.parsedForms[formId].evolutions) {
+                    console.warn('Hisuian Sliggoo evolution added')
+                  } else {
+                    this.parsedForms[formId].evolutions = [{
+                      evoId: Rpc.HoloPokemonId.GOODRA,
+                      formId: Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN,
+                      candyCost: 100,
+                    }]
+                  }
+                  break
+                case Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN:
+                  this.addFormBaseStats(formId, 80, 100, 100, 110, 150, 60)
+                  break
+                case Rpc.PokemonDisplayProto.Form.DECIDUEYE_HISUIAN:
+                  this.addFormBaseStats(formId, 88, 112, 80, 95, 95, 60)
+                  break
               }
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
                 this.parsedPokemon[id].forms.push(+formId)
@@ -491,6 +510,17 @@ export default class Pokemon extends Masterfile {
         console.warn(e, '\n', proto)
       }
     })
+  }
+
+  addFormBaseStats(formId: number, hp: number, a: number, d: number, sa: number, sd: number, sp: number) {
+    if (this.parsedForms[formId].attack || this.parsedForms[formId].defense || this.parsedForms[formId].stamina) {
+      console.warn('Base stats already found for', Rpc.PokemonDisplayProto.Form[formId])
+      return
+    }
+    // TODO check nerf
+    this.parsedForms[formId].attack = PokeApi.attack(a, sa, sp)
+    this.parsedForms[formId].defense = PokeApi.defense(d, sd, sp)
+    this.parsedForms[formId].stamina = PokeApi.stamina(hp)
   }
 
   addEvolutionQuest(object: NiaMfObj) {

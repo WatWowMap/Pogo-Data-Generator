@@ -91,7 +91,7 @@ export default class PokeApi extends Masterfile {
     this.moveReference = parsed
   }
 
-  attack(
+  static attack(
     normal: number,
     special: number,
     speed: number,
@@ -108,7 +108,7 @@ export default class PokeApi extends Masterfile {
     )
   }
 
-  defense(
+  static defense(
     normal: number,
     special: number,
     speed: number,
@@ -125,7 +125,7 @@ export default class PokeApi extends Masterfile {
     )
   }
 
-  stamina(hp: number, nerf: boolean = false): number {
+  static stamina(hp: number, nerf: boolean = false): number {
     return nerf
       ? Math.round((1.75 * hp + 50) * 0.91)
       : Math.floor(1.75 * hp + 50)
@@ -200,17 +200,17 @@ export default class PokeApi extends Masterfile {
         stamina: number
         cp?: number
       } = {
-        attack: this.attack(
+        attack: PokeApi.attack(
           baseStats.attack,
           baseStats['special-attack'],
           baseStats.speed,
         ),
-        defense: this.defense(
+        defense: PokeApi.defense(
           baseStats.defense,
           baseStats['special-defense'],
           baseStats.speed,
         ),
-        stamina: this.stamina(baseStats.hp),
+        stamina: PokeApi.stamina(baseStats.hp),
       }
       initial.cp = this.cp(
         initial.attack,
@@ -222,7 +222,7 @@ export default class PokeApi extends Masterfile {
       const nerfCheck = {
         attack:
           initial.cp > 4000
-            ? this.attack(
+            ? PokeApi.attack(
                 baseStats.attack,
                 baseStats['special-attack'],
                 baseStats.speed,
@@ -231,7 +231,7 @@ export default class PokeApi extends Masterfile {
             : initial.attack,
         defense:
           initial.cp > 4000
-            ? this.defense(
+            ? PokeApi.defense(
                 baseStats.defense,
                 baseStats['special-defense'],
                 baseStats.speed,
@@ -240,7 +240,7 @@ export default class PokeApi extends Masterfile {
             : initial.defense,
         stamina:
           initial.cp > 4000
-            ? this.stamina(baseStats.hp, true)
+            ? PokeApi.stamina(baseStats.hp, true)
             : initial.stamina,
       }
       this.baseStats[id] = {
@@ -443,17 +443,17 @@ export default class PokeApi extends Masterfile {
 
             const newTheoretical: TempEvolutions = {
               tempEvoId: this.megaLookup(id, type),
-              attack: this.attack(
+              attack: PokeApi.attack(
                 baseStats.attack,
                 baseStats['special-attack'],
                 baseStats.speed,
               ),
-              defense: this.defense(
+              defense: PokeApi.defense(
                 baseStats.defense,
                 baseStats['special-defense'],
                 baseStats.speed,
               ),
-              stamina: this.stamina(baseStats.hp),
+              stamina: PokeApi.stamina(baseStats.hp),
               types: this.compare(types, parsedPokemon[pokemonId].types)
                 ? undefined
                 : types,
