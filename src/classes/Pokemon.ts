@@ -470,6 +470,17 @@ export default class Pokemon extends Masterfile {
               ) {
                 return
               }
+              if (formId == Rpc.PokemonDisplayProto.Form.SLIGGOO_HISUIAN) {
+                if (this.parsedForms[formId].evolutions) {
+                  console.warn('Hisuian Sliggoo added')
+                } else {
+                  this.parsedForms[formId].evolutions = [{
+                    evoId: Rpc.HoloPokemonId.GOODRA,
+                    formId: Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN,
+                    candyCost: 100,
+                  }]
+                }
+              }
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
                 this.parsedPokemon[id].forms.push(+formId)
               }
