@@ -15,6 +15,8 @@ import Masterfile from './Masterfile'
 
 export default class Translations extends Masterfile {
   options: Options
+  translationApkUrl: string
+  translationRemoteUrl: string
   rawTranslations: TranslationKeys
   manualTranslations: { [key: string]: TranslationKeys }
   parsedTranslations: { [key: string]: TranslationKeys }
@@ -25,13 +27,20 @@ export default class Translations extends Masterfile {
   enFallback: TranslationKeys
   collator: Intl.Collator
 
-  constructor(options: Options) {
+  constructor(
+    options: Options,
+    translationApkUrl = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_english.json',
+    translationRemoteUrl = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/English.txt',
+  ) {
     super()
     this.collator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: 'base',
     })
     this.options = options
+    this.translationApkUrl = translationApkUrl
+    this.translationRemoteUrl = translationRemoteUrl
+
     this.rawTranslations = {}
     this.manualTranslations = {}
     this.parsedTranslations = {}
@@ -178,9 +187,10 @@ export default class Translations extends Masterfile {
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
       const { data }: { data: string[] } = (await this.fetch(
-        `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_${
-          this.codes[locale]?.toLowerCase() || 'english'
-        }.json`,
+        this.translationApkUrl.replace(
+          'english',
+          this.codes[locale]?.toLowerCase() || 'english',
+        ),
       )) || { data: [] }
 
       for (let i = 0; i < data.length; i += 2) {
@@ -190,9 +200,10 @@ export default class Translations extends Masterfile {
       const textFile = ['hi', 'id'].includes(locale)
         ? ''
         : (await this.fetch(
-            `https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/${
-              this.codes[locale] || 'English'
-            }.txt`,
+            this.translationRemoteUrl.replace(
+              'English',
+              this.codes[locale] || 'English',
+            ),
             true,
           )) || ''
       const splitText = textFile.split('\n')
