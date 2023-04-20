@@ -253,6 +253,8 @@ export interface TranslationsTemplate {
 
 export interface Input {
   url?: string
+  translationApkUrl?: string
+  translationRemoteUrl?: string
   template?: FullTemplate
   test?: boolean
   raw?: boolean

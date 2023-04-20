@@ -24,6 +24,8 @@ import { NiaMfObj } from './typings/general'
 export async function generate({
   template,
   url,
+  translationApkUrl,
+  translationRemoteUrl,
   raw,
   pokeApi,
   test,
@@ -55,7 +57,7 @@ export async function generate({
   const AllInvasions = new Invasions(invasions.options)
   const AllTypes = new Types()
   const AllWeather = new Weather()
-  const AllTranslations = new Translations(translations.options)
+  const AllTranslations = new Translations(translations.options, translationApkUrl, translationRemoteUrl)
   const AllPokeApi = new PokeApi()
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
