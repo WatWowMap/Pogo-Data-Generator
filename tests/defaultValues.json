@@ -48,8 +48,6 @@
         "Power Whip"
       ],
       "family": 1,
-      "flee_rate": 0.1,
-      "capture_rate": 0.2,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 2,
@@ -112,8 +110,6 @@
         "Overheat"
       ],
       "family": 4,
-      "flee_rate": 0.05,
-      "capture_rate": 0.05,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 3,
@@ -227,8 +223,6 @@
         "Foul Play"
       ],
       "family": 52,
-      "flee_rate": 0.15,
-      "capture_rate": 0.5,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 2,
@@ -290,8 +284,6 @@
         "Dazzling Gleam"
       ],
       "family": 531,
-      "flee_rate": 0.05,
-      "capture_rate": 0.05,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 2,
@@ -341,8 +333,6 @@
         "Gyro Ball"
       ],
       "family": 650,
-      "flee_rate": 0.1,
-      "capture_rate": 0.2,
       "legendary": false,
       "mythic": false,
       "buddy_group_number": 1,
@@ -393,8 +383,6 @@
         "Overheat"
       ],
       "family": 667,
-      "flee_rate": 0.07,
-      "capture_rate": 0.2,
       "legendary": false,
       "mythic": false,
       "buddy_distance": 3,
@@ -420,6 +408,14 @@
         "2593": {
           "name": "Complete",
           "proto": "ZYGARDE_COMPLETE"
+        },
+        "2823": {
+          "name": "Complete Ten Percent",
+          "proto": "ZYGARDE_COMPLETE_TEN_PERCENT"
+        },
+        "2824": {
+          "name": "Complete Fifty Percent",
+          "proto": "ZYGARDE_COMPLETE_FIFTY_PERCENT"
         }
       },
       "gen_id": 6,
@@ -441,8 +437,6 @@
         "Crunch"
       ],
       "family": 718,
-      "flee_rate": 0.1,
-      "capture_rate": 0.02,
       "legendary": true,
       "height": 5,
       "weight": 305,
@@ -484,8 +478,6 @@
         "Moonblast"
       ],
       "family": 719,
-      "flee_rate": 0.1,
-      "capture_rate": 0.02,
       "legendary": false,
       "mythic": true,
       "buddy_distance": 20,
