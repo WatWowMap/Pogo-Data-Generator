@@ -2148,9 +2148,10 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-"pogo-protos@github:Furtif/pogo-protos":
-  version "2.58.2"
-  resolved "https://codeload.github.com/Furtif/pogo-protos/tar.gz/adf506eef28f17ca8f62fd5bc6cd1bf2965bb4bf"
+"pogo-protos@npm:@na-ji/pogo-protos@<3.0.0":
+  version "2.59.1"
+  resolved "https://registry.yarnpkg.com/@na-ji/pogo-protos/-/pogo-protos-2.59.1.tgz#152ad72aeb5a82fea5495e3fabd52b5f889476cd"
+  integrity sha512-RdMrrlAFiNg+3fF/VkQQY0bmKlGi9Gpq0Saiuf5/Pcmkw450PTgCgHSi+alVSX3jhdGUpuYwewRQT7W6bQSp3Q==
   dependencies:
     protobufjs "^6.11.3"
 

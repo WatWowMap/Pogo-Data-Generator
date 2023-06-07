@@ -131,7 +131,7 @@
     "4": {
       "itemName": "Meisterball",
       "proto": "ITEM_MASTER_BALL",
-      "minTrainerLevel": 100
+      "minTrainerLevel": 1
     }
   },
   "invasions": {
