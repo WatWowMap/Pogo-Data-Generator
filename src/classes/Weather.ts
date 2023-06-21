@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import { Rpc } from '@na-ji/pogo-protos'
 import { AllWeather } from '../typings/dataTypes'
 import { NiaMfObj } from '../typings/general'
 import { TypeProto } from '../typings/protos'

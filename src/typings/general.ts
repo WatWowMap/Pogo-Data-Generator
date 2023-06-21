@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import type { Rpc } from '@na-ji/pogo-protos'
 
 export interface GuessedMega {
   attack?: number

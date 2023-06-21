@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import { Rpc } from '@na-ji/pogo-protos'
 
 import { NiaMfObj } from '../typings/general'
 import { AllMoves } from '../typings/dataTypes'

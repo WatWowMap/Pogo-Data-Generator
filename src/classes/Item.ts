@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import { Rpc } from '@na-ji/pogo-protos'
 
 import Masterfile from './Masterfile'
 import { AllItems } from '../typings/dataTypes'

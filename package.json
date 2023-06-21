@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "node-fetch": "2.6.7",
-    "pogo-protos": "npm:@na-ji/pogo-protos@<3.0.0"
+    "@na-ji/pogo-protos": "<3.0.0"
   },
   "engines": {
     "node": ">=16.0.0"
