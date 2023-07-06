@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import { Rpc } from '@na-ji/pogo-protos'
 
 import { AllInvasions } from '../typings/dataTypes'
 import { Options } from '../typings/inputs'

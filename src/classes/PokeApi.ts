@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import { Rpc } from '@na-ji/pogo-protos'
 import Masterfile from './Masterfile'
 import {
   AllMoves,
@@ -254,7 +254,7 @@ export default class PokeApi extends Masterfile {
                   .replace(/-/g, '_')}_FAST` as MoveProto
               ],
           )
-          .filter((move) => this.moveReference[move]?.power)
+          .filter((move) => move && this.moveReference[move]?.power)
           .sort((a, b) => a - b),
         chargedMoves: statsData.moves
           .map(
@@ -263,7 +263,7 @@ export default class PokeApi extends Masterfile {
                 move.move.name.toUpperCase().replace(/-/g, '_') as MoveProto
               ],
           )
-          .filter((move) => this.moveReference[move]?.power)
+          .filter((move) => move && this.moveReference[move]?.power)
           .sort((a, b) => a - b),
         attack: this.inconsistentStats[id]
           ? this.inconsistentStats[id].attack || nerfCheck.attack

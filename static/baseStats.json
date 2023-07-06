@@ -7,14 +7,6 @@
       }
     ]
   },
-  "123": {
-    "evolutions": [
-      {
-        "evoId": 900,
-        "formId": 0
-      }
-    ]
-  },
   "194": {
     "evolutions": [
       {
@@ -35,7 +27,7 @@
     "evolutions": [
       {
         "evoId": 982,
-        "formId": 0
+        "formId": 2994
       }
     ]
   },
@@ -267,44 +259,6 @@
     "legendary": false,
     "mythic": false
   },
-  "900": {
-    "pokemonName": "Kleavor",
-    "quickMoves": [
-      200,
-      219,
-      255,
-      261,
-      282,
-      297
-    ],
-    "chargedMoves": [
-      14,
-      32,
-      45,
-      49,
-      63,
-      64,
-      100,
-      121,
-      123,
-      125,
-      132,
-      245,
-      259,
-      321,
-      364
-    ],
-    "attack": 253,
-    "defense": 174,
-    "stamina": 172,
-    "types": [
-      6,
-      7
-    ],
-    "unreleased": true,
-    "legendary": false,
-    "mythic": false
-  },
   "902": {
     "pokemonName": "Basculegion-male",
     "quickMoves": [
@@ -332,7 +286,8 @@
       279,
       284,
       321,
-      353
+      353,
+      383
     ],
     "attack": 217,
     "defense": 144,
@@ -372,7 +327,8 @@
       277,
       304,
       321,
-      341
+      341,
+      382
     ],
     "attack": 281,
     "defense": 162,
@@ -397,7 +353,8 @@
       271,
       282,
       320,
-      357
+      357,
+      385
     ],
     "chargedMoves": [
       47,
@@ -420,14 +377,14 @@
       12
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 907,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "907": {
     "pokemonName": "Floragato",
@@ -441,7 +398,8 @@
       271,
       282,
       320,
-      357
+      357,
+      385
     ],
     "chargedMoves": [
       45,
@@ -487,7 +445,8 @@
       271,
       282,
       320,
-      357
+      357,
+      385
     ],
     "chargedMoves": [
       14,
@@ -689,7 +648,8 @@
       256,
       284,
       300,
-      364
+      364,
+      383
     ],
     "attack": 120,
     "defense": 86,
@@ -698,14 +658,14 @@
       11
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 913,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "913": {
     "pokemonName": "Quaxwell",
@@ -730,7 +690,8 @@
       256,
       284,
       348,
-      364
+      364,
+      383
     ],
     "attack": 162,
     "defense": 123,
@@ -779,7 +740,8 @@
       299,
       321,
       348,
-      364
+      364,
+      383
     ],
     "attack": 236,
     "defense": 159,
@@ -822,7 +784,7 @@
     "evolutions": [
       {
         "evoId": 916,
-        "formId": 0
+        "formId": 2981
       }
     ],
     "legendary": false,
@@ -959,14 +921,14 @@
       7
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 920,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "920": {
     "pokemonName": "Lokix",
@@ -1035,14 +997,14 @@
       13
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 922,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "922": {
     "pokemonName": "Pawmo",
@@ -1172,14 +1134,14 @@
       1
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 925,
-        "formId": 0
+        "formId": 2983
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "925": {
     "pokemonName": "Maushold",
@@ -1249,14 +1211,14 @@
       18
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 927,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "927": {
     "pokemonName": "Dachsbun",
@@ -1363,14 +1325,14 @@
       12
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 930,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "930": {
     "pokemonName": "Arboliva",
@@ -1630,7 +1592,8 @@
       270,
       273,
       303,
-      332
+      332,
+      382
     ],
     "attack": 234,
     "defense": 185,
@@ -1797,14 +1760,14 @@
       13
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 941,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "941": {
     "pokemonName": "Kilowattrel",
@@ -1950,14 +1913,14 @@
       4
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 945,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "945": {
     "pokemonName": "Grafaiai",
@@ -2107,14 +2070,14 @@
       12
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 949,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "949": {
     "pokemonName": "Toedscruel",
@@ -2207,7 +2170,8 @@
       271,
       282,
       357,
-      368
+      368,
+      385
     ],
     "chargedMoves": [
       59,
@@ -2244,7 +2208,8 @@
       240,
       271,
       282,
-      357
+      357,
+      385
     ],
     "chargedMoves": [
       14,
@@ -2462,14 +2427,14 @@
       18
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 958,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "958": {
     "pokemonName": "Tinkatuff",
@@ -2563,7 +2528,8 @@
       132,
       280,
       284,
-      304
+      304,
+      383
     ],
     "attack": 109,
     "defense": 52,
@@ -2572,14 +2538,14 @@
       11
     ],
     "unreleased": true,
+    "legendary": false,
+    "mythic": false,
     "evolutions": [
       {
         "evoId": 961,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "961": {
     "pokemonName": "Wugtrio",
@@ -2605,7 +2571,8 @@
       280,
       284,
       304,
-      321
+      321,
+      383
     ],
     "attack": 205,
     "defense": 136,
@@ -2688,7 +2655,8 @@
       132,
       284,
       364,
-      380
+      380,
+      383
     ],
     "attack": 90,
     "defense": 80,
@@ -2697,14 +2665,14 @@
       11
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 964,
-        "formId": 0
+        "formId": 2989
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "964": {
     "pokemonName": "Palafin",
@@ -2740,7 +2708,8 @@
       314,
       321,
       332,
-      364
+      364,
+      383
     ],
     "attack": 143,
     "defense": 144,
@@ -2779,14 +2748,14 @@
       9
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 966,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "966": {
     "pokemonName": "Revavroom",
@@ -3086,7 +3055,8 @@
       321,
       333,
       341,
-      364
+      364,
+      383
     ],
     "attack": 227,
     "defense": 145,
@@ -3121,7 +3091,8 @@
       131,
       132,
       254,
-      268
+      268,
+      383
     ],
     "attack": 119,
     "defense": 80,
@@ -3163,7 +3134,8 @@
       132,
       254,
       268,
-      321
+      321,
+      383
     ],
     "attack": 208,
     "defense": 123,
@@ -3201,7 +3173,8 @@
       279,
       284,
       321,
-      353
+      353,
+      383
     ],
     "attack": 196,
     "defense": 139,
@@ -3239,7 +3212,8 @@
       277,
       279,
       284,
-      321
+      321,
+      383
     ],
     "attack": 176,
     "defense": 178,
@@ -3369,7 +3343,8 @@
       284,
       303,
       304,
-      321
+      321,
+      383
     ],
     "attack": 127,
     "defense": 151,
@@ -3687,7 +3662,8 @@
       132,
       265,
       273,
-      321
+      321,
+      382
     ],
     "attack": 280,
     "defense": 235,
@@ -4088,14 +4064,14 @@
       16
     ],
     "unreleased": true,
-    "legendary": false,
-    "mythic": false,
     "evolutions": [
       {
         "evoId": 997,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "997": {
     "pokemonName": "Arctibax",
@@ -4187,76 +4163,6 @@
     "legendary": false,
     "mythic": false
   },
-  "999": {
-    "pokemonName": "Gimmighoul",
-    "quickMoves": [
-      221,
-      263,
-      264,
-      282
-    ],
-    "chargedMoves": [
-      65,
-      70,
-      132,
-      265
-    ],
-    "attack": 121,
-    "defense": 122,
-    "stamina": 128,
-    "types": [
-      8
-    ],
-    "unreleased": true,
-    "legendary": false,
-    "mythic": false,
-    "evolutions": [
-      {
-        "evoId": 1000,
-        "formId": 3000
-      }
-    ]
-  },
-  "1000": {
-    "pokemonName": "Gholdengo",
-    "quickMoves": [
-      207,
-      221,
-      249,
-      263,
-      264,
-      282
-    ],
-    "chargedMoves": [
-      14,
-      36,
-      56,
-      60,
-      65,
-      70,
-      74,
-      77,
-      78,
-      79,
-      86,
-      108,
-      132,
-      247,
-      265,
-      268,
-      321
-    ],
-    "attack": 252,
-    "defense": 190,
-    "stamina": 202,
-    "types": [
-      8,
-      9
-    ],
-    "unreleased": true,
-    "legendary": false,
-    "mythic": false
-  },
   "1001": {
     "pokemonName": "Wo-chien",
     "quickMoves": [
@@ -4294,7 +4200,7 @@
       17
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   },
   "1002": {
@@ -4333,7 +4239,7 @@
       17
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   },
   "1003": {
@@ -4372,7 +4278,7 @@
       17
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   },
   "1004": {
@@ -4409,7 +4315,7 @@
       17
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   },
   "1005": {
@@ -4509,7 +4415,8 @@
       273,
       314,
       321,
-      332
+      332,
+      383
     ],
     "attack": 279,
     "defense": 171,
@@ -4578,7 +4485,7 @@
       16
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   },
   "1008": {
@@ -4625,7 +4532,7 @@
       16
     ],
     "unreleased": true,
-    "legendary": false,
+    "legendary": true,
     "mythic": false
   }
 }

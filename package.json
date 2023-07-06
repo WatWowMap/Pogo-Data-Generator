@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -36,8 +36,8 @@
     "url": "https://github.com/WatWowMap/Pogo-Data-Generator/issues"
   },
   "dependencies": {
-    "node-fetch": "2.6.7",
-    "pogo-protos": "npm:@na-ji/pogo-protos@<3.0.0"
+    "@na-ji/pogo-protos": "<3.0.0",
+    "node-fetch": "2.6.7"
   },
   "engines": {
     "node": ">=16.0.0"

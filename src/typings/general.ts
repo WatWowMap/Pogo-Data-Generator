@@ -1,4 +1,4 @@
-import { Rpc } from 'pogo-protos'
+import type { Rpc } from '@na-ji/pogo-protos'
 
 export interface GuessedMega {
   attack?: number
@@ -74,7 +74,7 @@ export interface NiaMfObj {
     formSettings?: {
       pokemon: string
       forms: {
-        form: string
+        form?: string | number
         isCostume: boolean
       }[]
     }
