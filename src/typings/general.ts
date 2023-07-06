@@ -74,7 +74,7 @@ export interface NiaMfObj {
     formSettings?: {
       pokemon: string
       forms: {
-        form: string
+        form?: string | number
         isCostume: boolean
       }[]
     }
