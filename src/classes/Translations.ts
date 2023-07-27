@@ -149,6 +149,10 @@ export default class Translations extends Masterfile {
     }
   }
 
+  set fromApk(values: TranslationKeys) {
+    this.rawTranslations = values
+  }
+
   removeEscapes(str: string) {
     return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
   }
@@ -210,9 +214,11 @@ export default class Translations extends Masterfile {
 
       splitText.forEach((line: string, i: number) => {
         if (line?.startsWith('RESOURCE ID')) {
-          this.rawTranslations[locale][
-            this.removeEscapes(line.replace('RESOURCE ID: ', ''))
-          ] = this.removeEscapes(splitText[i + 1].replace('TEXT: ', ''))
+          const key = this.removeEscapes(line.replace('RESOURCE ID: ', ''))
+          const value = this.removeEscapes(
+            splitText[i + 1].replace('TEXT: ', ''),
+          )
+          this.rawTranslations[locale][key] = value
         }
       })
     } catch (e) {

@@ -85,7 +85,7 @@ export interface NiaMfObj {
     }
     itemSettings?: {
       itemId: string | number
-      itemType: string
+      itemType: string | number
       category: string
       dropTrainerLevel: number
     }

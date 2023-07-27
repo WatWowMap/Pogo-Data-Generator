@@ -396,30 +396,6 @@
       "name": "Zygarde",
       "pokedex_id": 718,
       "default_form_id": 2591,
-      "forms": {
-        "2591": {
-          "name": "Ten Percent",
-          "proto": "ZYGARDE_TEN_PERCENT"
-        },
-        "2592": {
-          "name": "Fifty Percent",
-          "proto": "ZYGARDE_FIFTY_PERCENT"
-        },
-        "2593": {
-          "name": "Complete",
-          "proto": "ZYGARDE_COMPLETE"
-        },
-        "2823": {
-          "name": "Complete Ten Percent",
-          "proto": "ZYGARDE_COMPLETE_TEN_PERCENT"
-        },
-        "2824": {
-          "name": "Complete Fifty Percent",
-          "proto": "ZYGARDE_COMPLETE_FIFTY_PERCENT"
-        }
-      },
-      "gen_id": 6,
-      "generation": "Kalos",
       "types": [
         "Ground",
         "Dragon"
@@ -436,38 +412,84 @@
         "Outrage",
         "Crunch"
       ],
-      "family": 718,
-      "legendary": true,
+      "gen_id": 6,
+      "generation": "Kalos",
+      "forms": {
+        "2591": {
+          "name": "Ten Percent",
+          "proto": "ZYGARDE_TEN_PERCENT",
+          "attack": 205,
+          "defense": 173,
+          "stamina": 144,
+          "height": 1.2,
+          "weight": 33.5,
+          "evolutions": [
+            {
+              "pokemon": 718,
+              "form": 2592
+            }
+          ]
+        },
+        "2592": {
+          "name": "Fifty Percent",
+          "proto": "ZYGARDE_FIFTY_PERCENT",
+          "evolutions": [
+            {
+              "pokemon": 718,
+              "form": 2593
+            }
+          ]
+        },
+        "2593": {
+          "name": "Complete",
+          "proto": "ZYGARDE_COMPLETE",
+          "attack": 184,
+          "defense": 207,
+          "stamina": 389,
+          "height": 4.5,
+          "weight": 610
+        },
+        "2823": {
+          "name": "Complete Ten Percent",
+          "proto": "ZYGARDE_COMPLETE_TEN_PERCENT",
+          "attack": 205,
+          "defense": 173,
+          "stamina": 144,
+          "height": 1.2,
+          "weight": 33.5
+        },
+        "2824": {
+          "name": "Complete Fifty Percent",
+          "proto": "ZYGARDE_COMPLETE_FIFTY_PERCENT"
+        }
+      },
+      "attack": 203,
+      "defense": 232,
+      "stamina": 239,
       "height": 5,
       "weight": 305,
+      "family": 718,
+      "legendary": true,
       "mythic": false,
+      "buddy_group_number": 2,
       "buddy_distance": 20,
       "third_move_stardust": 100000,
       "third_move_candy": 100,
-      "attack": 203,
-      "defense": 232,
-      "stamina": 239
+      "evolutions": [
+        {
+          "pokemon": 718,
+          "form": 2592
+        }
+      ]
     },
     "719": {
       "name": "Diancie",
       "pokedex_id": 719,
       "default_form_id": 0,
-      "forms": {
-        "0": {
-          "proto": "FORM_UNSET"
-        }
-      },
-      "gen_id": 6,
-      "generation": "Kalos",
       "types": [
         "Rock",
         "Fairy"
       ],
-      "attack": 190,
-      "defense": 285,
-      "stamina": 137,
-      "height": 0.7,
-      "weight": 8.8,
       "quick_moves": [
         "Tackle",
         "Rock Throw"
@@ -477,9 +499,22 @@
         "Power Gem",
         "Moonblast"
       ],
+      "gen_id": 6,
+      "generation": "Kalos",
+      "forms": {
+        "0": {
+          "proto": "FORM_UNSET"
+        }
+      },
+      "attack": 190,
+      "defense": 285,
+      "stamina": 137,
+      "height": 0.7,
+      "weight": 8.8,
       "family": 719,
       "legendary": false,
       "mythic": true,
+      "buddy_group_number": 2,
       "buddy_distance": 20,
       "third_move_stardust": 100000,
       "third_move_candy": 100,
@@ -488,7 +523,8 @@
           "attack": 342,
           "defense": 235,
           "stamina": 137,
-          "unreleased": true
+          "height": 1.1,
+          "weight": 27.8
         }
       }
     }
