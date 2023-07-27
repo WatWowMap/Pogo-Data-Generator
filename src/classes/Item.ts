@@ -33,10 +33,16 @@ export default class Item extends Masterfile {
           typeof itemId === 'string' ? Rpc.Item[itemId as ItemProto] : itemId
         this.parsedItems[id] = {
           itemId: id,
-          itemName: this.capitalize(templateId.replace('ITEM_', '')),
+          itemName: templateId
+            ? this.capitalize(templateId.replace('ITEM_', ''))
+            : '',
           proto: templateId,
-          type: this.capitalize(itemType.replace('ITEM_TYPE_', '')),
-          category: this.capitalize(category.replace('ITEM_CATEGORY_', '')),
+          type: typeof itemType === 'string'
+            ? this.capitalize(itemType.replace('ITEM_TYPE_', ''))
+            : '',
+          category: category
+            ? this.capitalize(category.replace('ITEM_CATEGORY_', ''))
+            : '',
           minTrainerLevel: dropTrainerLevel,
         }
       }

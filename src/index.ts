@@ -20,6 +20,7 @@ import {
 import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
+import ApkReader from './classes/Apk'
 
 export async function generate({
   template,
@@ -59,6 +60,12 @@ export async function generate({
   const AllWeather = new Weather()
   const AllTranslations = new Translations(translations.options, translationApkUrl, translationRemoteUrl)
   const AllPokeApi = new PokeApi()
+  const apk = new ApkReader()
+
+  await apk.fetchApk()
+  await apk.extractTexts()
+  apk.cleanup()
+  AllTranslations.fromApk = apk.texts
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
 
