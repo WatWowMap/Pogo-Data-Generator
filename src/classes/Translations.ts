@@ -149,7 +149,7 @@ export default class Translations extends Masterfile {
     }
   }
 
-  set fromApk(values: typeof this.rawTranslations) {
+  set fromApk(values: TranslationKeys) {
     this.rawTranslations = values
   }
 
