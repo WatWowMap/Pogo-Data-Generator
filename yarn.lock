@@ -692,9 +692,9 @@
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
 "@na-ji/pogo-protos@<3.0.0":
-  version "2.64.1"
-  resolved "https://registry.yarnpkg.com/@na-ji/pogo-protos/-/pogo-protos-2.64.1.tgz#e292a6e5de48434a953269e900bcdda7e50c1efc"
-  integrity sha512-SNF+/uwrH12prNyEhFoWsv/apLe0uaaLVjwhAie10GWwj5VAOb+LurQwLYPvJV94eZo0L+bW5J8RGnz5n3MVrg==
+  version "2.75.0"
+  resolved "https://registry.yarnpkg.com/@na-ji/pogo-protos/-/pogo-protos-2.75.0.tgz#dabd072fc62b0c9578b6ae8897de559845ca2f41"
+  integrity sha512-2FEGU1HGSgZz/Kj3Sb7cqXMBLetehQw1WqR0ZEbDpdR/E8eyhmyVlDxIqFXt/7lKDD5fUSFd++QhU2mn8cDFNA==
   dependencies:
     protobufjs "^6.11.3"
 
@@ -868,9 +868,9 @@
   integrity sha512-6qKpDtoaYLM+5+AFChLhHermMQxc3TOEFIDzrZLPRGHPrLEwqFkkT5Kx3ju05g6X7uDPazz3jHbKPX0KzCjntg==
 
 "@types/node@>=13.7.0":
-  version "20.2.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.1.tgz#de559d4b33be9a808fd43372ccee822c70f39704"
-  integrity sha512-DqJociPbZP1lbZ5SQPk4oag6W7AyaGMO6gSfRwq3PWl4PXTwJpRQJhDq4W0kzrg3w6tJ1SwlvGZ5uKFHY13LIg==
+  version "20.4.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.5.tgz#9dc0a5cb1ccce4f7a731660935ab70b9c00a5d69"
+  integrity sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==
 
 "@types/prettier@^2.1.5":
   version "2.6.4"
