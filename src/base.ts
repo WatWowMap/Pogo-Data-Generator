@@ -297,6 +297,33 @@ const baseTemplate: FullTemplate = {
       types: 'typeName',
     },
   },
+  raids: {
+    enabled: false,
+    options: {
+      keys: {
+        main: 'id',
+      }
+    },
+    template: 'formatted'
+  },
+  teams: {
+    enabled: false,
+    options: {
+      keys: {
+        main: 'id',
+      }
+    },
+    template: 'formatted'
+  },
+  routeTypes: {
+    enabled: false,
+    options: {
+      keys: {
+        main: 'id',
+      }
+    },
+    template: 'formatted'
+  },
   translations: {
     enabled: true,
     options: {

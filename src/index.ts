@@ -21,6 +21,7 @@ import { AllInvasions, FinalResult } from './typings/dataTypes'
 import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 import ApkReader from './classes/Apk'
+import Misc from './classes/Misc'
 
 export async function generate({
   template,
@@ -47,6 +48,9 @@ export async function generate({
     invasions,
     weather,
     translations,
+    raids,
+    routeTypes,
+    teams,
   } = Masterfile.templateMerger(template || base, base)
   const localeCheck =
     translations.enabled && translations.options.masterfileLocale
@@ -58,9 +62,18 @@ export async function generate({
   const AllInvasions = new Invasions(invasions.options)
   const AllTypes = new Types()
   const AllWeather = new Weather()
-  const AllTranslations = new Translations(translations.options, translationApkUrl, translationRemoteUrl)
+  const AllTranslations = new Translations(
+    translations.options,
+    translationApkUrl,
+    translationRemoteUrl,
+  )
   const AllPokeApi = new PokeApi()
+  const AllMisc = new Misc()
   const apk = new ApkReader()
+
+  AllMisc.parseRaidLevels()
+  AllMisc.parseRouteTypes()
+  AllMisc.parseTeams()
 
   await apk.fetchApk()
   await apk.extractTexts()
@@ -346,6 +359,22 @@ export async function generate({
     final[translations.options.topLevelName || 'translations'] =
       AllTranslations.parsedTranslations
   }
+  if (raids.enabled) {
+    final[raids.options.topLevelName || 'raids'] = raw
+      ? AllMisc.raidLevels
+      : AllMisc.templater(AllMisc.raidLevels, raids)
+  }
+  if (routeTypes.enabled) {
+    final[routeTypes.options.topLevelName || 'routeTypes'] = raw
+      ? AllMisc.routeTypes
+      : AllMisc.templater(AllMisc.routeTypes, routeTypes)
+  }
+  if (teams.enabled) {
+    final[teams.options.topLevelName || 'teams'] = raw
+      ? AllMisc.teams
+      : AllMisc.templater(AllMisc.teams, teams)
+  }
+
   if (test && pokeApi === true) {
     final.AllPokeApi = AllPokeApi
   }

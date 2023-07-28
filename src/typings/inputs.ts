@@ -1,3 +1,4 @@
+import { MiscProto } from './dataTypes'
 import { InvasionInfo } from './pogoinfo'
 import { PokeApi } from './pokeapi'
 
@@ -325,6 +326,21 @@ export interface FullTemplate {
     options: Options
     template: TranslationsTemplate
     locales: { [key in Locales[number]]: boolean }
+  }
+  raids?: {
+    enabled?: boolean
+    options: Options
+    template: MiscProto | keyof MiscProto
+  }
+  teams?: {
+    enabled?: boolean
+    options: Options
+    template: MiscProto | keyof MiscProto
+  }
+  routeTypes?: {
+    enabled?: boolean
+    options: Options
+    template: MiscProto | keyof MiscProto
   }
 }
 

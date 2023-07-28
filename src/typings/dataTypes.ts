@@ -69,6 +69,12 @@ export interface AllItems {
   }
 }
 
+export interface MiscProto {
+  id: number
+  proto: string
+  formatted: string
+}
+
 export interface AllQuests {
   [id: string]: QuestSubCategory
 }
