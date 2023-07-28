@@ -906,6 +906,11 @@ export default class Translations extends Masterfile {
           this.parsedTranslations[locale].misc[key] = value
         }
       })
+      Object.entries(Rpc.RouteType).forEach((proto) => {
+        const [name, id] = proto
+        this.parsedTranslations[locale].misc[`route_type_${id}`] =
+          this.capitalize(name)
+      })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate misc for ${locale}`)
     }
