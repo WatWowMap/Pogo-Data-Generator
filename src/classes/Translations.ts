@@ -161,7 +161,9 @@ export default class Translations extends Masterfile {
     locale: Locales[number],
     availableManualTranslations: string[],
   ) {
-    this.rawTranslations[locale] = {}
+    if (!this.rawTranslations[locale]) {
+      this.rawTranslations[locale] = {}
+    }
     this.parsedTranslations[locale] = {}
     this.manualTranslations[locale] = {
       pokemon: {},
@@ -898,6 +900,11 @@ export default class Translations extends Masterfile {
         this.parsedTranslations[locale].misc[
           `${this.options.prefix.eggLevel}${id}_plural`
         ] = `${shortened}${isLevel ? ' Star' : ''} Eggs`
+      })
+      Object.entries(this.rawTranslations[locale]).forEach(([key, value]) => {
+        if (key.startsWith('route_tag')) {
+          this.parsedTranslations[locale].misc[key] = value
+        }
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate misc for ${locale}`)
