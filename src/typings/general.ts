@@ -79,7 +79,7 @@ export interface NiaMfObj {
       }[]
     }
     combatMove?: {
-      uniqueId: string
+      uniqueId: string | number
       type: string
       power: number
     }

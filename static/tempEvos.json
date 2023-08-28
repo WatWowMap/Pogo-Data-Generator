@@ -138,15 +138,7 @@
       "tempEvolutions": []
     },
     "384": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 389,
-          "defense": 216,
-          "stamina": 233,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "445": {
       "tempEvolutions": [
@@ -197,15 +189,7 @@
       ]
     },
     "719": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 342,
-          "defense": 235,
-          "stamina": 137,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     }
   },
   "gmax": {

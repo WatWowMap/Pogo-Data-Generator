@@ -38,7 +38,10 @@ export default class Moves extends Masterfile {
       if (id || id === 0) {
         this.parsedMoves[id] = {
           moveId: id,
-          moveName: this.capitalize(combatMove.uniqueId.replace('_FAST', '')),
+          moveName:
+            typeof combatMove.uniqueId === 'string'
+              ? this.capitalize(combatMove.uniqueId.replace('_FAST', ''))
+              : this.capitalize(templateId.substring(18)),
           proto: templateId.substring(18),
           type: Rpc.HoloPokemonType[combatMove.type as TypeProto],
           power: combatMove.power,
