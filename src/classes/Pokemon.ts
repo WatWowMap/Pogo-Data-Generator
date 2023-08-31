@@ -190,34 +190,34 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  getMoves(moves: string[]): number[] {
+  getMoves(moves: (string | number)[]): number[] {
     if (!moves) return []
     try {
-      try {
-        return moves
-          .map((move) => Rpc.HoloPokemonMove[move as MoveProto])
-          .sort((a, b) => a - b)
-      } catch (e) {
-        console.warn(e, '\n', moves)
-      }
+      return moves
+        .map((move) =>
+          typeof move === 'string'
+            ? Rpc.HoloPokemonMove[move as MoveProto]
+            : move,
+        )
+        .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
     }
   }
 
-  getTypes(incomingTypes: string[]): number[] {
+  getTypes(incomingTypes: (string | number)[]): number[] {
     if (!incomingTypes) return []
     try {
-      try {
-        if (!incomingTypes[1]) {
-          incomingTypes.pop()
-        }
-        return incomingTypes
-          .map((type) => Rpc.HoloPokemonType[type as TypeProto])
-          .sort((a, b) => a - b)
-      } catch (e) {
-        console.warn(e, '\n', incomingTypes)
+      if (!incomingTypes[1]) {
+        incomingTypes.pop()
       }
+      return incomingTypes
+        .map((type) =>
+          typeof type === 'string'
+            ? Rpc.HoloPokemonType[type as TypeProto]
+            : type,
+        )
+        .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup types for ${incomingTypes}`)
     }
