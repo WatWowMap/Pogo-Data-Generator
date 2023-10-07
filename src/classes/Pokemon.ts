@@ -701,9 +701,6 @@ export default class Pokemon extends Masterfile {
                 isCostume: forms[i].isCostume,
               }
             }
-            if (this.options.allUnset && !this.options.noFormPlaceholders) {
-              this.parsedPokemon[id].forms.push(0)
-            }
           }
         } else {
           if (!this.parsedPokemon[id]) {
@@ -714,9 +711,9 @@ export default class Pokemon extends Masterfile {
               ...this.getGeneration(+id),
             }
           }
-          if (this.options.includeUnset && !this.options.noFormPlaceholders) {
-            this.parsedPokemon[id].forms.push(0)
-          }
+        }
+        if (this.options.includeUnset && !this.options.noFormPlaceholders) {
+          this.parsedPokemon[id].forms.push(0)
         }
       } catch (e) {
         console.warn(e, '\n', JSON.stringify(object, null, 2))
