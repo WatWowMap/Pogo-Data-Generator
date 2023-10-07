@@ -96,7 +96,7 @@ interface Form extends BaseStats {
         formId?: boolean
         genderRequirement?: boolean
         candyCost?: boolean
-        itemRequirement?: boolean
+        itemRequirement?: boolean | string
         tradeBonus?: boolean
         mustBeBuddy?: boolean
         onlyDaytime?: boolean
@@ -325,7 +325,7 @@ export interface FullTemplate {
     enabled?: boolean
     options: Options
     template: TranslationsTemplate
-    locales: { [key in Locales[number]]: boolean }
+    locales: { [key in Locales[number]]?: boolean }
   }
   raids?: {
     enabled?: boolean
