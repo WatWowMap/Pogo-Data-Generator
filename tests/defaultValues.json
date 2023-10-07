@@ -244,8 +244,12 @@
     "531": {
       "name": "Audino",
       "pokedex_id": 531,
-      "default_form_id": 1997,
+      "default_form_id": 0,
       "forms": {
+        "0": {
+          "name": "Unset",
+          "proto": "FORM_UNSET"
+        },
         "1997": {
           "name": "Normal",
           "proto": "AUDINO_NORMAL",
@@ -311,6 +315,7 @@
       "default_form_id": 0,
       "forms": {
         "0": {
+          "name": "Unset",
           "proto": "FORM_UNSET"
         }
       },
@@ -504,6 +509,7 @@
       "generation": "Kalos",
       "forms": {
         "0": {
+          "name": "Unset",
           "proto": "FORM_UNSET"
         }
       },
