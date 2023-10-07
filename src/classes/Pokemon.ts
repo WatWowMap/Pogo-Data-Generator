@@ -55,7 +55,7 @@ export default class Pokemon extends Masterfile {
     this.parsedPokemon = {}
     this.parsedForms = {
       0: {
-        formName: options.unsetFormName,
+        formName: options.unsetFormName ?? 'Unset',
         proto: 'FORM_UNSET',
         formId: 0,
       },
@@ -533,40 +533,33 @@ export default class Pokemon extends Masterfile {
             const id: number = Rpc.HoloPokemonId[pkmn as PokemonIdProto]
             const formName = this.formName(id, name)
 
-            if (!this.skipForms(formName)) {
-              if (!this.parsedPokemon[id]) {
-                this.parsedPokemon[id] = {
-                  pokemonName: this.pokemonName(id),
-                  forms:
-                    this.options.includeUnset &&
-                    !this.options.noFormPlaceholders
-                      ? [0]
-                      : [],
-                  pokedexId: id,
-                  ...this.getGeneration(+id),
-                }
+            if (!this.parsedPokemon[id]) {
+              this.parsedPokemon[id] = {
+                pokemonName: this.pokemonName(id),
+                forms:
+                  this.options.includeUnset && !this.options.noFormPlaceholders
+                    ? [0]
+                    : [],
+                pokedexId: id,
+                defaultFormId: 0,
+                ...this.getGeneration(+id),
               }
-              if (this.parsedPokemon[id].defaultFormId === undefined) {
-                this.parsedPokemon[id].defaultFormId =
-                  this.options.unsetDefaultForm &&
-                  this.options.includeUnset &&
-                  this.parsedPokemon[id].forms.includes(0)
-                    ? 0
-                    : +formId
-              }
+            }
+
+            if (
+              !this.skipForms(formName) &&
+              !(
+                this.parsedPokemon[id].defaultFormId === 0 &&
+                formName === 'Normal' &&
+                this.options.skipNormalIfUnset
+              )
+            ) {
               if (!this.parsedForms[formId]) {
                 this.parsedForms[formId] = {
                   formName,
                   proto: name,
                   formId: +formId,
                 }
-              }
-              if (
-                this.parsedPokemon[id].defaultFormId === 0 &&
-                formName === 'Normal' &&
-                this.options.skipNormalIfUnset
-              ) {
-                return
               }
               switch (formId) {
                 case Rpc.PokemonDisplayProto.Form.TYPHLOSION_HISUIAN:

@@ -110,11 +110,11 @@ export async function generate({
 
   AllTypes.buildTypes()
 
+  AllPokemon.missingPokemon()
+  AllPokemon.parseCostumes()
   if (pokemon.options.includeProtos || translations.options.includeProtos) {
     AllPokemon.generateProtoForms()
   }
-  AllPokemon.missingPokemon()
-  AllPokemon.parseCostumes()
   AllPokemon.sortForms()
 
   if (pokeApi === true) {
