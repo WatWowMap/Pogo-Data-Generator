@@ -291,14 +291,16 @@ export default class PokeApi extends Masterfile {
 
   async evoApi(evolvedPokemon: Set<number>, parsedPokemon: AllPokemon) {
     await Promise.all(
-      Object.keys(this.baseStats).map(async (id) => {
+      Object.keys(parsedPokemon).map(async (id) => {
         try {
           if (!evolvedPokemon.has(+id)) {
             const evoData: SpeciesApi = await this.fetch(
               `https://pokeapi.co/api/v2/pokemon-species/${id}`,
             )
-            this.baseStats[id].legendary = evoData.is_legendary
-            this.baseStats[id].mythic = evoData.is_mythical
+            if (this.baseStats[id]) {
+              this.baseStats[id].legendary = evoData.is_legendary
+              this.baseStats[id].mythic = evoData.is_mythical
+            }
             if (evoData.evolves_from_species) {
               const prevEvoId =
                 Rpc.HoloPokemonId[
