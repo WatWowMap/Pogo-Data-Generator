@@ -25,7 +25,7 @@ export default class PokeApi extends Masterfile {
     this.baseStats = {}
     this.tempEvos = {}
     this.types = {}
-    this.maxPokemon = 1008
+    this.maxPokemon = 1025
     this.inconsistentStats = {
       24: {
         attack: 167,
