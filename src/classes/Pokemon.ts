@@ -350,7 +350,8 @@ export default class Pokemon extends Masterfile {
         if (mfObject.length > 1) {
           console.warn('Hisuian Lilligant added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.LILLIGANT)
           return [
             {
               evoId: Rpc.HoloPokemonId.LILLIGANT,
@@ -363,6 +364,7 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'BRAVIARY':
         if (mfObject.length > 1) {
           console.warn('Hisuian Braviary added', mfObject.length)
@@ -384,7 +386,8 @@ export default class Pokemon extends Masterfile {
         if (mfObject.length > 1) {
           console.warn('Hisuian Sliggoo added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.SLIGGOO)
           return [
             { evoId: Rpc.HoloPokemonId.SLIGGOO, candyCost: 25 },
             {
@@ -393,6 +396,7 @@ export default class Pokemon extends Masterfile {
               candyCost: 25,
             },
           ]
+        }
       case 'AVALUGG':
         if (mfObject.length > 1) {
           console.warn('Hisuian Avalugg added', mfObject.length)

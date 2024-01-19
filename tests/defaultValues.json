@@ -162,6 +162,12 @@
           "types": [
             "Dark"
           ],
+          "charged_moves": [
+            "Dark Pulse",
+            "Night Slash",
+            "Foul Play",
+            "Trailblaze"
+          ],
           "evolutions": [
             {
               "pokemon": 53,

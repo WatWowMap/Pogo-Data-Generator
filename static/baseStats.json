@@ -67,9 +67,7 @@
         "evoId": 981,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "206": {
     "evolutions": [
@@ -77,9 +75,7 @@
         "evoId": 982,
         "formId": 2994
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "222": {
     "evolutions": [
@@ -87,9 +83,7 @@
         "evoId": 864,
         "formId": 2507
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "234": {
     "evolutions": [
@@ -105,9 +99,7 @@
         "evoId": 292,
         "formId": 0
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "439": {
     "evolutions": [
@@ -115,9 +107,7 @@
         "evoId": 122,
         "formId": 1080
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "502": {
     "evolutions": [
@@ -127,25 +117,13 @@
       }
     ]
   },
-  "548": {
-    "evolutions": [
-      {
-        "evoId": 549,
-        "formId": 0
-      }
-    ],
-    "legendary": false,
-    "mythic": false
-  },
   "550": {
     "evolutions": [
       {
         "evoId": 902,
         "formId": 2807
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "625": {
     "evolutions": [
@@ -161,7 +139,9 @@
         "evoId": 628,
         "formId": 2276
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "679": {
     "pokemonName": "Honedge",
@@ -276,14 +256,6 @@
       9
     ],
     "unreleased": true
-  },
-  "704": {
-    "evolutions": [
-      {
-        "evoId": 705,
-        "formId": 0
-      }
-    ]
   },
   "712": {
     "evolutions": [
