@@ -7,7 +7,11 @@ import {
   TempEvolutions,
 } from '../typings/dataTypes'
 import { TypeProto, PokemonIdProto, MoveProto } from '../typings/protos'
-import { PokeApiStats, PokeApiTypes } from '../typings/pokeapi'
+import {
+  BasePokeApiStruct,
+  PokeApiStats,
+  PokeApiTypes,
+} from '../typings/pokeapi'
 import { SpeciesApi } from '../typings/general'
 
 export default class PokeApi extends Masterfile {
@@ -540,5 +544,30 @@ export default class PokeApi extends Masterfile {
         }
       }),
     )
+  }
+
+  async getGenerations() {
+    const generations: { results: BasePokeApiStruct[] } = await this.fetch(
+      'https://pokeapi.co/api/v2/generation',
+    )
+    const results = await Promise.all(
+      generations.results.map(async (gen, index) => {
+        const {
+          main_region,
+          pokemon_species,
+        }: {
+          main_region: BasePokeApiStruct
+          pokemon_species: BasePokeApiStruct[]
+        } = await this.fetch(gen.url)
+        const name = this.capitalize(main_region.name)
+        const pokemonIds = pokemon_species.map(
+          (pokemon) => +pokemon.url.split('/').at(-2),
+        )
+        const min = Math.min(...pokemonIds)
+        const max = Math.max(...pokemonIds)
+        return { id: index + 1, name, range: [min, max] }
+      }),
+    )
+    return Object.fromEntries(results.map(({ id, ...rest}) => [id, rest]))
   }
 }
