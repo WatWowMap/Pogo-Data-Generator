@@ -336,7 +336,7 @@ export default class Translations extends Masterfile {
   mergeManualTranslations(locale: string) {
     try {
       if (!this.enFallback) {
-        this.enFallback = this.parsedTranslations.en
+        this.enFallback = this.parsedTranslations.en || {}
       }
       const merged: TranslationKeys = {}
       const sorted: TranslationKeys = {}
