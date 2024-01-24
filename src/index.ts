@@ -68,6 +68,7 @@ export async function generate({
     translationRemoteUrl,
   )
   const AllPokeApi = new PokeApi()
+  await AllPokeApi.setMaxPokemonId()
   const AllMisc = new Misc()
   const apk = new ApkReader()
 

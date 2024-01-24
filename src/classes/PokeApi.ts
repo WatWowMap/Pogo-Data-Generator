@@ -158,6 +158,14 @@ export default class PokeApi extends Masterfile {
     return this.capitalize(type)
   }
 
+  async setMaxPokemonId() {
+    const { count } = await this.fetch(
+      `https://pokeapi.co/api/v2/pokemon-species/?limit=1&offset=0`,
+    )
+    this.maxPokemon = +count
+    return +count
+  }
+
   async baseStatsApi(parsedPokemon: AllPokemon, pokeApiIds?: number[]) {
     await Promise.all(
       Object.keys(parsedPokemon).map(async (id) => {
