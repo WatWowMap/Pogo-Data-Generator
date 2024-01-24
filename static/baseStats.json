@@ -1,63 +1,9 @@
 {
-  "25": {
-    "evolutions": [
-      {
-        "evoId": 26,
-        "formId": 49
-      }
-    ]
-  },
-  "57": {
-    "evolutions": [
-      {
-        "evoId": 979,
-        "formId": 0
-      }
-    ]
-  },
-  "102": {
-    "evolutions": [
-      {
-        "evoId": 103,
-        "formId": 77
-      }
-    ],
-    "legendary": false,
-    "mythic": false
-  },
-  "104": {
-    "evolutions": [
-      {
-        "evoId": 105,
-        "formId": 79
-      }
-    ],
-    "legendary": false,
-    "mythic": false
-  },
-  "109": {
-    "evolutions": [
-      {
-        "evoId": 110,
-        "formId": 706
-      }
-    ],
-    "legendary": false,
-    "mythic": false
-  },
   "123": {
     "evolutions": [
       {
         "evoId": 900,
         "formId": 0
-      }
-    ]
-  },
-  "156": {
-    "evolutions": [
-      {
-        "evoId": 157,
-        "formId": 1133
       }
     ]
   },
@@ -101,22 +47,6 @@
       }
     ]
   },
-  "439": {
-    "evolutions": [
-      {
-        "evoId": 122,
-        "formId": 1080
-      }
-    ]
-  },
-  "502": {
-    "evolutions": [
-      {
-        "evoId": 503,
-        "formId": 1913
-      }
-    ]
-  },
   "550": {
     "evolutions": [
       {
@@ -132,16 +62,6 @@
         "formId": 0
       }
     ]
-  },
-  "627": {
-    "evolutions": [
-      {
-        "evoId": 628,
-        "formId": 2276
-      }
-    ],
-    "legendary": false,
-    "mythic": false
   },
   "679": {
     "pokemonName": "Honedge",
@@ -257,24 +177,6 @@
     ],
     "unreleased": true
   },
-  "712": {
-    "evolutions": [
-      {
-        "evoId": 713,
-        "formId": 2812
-      }
-    ],
-    "legendary": false,
-    "mythic": false
-  },
-  "723": {
-    "evolutions": [
-      {
-        "evoId": 724,
-        "formId": 2809
-      }
-    ]
-  },
   "902": {
     "pokemonName": "Basculegion-male",
     "quickMoves": [
@@ -357,5 +259,694 @@
     "unreleased": true,
     "legendary": true,
     "mythic": false
+  },
+  "1009": {
+    "pokemonName": "Walking-wake",
+    "quickMoves": [
+      202,
+      204,
+      207,
+      216,
+      240,
+      278,
+      282,
+      283
+    ],
+    "chargedMoves": [
+      14,
+      24,
+      57,
+      80,
+      82,
+      83,
+      105,
+      106,
+      107,
+      122,
+      125,
+      131,
+      132,
+      277,
+      279,
+      284,
+      285,
+      321,
+      379,
+      383
+    ],
+    "attack": 256,
+    "defense": 188,
+    "stamina": 223,
+    "types": [
+      11,
+      16
+    ],
+    "unreleased": true
+  },
+  "1010": {
+    "pokemonName": "Iron-leaves",
+    "quickMoves": [
+      219,
+      255,
+      282,
+      357
+    ],
+    "chargedMoves": [
+      14,
+      22,
+      45,
+      51,
+      100,
+      114,
+      116,
+      117,
+      123,
+      125,
+      132,
+      245,
+      247,
+      251,
+      272,
+      273,
+      321,
+      330,
+      343,
+      392
+    ],
+    "attack": 259,
+    "defense": 213,
+    "stamina": 207,
+    "types": [
+      12,
+      14
+    ],
+    "unreleased": true
+  },
+  "1011": {
+    "pokemonName": "Dipplin",
+    "quickMoves": [
+      201,
+      203,
+      204,
+      253,
+      260,
+      263,
+      271,
+      282,
+      368
+    ],
+    "chargedMoves": [
+      14,
+      59,
+      82,
+      114,
+      116,
+      131,
+      132,
+      267,
+      272,
+      273,
+      277,
+      285,
+      321,
+      343
+    ],
+    "attack": 173,
+    "defense": 184,
+    "stamina": 190,
+    "types": [
+      12,
+      16
+    ],
+    "unreleased": true
+  },
+  "1012": {
+    "pokemonName": "Poltchageist",
+    "quickMoves": [
+      263,
+      264,
+      357
+    ],
+    "chargedMoves": [
+      48,
+      70,
+      106,
+      114,
+      116,
+      132,
+      265,
+      273,
+      280,
+      343,
+      376
+    ],
+    "attack": 134,
+    "defense": 96,
+    "stamina": 120,
+    "types": [
+      8,
+      12
+    ],
+    "unreleased": true
+  },
+  "1013": {
+    "pokemonName": "Sinistcha",
+    "quickMoves": [
+      263,
+      264,
+      357
+    ],
+    "chargedMoves": [
+      14,
+      48,
+      70,
+      106,
+      114,
+      116,
+      132,
+      265,
+      273,
+      280,
+      343,
+      376
+    ],
+    "attack": 225,
+    "defense": 191,
+    "stamina": 174,
+    "types": [
+      8,
+      12
+    ],
+    "unreleased": true
+  },
+  "1014": {
+    "pokemonName": "Okidogi",
+    "quickMoves": [
+      202,
+      207,
+      213,
+      224,
+      228,
+      240,
+      243,
+      278,
+      282,
+      326,
+      327
+    ],
+    "chargedMoves": [
+      14,
+      26,
+      33,
+      50,
+      56,
+      63,
+      74,
+      77,
+      90,
+      91,
+      92,
+      115,
+      123,
+      131,
+      132,
+      245,
+      247,
+      277,
+      279,
+      314,
+      321,
+      353,
+      367,
+      377
+    ],
+    "attack": 241,
+    "defense": 210,
+    "stamina": 204,
+    "types": [
+      2,
+      4
+    ],
+    "unreleased": true
+  },
+  "1015": {
+    "pokemonName": "Munkidori",
+    "quickMoves": [
+      213,
+      220,
+      224,
+      233,
+      235,
+      264
+    ],
+    "chargedMoves": [
+      14,
+      30,
+      60,
+      70,
+      90,
+      91,
+      92,
+      108,
+      125,
+      132,
+      247,
+      265,
+      272,
+      303,
+      321,
+      376,
+      392
+    ],
+    "attack": 261,
+    "defense": 172,
+    "stamina": 204,
+    "types": [
+      4,
+      14
+    ],
+    "unreleased": true
+  },
+  "1016": {
+    "pokemonName": "Fezandipiti",
+    "quickMoves": [
+      210,
+      211,
+      213,
+      219,
+      224,
+      255,
+      264,
+      282,
+      320,
+      356
+    ],
+    "chargedMoves": [
+      14,
+      16,
+      42,
+      45,
+      70,
+      84,
+      86,
+      87,
+      88,
+      89,
+      90,
+      92,
+      111,
+      121,
+      122,
+      125,
+      132,
+      256,
+      303,
+      321,
+      341,
+      364
+    ],
+    "attack": 185,
+    "defense": 228,
+    "stamina": 204,
+    "types": [
+      4,
+      18
+    ],
+    "unreleased": true
+  },
+  "1017": {
+    "pokemonName": "Ogerpon",
+    "quickMoves": [
+      207,
+      214,
+      219,
+      234,
+      243,
+      271,
+      282,
+      320,
+      356,
+      357
+    ],
+    "chargedMoves": [
+      56,
+      59,
+      63,
+      88,
+      114,
+      116,
+      118,
+      123,
+      132,
+      272,
+      273,
+      321,
+      343,
+      392
+    ],
+    "attack": 241,
+    "defense": 196,
+    "stamina": 190,
+    "types": [
+      12
+    ],
+    "unreleased": true
+  },
+  "1018": {
+    "pokemonName": "Archaludon",
+    "quickMoves": [
+      228,
+      241,
+      253,
+      278,
+      282,
+      297
+    ],
+    "chargedMoves": [
+      14,
+      16,
+      31,
+      32,
+      36,
+      51,
+      63,
+      64,
+      74,
+      78,
+      79,
+      82,
+      83,
+      116,
+      123,
+      131,
+      132,
+      267,
+      268,
+      276,
+      277,
+      280,
+      285,
+      321,
+      332,
+      372,
+      379
+    ],
+    "attack": 250,
+    "defense": 215,
+    "stamina": 207,
+    "types": [
+      9,
+      16
+    ],
+    "unreleased": true
+  },
+  "1019": {
+    "pokemonName": "Hydrapple",
+    "quickMoves": [
+      201,
+      203,
+      204,
+      253,
+      260,
+      263,
+      271,
+      282,
+      357,
+      368
+    ],
+    "chargedMoves": [
+      14,
+      31,
+      59,
+      82,
+      107,
+      114,
+      116,
+      118,
+      131,
+      132,
+      267,
+      268,
+      272,
+      273,
+      277,
+      285,
+      304,
+      321,
+      343,
+      379
+    ],
+    "attack": 216,
+    "defense": 186,
+    "stamina": 235,
+    "types": [
+      12,
+      16
+    ],
+    "unreleased": true
+  },
+  "1020": {
+    "pokemonName": "Gouging-fire",
+    "quickMoves": [
+      202,
+      240,
+      253,
+      269,
+      278,
+      282,
+      326,
+      346,
+      356
+    ],
+    "chargedMoves": [
+      14,
+      24,
+      31,
+      32,
+      42,
+      62,
+      74,
+      82,
+      83,
+      95,
+      101,
+      103,
+      127,
+      131,
+      132,
+      270,
+      277,
+      279,
+      285,
+      321,
+      353,
+      379,
+      393
+    ],
+    "attack": 225,
+    "defense": 228,
+    "stamina": 233,
+    "types": [
+      10,
+      16
+    ],
+    "unreleased": true
+  },
+  "1021": {
+    "pokemonName": "Raging-bolt",
+    "quickMoves": [
+      204,
+      249,
+      250,
+      253,
+      278,
+      282,
+      326
+    ],
+    "chargedMoves": [
+      14,
+      31,
+      35,
+      62,
+      78,
+      79,
+      80,
+      82,
+      116,
+      127,
+      131,
+      132,
+      251,
+      252,
+      268,
+      277,
+      279,
+      285,
+      321,
+      379
+    ],
+    "attack": 235,
+    "defense": 165,
+    "stamina": 245,
+    "types": [
+      13,
+      16
+    ],
+    "unreleased": true
+  },
+  "1022": {
+    "pokemonName": "Iron-boulder",
+    "quickMoves": [
+      219,
+      224,
+      226,
+      227,
+      234,
+      243,
+      255,
+      282
+    ],
+    "chargedMoves": [
+      14,
+      22,
+      31,
+      32,
+      45,
+      60,
+      63,
+      74,
+      95,
+      100,
+      108,
+      123,
+      126,
+      131,
+      132,
+      245,
+      251,
+      259,
+      321,
+      330,
+      372
+    ],
+    "attack": 249,
+    "defense": 214,
+    "stamina": 207,
+    "types": [
+      6,
+      14
+    ],
+    "unreleased": true
+  },
+  "1023": {
+    "pokemonName": "Iron-crown",
+    "quickMoves": [
+      226,
+      228,
+      234,
+      235,
+      250,
+      255,
+      282
+    ],
+    "chargedMoves": [
+      14,
+      36,
+      60,
+      74,
+      95,
+      100,
+      108,
+      123,
+      131,
+      132,
+      247,
+      268,
+      321,
+      330
+    ],
+    "attack": 243,
+    "defense": 220,
+    "stamina": 207,
+    "types": [
+      9,
+      14
+    ],
+    "unreleased": true
+  },
+  "1024": {
+    "pokemonName": "Terapagos",
+    "quickMoves": [
+      234,
+      282
+    ],
+    "chargedMoves": [
+      14,
+      16,
+      24,
+      31,
+      32,
+      36,
+      39,
+      49,
+      62,
+      64,
+      65,
+      74,
+      78,
+      79,
+      82,
+      86,
+      105,
+      116,
+      131,
+      132,
+      251,
+      267,
+      268,
+      273,
+      279,
+      284,
+      304,
+      321,
+      332,
+      344,
+      372,
+      393
+    ],
+    "attack": 126,
+    "defense": 165,
+    "stamina": 207,
+    "types": [
+      1
+    ],
+    "unreleased": true
+  },
+  "1025": {
+    "pokemonName": "Pecharunt",
+    "quickMoves": [
+      263,
+      264,
+      368
+    ],
+    "chargedMoves": [
+      70,
+      90,
+      91,
+      92,
+      132,
+      265,
+      280,
+      303,
+      376
+    ],
+    "attack": 181,
+    "defense": 273,
+    "stamina": 204,
+    "types": [
+      4,
+      8
+    ],
+    "unreleased": true
   }
 }
