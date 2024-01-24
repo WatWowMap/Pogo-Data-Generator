@@ -243,7 +243,8 @@ export default class Pokemon extends Masterfile {
         if (mfObject.length > 1) {
           console.warn('Alolan Raichu added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.RAICHU)
           return [
             { evoId: Rpc.HoloPokemonId.RAICHU, candyCost: 50 },
             {
@@ -252,11 +253,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'EXEGGUTOR':
         if (mfObject.length > 1) {
           console.warn('Alolan Exeggutor added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.EXEGGUTOR)
           return [
             {
               evoId: Rpc.HoloPokemonId.EXEGGUTOR,
@@ -269,11 +272,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'MAROWAK':
         if (mfObject.length > 1) {
           console.warn('Alolan Marowak added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.MAROWAK)
           return [
             {
               evoId: Rpc.HoloPokemonId.MAROWAK,
@@ -286,11 +291,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'WEEZING':
         if (mfObject.length > 1) {
           console.warn('Galarian Weezing added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.WEEZING)
           return [
             {
               evoId: Rpc.HoloPokemonId.WEEZING,
@@ -303,11 +310,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'MR_MIME':
         if (mfObject.length > 1) {
           console.warn('Galarian Mr Mime added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.MR_MIME)
           return [
             {
               evoId: Rpc.HoloPokemonId.MR_MIME,
@@ -320,11 +329,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'TYPHLOSION':
         if (mfObject.length > 1) {
           console.warn('Hisuian Typhlosion added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.TYPHLOSION)
           return [
             { evoId: Rpc.HoloPokemonId.TYPHLOSION, candyCost: 100 },
             {
@@ -333,11 +344,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 100,
             },
           ]
+        }
       case 'SAMUROTT':
         if (mfObject.length > 1) {
           console.warn('Hisuian Samurott added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.SAMUROTT)
           return [
             { evoId: Rpc.HoloPokemonId.SAMUROTT, candyCost: 100 },
             {
@@ -346,6 +359,7 @@ export default class Pokemon extends Masterfile {
               candyCost: 100,
             },
           ]
+        }
       case 'LILLIGANT':
         if (mfObject.length > 1) {
           console.warn('Hisuian Lilligant added', mfObject.length)
@@ -369,7 +383,8 @@ export default class Pokemon extends Masterfile {
         if (mfObject.length > 1) {
           console.warn('Hisuian Braviary added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.BRAVIARY)
           return [
             {
               evoId: Rpc.HoloPokemonId.BRAVIARY,
@@ -382,6 +397,7 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'SLIGGOO':
         if (mfObject.length > 1) {
           console.warn('Hisuian Sliggoo added', mfObject.length)
@@ -401,7 +417,8 @@ export default class Pokemon extends Masterfile {
         if (mfObject.length > 1) {
           console.warn('Hisuian Avalugg added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.AVALUGG)
           return [
             { evoId: Rpc.HoloPokemonId.AVALUGG, candyCost: 50 },
             {
@@ -410,11 +427,13 @@ export default class Pokemon extends Masterfile {
               candyCost: 50,
             },
           ]
+        }
       case 'DECIDUEYE':
         if (mfObject.length > 1) {
           console.warn('Hisuian Decidueye added', mfObject.length)
           break
-        } else
+        } else {
+          this.evolvedPokemon.add(Rpc.HoloPokemonId.DECIDUEYE)
           return [
             { evoId: Rpc.HoloPokemonId.DECIDUEYE, candyCost: 100 },
             {
@@ -423,6 +442,7 @@ export default class Pokemon extends Masterfile {
               candyCost: 100,
             },
           ]
+        }
     }
     try {
       const evolutions: Evolutions[] = []
@@ -566,12 +586,6 @@ export default class Pokemon extends Masterfile {
                 }
               }
               switch (formId) {
-                case Rpc.PokemonDisplayProto.Form.TYPHLOSION_HISUIAN:
-                  this.addFormBaseStats(formId, 73, 84, 78, 119, 85, 95)
-                  break
-                case Rpc.PokemonDisplayProto.Form.SAMUROTT_HISUIAN:
-                  this.addFormBaseStats(formId, 90, 108, 80, 100, 65, 85)
-                  break
                 case Rpc.PokemonDisplayProto.Form.LILLIGANT_HISUIAN:
                   this.addFormBaseStats(formId, 70, 105, 75, 50, 75, 105)
                   break
@@ -591,9 +605,6 @@ export default class Pokemon extends Masterfile {
                   break
                 case Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN:
                   this.addFormBaseStats(formId, 80, 100, 100, 110, 150, 60)
-                  break
-                case Rpc.PokemonDisplayProto.Form.DECIDUEYE_HISUIAN:
-                  this.addFormBaseStats(formId, 88, 112, 80, 95, 95, 60)
                   break
               }
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
@@ -828,9 +839,9 @@ export default class Pokemon extends Masterfile {
             form.purificationCandy =
               pokemonSettings.shadow.purificationCandyNeeded
           }
-          if (pokemonSettings.obCostumeEvolution) {
+          if (pokemonSettings.allowNoevolveEvolution) {
             form.costumeOverrideEvos = this.getCostumeOverrides(
-              pokemonSettings.obCostumeEvolution,
+              pokemonSettings.allowNoevolveEvolution,
             )
           }
         }
@@ -883,9 +894,9 @@ export default class Pokemon extends Masterfile {
             this.parsedPokemon[id],
           )
         }
-        if (pokemonSettings.obCostumeEvolution) {
+        if (pokemonSettings.allowNoevolveEvolution) {
           this.parsedPokemon[id].costumeOverrideEvos = this.getCostumeOverrides(
-            pokemonSettings.obCostumeEvolution,
+            pokemonSettings.allowNoevolveEvolution,
           )
         }
       }
