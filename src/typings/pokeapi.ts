@@ -2,24 +2,15 @@ import { AllPokemon, AllTypes } from './dataTypes'
 
 export interface PokeApiStats {
   abilities: {
-    ability: {
-      name: string
-      url: string
-    }
+    ability: BasePokeApiStruct
     is_hidden: boolean
     slot: number
   }[]
   base_experience: number
-  forms: {
-    name: string
-    url: string
-  }[]
+  forms: BasePokeApiStruct[]
   game_indices: {
     game_index: number
-    version: {
-      name: string
-      url: string
-    }
+    version: BasePokeApiStruct
   }[]
   height: number
   held_items: []
@@ -27,44 +18,26 @@ export interface PokeApiStats {
   is_default: boolean
   location_area_encounters: string
   moves: {
-    move: {
-      name: string
-      url: string
-    }
+    move: BasePokeApiStruct
     version_group_details: {
       level_learned_at: number
-      move_learn_method: {
-        name: string
-        url: string
-      }
-      version_group: {
-        name: string
-        url: string
-      }
+      move_learn_method: BasePokeApiStruct
+      version_group: BasePokeApiStruct
     }[]
   }[]
   name: string
   order: number
   past_types: []
-  species: {
-    name: string
-    url: string
-  }
+  species: BasePokeApiStruct
   sprites: Sprites
   stats: {
     base_stat: number
     effort: number
-    stat: {
-      name: string
-      url: string
-    }
+    stat: BasePokeApiStruct
   }[]
   types: {
     slot: number
-    type: {
-      name: string
-      url: string
-    }
+    type: BasePokeApiStruct
   }[]
   weight: number
 }
@@ -101,19 +74,19 @@ type Sprite = {
   front_shiny_female?: string
 }
 
-type PokeApiType = {
+export type BasePokeApiStruct = {
   name: string
   url: string
 }
 
 export interface PokeApiTypes {
   damage_relations: {
-    double_damage_from: PokeApiType[]
-    double_damage_to: PokeApiType[]
-    half_damage_from: PokeApiType[]
-    half_damage_to: PokeApiType[]
-    no_damage_from: PokeApiType[]
-    no_damage_to: PokeApiType[]
+    double_damage_from: BasePokeApiStruct[]
+    double_damage_to: BasePokeApiStruct[]
+    half_damage_from: BasePokeApiStruct[]
+    half_damage_to: BasePokeApiStruct[]
+    no_damage_from: BasePokeApiStruct[]
+    no_damage_to: BasePokeApiStruct[]
   }
 }
 

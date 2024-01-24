@@ -69,6 +69,8 @@ export async function generate({
   )
   const AllPokeApi = new PokeApi()
   await AllPokeApi.setMaxPokemonId()
+  const generations = await AllPokeApi.getGenerations()
+  AllPokemon.generations = generations
   const AllMisc = new Misc()
   const apk = new ApkReader()
 
