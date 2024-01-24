@@ -8,20 +8,20 @@ export default class ApkReader {
   constructor() {
     this.texts = {}
     this.codeMap = {
-      brazilianportuguese: 'pt-br',
-      chinesetraditional: 'zh-tw',
-      english: 'en',
-      french: 'fr',
-      german: 'de',
-      hindi: 'hi',
-      indonesian: 'id',
-      italian: 'it',
-      japanese: 'ja',
-      korean: 'ko',
-      russian: 'ru',
-      spanish: 'es',
-      thai: 'th',
-      turkish: 'tr',
+      'pt-br': 'pt-br',
+      'zh-tw': 'zh-tw',
+      'en-us': 'en',
+      'fr-fr': 'fr',
+      'de-de': 'de',
+      'hi-in': 'hi',
+      'id-id': 'id',
+      'it-it': 'it',
+      'ja-jp': 'ja',
+      'ko-kr': 'ko',
+      'ru-ru': 'ru',
+      'es-es': 'es',
+      'th-th': 'th',
+      'tr-tr': 'tr',
     }
     this.files = null
   }
