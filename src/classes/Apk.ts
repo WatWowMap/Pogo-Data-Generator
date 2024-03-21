@@ -53,7 +53,7 @@ export default class ApkReader {
     if (!this.files) return
     try {
       const textFiles = Object.keys(this.files.files).filter((file) =>
-        file.startsWith('assets/text'),
+        file.startsWith('assets/text')
       )
       await Promise.all(
         textFiles.map(async (file) => {
@@ -71,13 +71,15 @@ export default class ApkReader {
             }
 
             this.texts[code] = {}
-            for (let i = 0; i < data.length; i += 2) {
-              this.texts[code][data[i]] = this.removeEscapes(data[i + 1])
+            for (let i = 0; i < data.length; i++) {
+              this.texts[code][data[i]] = this.removeEscapes(data[++i])
             }
           } catch (e) {
-            console.error('Unknown language code', e)
+            if (e instanceof Error) {
+              console.error('Unknown language code', e.message)
+            }
           }
-        }),
+        })
       )
     } catch (e) {
       console.warn(e, 'Issue with extracting texts')
