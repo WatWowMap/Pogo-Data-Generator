@@ -199,6 +199,7 @@ export default class Pokemon extends Masterfile {
             ? Rpc.HoloPokemonMove[move as MoveProto]
             : move,
         )
+        .filter(Boolean)
         .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
@@ -217,6 +218,7 @@ export default class Pokemon extends Masterfile {
             ? Rpc.HoloPokemonType[type as TypeProto]
             : type,
         )
+        .filter(Boolean)
         .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup types for ${incomingTypes}`)
