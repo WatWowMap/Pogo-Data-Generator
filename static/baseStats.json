@@ -29,7 +29,9 @@
         "evoId": 864,
         "formId": 2507
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "234": {
     "evolutions": [
@@ -45,7 +47,9 @@
         "evoId": 292,
         "formId": 0
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "550": {
     "evolutions": [
@@ -72,7 +76,8 @@
       223,
       226,
       241,
-      281
+      281,
+      402
     ],
     "chargedMoves": [
       36,
@@ -110,7 +115,8 @@
       223,
       226,
       241,
-      281
+      281,
+      402
     ],
     "chargedMoves": [
       36,
@@ -147,7 +153,8 @@
       226,
       241,
       255,
-      281
+      281,
+      402
     ],
     "chargedMoves": [
       14,
@@ -176,6 +183,14 @@
       9
     ],
     "unreleased": true
+  },
+  "803": {
+    "evolutions": [
+      {
+        "evoId": 804,
+        "formId": 0
+      }
+    ]
   },
   "902": {
     "pokemonName": "Basculegion-male",
@@ -217,47 +232,6 @@
     ],
     "unreleased": true,
     "legendary": false,
-    "mythic": false
-  },
-  "905": {
-    "pokemonName": "Enamorus-incarnate",
-    "quickMoves": [
-      234,
-      263,
-      274,
-      282,
-      350
-    ],
-    "chargedMoves": [
-      14,
-      74,
-      80,
-      84,
-      85,
-      86,
-      87,
-      88,
-      90,
-      108,
-      131,
-      132,
-      247,
-      272,
-      277,
-      304,
-      321,
-      341,
-      382
-    ],
-    "attack": 281,
-    "defense": 162,
-    "stamina": 179,
-    "types": [
-      3,
-      18
-    ],
-    "unreleased": true,
-    "legendary": true,
     "mythic": false
   },
   "1009": {
@@ -309,7 +283,8 @@
       219,
       255,
       282,
-      357
+      357,
+      402
     ],
     "chargedMoves": [
       14,
@@ -620,7 +595,8 @@
       253,
       278,
       282,
-      297
+      297,
+      402
     ],
     "chargedMoves": [
       14,
@@ -847,7 +823,8 @@
       235,
       250,
       255,
-      282
+      282,
+      402
     ],
     "chargedMoves": [
       14,
