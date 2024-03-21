@@ -515,6 +515,21 @@ export default class Translations extends Masterfile {
             `pokemon_name_${String(id).padStart(4, '0')}`
           ] || pokemon[id].pokemonName
         const description = `pokemon_desc_${String(id).padStart(4, '0')}`
+        new Array(4)
+          .fill(0)
+          .map(
+            (_, evo) =>
+              this.rawTranslations[locale][
+                `pokemon_name_${String(id).padStart(4, '0')}_000${evo}`
+              ],
+          )
+          .forEach((mega, evo) => {
+            if (mega) {
+              this.parsedTranslations[locale].pokemon[
+                `${this.options.prefix.pokemon}${id}_e${evo}`
+              ] = mega
+            }
+          })
         if (id) {
           if (name && subItems.names) {
             this.parsedTranslations[locale].pokemon[
