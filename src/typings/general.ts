@@ -27,6 +27,7 @@ export interface EvolutionQuest {
 export interface NiaMfObj {
   templateId: string
   data: {
+    templateId: string
     pokemonSettings?: {
       pokemonId: string
       modelScale: number
@@ -126,7 +127,20 @@ export interface NiaMfObj {
         title: string
       }
     }
+    pokemonExtendedSettings?: {
+      uniqueId: string
+      sizeSettings: PokemonSizeSettings
+    }
   }
+}
+
+export interface PokemonSizeSettings {
+  xxsLowerBound: number
+  xsLowerBound: number
+  mLowerBound: number
+  mUpperBound: number
+  xlUpperBound: number
+  xxlUpperBound: number
 }
 
 export interface TempEvo {

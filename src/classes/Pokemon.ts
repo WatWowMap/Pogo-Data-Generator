@@ -621,6 +621,23 @@ export default class Pokemon extends Masterfile {
     })
   }
 
+  addExtendedStats(object: NiaMfObj) {
+    if ('pokemonExtendedSettings' in object.data) {
+      const id: number =
+        Rpc.HoloPokemonId[
+          object.data.pokemonExtendedSettings.uniqueId as PokemonIdProto
+        ]
+      if (id) {
+        if (!this.parsedPokemon[id]) {
+          this.parsedPokemon[id] = {}
+        }
+        this.parsedPokemon[id].sizeSettings = Object.entries(
+          object.data.pokemonExtendedSettings.sizeSettings,
+        ).map(([name, value]) => ({ name, value }))
+      }
+    }
+  }
+
   addFormBaseStats(
     formId: number,
     hp: number,

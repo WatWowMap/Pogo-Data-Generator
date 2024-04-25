@@ -23,6 +23,7 @@ const baseTemplate: FullTemplate = {
         chargedMoves: false,
         questRequirement: false,
         costumeOverrideEvos: false,
+        // sizeSettings: 'name'
       },
       customFields: {
         evoId: 'pokemon',
@@ -88,6 +89,7 @@ const baseTemplate: FullTemplate = {
           costumeName: true,
         },
       },
+      // sizeSettings: 'value',
       defaultFormId: true,
       genId: true,
       generation: true,
@@ -302,27 +304,27 @@ const baseTemplate: FullTemplate = {
     options: {
       keys: {
         main: 'id',
-      }
+      },
     },
-    template: 'formatted'
+    template: 'formatted',
   },
   teams: {
     enabled: false,
     options: {
       keys: {
         main: 'id',
-      }
+      },
     },
-    template: 'formatted'
+    template: 'formatted',
   },
   routeTypes: {
     enabled: false,
     options: {
       keys: {
         main: 'id',
-      }
+      },
     },
-    template: 'formatted'
+    template: 'formatted',
   },
   translations: {
     enabled: true,

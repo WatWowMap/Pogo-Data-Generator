@@ -107,6 +107,8 @@ export async function generate({
         data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE'
       ) {
         AllPokemon.jungleCup(data[i])
+      } else if (data[i].data.pokemonExtendedSettings) {
+        AllPokemon.addExtendedStats(data[i])
       }
     }
   }
