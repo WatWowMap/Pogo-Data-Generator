@@ -76,6 +76,7 @@ export interface PokemonTemplate extends Form {
   gymDefenderEligible?: boolean
   unreleased?: boolean
   jungle?: boolean
+  sizeSettings?: { name: boolean, value: boolean } | string
 }
 
 interface CostumeTemplate {
@@ -348,6 +349,7 @@ export type Locales = [
   'de',
   'en',
   'es',
+  'es-mx',
   'fr',
   'hi',
   'id',

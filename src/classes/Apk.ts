@@ -20,6 +20,7 @@ export default class ApkReader {
       'ko-kr': 'ko',
       'ru-ru': 'ru',
       'es-es': 'es',
+      'es-mx': 'es-mx',
       'th-th': 'th',
       'tr-tr': 'tr',
     }

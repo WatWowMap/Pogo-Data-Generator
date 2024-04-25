@@ -41,6 +41,32 @@
       "transferable": true,
       "gymDefenderEligible": true,
       "genId": 1,
+      "sizeSettings": [
+        {
+          "name": "xxsLowerBound",
+          "value": 0.343
+        },
+        {
+          "name": "xsLowerBound",
+          "value": 0.35
+        },
+        {
+          "name": "mLowerBound",
+          "value": 0.525
+        },
+        {
+          "name": "mUpperBound",
+          "value": 0.875
+        },
+        {
+          "name": "xlUpperBound",
+          "value": 1.05
+        },
+        {
+          "name": "xxlUpperBound",
+          "value": 1.225
+        }
+      ],
       "evolutions": [
         {
           "evoId": 2,
@@ -83,6 +109,32 @@
       "bonusCandyCapture": 7,
       "bonusStardustCapture": 400,
       "legendary": false,
+      "sizeSettings": [
+        {
+          "name": "xxsLowerBound",
+          "value": 0.833
+        },
+        {
+          "name": "xsLowerBound",
+          "value": 0.85
+        },
+        {
+          "name": "mLowerBound",
+          "value": 1.275
+        },
+        {
+          "name": "mUpperBound",
+          "value": 2.125
+        },
+        {
+          "name": "xlUpperBound",
+          "value": 2.55
+        },
+        {
+          "name": "xxlUpperBound",
+          "value": 2.975
+        }
+      ],
       "mythic": false,
       "ultraBeast": false,
       "buddyGroupNumber": 3,

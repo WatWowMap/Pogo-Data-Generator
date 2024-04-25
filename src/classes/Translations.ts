@@ -49,6 +49,7 @@ export default class Translations extends Masterfile {
       de: 'German',
       en: 'English',
       es: 'Spanish',
+      'es-mx': 'LatinAmericanSpanish',
       fr: 'French',
       hi: 'Hindi',
       id: 'Indonesian',
@@ -79,6 +80,12 @@ export default class Translations extends Masterfile {
         normal: 'Normal',
         unknown: 'Desconocido',
         substitute: 'Substitución',
+      },
+      'es-mx': {
+        none: 'Ninguno',
+        normal: 'Normal',
+        unknown: 'Desconocido',
+        substitute: 'Sustituto',
       },
       fr: {
         none: 'Aucun',
