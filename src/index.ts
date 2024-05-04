@@ -114,7 +114,7 @@ export async function generate({
   }
 
   AllTypes.buildTypes()
-
+  AllPokemon.cleanExtendedStats()
   AllPokemon.missingPokemon()
   AllPokemon.parseCostumes()
   if (pokemon.options.includeProtos || translations.options.includeProtos) {

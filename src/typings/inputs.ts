@@ -76,7 +76,6 @@ export interface PokemonTemplate extends Form {
   gymDefenderEligible?: boolean
   unreleased?: boolean
   jungle?: boolean
-  sizeSettings?: { name: boolean, value: boolean } | string
 }
 
 interface CostumeTemplate {
@@ -125,6 +124,7 @@ interface Form extends BaseStats {
   tradable?: boolean
   transferable?: boolean
   costumeOverrideEvos?: CostumeOverrideEvo | StringBool
+  sizeSettings?: { name: boolean, value: boolean } | string
 }
 
 type CostumeOverrideEvo = {

@@ -113,7 +113,6 @@ export interface SinglePokemon extends SingleForm {
   gymDefenderEligible?: boolean
   unreleased?: boolean
   jungle?: boolean
-  sizeSettings?: { name: string, value: number }[]
 }
 
 interface SingleForm extends BaseStats {
@@ -138,6 +137,7 @@ interface SingleForm extends BaseStats {
     costumeProto: string
     costumeName: string
   }[]
+  sizeSettings?: { name: string, value: number }[]
 }
 
 export interface TempEvolutions extends BaseStats {

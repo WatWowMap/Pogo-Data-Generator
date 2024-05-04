@@ -23,7 +23,7 @@ const baseTemplate: FullTemplate = {
         chargedMoves: false,
         questRequirement: false,
         costumeOverrideEvos: false,
-        // sizeSettings: 'name'
+        // sizeSettings: 'name',
       },
       customFields: {
         evoId: 'pokemon',
@@ -88,6 +88,7 @@ const baseTemplate: FullTemplate = {
           costumeProto: true,
           costumeName: true,
         },
+        // sizeSettings: 'value',
       },
       // sizeSettings: 'value',
       defaultFormId: true,

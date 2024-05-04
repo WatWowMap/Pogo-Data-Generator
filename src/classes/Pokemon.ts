@@ -580,12 +580,11 @@ export default class Pokemon extends Masterfile {
                 this.options.skipNormalIfUnset
               )
             ) {
-              if (!this.parsedForms[formId]) {
-                this.parsedForms[formId] = {
-                  formName,
-                  proto: name,
-                  formId: +formId,
-                }
+              this.parsedForms[formId] = {
+                ...this.parsedForms[formId],
+                formName,
+                proto: name,
+                formId: +formId,
               }
               switch (formId) {
                 case Rpc.PokemonDisplayProto.Form.LILLIGANT_HISUIAN:
@@ -631,11 +630,46 @@ export default class Pokemon extends Masterfile {
         if (!this.parsedPokemon[id]) {
           this.parsedPokemon[id] = {}
         }
-        this.parsedPokemon[id].sizeSettings = Object.entries(
+        const values = Object.entries(
           object.data.pokemonExtendedSettings.sizeSettings,
         ).map(([name, value]) => ({ name, value }))
+
+        const protoForm = object.data.pokemonExtendedSettings.form
+          ? Rpc.PokemonDisplayProto.Form[
+              object.data.pokemonExtendedSettings.form as FormProto
+            ]
+          : 0
+        if (protoForm) {
+          if (!this.parsedForms[protoForm]) {
+            this.parsedForms[protoForm] = {}
+          }
+          this.parsedForms[protoForm].sizeSettings = values
+        } else {
+          this.parsedPokemon[id].sizeSettings = values
+        }
       }
     }
+  }
+
+  cleanExtendedStats() {
+    Object.values(this.parsedPokemon).forEach((pkmn) => {
+      if (pkmn.sizeSettings && pkmn.forms) {
+        const pkmnSizeTree = Object.fromEntries(
+          pkmn.sizeSettings.map(({ name, value }) => [name, value]),
+        )
+        pkmn.forms.forEach((formId) => {
+          if (this.parsedForms[formId]?.sizeSettings) {
+            if (
+              this.parsedForms[formId].sizeSettings.every(
+                (size) => pkmnSizeTree[size.name] == size.value,
+              )
+            ) {
+              delete this.parsedForms[formId].sizeSettings
+            }
+          }
+        })
+      }
+    })
   }
 
   addFormBaseStats(
@@ -722,6 +756,7 @@ export default class Pokemon extends Masterfile {
             }
             if (!this.skipForms(name)) {
               this.parsedForms[formId] = {
+                ...this.parsedForms[formId],
                 formName: name,
                 proto: form,
                 formId,
@@ -777,12 +812,11 @@ export default class Pokemon extends Masterfile {
         )
 
         if (!this.skipForms(formName)) {
-          if (!this.parsedForms[formId]) {
-            this.parsedForms[formId] = {
-              formName,
-              proto: templateId,
-              formId,
-            }
+          this.parsedForms[formId] = {
+            ...this.parsedForms[formId],
+            formName,
+            proto: templateId,
+            formId,
           }
           if (!this.parsedPokemon[id].forms.includes(formId)) {
             this.parsedPokemon[id].forms.push(formId)

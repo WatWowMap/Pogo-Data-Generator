@@ -129,6 +129,7 @@ export interface NiaMfObj {
     }
     pokemonExtendedSettings?: {
       uniqueId: string
+      form?: string
       sizeSettings: PokemonSizeSettings
     }
   }
