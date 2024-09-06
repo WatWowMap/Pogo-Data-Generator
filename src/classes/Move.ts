@@ -71,9 +71,9 @@ export default class Moves extends Masterfile {
         }
         parsedMove.type = Rpc.HoloPokemonType[combatMove.type as TypeProto]
         parsedMove.pvpPower = combatMove.power
-        parsedMove.pvpDurationTurns = combatMove.durationTurns
+        if (combatMove.durationTurns) parsedMove.pvpDurationTurns = combatMove.durationTurns
         parsedMove.pvpEnergyDelta = combatMove.energyDelta
-        parsedMove.pvpBuffs = combatMove.buffs
+        if (combatMove.buffs) parsedMove.pvpBuffs = combatMove.buffs
       }
     } catch (e) {
       console.warn(e, '\n', object)
