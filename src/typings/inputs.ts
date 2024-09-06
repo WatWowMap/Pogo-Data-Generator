@@ -189,6 +189,20 @@ export interface MoveTemplate {
       }
     | StringBool
   power?: boolean
+  durationMs?: boolean
+  energyDelta?: boolean
+  pvpPower?: boolean
+  pvpDurationTurns?: boolean
+  pvpEnergyDelta?: boolean
+  pvpBuffs?:
+    | {
+      attackerAttackStatStageChange?: boolean
+      attackerDefenseStatStageChange?: boolean
+      targetAttackStatStageChange?: boolean
+      targetDefenseStatStageChange?: boolean
+      buffActivationChance: boolean
+    }
+    | StringBool
 }
 
 export interface ItemTemplate {

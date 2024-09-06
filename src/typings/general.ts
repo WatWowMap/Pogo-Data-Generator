@@ -79,10 +79,26 @@ export interface NiaMfObj {
         isCostume: boolean
       }[]
     }
+    moveSettings?: {
+      movementId: string
+      pokemonType: string
+      power: number
+      durationMs: number
+      energyDelta: number
+    }
     combatMove?: {
       uniqueId: string | number
       type: string
       power: number
+      durationTurns?: number
+      energyDelta: number
+      buffs?: {
+        attackerAttackStatStageChange?: number
+        attackerDefenseStatStageChange?: number
+        targetAttackStatStageChange?: number
+        targetDefenseStatStageChange?: number
+        buffActivationChance: number
+      }
     }
     itemSettings?: {
       itemId: string | number

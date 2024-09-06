@@ -56,6 +56,18 @@ export interface SingleMove {
   type?: number
   power?: number
   fast?: boolean
+  durationMs?: number
+  energyDelta?: number
+  pvpPower?: number
+  pvpDurationTurns?: number
+  pvpEnergyDelta?: number
+  pvpBuffs?: {
+    attackerAttackStatStageChange?: number
+    attackerDefenseStatStageChange?: number
+    targetAttackStatStageChange?: number
+    targetDefenseStatStageChange?: number
+    buffActivationChance: number
+  }
 }
 
 export interface AllItems {

@@ -21,13 +21,39 @@ export default class Moves extends Masterfile {
           moveId: +id,
           moveName: this.capitalize(name.replace('_FAST', '')),
           proto: name,
-          fast: name.includes('_FAST'),
+          fast: name.endsWith('_FAST'),
         }
       }
     })
   }
 
-  addMove(object: NiaMfObj) {
+  addMoveSettings(object: NiaMfObj) {
+    const {
+      templateId,
+      data: { moveSettings },
+    } = object
+    try {
+      const id: number =
+        Rpc.HoloPokemonMove[templateId.substring(11) as MoveProto]
+      if (id || id === 0) {
+        let parsedMove = this.parsedMoves[id]
+        if (!parsedMove) parsedMove = this.parsedMoves[id] = {
+          moveId: id,
+          moveName: this.capitalize(templateId.substring(11).replace('_FAST', '')),
+          proto: templateId.substring(11),
+          fast: templateId.endsWith('_FAST'),
+        }
+        parsedMove.type = Rpc.HoloPokemonType[moveSettings.pokemonType as TypeProto]
+        parsedMove.power = moveSettings.power
+        parsedMove.durationMs = moveSettings.durationMs
+        parsedMove.energyDelta = moveSettings.energyDelta
+      }
+    } catch (e) {
+      console.warn(e, '\n', object)
+    }
+  }
+
+  addCombatMove(object: NiaMfObj) {
     const {
       templateId,
       data: { combatMove },
@@ -36,16 +62,18 @@ export default class Moves extends Masterfile {
       const id: number =
         Rpc.HoloPokemonMove[templateId.substring(18) as MoveProto]
       if (id || id === 0) {
-        this.parsedMoves[id] = {
+        let parsedMove = this.parsedMoves[id]
+        if (!parsedMove) parsedMove = this.parsedMoves[id] = {
           moveId: id,
-          moveName:
-            typeof combatMove.uniqueId === 'string'
-              ? this.capitalize(combatMove.uniqueId.replace('_FAST', ''))
-              : this.capitalize(templateId.substring(18)),
+          moveName: this.capitalize(templateId.substring(18).replace('_FAST', '')),
           proto: templateId.substring(18),
-          type: Rpc.HoloPokemonType[combatMove.type as TypeProto],
-          power: combatMove.power,
+          fast: templateId.endsWith('_FAST'),
         }
+        parsedMove.type = Rpc.HoloPokemonType[combatMove.type as TypeProto]
+        parsedMove.pvpPower = combatMove.power
+        parsedMove.pvpDurationTurns = combatMove.durationTurns
+        parsedMove.pvpEnergyDelta = combatMove.energyDelta
+        parsedMove.pvpBuffs = combatMove.buffs
       }
     } catch (e) {
       console.warn(e, '\n', object)

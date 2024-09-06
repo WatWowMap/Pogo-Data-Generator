@@ -93,8 +93,10 @@ export async function generate({
         AllPokemon.addPokemon(data[i])
       } else if (data[i].data.itemSettings) {
         AllItems.addItem(data[i])
+      } else if (data[i].data.moveSettings) {
+        AllMoves.addMoveSettings(data[i])
       } else if (data[i].data.combatMove) {
-        AllMoves.addMove(data[i])
+        AllMoves.addCombatMove(data[i])
       } else if (
         data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE'
       ) {
