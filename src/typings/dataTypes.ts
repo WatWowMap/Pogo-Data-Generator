@@ -67,7 +67,7 @@ export interface SingleMove {
     targetAttackStatStageChange?: number
     targetDefenseStatStageChange?: number
     buffActivationChance: number
-  }
+  }[]
 }
 
 export interface AllItems {
