@@ -952,6 +952,12 @@ export default class Pokemon extends Masterfile {
             pokemonSettings.allowNoevolveEvolution,
           )
         }
+        if (pokemonSettings.shadow) {
+          this.parsedPokemon[id].purificationDust =
+            pokemonSettings.shadow.purificationStardustNeeded
+          this.parsedPokemon[id].purificationCandy =
+            pokemonSettings.shadow.purificationCandyNeeded
+        }
       }
     } catch (e) {
       console.warn(

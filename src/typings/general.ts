@@ -98,7 +98,7 @@ export interface NiaMfObj {
         targetAttackStatStageChange?: number
         targetDefenseStatStageChange?: number
         buffActivationChance: number
-      }
+      }[]
     }
     itemSettings?: {
       itemId: string | number
