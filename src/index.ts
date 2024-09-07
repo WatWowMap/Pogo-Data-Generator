@@ -299,6 +299,8 @@ export async function generate({
       : AllPokemon.templater(localPokemon, pokemon, {
           quickMoves: localMoves,
           chargedMoves: localMoves,
+          eliteQuickMoves: localMoves,
+          eliteChargedMoves: localMoves,
           types: localTypes,
           forms: localForms,
           itemRequirement: localItems,

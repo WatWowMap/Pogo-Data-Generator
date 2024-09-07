@@ -115,6 +115,8 @@ interface Form extends BaseStats {
   tempEvolutions?: TempEvolution | StringBool
   quickMoves?: Move | StringBool
   chargedMoves?: Move | StringBool
+  eliteQuickMoves?: Move | StringBool
+  eliteChargedMoves?: Move | StringBool
   family?: boolean
   little?: boolean
   purificationCandy?: boolean

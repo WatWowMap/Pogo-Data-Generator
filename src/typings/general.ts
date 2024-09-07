@@ -46,6 +46,8 @@ export interface NiaMfObj {
       }
       quickMoves: string[]
       cinematicMoves: string[]
+      eliteQuickMove: string[]
+      eliteCinematicMove: string[]
       evolutionIds: string[]
       evolutionPips: number
       pokedexHeightM: number

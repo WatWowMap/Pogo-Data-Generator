@@ -136,6 +136,8 @@ interface SingleForm extends BaseStats {
   tempEvolutions?: TempEvolutions[]
   quickMoves?: number[]
   chargedMoves?: number[]
+  eliteQuickMoves?: number[]
+  eliteChargedMoves?: number[]
   family?: number
   little?: boolean
   purificationDust?: number
