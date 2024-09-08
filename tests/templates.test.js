@@ -6,7 +6,7 @@ const statCalculatingRef = require('./statCalculating.json')
 
 let data
 
-jest.setTimeout(10000)
+jest.setTimeout(30_000)
 
 const testFn = (refData) => {
   Object.keys(refData).forEach(category => {

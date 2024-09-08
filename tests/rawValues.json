@@ -28,6 +28,8 @@
         90,
         118
       ],
+      "eliteChargedMoves": [],
+      "eliteQuickMoves": [],
       "family": 1,
       "legendary": false,
       "mythic": false,
@@ -40,6 +42,8 @@
       "tradable": true,
       "transferable": true,
       "gymDefenderEligible": true,
+      "purificationCandy": 3,
+      "purificationDust": 3000,
       "genId": 1,
       "sizeSettings": [
         {
@@ -105,9 +109,20 @@
         103,
         270
       ],
+      "eliteChargedMoves": [
+        24,
+        298
+      ],
+      "eliteQuickMoves": [
+        204,
+        209,
+        210
+      ],
       "family": 4,
       "bonusCandyCapture": 7,
       "bonusStardustCapture": 400,
+      "purificationCandy": 3,
+      "purificationDust": 3000,
       "legendary": false,
       "sizeSettings": [
         {
@@ -194,9 +209,7 @@
     "2507": {
       "formName": "Normal",
       "proto": "CURSOLA_NORMAL",
-      "formId": 2507,
-      "purificationCandy": 3,
-      "purificationDust": 3000
+      "formId": 2507
     },
     "2583": {
       "formName": "Galarian",
@@ -217,7 +230,8 @@
         90,
         106,
         108,
-        247
+        247,
+        367
       ],
       "types": [
         4,
