@@ -126,7 +126,7 @@ interface Form extends BaseStats {
   tradable?: boolean
   transferable?: boolean
   costumeOverrideEvos?: CostumeOverrideEvo | StringBool
-  sizeSettings?: { name: boolean, value: boolean } | string
+  sizeSettings?: { name: boolean; value: boolean } | string
 }
 
 type CostumeOverrideEvo = {
@@ -198,12 +198,12 @@ export interface MoveTemplate {
   pvpEnergyDelta?: boolean
   pvpBuffs?:
     | {
-      attackerAttackStatStageChange?: boolean
-      attackerDefenseStatStageChange?: boolean
-      targetAttackStatStageChange?: boolean
-      targetDefenseStatStageChange?: boolean
-      buffActivationChance: boolean
-    }
+        attackerAttackStatStageChange?: boolean
+        attackerDefenseStatStageChange?: boolean
+        targetAttackStatStageChange?: boolean
+        targetDefenseStatStageChange?: boolean
+        buffActivationChance: boolean
+      }
     | StringBool
 }
 

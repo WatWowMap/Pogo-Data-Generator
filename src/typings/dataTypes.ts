@@ -151,7 +151,7 @@ interface SingleForm extends BaseStats {
     costumeProto: string
     costumeName: string
   }[]
-  sizeSettings?: { name: string, value: number }[]
+  sizeSettings?: { name: string; value: number }[]
 }
 
 export interface TempEvolutions extends BaseStats {
