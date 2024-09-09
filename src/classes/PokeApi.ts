@@ -568,6 +568,6 @@ export default class PokeApi extends Masterfile {
         return { id: index + 1, name, range: [min, max] }
       }),
     )
-    return Object.fromEntries(results.map(({ id, ...rest}) => [id, rest]))
+    return Object.fromEntries(results.map(({ id, ...rest }) => [id, rest]))
   }
 }

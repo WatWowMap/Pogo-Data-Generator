@@ -56,6 +56,18 @@ export interface SingleMove {
   type?: number
   power?: number
   fast?: boolean
+  durationMs?: number
+  energyDelta?: number
+  pvpPower?: number
+  pvpDurationTurns?: number
+  pvpEnergyDelta?: number
+  pvpBuffs?: {
+    attackerAttackStatStageChange?: number
+    attackerDefenseStatStageChange?: number
+    targetAttackStatStageChange?: number
+    targetDefenseStatStageChange?: number
+    buffActivationChance: number
+  }[]
 }
 
 export interface AllItems {
@@ -124,6 +136,8 @@ interface SingleForm extends BaseStats {
   tempEvolutions?: TempEvolutions[]
   quickMoves?: number[]
   chargedMoves?: number[]
+  eliteQuickMoves?: number[]
+  eliteChargedMoves?: number[]
   family?: number
   little?: boolean
   purificationDust?: number
@@ -137,7 +151,7 @@ interface SingleForm extends BaseStats {
     costumeProto: string
     costumeName: string
   }[]
-  sizeSettings?: { name: string, value: number }[]
+  sizeSettings?: { name: string; value: number }[]
 }
 
 export interface TempEvolutions extends BaseStats {

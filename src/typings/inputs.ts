@@ -115,6 +115,8 @@ interface Form extends BaseStats {
   tempEvolutions?: TempEvolution | StringBool
   quickMoves?: Move | StringBool
   chargedMoves?: Move | StringBool
+  eliteQuickMoves?: Move | StringBool
+  eliteChargedMoves?: Move | StringBool
   family?: boolean
   little?: boolean
   purificationCandy?: boolean
@@ -124,7 +126,7 @@ interface Form extends BaseStats {
   tradable?: boolean
   transferable?: boolean
   costumeOverrideEvos?: CostumeOverrideEvo | StringBool
-  sizeSettings?: { name: boolean, value: boolean } | string
+  sizeSettings?: { name: boolean; value: boolean } | string
 }
 
 type CostumeOverrideEvo = {
@@ -189,6 +191,20 @@ export interface MoveTemplate {
       }
     | StringBool
   power?: boolean
+  durationMs?: boolean
+  energyDelta?: boolean
+  pvpPower?: boolean
+  pvpDurationTurns?: boolean
+  pvpEnergyDelta?: boolean
+  pvpBuffs?:
+    | {
+        attackerAttackStatStageChange?: boolean
+        attackerDefenseStatStageChange?: boolean
+        targetAttackStatStageChange?: boolean
+        targetDefenseStatStageChange?: boolean
+        buffActivationChance: boolean
+      }
+    | StringBool
 }
 
 export interface ItemTemplate {

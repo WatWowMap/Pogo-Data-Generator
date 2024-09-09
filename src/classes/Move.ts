@@ -21,13 +21,43 @@ export default class Moves extends Masterfile {
           moveId: +id,
           moveName: this.capitalize(name.replace('_FAST', '')),
           proto: name,
-          fast: name.includes('_FAST'),
+          fast: name.endsWith('_FAST'),
         }
       }
     })
   }
 
-  addMove(object: NiaMfObj) {
+  addMoveSettings(object: NiaMfObj) {
+    const {
+      templateId,
+      data: { moveSettings },
+    } = object
+    try {
+      const id: number =
+        Rpc.HoloPokemonMove[templateId.substring(11) as MoveProto]
+      if (id || id === 0) {
+        if (!this.parsedMoves[id]) {
+          this.parsedMoves[id] = {
+            moveId: id,
+            moveName: this.capitalize(
+              templateId.substring(11).replace('_FAST', ''),
+            ),
+            proto: templateId.substring(11),
+            fast: templateId.endsWith('_FAST'),
+          }
+        }
+        this.parsedMoves[id].type =
+          Rpc.HoloPokemonType[moveSettings.pokemonType as TypeProto]
+        this.parsedMoves[id].power = moveSettings.power
+        this.parsedMoves[id].durationMs = moveSettings.durationMs
+        this.parsedMoves[id].energyDelta = moveSettings.energyDelta
+      }
+    } catch (e) {
+      console.warn(e, '\n', object)
+    }
+  }
+
+  addCombatMove(object: NiaMfObj) {
     const {
       templateId,
       data: { combatMove },
@@ -36,15 +66,25 @@ export default class Moves extends Masterfile {
       const id: number =
         Rpc.HoloPokemonMove[templateId.substring(18) as MoveProto]
       if (id || id === 0) {
-        this.parsedMoves[id] = {
-          moveId: id,
-          moveName:
-            typeof combatMove.uniqueId === 'string'
-              ? this.capitalize(combatMove.uniqueId.replace('_FAST', ''))
-              : this.capitalize(templateId.substring(18)),
-          proto: templateId.substring(18),
-          type: Rpc.HoloPokemonType[combatMove.type as TypeProto],
-          power: combatMove.power,
+        if (!this.parsedMoves[id]) {
+          this.parsedMoves[id] = {
+            moveId: id,
+            moveName: this.capitalize(
+              templateId.substring(18).replace('_FAST', ''),
+            ),
+            proto: templateId.substring(18),
+            fast: templateId.endsWith('_FAST'),
+          }
+        }
+        this.parsedMoves[id].type =
+          Rpc.HoloPokemonType[combatMove.type as TypeProto]
+        this.parsedMoves[id].pvpPower = combatMove.power
+        this.parsedMoves[id].pvpEnergyDelta = combatMove.energyDelta
+        if (combatMove.durationTurns) {
+          this.parsedMoves[id].pvpDurationTurns = combatMove.durationTurns
+        }
+        if (combatMove.buffs) {
+          this.parsedMoves[id].pvpBuffs = combatMove.buffs
         }
       }
     } catch (e) {

@@ -848,6 +848,14 @@ export default class Pokemon extends Masterfile {
           if (!this.compare(cMoves, primaryForm.chargedMoves)) {
             form.chargedMoves = cMoves
           }
+          const eqMoves = this.getMoves(pokemonSettings.eliteQuickMove)
+          if (!this.compare(eqMoves, primaryForm.eliteQuickMoves)) {
+            form.eliteQuickMoves = eqMoves
+          }
+          const ecMoves = this.getMoves(pokemonSettings.eliteCinematicMove)
+          if (!this.compare(ecMoves, primaryForm.eliteChargedMoves)) {
+            form.eliteChargedMoves = ecMoves
+          }
           const types = this.getTypes([
             pokemonSettings.type,
             pokemonSettings.type2,
@@ -912,6 +920,8 @@ export default class Pokemon extends Masterfile {
           weight: pokemonSettings.pokedexWeightKg,
           quickMoves: this.getMoves(pokemonSettings.quickMoves),
           chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
+          eliteQuickMoves: this.getMoves(pokemonSettings.eliteQuickMove),
+          eliteChargedMoves: this.getMoves(pokemonSettings.eliteCinematicMove),
           family:
             Rpc.HoloPokemonFamilyId[pokemonSettings.familyId as FamilyProto],
           fleeRate: pokemonSettings.encounter.baseFleeRate,
@@ -952,6 +962,12 @@ export default class Pokemon extends Masterfile {
             pokemonSettings.allowNoevolveEvolution,
           )
         }
+        if (pokemonSettings.shadow) {
+          this.parsedPokemon[id].purificationDust =
+            pokemonSettings.shadow.purificationStardustNeeded
+          this.parsedPokemon[id].purificationCandy =
+            pokemonSettings.shadow.purificationCandyNeeded
+        }
       }
     } catch (e) {
       console.warn(
@@ -973,6 +989,8 @@ export default class Pokemon extends Masterfile {
             types: [],
             quickMoves: [],
             chargedMoves: [],
+            eliteQuickMoves: [],
+            eliteChargedMoves: [],
             ...this.getGeneration(+id),
             ...this.parsedPokemon[id],
           }
