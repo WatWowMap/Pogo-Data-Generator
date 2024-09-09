@@ -5,6 +5,12 @@ import tempEvos from './static/tempEvos.json'
 import types from './static/types.json'
 
 const main = async () => {
+  const mfData = await fetch(
+    'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json',
+  )
+  const mf = await mfData.json()
+  fs.writeFileSync('./latest.json', JSON.stringify(mf, null, 2), 'utf8')
+
   console.time('Generated in')
   const data = await generate({
     raw: process.argv.includes('--raw'),
