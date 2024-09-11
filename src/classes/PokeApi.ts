@@ -143,15 +143,6 @@ export default class PokeApi extends Masterfile {
 
   megaLookup(id: string, type: string): string | 1 | 2 | 3 {
     switch (true) {
-      case id.endsWith('amped-gmax'):
-      case id.endsWith('key-gmax'):
-      case id.endsWith('strike-gmax'):
-        return this.capitalize(
-          id
-            .split('-')
-            .filter((word, i) => (i ? word : false))
-            .join('_'),
-        )
       case id.endsWith('mega-y'):
         return 3
       case id.endsWith('mega-x'):
@@ -391,42 +382,6 @@ export default class PokeApi extends Masterfile {
         'gallade-mega',
         'audino-mega',
         'diancie-mega',
-      ],
-      gmax: [
-        'snorlax-gmax',
-        'charizard-gmax',
-        'pikachu-gmax',
-        'eevee-gmax',
-        'butterfree-gmax',
-        'meowth-gmax',
-        'corviknight-gmax',
-        'alcremie-gmax',
-        'drednaw-gmax',
-        'machamp-gmax',
-        'gengar-gmax',
-        'toxtricity-amped-gmax',
-        'toxtricity-low-key-gmax',
-        'melmetal-gmax',
-        'coalossal-gmax',
-        'sandaconda-gmax',
-        'centiskorch-gmax',
-        'grimmsnarl-gmax',
-        'hatterene-gmax',
-        'copperajah-gmax',
-        'duraludon-gmax',
-        'flapple-gmax',
-        'appletun-gmax',
-        'orbeetle-gmax',
-        'garbodor-gmax',
-        'kingler-gmax',
-        'lapras-gmax',
-        'inteleon-gmax',
-        'cinderace-gmax',
-        'rillaboom-gmax',
-        'urshifu-single-strike-gmax',
-        'urshifu-rapid-strike-gmax',
-        'venusaur-gmax',
-        'blastoise-gmax',
       ],
     }
 
