@@ -44,7 +44,10 @@ export default class ApkReader {
       const response = await fetch(`https://mirror.unownhash.com/apks/${first}`)
       const apk = await response.arrayBuffer()
       const zip = new JSZip()
-      this.files = await zip.loadAsync(apk)
+      const raw = await zip.loadAsync(apk)
+      const file = raw.files['base.apk']
+      const buffer = await file.async('nodebuffer')
+      this.files = await zip.loadAsync(buffer)
     } catch (e) {
       console.warn(e, 'Issue with downloading APK')
     }
