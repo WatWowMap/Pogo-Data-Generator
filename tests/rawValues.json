@@ -5,8 +5,6 @@
       "pokemonName": "Bulbasaur",
       "forms": [
         163,
-        164,
-        165,
         897
       ],
       "defaultFormId": 163,
@@ -86,8 +84,6 @@
       "pokemonName": "Charizard",
       "forms": [
         178,
-        179,
-        180,
         951
       ],
       "defaultFormId": 178,

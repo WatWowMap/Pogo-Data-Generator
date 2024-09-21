@@ -15,14 +15,6 @@
             }
           ]
         },
-        "164": {
-          "name": "Shadow",
-          "proto": "BULBASAUR_SHADOW"
-        },
-        "165": {
-          "name": "Purified",
-          "proto": "BULBASAUR_PURIFIED"
-        },
         "897": {
           "name": "Fall 2019",
           "proto": "BULBASAUR_FALL_2019",
@@ -77,14 +69,6 @@
             "2": {},
             "3": {}
           }
-        },
-        "179": {
-          "name": "Shadow",
-          "proto": "CHARIZARD_SHADOW"
-        },
-        "180": {
-          "name": "Purified",
-          "proto": "CHARIZARD_PURIFIED"
         },
         "951": {
           "name": "Copy 2019",
@@ -175,14 +159,6 @@
             }
           ]
         },
-        "709": {
-          "name": "Shadow",
-          "proto": "MEOWTH_SHADOW"
-        },
-        "710": {
-          "name": "Purified",
-          "proto": "MEOWTH_PURIFIED"
-        },
         "2335": {
           "name": "Galarian",
           "proto": "MEOWTH_GALARIAN",
@@ -259,17 +235,6 @@
         "1997": {
           "name": "Normal",
           "proto": "AUDINO_NORMAL",
-          "temp_evolutions": {
-            "1": {}
-          }
-        },
-        "1998": {
-          "name": "Shadow",
-          "proto": "AUDINO_SHADOW"
-        },
-        "1999": {
-          "name": "Purified",
-          "proto": "AUDINO_PURIFIED",
           "temp_evolutions": {
             "1": {}
           }
@@ -645,7 +610,6 @@
       "move_94": "Knochenkeule",
       "poke_0": "Ersatzpokemon",
       "poke_1": "Bisasam",
-      "form_183": "Erlöst",
       "form_34": "Angriffsform",
       "desc_26_50": "Kräftiges Massieren seiner Backentaschen setzt einen süßen Geruch frei. Dafür nimmt man auch gerne einen leichten Elektroschock in Kauf.",
       "grunt_5": "Rüpel (Weiblich)",
@@ -661,7 +625,6 @@
       "poke_1": "Bulbasaur",
       "lure_503": "Mossy",
       "item_4": "Master Ball",
-      "form_183": "Purified",
       "form_34": "Attack",
       "desc_26_50": "When you rub its cheeks, a sweet fragrance comes wafting out. However, you'll also get a light shock!",
       "grunt_5": "Grunt (Female)",

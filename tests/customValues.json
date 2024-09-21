@@ -38,37 +38,6 @@
         3
       ]
     },
-    "52_%_710": {
-      "id": 52,
-      "name": "Mauzi",
-      "form": {
-        "formName": "Erlöst",
-        "id": 710
-      },
-      "types": [
-        {
-          "typeId": 1,
-          "typeName": "Normal"
-        }
-      ],
-      "stats": {
-        "baseAttack": 92,
-        "baseDefense": 78,
-        "baseStamina": 120
-      },
-      "quickMoves": {
-        "202": "Biss",
-        "220": "Kratzer"
-      },
-      "chargedMoves": {
-        "16": "Finsteraura",
-        "51": "Nachthieb",
-        "280": "Schmarotzer"
-      },
-      "family": 52,
-      "generation": "Kanto",
-      "little": true
-    },
     "53_%_66": {
       "id": 53,
       "name": "Snobilikat",
