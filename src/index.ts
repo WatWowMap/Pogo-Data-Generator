@@ -35,7 +35,7 @@ export async function generate({
   const final: FinalResult = {}
   const urlToFetch =
     url ||
-    'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json'
+    'https://raw.githubusercontent.com/alexelgt/game_masters/refs/heads/master/GAME_MASTER.json'
   const {
     pokemon,
     types,

@@ -84,9 +84,11 @@ export interface NiaMfObj {
     moveSettings?: {
       movementId: string
       pokemonType: string
-      power: number
+      power?: number
       durationMs: number
-      energyDelta: number
+      energyDelta?: number
+      vfxName: string
+      obMoveSettingsNumber18: number[]
     }
     combatMove?: {
       uniqueId: string | number
