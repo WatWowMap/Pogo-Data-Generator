@@ -104,6 +104,13 @@ export interface NiaMfObj {
         buffActivationChance: number
       }[]
     }
+    sourdoughMoveMappingSettings?: {
+      mappings: {
+        pokemonId: string
+        form?: string
+        move: string
+      }[]
+    }
     itemSettings?: {
       itemId: string | number
       itemType: string | number

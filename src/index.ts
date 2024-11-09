@@ -91,6 +91,8 @@ export async function generate({
         AllPokemon.addForm(data[i])
       } else if (data[i].data.pokemonSettings) {
         AllPokemon.addPokemon(data[i])
+      } else if (data[i].data.sourdoughMoveMappingSettings) {
+        AllPokemon.addSourdoughMoveMappings(data[i])
       } else if (data[i].data.itemSettings) {
         AllItems.addItem(data[i])
       } else if (data[i].data.moveSettings) {
@@ -305,6 +307,7 @@ export async function generate({
           forms: localForms,
           itemRequirement: localItems,
           questRequirement: localEvolutionQuests,
+        // TODO gmaxMove
         })
     if (pokemon.options.includeRawForms || raw) {
       final.forms = localForms
