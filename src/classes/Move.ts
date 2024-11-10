@@ -33,15 +33,15 @@ export default class Moves extends Masterfile {
       data: { moveSettings },
     } = object
     try {
-      const regular = templateId.startsWith('COMBAT_V')
-      const proto = regular ? templateId.substring(11) : templateId
+      const isMax = templateId.startsWith('VN_BM_')
+      const proto = isMax ? templateId : templateId.substring(11)
       const id = Rpc.HoloPokemonMove[proto as MoveProto]
       if (id || id === 0) {
         if (!this.parsedMoves[id]) {
           this.parsedMoves[id] = {
             moveId: id,
             moveName: this.capitalize(
-              regular ? proto.replace('_FAST', '') : moveSettings.vfxName
+              isMax ? moveSettings.vfxName : proto.replace('_FAST', '')
             ),
             proto,
             fast: templateId.endsWith('_FAST'),
@@ -49,8 +49,8 @@ export default class Moves extends Masterfile {
         }
         this.parsedMoves[id].type =
           Rpc.HoloPokemonType[moveSettings.pokemonType as TypeProto]
-        this.parsedMoves[id].power = regular
-          ? moveSettings.power : moveSettings.obMoveSettingsNumber18[2]
+        this.parsedMoves[id].power = isMax
+          ? moveSettings.obMoveSettingsNumber18[2] : moveSettings.power
         this.parsedMoves[id].durationMs = moveSettings.durationMs
         this.parsedMoves[id].energyDelta = moveSettings.energyDelta
       }
