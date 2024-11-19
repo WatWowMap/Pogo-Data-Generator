@@ -152,6 +152,7 @@ interface SingleForm extends BaseStats {
     costumeName: string
   }[]
   sizeSettings?: { name: string; value: number }[]
+  gmaxMove?: number
 }
 
 export interface TempEvolutions extends BaseStats {

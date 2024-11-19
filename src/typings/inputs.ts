@@ -127,6 +127,7 @@ interface Form extends BaseStats {
   transferable?: boolean
   costumeOverrideEvos?: CostumeOverrideEvo | StringBool
   sizeSettings?: { name: boolean; value: boolean } | string
+  gmaxMove?: Move | StringBool
 }
 
 type CostumeOverrideEvo = {

@@ -978,6 +978,45 @@ export default class Pokemon extends Masterfile {
     }
   }
 
+  addSourdoughMoveMappings({ data: {
+    sourdoughMoveMappingSettings: { mappings }
+  } }: NiaMfObj) {
+    for (let i = 0; i < mappings.length; i += 1) try {
+      let id = Rpc.HoloPokemonId[
+        mappings[i].pokemonId as PokemonIdProto
+      ]
+      if (!this.parsedPokemon[id]) {
+        this.parsedPokemon[id] = {}
+      }
+      let target = this.parsedPokemon[id]
+      if (mappings[i].form) {
+        let formId = Rpc.PokemonDisplayProto.Form[mappings[i].form as FormProto]
+        if (!this.parsedPokemon[id].forms) {
+          this.parsedPokemon[id].forms = []
+        }
+        const formName = this.formName(id, mappings[i].form)
+        if (!this.skipForms(formName)) {
+          this.parsedForms[formId] = {
+            ...this.parsedForms[formId],
+            formName,
+            formId,
+          }
+          if (!this.parsedPokemon[id].forms.includes(formId)) {
+            this.parsedPokemon[id].forms.push(formId)
+          }
+          target = this.parsedForms[formId]
+        }
+      }
+      target.gmaxMove = Rpc.HoloPokemonMove[mappings[i].move as MoveProto]
+    } catch (e) {
+      console.warn(
+        e,
+        `Failed to parse gmax move mapping #${i}`,
+        JSON.stringify(mappings[i], null, 2),
+      )
+    }
+  }
+
   missingPokemon() {
     Object.values(Rpc.HoloPokemonId).forEach((id) => {
       try {
