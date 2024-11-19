@@ -279,8 +279,8 @@
       "proto": "MAGNET_BOMB",
       "fast": false,
       "type": 9,
-      "power": 70,
-      "durationMs": 2800,
+      "power": 75,
+      "durationMs": 3000,
       "energyDelta": -33,
       "pvpPower": 70,
       "pvpEnergyDelta": -45

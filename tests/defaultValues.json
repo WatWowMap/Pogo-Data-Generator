@@ -522,7 +522,7 @@
       "name": "Flame Wheel",
       "proto": "FLAME_WHEEL",
       "type": "Fire",
-      "power": 60
+      "power": 55
     }
   },
   "items": {

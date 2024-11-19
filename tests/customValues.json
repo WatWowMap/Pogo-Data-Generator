@@ -84,7 +84,7 @@
       "moveName": "Flügelschlag",
       "proto": "WING_ATTACK"
     },
-    "24_%_Flammenwurf_%_70": {
+    "24_%_Flammenwurf_%_65": {
       "moveName": "Flammenwurf",
       "proto": "FLAMETHROWER",
       "type": {
