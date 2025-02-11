@@ -1098,7 +1098,7 @@ export default class Pokemon extends Masterfile {
         })
       }
     })
-    this.jungleCupRules.banned = bannedPokemon.map((poke) => {
+    this.jungleCupRules.banned = bannedPokemon && bannedPokemon.map((poke) => {
       return Rpc.HoloPokemonId[poke as PokemonIdProto]
     })
   }
