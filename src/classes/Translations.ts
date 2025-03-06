@@ -20,7 +20,7 @@ export default class Translations extends Masterfile {
   rawTranslations: TranslationKeys
   manualTranslations: { [key: string]: TranslationKeys }
   parsedTranslations: { [key: string]: TranslationKeys }
-  codes: { [key in Locales[number]]: string }
+  codes: { [key in Locales[number]]: { name: string; code: string } }
   masterfile: FinalResult
   generics: { [key: string]: { [key: string]: string } }
   reference: TranslationKeys
@@ -29,8 +29,8 @@ export default class Translations extends Masterfile {
 
   constructor(
     options: Options,
-    translationApkUrl = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20APK/JSON/i18n_english.json',
-    translationRemoteUrl = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Texts/Latest%20Remote/English.txt',
+    translationApkUrl = 'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Release/English/en-us_raw.json',
+    translationRemoteUrl = 'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Remote/English/en-us_formatted.txt',
   ) {
     super()
     this.collator = new Intl.Collator(undefined, {
@@ -46,21 +46,21 @@ export default class Translations extends Masterfile {
     this.parsedTranslations = {}
     this.masterfile = {}
     this.codes = {
-      de: 'German',
-      en: 'English',
-      es: 'Spanish',
-      'es-mx': 'LatinAmericanSpanish',
-      fr: 'French',
-      hi: 'Hindi',
-      id: 'Indonesian',
-      it: 'Italian',
-      ja: 'Japanese',
-      ko: 'Korean',
-      'pt-br': 'BrazilianPortuguese',
-      ru: 'Russian',
-      th: 'Thai',
-      'zh-tw': 'ChineseTraditional',
-      tr: 'Turkish',
+      de: { name: 'German', code: 'de-de' },
+      en: { name: 'English', code: 'en-us' },
+      es: { name: 'Spanish', code: 'es-es' },
+      'es-mx': { name: 'Latin American Spanish', code: 'es-mx' },
+      fr: { name: 'French', code: 'fr-fr' },
+      hi: { name: 'Hindi', code: 'hi-in' },
+      id: { name: 'Indonesian', code: 'id-id' },
+      it: { name: 'Italian', code: 'it-it' },
+      ja: { name: 'Japanese', code: 'ja-jp' },
+      ko: { name: 'Korean', code: 'ko-kr' },
+      'pt-br': { name: 'Brazilian Portuguese', code: 'pt-br' },
+      ru: { name: 'Russian', code: 'ru-ru' },
+      th: { name: 'Thai', code: 'th-th' },
+      'zh-tw': { name: 'Traditional Chinese', code: 'zh-tw' },
+      tr: { name: 'Turkish', code: 'tr-tr' },
     }
     this.generics = {
       de: {
@@ -199,10 +199,11 @@ export default class Translations extends Masterfile {
         this.generics[locale] = this.generics.en
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
+      const localeInfo = this.codes[locale] || { name: 'English', code: 'en-us' };
       const { data }: { data: string[] } = (await this.fetch(
         this.translationApkUrl.replace(
-          'english',
-          this.codes[locale]?.toLowerCase() || 'english',
+          'English/en-us',
+          `${localeInfo.name}/${localeInfo.code}`,
         ),
       )) || { data: [] }
 
@@ -214,8 +215,8 @@ export default class Translations extends Masterfile {
         ? ''
         : (await this.fetch(
             this.translationRemoteUrl.replace(
-              'English',
-              this.codes[locale] || 'English',
+              'English/en-us',
+              `${localeInfo.name}/${localeInfo.code}`,
             ),
             true,
           )) || ''
