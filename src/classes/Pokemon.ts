@@ -918,8 +918,6 @@ export default class Pokemon extends Masterfile {
           stamina: pokemonSettings.stats.baseStamina,
           height: pokemonSettings.pokedexHeightM,
           weight: pokemonSettings.pokedexWeightKg,
-          quickMoves: this.getMoves(pokemonSettings.quickMoves),
-          chargedMoves: this.getMoves(pokemonSettings.cinematicMoves),
           eliteQuickMoves: this.getMoves(pokemonSettings.eliteQuickMove),
           eliteChargedMoves: this.getMoves(pokemonSettings.eliteCinematicMove),
           family:
@@ -941,6 +939,13 @@ export default class Pokemon extends Masterfile {
           tradable: pokemonSettings.isTradable,
           transferable: pokemonSettings.isTransferable,
           ...this.getGeneration(id),
+        }
+        if (id !== 235) {
+          this.parsedPokemon[id].quickMoves = this.getMoves(pokemonSettings.quickMoves)
+          this.parsedPokemon[id].chargedMoves = this.getMoves(pokemonSettings.cinematicMoves)
+        } else {
+          if (pokemonSettings.quickMoves && pokemonSettings.quickMoves.length) console.warn("unexpected Smeargle quick moves", pokemonSettings.quickMoves)
+          if (pokemonSettings.cinematicMoves && pokemonSettings.cinematicMoves.length) console.warn("unexpected Smeargle charged moves", pokemonSettings.cinematicMoves)
         }
         if (
           pokemonSettings.evolutionBranch &&
@@ -1013,6 +1018,33 @@ export default class Pokemon extends Masterfile {
         e,
         `Failed to parse gmax move mapping #${i}`,
         JSON.stringify(mappings[i], null, 2),
+      )
+    }
+  }
+
+  addSmeargleMovesSettings({ data: {
+    smeargleMovesSettings: { quickMoves, cinematicMoves }
+  } }: NiaMfObj) {
+    const id = 235
+    if (!this.parsedPokemon[id]) {
+      this.parsedPokemon[id] = {}
+    }
+    try {
+      this.parsedPokemon[id].quickMoves = this.getMoves(quickMoves)
+    } catch (e) {
+      console.warn(
+        e,
+        `Failed to parse smeargle quick move mapping`,
+        JSON.stringify(quickMoves, null, 2),
+      )
+    }
+    try {
+      this.parsedPokemon[id].chargedMoves = this.getMoves(cinematicMoves)
+    } catch (e) {
+      console.warn(
+        e,
+        `Failed to parse smeargle charged move mapping`,
+        JSON.stringify(cinematicMoves, null, 2),
       )
     }
   }

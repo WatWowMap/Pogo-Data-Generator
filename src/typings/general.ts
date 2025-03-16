@@ -111,13 +111,17 @@ export interface NiaMfObj {
         move: string
       }[]
     }
+    smeargleMovesSettings?: {
+      quickMoves: string[]
+      cinematicMoves: string[]
+    }
     itemSettings?: {
       itemId: string | number
       itemType: string | number
       category: string
       dropTrainerLevel: number
     }
-    combatLeague: {
+    combatLeague?: {
       bannedPokemon: string[]
       pokemonCondition: {
         type: string
