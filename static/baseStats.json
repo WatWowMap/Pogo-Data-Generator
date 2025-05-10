@@ -176,14 +176,6 @@
     ],
     "unreleased": true
   },
-  "803": {
-    "evolutions": [
-      {
-        "evoId": 804,
-        "formId": 0
-      }
-    ]
-  },
   "902": {
     "pokemonName": "Basculegion-male",
     "quickMoves": [
