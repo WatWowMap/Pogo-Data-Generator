@@ -979,7 +979,11 @@ export default class Translations extends Masterfile {
     this.parsedTranslations[locale].evolutionQuests = {}
     Object.values(evoQuests).forEach((info) => {
       try {
-        const translated = this.rawTranslations[locale][info.assetsRef].replace(
+        const rawValue = this.rawTranslations[locale][info.assetsRef];
+        if (!rawValue) {
+          throw new Error(`Missing translation for assetsRef: ${info.assetsRef}`);
+        }
+        const translated = rawValue.replace(
           '{0}',
           `${this.options.questVariables.prefix}amount${this.options.questVariables.suffix}`,
         )
@@ -989,7 +993,7 @@ export default class Translations extends Masterfile {
         console.warn(
           e,
           '\n',
-          `Unable to translate evo quests for ${info} in ${locale}`,
+          `Unable to translate evo quests for ${JSON.stringify(info)} in ${locale}`,
         )
       }
     })
