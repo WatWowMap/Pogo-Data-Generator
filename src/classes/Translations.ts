@@ -178,6 +178,7 @@ export default class Translations extends Masterfile {
       costumes: {},
       descriptions: {},
       pokemonCategories: {},
+      bonuses: {},
       moves: {},
       items: {},
       questTypes: {},
@@ -654,6 +655,19 @@ export default class Translations extends Masterfile {
         '\n',
         `Unable to translate pokemon categories for ${locale}`,
       )
+    }
+  }
+
+  bonuses(locale: string) {
+    try {
+      this.parsedTranslations[locale].bonuses = {}
+      Object.keys(this.rawTranslations[locale]).forEach((key) => {
+        if (key.startsWith('spawn_')) {
+          this.parsedTranslations[locale].bonuses[`${this.options.prefix.bonuses}${key}`] = this.rawTranslations[locale][key]
+        }
+      })
+    } catch (e) {
+      console.warn(e, '\n', `Unable to translate bonuses for ${locale}`)
     }
   }
 

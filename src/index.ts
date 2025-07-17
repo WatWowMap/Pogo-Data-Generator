@@ -466,6 +466,9 @@ export async function generate({
           if (translations.template.pokemonCategories) {
             AllTranslations.pokemonCategories(localeCode)
           }
+          if (translations.template.bonuses) {
+            AllTranslations.bonuses(localeCode)
+          }
           if (translations.template.quests) {
             AllTranslations.quests(localeCode, {
               questTypes: AllQuests.parsedQuestTypes,
