@@ -267,6 +267,7 @@ export interface TranslationsTemplate {
   weather?: boolean
   misc?: boolean
   pokemonCategories?: boolean
+  bonuses?: boolean
   quests?: boolean
 }
 
