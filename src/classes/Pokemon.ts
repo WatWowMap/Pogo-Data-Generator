@@ -587,9 +587,6 @@ export default class Pokemon extends Masterfile {
                 formId: +formId,
               }
               switch (formId) {
-                case Rpc.PokemonDisplayProto.Form.LILLIGANT_HISUIAN:
-                  this.addFormBaseStats(formId, 70, 105, 75, 50, 75, 105)
-                  break
                 case Rpc.PokemonDisplayProto.Form.SLIGGOO_HISUIAN:
                   this.addFormBaseStats(formId, 58, 75, 83, 83, 123, 40)
                   if (this.parsedForms[formId].evolutions) {
