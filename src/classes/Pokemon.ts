@@ -587,6 +587,29 @@ export default class Pokemon extends Masterfile {
                 formId: +formId,
               }
               switch (formId) {
+                case Rpc.PokemonDisplayProto.Form.BASCULIN_WHITE_STRIPED:
+                  if (this.parsedForms[formId].evolutions) {
+                    console.warn('Basculegion evolution added')
+                  } else {
+                    this.parsedForms[formId].evolutions = [
+                      {
+                        evoId: Rpc.HoloPokemonId.BASCULEGION,
+                        formId: Rpc.PokemonDisplayProto.Form.BASCULEGION_NORMAL,
+                        candyCost: 50,
+                        genderRequirement: 1,
+                      },
+                      {
+                        evoId: Rpc.HoloPokemonId.BASCULEGION,
+                        formId: Rpc.PokemonDisplayProto.Form.BASCULEGION_FEMALE,
+                        candyCost: 50,
+                        genderRequirement: 2,
+                      },
+                    ]
+                  }
+                  break
+                case Rpc.PokemonDisplayProto.Form.BASCULEGION_FEMALE:
+                  this.addFormBaseStats(formId, 120, 92, 65, 100, 75, 78)
+                  break
                 case Rpc.PokemonDisplayProto.Form.SLIGGOO_HISUIAN:
                   this.addFormBaseStats(formId, 58, 75, 83, 83, 123, 40)
                   if (this.parsedForms[formId].evolutions) {
@@ -603,6 +626,12 @@ export default class Pokemon extends Masterfile {
                   break
                 case Rpc.PokemonDisplayProto.Form.GOODRA_HISUIAN:
                   this.addFormBaseStats(formId, 80, 100, 100, 110, 150, 60)
+                  break
+                case Rpc.PokemonDisplayProto.Form.TERAPAGOS_TERASTAL:
+                  this.addFormBaseStats(formId, 95, 95, 110, 105, 110, 85)
+                  break
+                case Rpc.PokemonDisplayProto.Form.TERAPAGOS_STELLAR:
+                  this.addFormBaseStats(formId, 160, 105, 110, 130, 110, 85)
                   break
               }
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
