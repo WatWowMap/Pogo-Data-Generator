@@ -14,7 +14,7 @@ export default class PokemonOverrides {
     ]
   }
 
-  static addFormData(that: Pokemon, formId: Rpc.PokemonDisplayProto.Form) {
+  static addFormData(that: Pokemon, formId: string | Rpc.PokemonDisplayProto.Form) {
     switch (formId) {
       case Rpc.PokemonDisplayProto.Form.BASCULIN_WHITE_STRIPED:
         if (that.parsedForms[formId].evolutions) {
