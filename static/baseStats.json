@@ -1,12 +1,4 @@
 {
-  "123": {
-    "evolutions": [
-      {
-        "evoId": 900,
-        "formId": 0
-      }
-    ]
-  },
   "203": {
     "evolutions": [
       {
@@ -22,16 +14,6 @@
         "formId": 2994
       }
     ]
-  },
-  "222": {
-    "evolutions": [
-      {
-        "evoId": 864,
-        "formId": 2507
-      }
-    ],
-    "legendary": false,
-    "mythic": false
   },
   "234": {
     "evolutions": [
@@ -51,130 +33,21 @@
     "legendary": false,
     "mythic": false
   },
-  "550": {
+  "840": {
     "evolutions": [
       {
-        "evoId": 902,
-        "formId": 2807
+        "evoId": 1011,
+        "formId": 0
       }
     ]
   },
-  "679": {
-    "pokemonName": "Honedge",
-    "quickMoves": [
-      200,
-      213,
-      221,
-      223,
-      226,
-      241,
-      281,
-      402
-    ],
-    "chargedMoves": [
-      36,
-      45,
-      51,
-      64,
-      66,
-      74,
-      123,
-      132,
-      245,
-      267,
-      322,
-      323,
-      330,
-      367
-    ],
-    "attack": 135,
-    "defense": 139,
-    "stamina": 128,
-    "types": [
-      8,
-      9
-    ],
-    "unreleased": true,
-    "legendary": false,
-    "mythic": false
-  },
-  "680": {
-    "pokemonName": "Doublade",
-    "quickMoves": [
-      200,
-      213,
-      221,
-      223,
-      226,
-      241,
-      281,
-      402
-    ],
-    "chargedMoves": [
-      36,
-      45,
-      51,
-      64,
-      66,
-      74,
-      123,
-      132,
-      245,
-      267,
-      322,
-      323,
-      330,
-      367
-    ],
-    "attack": 188,
-    "defense": 206,
-    "stamina": 153,
-    "types": [
-      8,
-      9
-    ],
-    "unreleased": true
-  },
-  "681": {
-    "pokemonName": "Aegislash-shield",
-    "quickMoves": [
-      200,
-      213,
-      221,
-      223,
-      226,
-      241,
-      255,
-      281,
-      402
-    ],
-    "chargedMoves": [
-      14,
-      36,
-      45,
-      51,
-      64,
-      66,
-      70,
-      74,
-      123,
-      132,
-      245,
-      267,
-      321,
-      322,
-      323,
-      330,
-      367
-    ],
-    "attack": 97,
-    "defense": 272,
-    "stamina": 155,
-    "types": [
-      8,
-      9
-    ],
-    "unreleased": true
+  "884": {
+    "evolutions": [
+      {
+        "evoId": 1018,
+        "formId": 0
+      }
+    ]
   },
   "902": {
     "pokemonName": "Basculegion-male",
@@ -336,6 +209,12 @@
     "types": [
       12,
       16
+    ],
+    "evolutions": [
+      {
+        "evoId": 1019,
+        "formId": 0
+      }
     ],
     "unreleased": true
   },
