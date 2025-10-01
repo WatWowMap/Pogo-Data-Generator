@@ -973,7 +973,9 @@ export default class Translations extends Masterfile {
           (key.startsWith('quest_') ||
             key.startsWith('score') ||
             key.startsWith('geotarget_quest') ||
-            key.startsWith('challenge')) &&
+            key.startsWith('challenge') ||
+            key.endsWith('plural') ||
+            key.endsWith('singular')) &&
           this.options.questTitleTermsToSkip.every(
             (term) => !key.includes(term),
           ) &&
