@@ -1016,16 +1016,63 @@ export default class Pokemon extends Masterfile {
           const existingEvos = Array.isArray(existing.evolutions)
             ? existing.evolutions.map((evo) => ({ ...evo }))
             : []
+          const resolveFormId = (value?: number | null): number | undefined =>
+            value !== undefined && value !== null
+              ? value
+              : defaultFormId !== undefined
+              ? defaultFormId
+              : undefined
+          const resolveFormKey = (value?: number | null): string => {
+            const resolved = resolveFormId(value)
+            return resolved !== undefined ? `${resolved}` : 'unset'
+          }
+          const formEvolutionKeys = new Set<string>()
+          const formEvolutionTargets = new Set<string>()
+          if (Array.isArray(existing.forms)) {
+            existing.forms.forEach((formId) => {
+              const formEvos = this.parsedForms[formId]?.evolutions
+              if (Array.isArray(formEvos)) {
+                formEvos.forEach((formEvo) => {
+                  const key = `${formEvo.evoId ?? 'unknown'}:${resolveFormKey(
+                    formEvo.formId,
+                  )}`
+                  formEvolutionKeys.add(key)
+                  formEvolutionTargets.add(`${formEvo.evoId ?? 'unknown'}`)
+                })
+              }
+            })
+          }
           const baseEvos = Array.isArray(baseEntry.evolutions)
             ? baseEntry.evolutions.map((evo) => ({
                 evoId: evo.evoId,
-                formId:
-                  evo.formId !== undefined && evo.formId !== null
-                    ? evo.formId
-                    : defaultFormId,
+                formId: resolveFormId(evo.formId),
+                key: `${evo.evoId ?? 'unknown'}:${resolveFormKey(evo.formId)}`,
+                targetKey: `${evo.evoId ?? 'unknown'}`,
+                hasSpecificForm:
+                  evo.formId !== undefined && evo.formId !== null,
               }))
             : []
-          if (baseEvos.length) {
+          if (
+            baseEvos.length &&
+            formEvolutionTargets.size &&
+            baseEvos.every(
+              (evo) =>
+                formEvolutionKeys.has(evo.key) ||
+                (!evo.hasSpecificForm &&
+                  formEvolutionTargets.has(evo.targetKey)),
+            )
+          ) {
+            console.warn(
+              `[BASE_STATS] Dropping PokeApi entry for ${id} because form-specific evolutions exist`,
+            )
+            delete baseStats[id]
+            return
+          }
+          const baseEvosToMerge = baseEvos.map((evo) => ({
+            evoId: evo.evoId,
+            formId: evo.formId,
+          }))
+          if (baseEvosToMerge.length) {
             const keyFor = (evo: { evoId?: number; formId?: number }) => {
               const formIdentifier =
                 evo.formId !== undefined && evo.formId !== null
@@ -1034,7 +1081,7 @@ export default class Pokemon extends Masterfile {
               return `${evo.evoId ?? 'unknown'}:${formIdentifier}`
             }
             const seen = new Set(existingEvos.map((evo) => keyFor(evo)))
-            baseEvos.forEach((evo) => {
+            baseEvosToMerge.forEach((evo) => {
               const key = keyFor(evo)
               if (seen.has(key)) {
                 console.warn(
