@@ -29,3 +29,5 @@ export type QuestConditionProto =
   keyof typeof Rpc.QuestConditionProto.ConditionType
 
 export type ActivityProto = keyof typeof Rpc.HoloActivityType
+
+export type LocationCardProto = keyof typeof Rpc.LocationCard

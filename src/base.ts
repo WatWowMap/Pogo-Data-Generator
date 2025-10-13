@@ -308,6 +308,22 @@ const baseTemplate: FullTemplate = {
     },
     template: 'formatted',
   },
+  locationCards: {
+    enabled: false,
+    options: {
+      keys: {
+        main: 'id',
+      },
+    },
+    template: {
+      id: true,
+      proto: true,
+      formatted: true,
+      imageUrl: true,
+      cardType: true,
+      vfxAddress: true,
+    },
+  },
   teams: {
     enabled: false,
     options: {

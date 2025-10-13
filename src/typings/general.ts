@@ -163,6 +163,12 @@ export interface NiaMfObj {
       form?: string
       sizeSettings: PokemonSizeSettings
     }
+    locationCardSettings?: {
+      locationCard: string | number
+      imageUrl?: string
+      cardType?: string
+      vfxAddress?: string
+    }
   }
 }
 

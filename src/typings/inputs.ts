@@ -181,6 +181,15 @@ export interface TypesTemplate {
   typeName?: boolean
 }
 
+export interface LocationCardTemplate {
+  id?: boolean
+  proto?: boolean
+  formatted?: boolean
+  imageUrl?: boolean
+  cardType?: boolean
+  vfxAddress?: boolean
+}
+
 export interface MoveTemplate {
   moveId?: boolean
   moveName?: boolean
@@ -350,6 +359,11 @@ export interface FullTemplate {
     enabled?: boolean
     options: Options
     template: MiscProto | keyof MiscProto
+  }
+  locationCards?: {
+    enabled?: boolean
+    options: Options
+    template: LocationCardTemplate | keyof LocationCardTemplate
   }
   teams?: {
     enabled?: boolean

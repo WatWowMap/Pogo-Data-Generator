@@ -87,6 +87,16 @@ export interface MiscProto {
   formatted: string
 }
 
+export interface LocationCardInfo extends MiscProto {
+  imageUrl?: string
+  cardType?: string
+  vfxAddress?: string
+}
+
+export interface AllLocationCards {
+  [id: string]: LocationCardInfo
+}
+
 export interface AllQuests {
   [id: string]: QuestSubCategory
 }
@@ -198,6 +208,7 @@ export interface FinalResult {
   weather?: AllWeather
   questRewardTypes?: AllQuests
   questConditions?: AllQuests
+  locationCards?: AllLocationCards
   invasions?: AllInvasions
   translations?: { [locale: string]: TranslationKeys }
   AllPokeApi?: PokeApi

@@ -22,6 +22,7 @@ import { InvasionInfo } from './typings/pogoinfo'
 import { NiaMfObj } from './typings/general'
 import ApkReader from './classes/Apk'
 import Misc from './classes/Misc'
+import LocationCards from './classes/LocationCards'
 
 export async function generate({
   template,
@@ -51,6 +52,7 @@ export async function generate({
     raids,
     routeTypes,
     teams,
+    locationCards,
   } = Masterfile.templateMerger(template || base, base)
   const localeCheck =
     translations.enabled && translations.options.masterfileLocale
@@ -72,6 +74,7 @@ export async function generate({
   const generations = await AllPokeApi.getGenerations()
   AllPokemon.generations = generations
   const AllMisc = new Misc()
+  const AllLocationCards = new LocationCards(locationCards.options)
   const apk = new ApkReader()
 
   AllMisc.parseRaidLevels()
@@ -348,6 +351,8 @@ export async function generate({
         AllPokemon.jungleCup(data[i])
       } else if (data[i].data.pokemonExtendedSettings) {
         AllPokemon.addExtendedStats(data[i])
+      } else if (data[i].data.locationCardSettings) {
+        AllLocationCards.addLocationCard(data[i])
       }
     }
   }
@@ -613,6 +618,11 @@ export async function generate({
     final[raids.options.topLevelName || 'raids'] = raw
       ? AllMisc.raidLevels
       : AllMisc.templater(AllMisc.raidLevels, raids)
+  }
+  if (locationCards.enabled) {
+    final[locationCards.options.topLevelName || 'locationCards'] = raw
+      ? AllLocationCards.parsedLocationCards
+      : AllLocationCards.templater(AllLocationCards.parsedLocationCards, locationCards)
   }
   if (routeTypes.enabled) {
     final[routeTypes.options.topLevelName || 'routeTypes'] = raw
