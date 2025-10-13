@@ -41,15 +41,7 @@
       "tempEvolutions": []
     },
     "214": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 334,
-          "defense": 223,
-          "stamina": 190,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "248": {
       "tempEvolutions": []
@@ -70,15 +62,7 @@
       "tempEvolutions": []
     },
     "303": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 188,
-          "defense": 217,
-          "stamina": 137,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "306": {
       "tempEvolutions": []
@@ -87,26 +71,10 @@
       "tempEvolutions": []
     },
     "319": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 289,
-          "defense": 144,
-          "stamina": 172,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "323": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 253,
-          "defense": 183,
-          "stamina": 172,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "354": {
       "tempEvolutions": []
@@ -121,15 +89,7 @@
       "tempEvolutions": []
     },
     "376": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 300,
-          "defense": 289,
-          "stamina": 190,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "380": {
       "tempEvolutions": []
@@ -144,41 +104,13 @@
       "tempEvolutions": []
     },
     "448": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 310,
-          "defense": 175,
-          "stamina": 172,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "475": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 326,
-          "defense": 230,
-          "stamina": 169,
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "531": {
-      "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 147,
-          "defense": 239,
-          "stamina": 230,
-          "types": [
-            1,
-            18
-          ],
-          "unreleased": true
-        }
-      ]
+      "tempEvolutions": []
     },
     "719": {
       "tempEvolutions": []

@@ -974,32 +974,113 @@ export default class Pokemon extends Masterfile {
               ...this.getGeneration(+id),
             }
           }
-          let { evolutions } = this.parsedPokemon[id]
-          if (baseStats[id].evolutions) {
-            const cleaned = baseStats[id].evolutions.map((evo) => {
-              return {
+          const existing = this.parsedPokemon[id]
+          const baseEntry = baseStats[id]
+          const defaultFormId =
+            this.options.includeUnset && !this.options.noFormPlaceholders
+              ? 0
+              : undefined
+          const preferActualNumbers = (
+            actual: number[] | undefined,
+            fallback: number[] | undefined,
+            label: string,
+          ): number[] | undefined => {
+            const clean = (arr?: number[]) =>
+              Array.isArray(arr)
+                ? Array.from(
+                    new Set(
+                      arr.filter(
+                        (value): value is number => typeof value === 'number',
+                      ),
+                    ),
+                  )
+                : []
+            const actualValues = clean(actual)
+            const fallbackValues = clean(fallback)
+            if (actualValues.length) {
+              if (fallbackValues.length) {
+                const fallbackSet = new Set(fallbackValues)
+                const mismatch =
+                  actualValues.length !== fallbackSet.size ||
+                  actualValues.some((value) => !fallbackSet.has(value))
+                if (mismatch) {
+                  console.warn(
+                    `[BASE_STATS] Overwriting ${label} for ${id} with Game Master data`,
+                  )
+                }
+              }
+              return actualValues
+            }
+            return fallbackValues.length ? fallbackValues : undefined
+          }
+          const existingEvos = Array.isArray(existing.evolutions)
+            ? existing.evolutions.map((evo) => ({ ...evo }))
+            : []
+          const baseEvos = Array.isArray(baseEntry.evolutions)
+            ? baseEntry.evolutions.map((evo) => ({
                 evoId: evo.evoId,
                 formId:
-                  evo.formId ||
-                  (this.options.includeUnset && !this.options.noFormPlaceholders
-                    ? 0
-                    : undefined),
+                  evo.formId !== undefined && evo.formId !== null
+                    ? evo.formId
+                    : defaultFormId,
+              }))
+            : []
+          if (baseEvos.length) {
+            const keyFor = (evo: { evoId?: number; formId?: number }) => {
+              const formIdentifier =
+                evo.formId !== undefined && evo.formId !== null
+                  ? evo.formId
+                  : defaultFormId ?? 'unset'
+              return `${evo.evoId ?? 'unknown'}:${formIdentifier}`
+            }
+            const seen = new Set(existingEvos.map((evo) => keyFor(evo)))
+            baseEvos.forEach((evo) => {
+              const key = keyFor(evo)
+              if (seen.has(key)) {
+                console.warn(
+                  `[BASE_STATS] Overwriting evolution for ${id} -> ${
+                    evo.evoId ?? 'unknown'
+                  }:${evo.formId ?? defaultFormId ?? 'unset'} with Game Master data`,
+                )
+              } else {
+                seen.add(key)
+                existingEvos.push(evo)
               }
             })
-            evolutions = evolutions ? [...evolutions, ...cleaned] : cleaned
           }
+          const quickMoves =
+            preferActualNumbers(
+              existing.quickMoves,
+              baseEntry.quickMoves,
+              'quick moves',
+            ) ??
+            (Array.isArray(existing.quickMoves) &&
+            existing.quickMoves.length
+              ? Array.from(new Set(existing.quickMoves))
+              : undefined)
+          const chargedMoves =
+            preferActualNumbers(
+              existing.chargedMoves,
+              baseEntry.chargedMoves,
+              'charged moves',
+            ) ??
+            (Array.isArray(existing.chargedMoves) &&
+            existing.chargedMoves.length
+              ? Array.from(new Set(existing.chargedMoves))
+              : undefined)
+          const types =
+            preferActualNumbers(existing.types, baseEntry.types, 'types') ??
+            (Array.isArray(existing.types) && existing.types.length
+              ? Array.from(new Set(existing.types))
+              : undefined)
           this.parsedPokemon[id] = {
-            ...this.parsedPokemon[id],
-            ...baseStats[id],
-            pokemonName:
-              this.parsedPokemon[id].pokemonName || baseStats[id].pokemonName,
-            quickMoves: this.parsedPokemon[id].quickMoves.length
-              ? this.parsedPokemon[id].quickMoves
-              : baseStats[id].quickMoves,
-            chargedMoves: this.parsedPokemon[id].chargedMoves.length
-              ? this.parsedPokemon[id].chargedMoves
-              : baseStats[id].chargedMoves,
-            evolutions,
+            ...baseEntry,
+            ...existing,
+            pokemonName: existing.pokemonName || baseEntry.pokemonName,
+            quickMoves,
+            chargedMoves,
+            types,
+            evolutions: existingEvos.length ? existingEvos : undefined,
           }
         } catch (e) {
           console.warn(e, `Failed to parse base stats for ${id}`)
