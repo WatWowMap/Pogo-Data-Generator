@@ -11,15 +11,20 @@ const main = async () => {
   const mf = await mfData.json()
   fs.writeFileSync('./latest.json', JSON.stringify(mf, null, 2), 'utf8')
 
+  const usePokeApiStaging = process.argv.includes('--pokeapi-staging')
+  const usePokeApi = usePokeApiStaging || process.argv.includes('--pokeapi')
   console.time('Generated in')
   const data = await generate({
     raw: process.argv.includes('--raw'),
     test: process.argv.includes('--test'),
-    pokeApi: process.argv.includes('--pokeapi') || {
+    pokeApi: usePokeApi || {
       baseStats,
       tempEvos,
       types,
     },
+    pokeApiBaseUrl: usePokeApiStaging
+      ? 'https://staging.pokeapi.co/api/v2'
+      : undefined,
   })
 
   if (process.argv.includes('--test')) {

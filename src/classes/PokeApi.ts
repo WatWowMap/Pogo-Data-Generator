@@ -23,9 +23,11 @@ export default class PokeApi extends Masterfile {
     [id: string]: { attack?: number; defense?: number; stamina?: number }
   }
   moveReference: AllMoves
+  private apiBaseUrl: string
 
-  constructor() {
+  constructor(baseUrl?: string) {
     super()
+    this.apiBaseUrl = (baseUrl || 'https://pokeapi.co/api/v2').replace(/\/$/, '')
     this.baseStats = {}
     this.tempEvos = {}
     this.types = {}
@@ -95,6 +97,18 @@ export default class PokeApi extends Masterfile {
     this.moveReference = parsed
   }
 
+  private buildUrl(path: string) {
+    return `${this.apiBaseUrl}/${path.replace(/^\//, '')}`
+  }
+
+  private normalizeUrl(url: string) {
+    const match = url?.match(/\/api\/v2\/(.+)/)
+    if (match && match[1]) {
+      return this.buildUrl(match[1])
+    }
+    return url
+  }
+
   static attack(
     normal: number,
     special: number,
@@ -155,7 +169,7 @@ export default class PokeApi extends Masterfile {
 
   async setMaxPokemonId() {
     const { count } = await this.fetch(
-      `https://pokeapi.co/api/v2/pokemon-species/?limit=1&offset=0`,
+      this.buildUrl('pokemon-species/?limit=1&offset=0'),
     )
     this.maxPokemon = +count
     return +count
@@ -190,7 +204,7 @@ export default class PokeApi extends Masterfile {
   async pokemonApi(id: string | number) {
     try {
       const statsData: PokeApiStats = await this.fetch(
-        `https://pokeapi.co/api/v2/pokemon/${id}/`,
+        this.buildUrl(`pokemon/${id}`),
       )
 
       const baseStats: { [stat: string]: number } = {}
@@ -298,7 +312,7 @@ export default class PokeApi extends Masterfile {
         try {
           if (!evolvedPokemon.has(+id)) {
             const evoData: SpeciesApi = await this.fetch(
-              `https://pokeapi.co/api/v2/pokemon-species/${id}`,
+              this.buildUrl(`pokemon-species/${id}`),
             )
             if (this.baseStats[id]) {
               this.baseStats[id].legendary = evoData.is_legendary
@@ -382,6 +396,32 @@ export default class PokeApi extends Masterfile {
         'gallade-mega',
         'audino-mega',
         'diancie-mega',
+        'clefable-mega',
+        'victreebel-mega',
+        'starmie-mega',
+        'dragonite-mega',
+        'meganium-mega',
+        'feraligatr-mega',
+        'skarmory-mega',
+        'froslass-mega',
+        'emboar-mega',
+        'excadrill-mega',
+        'scolipede-mega',
+        'scrafty-mega',
+        'eelektross-mega',
+        'chandelure-mega',
+        'chesnaught-mega',
+        'delphox-mega',
+        'greninja-mega',
+        'pyroar-mega',
+        'floette-mega',
+        'malamar-mega',
+        'barbaracle-mega',
+        'dragalge-mega',
+        'hawlucha-mega',
+        'zygarde-mega',
+        'drampa-mega',
+        'falinks-mega',
       ],
     }
 
@@ -395,7 +435,7 @@ export default class PokeApi extends Masterfile {
                 id.split('-')[0].toUpperCase() as PokemonIdProto
               ]
             const statsData: PokeApiStats = await this.fetch(
-              `https://pokeapi.co/api/v2/pokemon/${id}/`,
+              this.buildUrl(`pokemon/${id}`),
             )
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach((stat) => {
@@ -481,9 +521,9 @@ export default class PokeApi extends Masterfile {
             },
           }: PokeApiTypes = id
             ? await this.fetch(
-                `https://pokeapi.co/api/v2/type/${type
-                  .substring(13)
-                  .toLowerCase()}`,
+                this.buildUrl(
+                  `type/${type.substring(13).toLowerCase()}`,
+                ),
               )
             : { damage_relations: {} }
           this.types[id] = {
@@ -503,7 +543,7 @@ export default class PokeApi extends Masterfile {
 
   async getGenerations() {
     const generations: { results: BasePokeApiStruct[] } = await this.fetch(
-      'https://pokeapi.co/api/v2/generation',
+      this.buildUrl('generation'),
     )
     const results = await Promise.all(
       generations.results.map(async (gen, index) => {
@@ -513,7 +553,7 @@ export default class PokeApi extends Masterfile {
         }: {
           main_region: BasePokeApiStruct
           pokemon_species: BasePokeApiStruct[]
-        } = await this.fetch(gen.url)
+        } = await this.fetch(this.normalizeUrl(gen.url))
         const name = this.capitalize(main_region.name)
         const pokemonIds = pokemon_species.map(
           (pokemon) => +pokemon.url.split('/').at(-2),

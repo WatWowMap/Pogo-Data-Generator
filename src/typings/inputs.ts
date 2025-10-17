@@ -288,6 +288,7 @@ export interface Input {
   test?: boolean
   raw?: boolean
   pokeApi?: boolean | PokeApi
+  pokeApiBaseUrl?: string
 }
 
 export interface FullTemplate {

@@ -1,16 +1,64 @@
 {
   "mega": {
+    "36": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 253,
+          "defense": 205,
+          "stamina": 216,
+          "types": [
+            3,
+            18
+          ],
+          "unreleased": true
+        }
+      ]
+    },
     "65": {
       "tempEvolutions": []
     },
+    "71": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 265,
+          "defense": 181,
+          "stamina": 190,
+          "unreleased": true
+        }
+      ]
+    },
     "115": {
       "tempEvolutions": []
+    },
+    "121": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 303,
+          "defense": 229,
+          "stamina": 155,
+          "unreleased": true
+        }
+      ]
     },
     "127": {
       "tempEvolutions": []
     },
     "142": {
       "tempEvolutions": []
+    },
+    "149": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 299,
+          "defense": 255,
+          "stamina": 209,
+          "unreleased": true
+        }
+      ]
     },
     "150": {
       "tempEvolutions": [
@@ -34,6 +82,36 @@
         }
       ]
     },
+    "154": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 276,
+          "defense": 232,
+          "stamina": 190,
+          "types": [
+            12,
+            18
+          ],
+          "unreleased": true
+        }
+      ]
+    },
+    "160": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 304,
+          "defense": 227,
+          "stamina": 198,
+          "types": [
+            11,
+            16
+          ],
+          "unreleased": true
+        }
+      ]
+    },
     "208": {
       "tempEvolutions": []
     },
@@ -42,6 +120,17 @@
     },
     "214": {
       "tempEvolutions": []
+    },
+    "227": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 273,
+          "defense": 228,
+          "stamina": 163,
+          "unreleased": true
+        }
+      ]
     },
     "248": {
       "tempEvolutions": []
@@ -109,11 +198,224 @@
     "475": {
       "tempEvolutions": []
     },
+    "478": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 289,
+          "defense": 194,
+          "stamina": 172,
+          "unreleased": true
+        }
+      ]
+    },
+    "500": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 287,
+          "defense": 194,
+          "stamina": 242,
+          "unreleased": true
+        }
+      ]
+    },
+    "530": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 322,
+          "defense": 184,
+          "stamina": 242,
+          "unreleased": true
+        }
+      ]
+    },
     "531": {
       "tempEvolutions": []
     },
+    "545": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 257,
+          "defense": 254,
+          "stamina": 155,
+          "unreleased": true
+        }
+      ]
+    },
+    "560": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 238,
+          "defense": 266,
+          "stamina": 163,
+          "unreleased": true
+        }
+      ]
+    },
+    "604": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 291,
+          "defense": 175,
+          "stamina": 198,
+          "unreleased": true
+        }
+      ]
+    },
+    "609": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 335,
+          "defense": 227,
+          "stamina": 155,
+          "unreleased": true
+        }
+      ]
+    },
+    "652": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 242,
+          "defense": 282,
+          "stamina": 204,
+          "unreleased": true
+        }
+      ]
+    },
+    "655": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 331,
+          "defense": 235,
+          "stamina": 181,
+          "unreleased": true
+        }
+      ]
+    },
+    "658": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 299,
+          "defense": 180,
+          "stamina": 176,
+          "unreleased": true
+        }
+      ]
+    },
+    "668": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 273,
+          "defense": 198,
+          "stamina": 200,
+          "unreleased": true
+        }
+      ]
+    },
+    "670": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 309,
+          "defense": 264,
+          "stamina": 179,
+          "unreleased": true
+        }
+      ]
+    },
+    "687": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 208,
+          "defense": 222,
+          "stamina": 200,
+          "unreleased": true
+        }
+      ]
+    },
+    "689": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 268,
+          "defense": 248,
+          "stamina": 176,
+          "types": [
+            2,
+            6
+          ],
+          "unreleased": true
+        }
+      ]
+    },
+    "691": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 236,
+          "defense": 265,
+          "stamina": 163,
+          "unreleased": true
+        }
+      ]
+    },
+    "701": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 280,
+          "defense": 212,
+          "stamina": 186,
+          "unreleased": true
+        }
+      ]
+    },
+    "718": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 416,
+          "defense": 187,
+          "stamina": 428,
+          "unreleased": true
+        }
+      ]
+    },
     "719": {
       "tempEvolutions": []
+    },
+    "780": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 278,
+          "defense": 210,
+          "stamina": 186,
+          "unreleased": true
+        }
+      ]
+    },
+    "870": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 267,
+          "defense": 229,
+          "stamina": 163,
+          "unreleased": true
+        }
+      ]
     }
   }
 }

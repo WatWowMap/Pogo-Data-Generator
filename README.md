@@ -121,6 +121,7 @@ const tr = await invasions()
 - `tsc -w` will auto recompile the TypeScript during development
 - You can play with the input options by changing the scripts in `package.json` or modifying the `base.ts` file.
 - `yarn pokeapi`, which will generate a local `masterfile.json` and refresh the data in the `static` folder from PokeAPI
+- Append `--pokeapi-staging` to target `https://staging.pokeapi.co/api/v2` when regenerating from PokeAPI
 - `yarn raw` will generate a local `masterfile.json` and with the raw data format
 
 The generate function accepts an object with the following properties:
@@ -131,6 +132,7 @@ The generate function accepts an object with the following properties:
 - `test` (boolean): Writes the masterfile to a local json
 - `raw` (boolean): Returns the data in its raw format without any template processing
 - `pokeApi` (boolean): Fetches fresh data from PokeAPI
+- `pokeApiBaseUrl` (string): Overrides the default PokeAPI endpoint (defaults to `https://pokeapi.co/api/v2`)
 
 To view some static examples of what this library can create, check out these repos:
 [Masterfiles](https://github.com/WatWowMap/Masterfile-Generator)

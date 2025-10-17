@@ -32,6 +32,7 @@ export async function generate({
   raw,
   pokeApi,
   test,
+  pokeApiBaseUrl,
 }: Input = {}): Promise<FinalResult> {
   const final: FinalResult = {}
   const urlToFetch =
@@ -69,7 +70,7 @@ export async function generate({
     translationApkUrl,
     translationRemoteUrl,
   )
-  const AllPokeApi = new PokeApi()
+  const AllPokeApi = new PokeApi(pokeApiBaseUrl)
   await AllPokeApi.setMaxPokemonId()
   const generations = await AllPokeApi.getGenerations()
   AllPokemon.generations = generations
