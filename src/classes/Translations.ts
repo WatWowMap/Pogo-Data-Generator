@@ -892,6 +892,18 @@ export default class Translations extends Masterfile {
           this.parsedTranslations[locale].misc[entry],
         )
       })
+      const locationBackground =
+        this.rawTranslations[locale].filter_label_location_card
+      if (locationBackground) {
+        this.parsedTranslations[locale].misc.filter_label_location_card =
+          locationBackground
+      }
+      const specialBackground =
+        this.rawTranslations[locale].special_background_filter_header
+      if (specialBackground) {
+        this.parsedTranslations[locale].misc.special_background_filter_header =
+          specialBackground
+      }
       for (let i = 0; i < 4; i += 1) {
         const teamName = this.rawTranslations[locale][`team_name_team${i}`]
         this.parsedTranslations[locale].misc[`team_a_${i}`] = teamName
