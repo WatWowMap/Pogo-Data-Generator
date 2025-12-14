@@ -248,7 +248,12 @@ export default class Pokemon extends Masterfile {
           return
         } else if (branch.evolution) {
           const id = Rpc.HoloPokemonId[branch.evolution as PokemonIdProto]
-          const formId = Rpc.PokemonDisplayProto.Form[branch.form as FormProto]
+          const formId =
+            typeof branch.form === 'number'
+              ? branch.form
+              : /^\d+$/.test(branch.form)
+                ? +branch.form
+                : Rpc.PokemonDisplayProto.Form[branch.form as FormProto]
           evolutions.push({
             evoId: id,
             formId: this.options.includeUnset ? formId || 0 : formId,
@@ -409,9 +414,13 @@ export default class Pokemon extends Masterfile {
         ).map(([name, value]) => ({ name, value }))
 
         const protoForm = object.data.pokemonExtendedSettings.form
-          ? Rpc.PokemonDisplayProto.Form[
-              object.data.pokemonExtendedSettings.form as FormProto
-            ]
+          ? typeof object.data.pokemonExtendedSettings.form === 'number'
+            ? object.data.pokemonExtendedSettings.form
+            : /^\d+$/.test(object.data.pokemonExtendedSettings.form)
+              ? +object.data.pokemonExtendedSettings.form
+              : Rpc.PokemonDisplayProto.Form[
+                  object.data.pokemonExtendedSettings.form as FormProto
+                ]
           : 0
         if (protoForm) {
           if (!this.parsedForms[protoForm]) {
@@ -769,11 +778,23 @@ export default class Pokemon extends Masterfile {
       }
       let target = this.parsedPokemon[id]
       if (mappings[i].form) {
-        let formId = Rpc.PokemonDisplayProto.Form[mappings[i].form as FormProto]
+        const rawForm = mappings[i].form
+        const formId =
+          typeof rawForm === 'number'
+            ? rawForm
+            : /^\d+$/.test(rawForm)
+              ? +rawForm
+              : Rpc.PokemonDisplayProto.Form[rawForm as FormProto]
         if (!this.parsedPokemon[id].forms) {
           this.parsedPokemon[id].forms = []
         }
-        const formName = this.formName(id, mappings[i].form)
+        const formProto =
+          typeof rawForm === 'number'
+            ? this.lookupForm(rawForm)
+            : /^\d+$/.test(rawForm)
+              ? this.lookupForm(+rawForm)
+              : rawForm
+        const formName = this.formName(id, formProto)
         if (!this.skipForms(formName)) {
           this.parsedForms[formId] = {
             ...this.parsedForms[formId],

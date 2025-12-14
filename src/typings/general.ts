@@ -107,7 +107,7 @@ export interface NiaMfObj {
     sourdoughMoveMappingSettings?: {
       mappings: {
         pokemonId: string
-        form?: string
+        form?: string | number
         move: string
       }[]
     }
@@ -160,7 +160,7 @@ export interface NiaMfObj {
     }
     pokemonExtendedSettings?: {
       uniqueId: string
-      form?: string
+      form?: string | number
       sizeSettings: PokemonSizeSettings
     }
     locationCardSettings?: {
@@ -197,7 +197,7 @@ export interface TempEvo {
 export interface EvoBranch {
   evolution: string
   candyCost: number
-  form: string
+  form: string | number
   genderRequirement: string
   evolutionItemRequirement: string
   temporaryEvolution: string
