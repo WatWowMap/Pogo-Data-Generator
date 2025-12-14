@@ -1016,13 +1016,31 @@ export default class Pokemon extends Masterfile {
           const existingEvos = Array.isArray(existing.evolutions)
             ? existing.evolutions.map((evo) => ({ ...evo }))
             : []
-          const resolveFormId = (value?: number | null): number | undefined =>
-            value !== undefined && value !== null
-              ? value
-              : defaultFormId !== undefined
-              ? defaultFormId
-              : undefined
-          const resolveFormKey = (value?: number | null): string => {
+          const resolveFormId = (
+            value?: number | string | null,
+          ): number | undefined => {
+            // undefined / null -> fallback to defaultFormId if provided
+            if (value === undefined || value === null) {
+              return defaultFormId !== undefined ? defaultFormId : undefined
+            }
+            // If the value is a string proto (e.g. 'VIKAVOLT_WINTER_2025'),
+            // convert it to the numeric form id using the Rpc lookup.
+            if (typeof value === 'string') {
+              const numeric = Rpc.PokemonDisplayProto.Form[
+                value as FormProto
+              ]
+              return numeric !== undefined
+                ? numeric
+                : defaultFormId !== undefined
+                ? defaultFormId
+                : undefined
+            }
+            // number -> return as-is
+            return value
+          }
+          const resolveFormKey = (
+            value?: number | string | null,
+          ): string => {
             const resolved = resolveFormId(value)
             return resolved !== undefined ? `${resolved}` : 'unset'
           }
