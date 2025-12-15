@@ -1,10 +1,6 @@
 import { Options, FullTemplate } from '../typings/inputs'
 import { FinalResult } from '../typings/dataTypes'
 
-if (typeof fetch === 'undefined') {
-  global.fetch = require('node-fetch')
-}
-
 export default class Masterfile {
   customFieldNames: { [id: string]: string }
   genders: { [id: string]: string }
