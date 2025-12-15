@@ -1,4 +1,4 @@
-import { Rpc } from '@na-ji/pogo-protos'
+import type { Rpc } from '@na-ji/pogo-protos'
 
 export type WeatherProto =
   keyof typeof Rpc.GameplayWeatherProto.WeatherCondition

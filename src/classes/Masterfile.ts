@@ -1,5 +1,5 @@
-import { Options, FullTemplate } from '../typings/inputs'
-import { FinalResult } from '../typings/dataTypes'
+import type { FinalResult } from '../typings/dataTypes'
+import type { FullTemplate, Options } from '../typings/inputs'
 
 export default class Masterfile {
   customFieldNames: { [id: string]: string }
@@ -242,6 +242,7 @@ export default class Masterfile {
       } catch (e) {
         console.warn(
           `Ref or X is undefined and it probably shouldn't be for ${reference}[${fieldKey}][${x}]`,
+          e,
         )
       }
       return returnedObj

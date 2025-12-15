@@ -1,4 +1,4 @@
-import PokeApi from '../classes/PokeApi'
+import type PokeApi from '../classes/PokeApi'
 
 export interface AllWeather {
   [id: string]: {

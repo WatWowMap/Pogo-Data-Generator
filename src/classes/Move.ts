@@ -1,9 +1,8 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
-import { NiaMfObj } from '../typings/general'
-import { AllMoves } from '../typings/dataTypes'
+import type { AllMoves } from '../typings/dataTypes'
+import type { NiaMfObj } from '../typings/general'
+import type { MoveProto, TypeProto } from '../typings/protos'
 import Masterfile from './Masterfile'
-import { MoveProto, TypeProto } from '../typings/protos'
 
 export default class Moves extends Masterfile {
   parsedMoves: AllMoves

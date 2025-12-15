@@ -1,10 +1,9 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
+import type { AllItems } from '../typings/dataTypes'
+import type { NiaMfObj } from '../typings/general'
+import type { Options } from '../typings/inputs'
+import type { ItemProto } from '../typings/protos'
 import Masterfile from './Masterfile'
-import { AllItems } from '../typings/dataTypes'
-import { NiaMfObj } from '../typings/general'
-import { ItemProto } from '../typings/protos'
-import { Options } from '../typings/inputs'
 
 export default class Item extends Masterfile {
   options: Options

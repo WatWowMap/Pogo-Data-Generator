@@ -1,22 +1,20 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
-import Masterfile from './Masterfile'
-import {
+import type {
+  AllForms,
   AllPokemon,
-  TempEvolutions,
   Evolutions,
   SinglePokemon,
-  AllForms,
+  TempEvolutions,
 } from '../typings/dataTypes'
-import {
-  NiaMfObj,
-  Generation,
-  TempEvo,
+import type {
   EvoBranch,
   EvolutionQuest,
+  Generation,
+  NiaMfObj,
+  TempEvo,
 } from '../typings/general'
-import { Options } from '../typings/inputs'
-import {
+import type { Options } from '../typings/inputs'
+import type {
   CostumeProto,
   FamilyProto,
   FormProto,
@@ -28,6 +26,7 @@ import {
   QuestTypeProto,
   TypeProto,
 } from '../typings/protos'
+import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
 
@@ -444,7 +443,7 @@ export default class Pokemon extends Masterfile {
           if (this.parsedForms[formId]?.sizeSettings) {
             if (
               this.parsedForms[formId].sizeSettings.every(
-                (size) => pkmnSizeTree[size.name] == size.value,
+                (size) => pkmnSizeTree[size.name] === size.value,
               )
             ) {
               delete this.parsedForms[formId].sizeSettings
@@ -578,7 +577,7 @@ export default class Pokemon extends Masterfile {
       if (!this.parsedPokemon[id]) {
         this.parsedPokemon[id] = {}
       }
-      let formId: number = /^V\d{4}_POKEMON_/.test(templateId)
+      const formId: number = /^V\d{4}_POKEMON_/.test(templateId)
         ? Rpc.PokemonDisplayProto.Form[
             templateId.substring('V9999_POKEMON_'.length) as FormProto
           ]
@@ -652,8 +651,7 @@ export default class Pokemon extends Masterfile {
             form.family = family
           }
           if (
-            pokemonSettings.evolutionBranch &&
-            pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
+            pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
           ) {
             if (!form.evolutions) {
               form.evolutions = []
@@ -731,14 +729,13 @@ export default class Pokemon extends Masterfile {
             pokemonSettings.cinematicMoves,
           )
         } else {
-          if (pokemonSettings.quickMoves && pokemonSettings.quickMoves.length)
+          if (pokemonSettings.quickMoves?.length)
             console.warn(
               'unexpected Smeargle quick moves',
               pokemonSettings.quickMoves,
             )
           if (
-            pokemonSettings.cinematicMoves &&
-            pokemonSettings.cinematicMoves.length
+            pokemonSettings.cinematicMoves?.length
           )
             console.warn(
               'unexpected Smeargle charged moves',
@@ -746,8 +743,7 @@ export default class Pokemon extends Masterfile {
             )
         }
         if (
-          pokemonSettings.evolutionBranch &&
-          pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
+          pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
         ) {
           this.parsedPokemon[id].evolutions = this.compileEvos(
             pokemonSettings.evolutionBranch,
@@ -788,7 +784,7 @@ export default class Pokemon extends Masterfile {
   }: NiaMfObj) {
     for (let i = 0; i < mappings.length; i += 1)
       try {
-        let id = Rpc.HoloPokemonId[mappings[i].pokemonId as PokemonIdProto]
+        const id = Rpc.HoloPokemonId[mappings[i].pokemonId as PokemonIdProto]
         if (!this.parsedPokemon[id]) {
           this.parsedPokemon[id] = {}
         }
@@ -944,8 +940,7 @@ export default class Pokemon extends Masterfile {
       }
     })
     this.jungleCupRules.banned =
-      bannedPokemon &&
-      bannedPokemon.map((poke) => {
+      bannedPokemon?.map((poke) => {
         return Rpc.HoloPokemonId[poke as PokemonIdProto]
       })
   }

@@ -1,6 +1,6 @@
 import { Rpc } from '@na-ji/pogo-protos'
 
-import { AllQuests } from '../typings/dataTypes'
+import type { AllQuests } from '../typings/dataTypes'
 import Masterfile from './Masterfile'
 
 export default class Quests extends Masterfile {
@@ -16,8 +16,9 @@ export default class Quests extends Masterfile {
   }
 
   addQuest(category: string) {
-    let parseTarget
-    let protoTarget
+    let parseTarget: AllQuests | undefined
+    let protoTarget: typeof Rpc.QuestType | typeof Rpc.QuestRewardProto.Type | typeof Rpc.QuestConditionProto.ConditionType | undefined
+
     try {
       switch (category) {
         case 'types':
@@ -40,7 +41,7 @@ export default class Quests extends Masterfile {
       try {
         const [name, id] = proto
         parseTarget[id] = {
-          id,
+          questId: id,
           proto: name,
           formatted:
             category === 'types'

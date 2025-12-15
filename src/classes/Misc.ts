@@ -1,7 +1,6 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
-import Masterfile from './Masterfile'
 import type { MiscProto } from '../typings/dataTypes'
+import Masterfile from './Masterfile'
 
 export default class Misc extends Masterfile {
   routeTypes: { [key: string]: MiscProto }

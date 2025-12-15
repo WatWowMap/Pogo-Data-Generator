@@ -18,7 +18,13 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny":"off"
+			},
+			"complexity":{
+				"noStaticOnlyClass":"off"
+			}
 		}
 	},
 	"javascript": {

@@ -1,5 +1,5 @@
 import { Rpc } from '@na-ji/pogo-protos'
-import {
+import type {
   AllForms,
   AllInvasions,
   AllPokemon,
@@ -7,9 +7,9 @@ import {
   FinalResult,
   TranslationKeys,
 } from '../typings/dataTypes'
-import { EvolutionQuest } from '../typings/general'
-import { Options, Locales } from '../typings/inputs'
-import { TypeProto } from '../typings/protos'
+import type { EvolutionQuest } from '../typings/general'
+import type { Locales, Options } from '../typings/inputs'
+import type { TypeProto } from '../typings/protos'
 
 import Masterfile from './Masterfile'
 
@@ -161,7 +161,7 @@ export default class Translations extends Masterfile {
   }
 
   removeEscapes(str: string) {
-    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
+    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/"/g, '”')
   }
 
   async fetchTranslations(
@@ -249,7 +249,7 @@ export default class Translations extends Masterfile {
 
         Object.entries(manual).forEach((pair) => {
           const [key, value] = pair
-          let trimmedKey
+          let trimmedKey: string | undefined
           if (key.startsWith('poke_type')) {
             trimmedKey = key.replace(
               'poke_type_',
@@ -556,7 +556,7 @@ export default class Translations extends Masterfile {
               `${this.options.prefix.descriptions}${id}`
             ] = this.rawTranslations[locale][description]
           }
-          if (pokemon[id] && pokemon[id].forms) {
+          if (pokemon[id]?.forms) {
             pokemon[id].forms.forEach((formId) => {
               const formName = forms[formId].formName
               const formDescription =
@@ -575,8 +575,7 @@ export default class Translations extends Masterfile {
                     `POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto
                   ]
                 if (
-                  this.parsedTranslations[locale].misc &&
-                  this.parsedTranslations[locale].misc[formName.toLowerCase()]
+                  this.parsedTranslations[locale].misc?.[formName.toLowerCase()]
                 ) {
                   this.parsedTranslations[locale].forms[
                     `${this.options.prefix.forms}${formId}`
@@ -771,10 +770,10 @@ export default class Translations extends Masterfile {
       }
       this.parsedTranslations[locale].characterCategories = {}
       Object.entries(parsedInvasions).forEach(([id, info]) => {
-        let assetRef
-        let shortRef
+        let assetRef: string | undefined
+        let shortRef: string | undefined
         switch (info.grunt) {
-          case 'Grunt':
+          case 'Grunt': {
             const base = `${
               this.rawTranslations[locale][
                 info.type === 'Decoy'
@@ -810,6 +809,7 @@ export default class Translations extends Masterfile {
                   '',
                 ) || info.type
             break
+          }
           case 'Executive':
             assetRef =
               this.rawTranslations[locale][

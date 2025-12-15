@@ -1,10 +1,9 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
+import type { AllLocationCards } from '../typings/dataTypes'
+import type { NiaMfObj } from '../typings/general'
+import type { Options } from '../typings/inputs'
+import type { LocationCardProto } from '../typings/protos'
 import Masterfile from './Masterfile'
-import { AllLocationCards } from '../typings/dataTypes'
-import { Options } from '../typings/inputs'
-import { NiaMfObj } from '../typings/general'
-import { LocationCardProto } from '../typings/protos'
 
 export default class LocationCards extends Masterfile {
   options: Options

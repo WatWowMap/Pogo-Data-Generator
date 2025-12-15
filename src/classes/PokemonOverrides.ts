@@ -1,7 +1,7 @@
-import { AllForms } from '../typings/dataTypes'
 import { Rpc } from '@na-ji/pogo-protos'
-import Pokemon from './Pokemon'
-import { EvoBranch } from '../typings/general'
+import type { AllForms } from '../typings/dataTypes'
+import type { EvoBranch } from '../typings/general'
+import type Pokemon from './Pokemon'
 
 export default class PokemonOverrides {
   static addEvos(form: AllForms) {
