@@ -200,7 +200,10 @@ export default class Translations extends Masterfile {
         this.generics[locale] = this.generics.en
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
-      const localeInfo = this.codes[locale] || { name: 'English', code: 'en-us' };
+      const localeInfo = this.codes[locale] || {
+        name: 'English',
+        code: 'en-us',
+      }
       const { data }: { data: string[] } = (await this.fetch(
         this.translationApkUrl.replace(
           'English/en-us',
@@ -663,7 +666,9 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].bonuses = {}
       Object.keys(this.rawTranslations[locale]).forEach((key) => {
         if (key.startsWith('spawn_')) {
-          this.parsedTranslations[locale].bonuses[`${this.options.prefix.bonuses}${key}`] = this.rawTranslations[locale][key]
+          this.parsedTranslations[locale].bonuses[
+            `${this.options.prefix.bonuses}${key}`
+          ] = this.rawTranslations[locale][key]
         }
       })
     } catch (e) {
@@ -1007,9 +1012,11 @@ export default class Translations extends Masterfile {
     this.parsedTranslations[locale].evolutionQuests = {}
     Object.values(evoQuests).forEach((info) => {
       try {
-        const rawValue = this.rawTranslations[locale][info.assetsRef];
+        const rawValue = this.rawTranslations[locale][info.assetsRef]
         if (!rawValue) {
-          throw new Error(`Missing translation for assetsRef: ${info.assetsRef}`);
+          throw new Error(
+            `Missing translation for assetsRef: ${info.assetsRef}`,
+          )
         }
         const translated = rawValue.replace(
           '{0}',

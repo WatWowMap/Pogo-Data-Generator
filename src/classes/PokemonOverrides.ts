@@ -7,14 +7,18 @@ export default class PokemonOverrides {
   static addEvos(form: AllForms) {
     if (form[Rpc.PokemonDisplayProto.Form.STANTLER_NORMAL].evolutions) {
       console.warn('Wyrdeer evolution added')
-    } else form[Rpc.PokemonDisplayProto.Form.STANTLER_NORMAL].evolutions = [
-      {
-        evoId: Rpc.HoloPokemonId.WYRDEER,
-      },
-    ]
+    } else
+      form[Rpc.PokemonDisplayProto.Form.STANTLER_NORMAL].evolutions = [
+        {
+          evoId: Rpc.HoloPokemonId.WYRDEER,
+        },
+      ]
   }
 
-  static addFormData(that: Pokemon, formId: string | Rpc.PokemonDisplayProto.Form) {
+  static addFormData(
+    that: Pokemon,
+    formId: string | Rpc.PokemonDisplayProto.Form,
+  ) {
     switch (formId) {
       case Rpc.PokemonDisplayProto.Form.BASCULIN_WHITE_STRIPED:
         if (that.parsedForms[formId].evolutions) {

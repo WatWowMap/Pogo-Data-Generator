@@ -15,7 +15,7 @@ export default class Misc extends Masterfile {
     this.teams = {}
   }
 
-  parse(proto: typeof Rpc[keyof typeof Rpc]) {
+  parse(proto: (typeof Rpc)[keyof typeof Rpc]) {
     return Object.fromEntries(
       Object.entries(proto).map(([key, value]) => [
         value,

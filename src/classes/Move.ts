@@ -41,7 +41,7 @@ export default class Moves extends Masterfile {
           this.parsedMoves[id] = {
             moveId: id,
             moveName: this.capitalize(
-              isMax ? moveSettings.vfxName : proto.replace('_FAST', '')
+              isMax ? moveSettings.vfxName : proto.replace('_FAST', ''),
             ),
             proto,
             fast: templateId.endsWith('_FAST'),
@@ -50,7 +50,8 @@ export default class Moves extends Masterfile {
         this.parsedMoves[id].type =
           Rpc.HoloPokemonType[moveSettings.pokemonType as TypeProto]
         this.parsedMoves[id].power = isMax
-          ? moveSettings.obMoveSettingsNumber18[2] : moveSettings.power
+          ? moveSettings.obMoveSettingsNumber18[2]
+          : moveSettings.power
         this.parsedMoves[id].durationMs = moveSettings.durationMs
         this.parsedMoves[id].energyDelta = moveSettings.energyDelta
       }

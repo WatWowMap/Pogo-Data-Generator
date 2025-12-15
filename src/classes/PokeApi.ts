@@ -27,7 +27,10 @@ export default class PokeApi extends Masterfile {
 
   constructor(baseUrl?: string) {
     super()
-    this.apiBaseUrl = (baseUrl || 'https://pokeapi.co/api/v2').replace(/\/$/, '')
+    this.apiBaseUrl = (baseUrl || 'https://pokeapi.co/api/v2').replace(
+      /\/$/,
+      '',
+    )
     this.baseStats = {}
     this.tempEvos = {}
     this.types = {}
@@ -521,9 +524,7 @@ export default class PokeApi extends Masterfile {
             },
           }: PokeApiTypes = id
             ? await this.fetch(
-                this.buildUrl(
-                  `type/${type.substring(13).toLowerCase()}`,
-                ),
+                this.buildUrl(`type/${type.substring(13).toLowerCase()}`),
               )
             : { damage_relations: {} }
           this.types[id] = {
