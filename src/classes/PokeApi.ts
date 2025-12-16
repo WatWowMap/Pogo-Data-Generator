@@ -444,8 +444,10 @@ export default class PokeApi extends Masterfile {
             return
           }
 
-          this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
-          sortTempEvolutions(this.tempEvos[type][pokemonId].tempEvolutions)
+          this.tempEvos[type][pokemonId].tempEvolutions = sortTempEvolutions([
+            ...this.tempEvos[type][pokemonId].tempEvolutions,
+            newTheoretical,
+          ])
         } catch (e) {
           console.warn(e, `Failed to parse PokeApi ${type} Evos for ${id}`)
         }
