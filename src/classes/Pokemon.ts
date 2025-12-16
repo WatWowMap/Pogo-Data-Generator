@@ -26,6 +26,7 @@ import type {
   QuestTypeProto,
   TypeProto,
 } from '../typings/protos'
+import { mergeTempEvolutions, sortTempEvolutions } from '../utils/tempEvolutions'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -297,9 +298,13 @@ export default class Pokemon extends Masterfile {
       const tempEvolutions: TempEvolutions[] = mfObject
         .filter((tempEvo) => tempEvo.stats)
         .map((tempEvo) => {
+          const resolvedTempEvoId =
+            Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto] ??
+            (tempEvo.tempEvoId === 'TEMP_EVOLUTION_MEGA_Z'
+              ? 5
+              : tempEvo.tempEvoId)
           const newTempEvolution: TempEvolutions = {
-            tempEvoId:
-              Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
+            tempEvoId: resolvedTempEvoId,
           }
           switch (true) {
             case tempEvo.stats.baseAttack !== primaryForm.attack:
@@ -333,9 +338,7 @@ export default class Pokemon extends Masterfile {
           }
           return newTempEvolution
         })
-      return tempEvolutions.sort(
-        (a, b) => (a.tempEvoId as number) - (b.tempEvoId as number),
-      )
+      return sortTempEvolutions(tempEvolutions)
     } catch (e) {
       console.warn(
         e,
@@ -1178,12 +1181,10 @@ export default class Pokemon extends Masterfile {
         ) {
           Object.keys(tempEvos[category]).forEach((id) => {
             try {
-              const tempEvolutions = [
-                ...tempEvos[category][id].tempEvolutions,
-                ...(this.parsedPokemon[id].tempEvolutions
-                  ? this.parsedPokemon[id].tempEvolutions
-                  : []),
-              ]
+              const tempEvolutions = mergeTempEvolutions(
+                tempEvos[category][id].tempEvolutions,
+                this.parsedPokemon[id].tempEvolutions,
+              )
               this.parsedPokemon[id] = {
                 ...this.parsedPokemon[id],
                 tempEvolutions,

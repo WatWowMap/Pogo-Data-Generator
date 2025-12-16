@@ -1,5 +1,23 @@
 {
   "mega": {
+    "26": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 2,
+          "attack": 277,
+          "defense": 203,
+          "stamina": 155,
+          "unreleased": true
+        },
+        {
+          "tempEvoId": 3,
+          "attack": 339,
+          "defense": 157,
+          "stamina": 155,
+          "unreleased": true
+        }
+      ]
+    },
     "36": {
       "tempEvolutions": [
         {
@@ -15,9 +33,6 @@
         }
       ]
     },
-    "65": {
-      "tempEvolutions": []
-    },
     "71": {
       "tempEvolutions": [
         {
@@ -29,9 +44,6 @@
         }
       ]
     },
-    "115": {
-      "tempEvolutions": []
-    },
     "121": {
       "tempEvolutions": [
         {
@@ -42,12 +54,6 @@
           "unreleased": true
         }
       ]
-    },
-    "127": {
-      "tempEvolutions": []
-    },
-    "142": {
-      "tempEvolutions": []
     },
     "149": {
       "tempEvolutions": [
@@ -112,15 +118,6 @@
         }
       ]
     },
-    "208": {
-      "tempEvolutions": []
-    },
-    "212": {
-      "tempEvolutions": []
-    },
-    "214": {
-      "tempEvolutions": []
-    },
     "227": {
       "tempEvolutions": [
         {
@@ -132,71 +129,75 @@
         }
       ]
     },
-    "248": {
-      "tempEvolutions": []
-    },
-    "254": {
-      "tempEvolutions": []
-    },
-    "257": {
-      "tempEvolutions": []
-    },
-    "260": {
-      "tempEvolutions": []
-    },
-    "282": {
-      "tempEvolutions": []
-    },
-    "302": {
-      "tempEvolutions": []
-    },
-    "303": {
-      "tempEvolutions": []
-    },
-    "306": {
-      "tempEvolutions": []
-    },
-    "308": {
-      "tempEvolutions": []
-    },
-    "319": {
-      "tempEvolutions": []
-    },
-    "323": {
-      "tempEvolutions": []
-    },
-    "354": {
-      "tempEvolutions": []
+    "358": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 244,
+          "defense": 228,
+          "stamina": 181,
+          "types": [
+            9,
+            14
+          ],
+          "unreleased": true
+        }
+      ]
     },
     "359": {
-      "tempEvolutions": []
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 332,
+          "defense": 138,
+          "stamina": 163,
+          "types": [
+            8,
+            17
+          ],
+          "unreleased": true
+        }
+      ]
     },
-    "362": {
-      "tempEvolutions": []
-    },
-    "373": {
-      "tempEvolutions": []
-    },
-    "376": {
-      "tempEvolutions": []
-    },
-    "380": {
-      "tempEvolutions": []
-    },
-    "381": {
-      "tempEvolutions": []
-    },
-    "384": {
-      "tempEvolutions": []
+    "398": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 278,
+          "defense": 207,
+          "stamina": 198,
+          "types": [
+            2,
+            3
+          ],
+          "unreleased": true
+        }
+      ]
     },
     "445": {
-      "tempEvolutions": []
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 321,
+          "defense": 196,
+          "stamina": 239,
+          "types": [
+            16
+          ],
+          "unreleased": true
+        }
+      ]
     },
     "448": {
-      "tempEvolutions": []
-    },
-    "475": {
-      "tempEvolutions": []
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 359,
+          "defense": 161,
+          "stamina": 172,
+          "unreleased": true
+        }
+      ]
     },
     "478": {
       "tempEvolutions": [
@@ -204,6 +205,28 @@
           "tempEvoId": 1,
           "attack": 289,
           "defense": 194,
+          "stamina": 172,
+          "unreleased": true
+        }
+      ]
+    },
+    "485": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 331,
+          "defense": 252,
+          "stamina": 209,
+          "unreleased": true
+        }
+      ]
+    },
+    "491": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 325,
+          "defense": 265,
           "stamina": 172,
           "unreleased": true
         }
@@ -230,9 +253,6 @@
           "unreleased": true
         }
       ]
-    },
-    "531": {
-      "tempEvolutions": []
     },
     "545": {
       "tempEvolutions": [
@@ -274,6 +294,17 @@
           "attack": 335,
           "defense": 227,
           "stamina": 155,
+          "unreleased": true
+        }
+      ]
+    },
+    "623": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 284,
+          "defense": 202,
+          "stamina": 205,
           "unreleased": true
         }
       ]
@@ -328,6 +359,17 @@
           "tempEvoId": 1,
           "attack": 309,
           "defense": 264,
+          "stamina": 179,
+          "unreleased": true
+        }
+      ]
+    },
+    "678": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 288,
+          "defense": 201,
           "stamina": 179,
           "unreleased": true
         }
@@ -392,8 +434,31 @@
         }
       ]
     },
-    "719": {
-      "tempEvolutions": []
+    "740": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 266,
+          "defense": 213,
+          "stamina": 219,
+          "unreleased": true
+        }
+      ]
+    },
+    "768": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 260,
+          "defense": 287,
+          "stamina": 181,
+          "types": [
+            7,
+            9
+          ],
+          "unreleased": true
+        }
+      ]
     },
     "780": {
       "tempEvolutions": [
@@ -406,6 +471,28 @@
         }
       ]
     },
+    "801": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 342,
+          "defense": 239,
+          "stamina": 190,
+          "unreleased": true
+        }
+      ]
+    },
+    "807": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 361,
+          "defense": 180,
+          "stamina": 204,
+          "unreleased": true
+        }
+      ]
+    },
     "870": {
       "tempEvolutions": [
         {
@@ -413,6 +500,50 @@
           "attack": 267,
           "defense": 229,
           "stamina": 163,
+          "unreleased": true
+        }
+      ]
+    },
+    "952": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 276,
+          "defense": 170,
+          "stamina": 163,
+          "unreleased": true
+        }
+      ]
+    },
+    "970": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 300,
+          "defense": 214,
+          "stamina": 195,
+          "unreleased": true
+        }
+      ]
+    },
+    "978": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 262,
+          "defense": 232,
+          "stamina": 169,
+          "unreleased": true
+        }
+      ]
+    },
+    "998": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "attack": 341,
+          "defense": 227,
+          "stamina": 251,
           "unreleased": true
         }
       ]

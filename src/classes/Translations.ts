@@ -932,6 +932,19 @@ export default class Translations extends Masterfile {
           `${this.options.prefix.evolutions}${id}`
         ] = this.capitalize(name.replace('TEMP_EVOLUTION_', ''))
       })
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          Rpc.HoloTemporaryEvolutionId,
+          'TEMP_EVOLUTION_MEGA_Z',
+        ) &&
+        !this.parsedTranslations[locale].misc[
+          `${this.options.prefix.evolutions}5`
+        ]
+      ) {
+        this.parsedTranslations[locale].misc[
+          `${this.options.prefix.evolutions}5`
+        ] = this.capitalize('MEGA_Z')
+      }
       Object.entries(Rpc.PokemonDisplayProto.Alignment).forEach((proto) => {
         const [name, id] = proto
         this.parsedTranslations[locale].misc[

@@ -13,7 +13,9 @@
         "evoId": 899,
         "formId": 3218
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "290": {
     "evolutions": [
@@ -29,7 +31,7 @@
     "evolutions": [
       {
         "evoId": 1018,
-        "formId": 0
+        "formId": 3330
       }
     ],
     "legendary": false,
