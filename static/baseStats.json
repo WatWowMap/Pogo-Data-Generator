@@ -29,11 +29,9 @@
     "evolutions": [
       {
         "evoId": 1018,
-        "formId": 0
+        "formId": 3330
       }
-    ],
-    "legendary": false,
-    "mythic": false
+    ]
   },
   "902": {
     "pokemonName": "Basculegion-male",

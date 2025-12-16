@@ -425,18 +425,40 @@ export default class PokeApi extends Masterfile {
       ],
     }
 
+    const discoveredMega =
+      (
+        (await this.fetch(
+          this.buildUrl('pokemon?limit=100000&offset=0'),
+        )) as { results?: BasePokeApiStruct[] }
+      )?.results
+        ?.map((pokemon) => pokemon.name)
+        ?.filter((name) => /-mega(?:-x|-y)?$/.test(name)) || []
+
     for (const [type, ids] of Object.entries(theoretical)) {
       this.tempEvos[type] = {}
+      const combinedIds = Array.from(
+        new Set([...ids, ...(type === 'mega' ? discoveredMega : [])]),
+      )
       await Promise.all(
-        ids.map(async (id) => {
+        combinedIds.map(async (id) => {
           try {
-            const pokemonId =
-              Rpc.HoloPokemonId[
-                id.split('-')[0].toUpperCase() as PokemonIdProto
-              ]
             const statsData: PokeApiStats = await this.fetch(
               this.buildUrl(`pokemon/${id}`),
             )
+            if (!statsData) return
+            const pokemonId =
+              (statsData.species?.name
+                ? Rpc.HoloPokemonId[
+                    statsData.species.name
+                      .toUpperCase()
+                      .replace(/-/g, '_') as PokemonIdProto
+                  ]
+                : undefined) ||
+              Number.parseInt(statsData.species?.url?.split('/').at(-2) || '', 10)
+            if (!pokemonId) {
+              console.warn('Unable to resolve Pokemon ID for temp evo', id)
+              return
+            }
             const baseStats: { [stat: string]: number } = {}
             statsData.stats.forEach((stat) => {
               baseStats[stat.stat.name] = stat.base_stat
@@ -450,6 +472,8 @@ export default class PokeApi extends Masterfile {
               )
               .sort((a, b) => a - b)
 
+            const baseTypes =
+              parsedPokemon[pokemonId]?.types || this.baseStats[pokemonId]?.types
             const newTheoretical: TempEvolutions = {
               tempEvoId: this.megaLookup(id, type),
               attack: PokeApi.attack(
@@ -463,26 +487,25 @@ export default class PokeApi extends Masterfile {
                 baseStats.speed,
               ),
               stamina: PokeApi.stamina(baseStats.hp),
-              types: this.compare(types, parsedPokemon[pokemonId].types)
-                ? undefined
-                : types,
+              types:
+                baseTypes && this.compare(types, baseTypes) ? undefined : types,
               unreleased: true,
             }
+            const alreadyExistsInGame = parsedPokemon[
+              pokemonId
+            ]?.tempEvolutions?.some(
+              (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
+            )
+            if (alreadyExistsInGame) return
+
             if (!this.tempEvos[type][pokemonId]) {
               this.tempEvos[type][pokemonId] = {}
             }
             if (!this.tempEvos[type][pokemonId].tempEvolutions) {
               this.tempEvos[type][pokemonId].tempEvolutions = []
             }
-            if (
-              !parsedPokemon[pokemonId].tempEvolutions ||
-              (parsedPokemon[pokemonId].tempEvolutions &&
-                !parsedPokemon[pokemonId].tempEvolutions.some(
-                  (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
-                ))
-            ) {
-              this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
-            }
+
+            this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
             this.tempEvos[type][pokemonId].tempEvolutions.sort((a, b) =>
               typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
                 ? a.tempEvoId - b.tempEvoId
