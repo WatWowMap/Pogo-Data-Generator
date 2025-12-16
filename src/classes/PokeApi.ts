@@ -118,14 +118,19 @@ export default class PokeApi extends Masterfile {
     return baseStats
   }
 
+  private typeNameToTypeId(typeName: string): number {
+    return Rpc.HoloPokemonType[`POKEMON_TYPE_${typeName.toUpperCase()}` as TypeProto]
+  }
+
   private mapTypeIds(types: PokeApiStats['types']): number[] {
     return types
-      .map(
-        (type) =>
-          Rpc.HoloPokemonType[
-            `POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto
-          ],
-      )
+      .map((type) => this.typeNameToTypeId(type.type.name))
+      .sort((a, b) => a - b)
+  }
+
+  private mapNamedTypeIds(types: { name: string }[]): number[] {
+    return types
+      .map((type) => this.typeNameToTypeId(type.name))
       .sort((a, b) => a - b)
   }
 
@@ -446,16 +451,6 @@ export default class PokeApi extends Masterfile {
   }
 
   async typesApi() {
-    const getTypeIds = (types: { name: string }[]) =>
-      types
-        .map(
-          (type) =>
-            Rpc.HoloPokemonType[
-              `POKEMON_TYPE_${type.name.toUpperCase()}` as TypeProto
-            ],
-        )
-        .sort((a, b) => a - b)
-
     await Promise.all(
       Object.entries(Rpc.HoloPokemonType).map(async ([type, id]) => {
         try {
@@ -476,12 +471,12 @@ export default class PokeApi extends Masterfile {
               )
             : { damage_relations: {} }
           this.types[id] = {
-            strengths: id ? getTypeIds(double_damage_to) : [],
-            weaknesses: id ? getTypeIds(double_damage_from) : [],
-            veryWeakAgainst: id ? getTypeIds(no_damage_to) : [],
-            immunes: id ? getTypeIds(no_damage_from) : [],
-            weakAgainst: id ? getTypeIds(half_damage_to) : [],
-            resistances: id ? getTypeIds(half_damage_from) : [],
+            strengths: id ? this.mapNamedTypeIds(double_damage_to) : [],
+            weaknesses: id ? this.mapNamedTypeIds(double_damage_from) : [],
+            veryWeakAgainst: id ? this.mapNamedTypeIds(no_damage_to) : [],
+            immunes: id ? this.mapNamedTypeIds(no_damage_from) : [],
+            weakAgainst: id ? this.mapNamedTypeIds(half_damage_to) : [],
+            resistances: id ? this.mapNamedTypeIds(half_damage_from) : [],
           }
         } catch (e) {
           console.warn(`Unable to fetch ${type}`, e)

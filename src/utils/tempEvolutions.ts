@@ -45,13 +45,9 @@ export const dedupeTempEvolutions = (
 export const mergeTempEvolutions = (
   estimated: (TempEvolutions | undefined | null)[] | undefined,
   actual: (TempEvolutions | undefined | null)[] | undefined,
-  options: { prefer?: 'estimated' | 'actual' } = {},
 ): TempEvolutions[] => {
-  const prefer = options.prefer ?? 'actual'
   const estimatedList = Array.isArray(estimated) ? estimated : []
   const actualList = Array.isArray(actual) ? actual : []
 
-  return prefer === 'actual'
-    ? dedupeTempEvolutions([...estimatedList, ...actualList], { prefer: 'last' })
-    : dedupeTempEvolutions([...actualList, ...estimatedList], { prefer: 'last' })
+  return dedupeTempEvolutions([...estimatedList, ...actualList], { prefer: 'last' })
 }

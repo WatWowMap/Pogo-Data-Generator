@@ -1165,17 +1165,16 @@ export default class Pokemon extends Masterfile {
           this.options.includeEstimatedPokemon === true ||
           this.options.includeEstimatedPokemon[category]
         ) {
-	          Object.keys(tempEvos[category]).forEach((id) => {
-	            try {
-	              const tempEvolutions = mergeTempEvolutions(
-	                tempEvos[category][id].tempEvolutions,
-	                this.parsedPokemon[id].tempEvolutions,
-	                { prefer: 'actual' },
-	              )
-	              this.parsedPokemon[id] = {
-	                ...this.parsedPokemon[id],
-	                tempEvolutions,
-	              }
+          Object.keys(tempEvos[category]).forEach((id) => {
+            try {
+              const tempEvolutions = mergeTempEvolutions(
+                tempEvos[category][id].tempEvolutions,
+                this.parsedPokemon[id].tempEvolutions,
+              )
+              this.parsedPokemon[id] = {
+                ...this.parsedPokemon[id],
+                tempEvolutions,
+              }
               if (this.parsedPokemon[id].forms) {
                 this.parsedPokemon[id].forms.forEach((form) => {
                   if (
