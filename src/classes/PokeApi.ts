@@ -155,12 +155,14 @@ export default class PokeApi extends Masterfile {
     )
   }
 
-  megaLookup(id: string, type: string): string | 1 | 2 | 3 {
+  megaLookup(id: string, type: string): string | 1 | 2 | 3 | 5 {
     switch (true) {
       case id.endsWith('mega-y'):
         return 3
       case id.endsWith('mega-x'):
         return 2
+      case id.endsWith('mega-z'):
+        return 5
       case id.endsWith('mega'):
         return 1
     }
@@ -432,7 +434,7 @@ export default class PokeApi extends Masterfile {
         )) as { results?: BasePokeApiStruct[] }
       )?.results
         ?.map((pokemon) => pokemon.name)
-        ?.filter((name) => /-mega(?:-x|-y)?$/.test(name)) || []
+        ?.filter((name) => /-mega(?:-[xyz])?$/.test(name)) || []
 
     for (const [type, ids] of Object.entries(theoretical)) {
       this.tempEvos[type] = {}

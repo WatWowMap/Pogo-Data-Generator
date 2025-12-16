@@ -298,9 +298,13 @@ export default class Pokemon extends Masterfile {
       const tempEvolutions: TempEvolutions[] = mfObject
         .filter((tempEvo) => tempEvo.stats)
         .map((tempEvo) => {
+          const resolvedTempEvoId =
+            Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto] ??
+            (tempEvo.tempEvoId === 'TEMP_EVOLUTION_MEGA_Z'
+              ? 5
+              : tempEvo.tempEvoId)
           const newTempEvolution: TempEvolutions = {
-            tempEvoId:
-              Rpc.HoloTemporaryEvolutionId[tempEvo.tempEvoId as MegaProto],
+            tempEvoId: resolvedTempEvoId,
           }
           switch (true) {
             case tempEvo.stats.baseAttack !== primaryForm.attack:
@@ -334,8 +338,10 @@ export default class Pokemon extends Masterfile {
           }
           return newTempEvolution
         })
-      return tempEvolutions.sort(
-        (a, b) => (a.tempEvoId as number) - (b.tempEvoId as number),
+      return tempEvolutions.sort((a, b) =>
+        typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
+          ? a.tempEvoId - b.tempEvoId
+          : a.tempEvoId.toString().localeCompare(b.tempEvoId.toString()),
       )
     } catch (e) {
       console.warn(

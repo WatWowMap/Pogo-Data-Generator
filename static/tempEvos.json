@@ -144,6 +144,21 @@
         }
       ]
     },
+    "359": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 332,
+          "defense": 138,
+          "stamina": 163,
+          "types": [
+            8,
+            17
+          ],
+          "unreleased": true
+        }
+      ]
+    },
     "398": {
       "tempEvolutions": [
         {
@@ -155,6 +170,31 @@
             2,
             3
           ],
+          "unreleased": true
+        }
+      ]
+    },
+    "445": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 321,
+          "defense": 196,
+          "stamina": 239,
+          "types": [
+            16
+          ],
+          "unreleased": true
+        }
+      ]
+    },
+    "448": {
+      "tempEvolutions": [
+        {
+          "tempEvoId": 5,
+          "attack": 359,
+          "defense": 161,
+          "stamina": 172,
           "unreleased": true
         }
       ]
