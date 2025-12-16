@@ -63,15 +63,14 @@ export default class Masterfile {
 
   async fetch(url: string, text = false): Promise<any> {
     try {
-      const data = await fetch(url)
-      if (!data.ok) {
-        throw new Error(`${data.status} ${data.statusText} URL: ${url}`)
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText} URL: ${url}`)
       }
-      return text ? data.text() : data.json()
+      return text ? response.text() : response.json()
     } catch (e) {
-      if (e instanceof Error) {
-        console.warn(e.message, `Unable to fetch ${url}`)
-      }
+      const message = e instanceof Error ? e.message : String(e)
+      throw new Error(`Unable to fetch ${url}: ${message}`)
     }
   }
 
