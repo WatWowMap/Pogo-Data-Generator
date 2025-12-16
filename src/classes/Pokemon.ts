@@ -16,6 +16,7 @@ import {
   EvolutionQuest,
 } from '../typings/general'
 import { Options } from '../typings/inputs'
+import { mergeTempEvolutions, sortTempEvolutions } from '../utils/tempEvolutions'
 import {
   CostumeProto,
   FamilyProto,
@@ -338,11 +339,7 @@ export default class Pokemon extends Masterfile {
           }
           return newTempEvolution
         })
-      return tempEvolutions.sort((a, b) =>
-        typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
-          ? a.tempEvoId - b.tempEvoId
-          : a.tempEvoId.toString().localeCompare(b.tempEvoId.toString()),
-      )
+      return sortTempEvolutions(tempEvolutions)
     } catch (e) {
       console.warn(
         e,
@@ -1168,38 +1165,17 @@ export default class Pokemon extends Masterfile {
           this.options.includeEstimatedPokemon === true ||
           this.options.includeEstimatedPokemon[category]
         ) {
-          Object.keys(tempEvos[category]).forEach((id) => {
-            try {
-              const mergedTempEvolutions = [
-                ...tempEvos[category][id].tempEvolutions,
-                ...(this.parsedPokemon[id].tempEvolutions
-                  ? this.parsedPokemon[id].tempEvolutions
-                  : []),
-              ]
-              const tempEvolutions = Array.from(
-                new Map(
-                  mergedTempEvolutions
-                    .filter(Boolean)
-                    .map((tempEvo) => [
-                      `${typeof tempEvo.tempEvoId}:${tempEvo.tempEvoId}`,
-                      tempEvo,
-                    ]),
-                ).values(),
-              ).sort((a, b) =>
-                typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
-                  ? a.tempEvoId - b.tempEvoId
-                  : typeof a.tempEvoId === 'number'
-                    ? -1
-                    : typeof b.tempEvoId === 'number'
-                      ? 1
-                      : a.tempEvoId
-                          .toString()
-                          .localeCompare(b.tempEvoId.toString()),
-              )
-              this.parsedPokemon[id] = {
-                ...this.parsedPokemon[id],
-                tempEvolutions,
-              }
+	          Object.keys(tempEvos[category]).forEach((id) => {
+	            try {
+	              const tempEvolutions = mergeTempEvolutions(
+	                tempEvos[category][id].tempEvolutions,
+	                this.parsedPokemon[id].tempEvolutions,
+	                { prefer: 'actual' },
+	              )
+	              this.parsedPokemon[id] = {
+	                ...this.parsedPokemon[id],
+	                tempEvolutions,
+	              }
               if (this.parsedPokemon[id].forms) {
                 this.parsedPokemon[id].forms.forEach((form) => {
                   if (

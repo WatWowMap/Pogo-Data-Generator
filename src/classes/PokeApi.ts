@@ -13,6 +13,7 @@ import {
   PokeApiTypes,
 } from '../typings/pokeapi'
 import { SpeciesApi } from '../typings/general'
+import { sortTempEvolutions } from '../utils/tempEvolutions'
 
 export default class PokeApi extends Masterfile {
   baseStats: AllPokemon
@@ -325,7 +326,7 @@ export default class PokeApi extends Masterfile {
                 Rpc.HoloPokemonId[
                   evoData.evolves_from_species.name
                     .toUpperCase()
-                    .replace('-', '_') as PokemonIdProto
+                    .replace(/-/g, '_') as PokemonIdProto
                 ] ?? +evoData.evolves_from_species.url.split('/').at(-2)
               if (prevEvoId) {
                 if (!this.baseStats[prevEvoId]) {
@@ -350,7 +351,7 @@ export default class PokeApi extends Masterfile {
                   'Unable to find proto ID for',
                   evoData.evolves_from_species.name
                     .toUpperCase()
-                    .replace('-', '_'),
+                    .replace(/-/g, '_'),
                 )
               }
             }
@@ -363,70 +364,6 @@ export default class PokeApi extends Masterfile {
   }
 
   async tempEvoApi(parsedPokemon: AllPokemon) {
-    const theoretical = {
-      mega: [
-        'alakazam-mega',
-        'kangaskhan-mega',
-        'pinsir-mega',
-        'aerodactyl-mega',
-        'mewtwo-mega-x',
-        'mewtwo-mega-y',
-        'steelix-mega',
-        'scizor-mega',
-        'heracross-mega',
-        'tyranitar-mega',
-        'sceptile-mega',
-        'blaziken-mega',
-        'swampert-mega',
-        'gardevoir-mega',
-        'sableye-mega',
-        'mawile-mega',
-        'aggron-mega',
-        'medicham-mega',
-        'sharpedo-mega',
-        'camerupt-mega',
-        'banette-mega',
-        'absol-mega',
-        'glalie-mega',
-        'garchomp-mega',
-        'lucario-mega',
-        'latias-mega',
-        'latios-mega',
-        'rayquaza-mega',
-        'metagross-mega',
-        'salamence-mega',
-        'gallade-mega',
-        'audino-mega',
-        'diancie-mega',
-        'clefable-mega',
-        'victreebel-mega',
-        'starmie-mega',
-        'dragonite-mega',
-        'meganium-mega',
-        'feraligatr-mega',
-        'skarmory-mega',
-        'froslass-mega',
-        'emboar-mega',
-        'excadrill-mega',
-        'scolipede-mega',
-        'scrafty-mega',
-        'eelektross-mega',
-        'chandelure-mega',
-        'chesnaught-mega',
-        'delphox-mega',
-        'greninja-mega',
-        'pyroar-mega',
-        'floette-mega',
-        'malamar-mega',
-        'barbaracle-mega',
-        'dragalge-mega',
-        'hawlucha-mega',
-        'zygarde-mega',
-        'drampa-mega',
-        'falinks-mega',
-      ],
-    }
-
     const discoveredMega =
       (
         (await this.fetch(
@@ -436,117 +373,103 @@ export default class PokeApi extends Masterfile {
         ?.map((pokemon) => pokemon.name)
         ?.filter((name) => /-mega(?:-[xyz])?$/.test(name)) || []
 
-    for (const [type, ids] of Object.entries(theoretical)) {
-      this.tempEvos[type] = {}
-      const combinedIds = Array.from(
-        new Set([...ids, ...(type === 'mega' ? discoveredMega : [])]),
-      )
-      await Promise.all(
-        combinedIds.map(async (id) => {
-          try {
-            const statsData: PokeApiStats = await this.fetch(
-              this.buildUrl(`pokemon/${id}`),
-            )
-            if (!statsData) return
-            const pokemonId =
-              (statsData.species?.name
-                ? Rpc.HoloPokemonId[
-                    statsData.species.name
-                      .toUpperCase()
-                      .replace(/-/g, '_') as PokemonIdProto
-                  ]
-                : undefined) ||
-              Number.parseInt(statsData.species?.url?.split('/').at(-2) || '', 10)
-            if (!pokemonId) {
-              console.warn('Unable to resolve Pokemon ID for temp evo', id)
-              return
-            }
-            const baseStats: { [stat: string]: number } = {}
-            statsData.stats.forEach((stat) => {
-              baseStats[stat.stat.name] = stat.base_stat
-            })
-            const types = statsData.types
-              .map(
-                (type) =>
-                  Rpc.HoloPokemonType[
-                    `POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto
-                  ],
-              )
-              .sort((a, b) => a - b)
+    const type = 'mega'
+    this.tempEvos[type] = {}
+    const megaIds = Array.from(new Set(discoveredMega))
 
-            const baseTypes =
-              parsedPokemon[pokemonId]?.types || this.baseStats[pokemonId]?.types
-            const newTheoretical: TempEvolutions = {
-              tempEvoId: this.megaLookup(id, type),
-              attack: PokeApi.attack(
-                baseStats.attack,
-                baseStats['special-attack'],
-                baseStats.speed,
-              ),
-              defense: PokeApi.defense(
-                baseStats.defense,
-                baseStats['special-defense'],
-                baseStats.speed,
-              ),
-              stamina: PokeApi.stamina(baseStats.hp),
-              types:
-                baseTypes && this.compare(types, baseTypes) ? undefined : types,
-              unreleased: true,
-            }
-            const alreadyExistsInGame = parsedPokemon[
-              pokemonId
-            ]?.tempEvolutions?.some(
-              (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
-            )
-            if (alreadyExistsInGame) return
-
-            if (!this.tempEvos[type][pokemonId]) {
-              this.tempEvos[type][pokemonId] = {}
-            }
-            if (!this.tempEvos[type][pokemonId].tempEvolutions) {
-              this.tempEvos[type][pokemonId].tempEvolutions = []
-            }
-
-            const existingTempEvolution = this.tempEvos[type][
-              pokemonId
-            ].tempEvolutions.find(
-              (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
-            )
-            if (existingTempEvolution) {
-              const typesEqual =
-                (!existingTempEvolution.types && !newTheoretical.types) ||
-                (Array.isArray(existingTempEvolution.types) &&
-                  Array.isArray(newTheoretical.types) &&
-                  this.compare(
-                    existingTempEvolution.types,
-                    newTheoretical.types,
-                  ))
-              const isExactDuplicate =
-                existingTempEvolution.attack === newTheoretical.attack &&
-                existingTempEvolution.defense === newTheoretical.defense &&
-                existingTempEvolution.stamina === newTheoretical.stamina &&
-                existingTempEvolution.unreleased === newTheoretical.unreleased &&
-                typesEqual
-              if (isExactDuplicate) return
-
-              if (!existingTempEvolution.types && newTheoretical.types) {
-                existingTempEvolution.types = newTheoretical.types
-              }
-              return
-            }
-
-            this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
-            this.tempEvos[type][pokemonId].tempEvolutions.sort((a, b) =>
-              typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
-                ? a.tempEvoId - b.tempEvoId
-                : a.tempEvoId.toString().localeCompare(b.tempEvoId.toString()),
-            )
-          } catch (e) {
-            console.warn(e, `Failed to parse PokeApi ${type} Evos for ${id}`)
+    await Promise.all(
+      megaIds.map(async (id) => {
+        try {
+          const statsData: PokeApiStats = await this.fetch(
+            this.buildUrl(`pokemon/${id}`),
+          )
+          if (!statsData) return
+          const pokemonId =
+            (statsData.species?.name
+              ? Rpc.HoloPokemonId[
+                  statsData.species.name
+                    .toUpperCase()
+                    .replace(/-/g, '_') as PokemonIdProto
+                ]
+              : undefined) ||
+            Number.parseInt(statsData.species?.url?.split('/').at(-2) || '', 10)
+          if (!pokemonId) {
+            console.warn('Unable to resolve Pokemon ID for temp evo', id)
+            return
           }
-        }),
-      )
-    }
+          const baseStats: { [stat: string]: number } = {}
+          statsData.stats.forEach((stat) => {
+            baseStats[stat.stat.name] = stat.base_stat
+          })
+          const types = statsData.types
+            .map(
+              (type) =>
+                Rpc.HoloPokemonType[
+                  `POKEMON_TYPE_${type.type.name.toUpperCase()}` as TypeProto
+                ],
+            )
+            .sort((a, b) => a - b)
+
+          const baseTypes =
+            parsedPokemon[pokemonId]?.types || this.baseStats[pokemonId]?.types
+          const newTheoretical: TempEvolutions = {
+            tempEvoId: this.megaLookup(id, type),
+            attack: PokeApi.attack(
+              baseStats.attack,
+              baseStats['special-attack'],
+              baseStats.speed,
+            ),
+            defense: PokeApi.defense(
+              baseStats.defense,
+              baseStats['special-defense'],
+              baseStats.speed,
+            ),
+            stamina: PokeApi.stamina(baseStats.hp),
+            types: baseTypes && this.compare(types, baseTypes) ? undefined : types,
+            unreleased: true,
+          }
+          const alreadyExistsInGame = parsedPokemon[pokemonId]?.tempEvolutions?.some(
+            (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
+          )
+          if (alreadyExistsInGame) return
+
+          if (!this.tempEvos[type][pokemonId]) {
+            this.tempEvos[type][pokemonId] = {}
+          }
+          if (!this.tempEvos[type][pokemonId].tempEvolutions) {
+            this.tempEvos[type][pokemonId].tempEvolutions = []
+          }
+
+          const existingTempEvolution = this.tempEvos[type][
+            pokemonId
+          ].tempEvolutions.find((temp) => temp.tempEvoId === newTheoretical.tempEvoId)
+          if (existingTempEvolution) {
+            const typesEqual =
+              (!existingTempEvolution.types && !newTheoretical.types) ||
+              (Array.isArray(existingTempEvolution.types) &&
+                Array.isArray(newTheoretical.types) &&
+                this.compare(existingTempEvolution.types, newTheoretical.types))
+            const isExactDuplicate =
+              existingTempEvolution.attack === newTheoretical.attack &&
+              existingTempEvolution.defense === newTheoretical.defense &&
+              existingTempEvolution.stamina === newTheoretical.stamina &&
+              existingTempEvolution.unreleased === newTheoretical.unreleased &&
+              typesEqual
+            if (isExactDuplicate) return
+
+            if (!existingTempEvolution.types && newTheoretical.types) {
+              existingTempEvolution.types = newTheoretical.types
+            }
+            return
+          }
+
+          this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
+          sortTempEvolutions(this.tempEvos[type][pokemonId].tempEvolutions)
+        } catch (e) {
+          console.warn(e, `Failed to parse PokeApi ${type} Evos for ${id}`)
+        }
+      }),
+    )
   }
 
   async typesApi() {
