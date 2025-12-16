@@ -1,5 +1,5 @@
 import { Rpc } from '@na-ji/pogo-protos'
-import {
+import type {
   AllForms,
   AllInvasions,
   AllPokemon,
@@ -7,9 +7,9 @@ import {
   FinalResult,
   TranslationKeys,
 } from '../typings/dataTypes'
-import { EvolutionQuest } from '../typings/general'
-import { Options, Locales } from '../typings/inputs'
-import { TypeProto } from '../typings/protos'
+import type { EvolutionQuest } from '../typings/general'
+import type { Locales, Options } from '../typings/inputs'
+import type { TypeProto } from '../typings/protos'
 
 import Masterfile from './Masterfile'
 
@@ -161,7 +161,7 @@ export default class Translations extends Masterfile {
   }
 
   removeEscapes(str: string) {
-    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
+    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/"/g, '”')
   }
 
   async fetchTranslations(
@@ -200,7 +200,10 @@ export default class Translations extends Masterfile {
         this.generics[locale] = this.generics.en
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
-      const localeInfo = this.codes[locale] || { name: 'English', code: 'en-us' };
+      const localeInfo = this.codes[locale] || {
+        name: 'English',
+        code: 'en-us',
+      }
       const { data }: { data: string[] } = (await this.fetch(
         this.translationApkUrl.replace(
           'English/en-us',
@@ -246,7 +249,7 @@ export default class Translations extends Masterfile {
 
         Object.entries(manual).forEach((pair) => {
           const [key, value] = pair
-          let trimmedKey
+          let trimmedKey: string | undefined
           if (key.startsWith('poke_type')) {
             trimmedKey = key.replace(
               'poke_type_',
@@ -553,7 +556,7 @@ export default class Translations extends Masterfile {
               `${this.options.prefix.descriptions}${id}`
             ] = this.rawTranslations[locale][description]
           }
-          if (pokemon[id] && pokemon[id].forms) {
+          if (pokemon[id]?.forms) {
             pokemon[id].forms.forEach((formId) => {
               const formName = forms[formId].formName
               const formDescription =
@@ -572,8 +575,7 @@ export default class Translations extends Masterfile {
                     `POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto
                   ]
                 if (
-                  this.parsedTranslations[locale].misc &&
-                  this.parsedTranslations[locale].misc[formName.toLowerCase()]
+                  this.parsedTranslations[locale].misc?.[formName.toLowerCase()]
                 ) {
                   this.parsedTranslations[locale].forms[
                     `${this.options.prefix.forms}${formId}`
@@ -663,7 +665,9 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].bonuses = {}
       Object.keys(this.rawTranslations[locale]).forEach((key) => {
         if (key.startsWith('spawn_')) {
-          this.parsedTranslations[locale].bonuses[`${this.options.prefix.bonuses}${key}`] = this.rawTranslations[locale][key]
+          this.parsedTranslations[locale].bonuses[
+            `${this.options.prefix.bonuses}${key}`
+          ] = this.rawTranslations[locale][key]
         }
       })
     } catch (e) {
@@ -766,10 +770,10 @@ export default class Translations extends Masterfile {
       }
       this.parsedTranslations[locale].characterCategories = {}
       Object.entries(parsedInvasions).forEach(([id, info]) => {
-        let assetRef
-        let shortRef
+        let assetRef: string | undefined
+        let shortRef: string | undefined
         switch (info.grunt) {
-          case 'Grunt':
+          case 'Grunt': {
             const base = `${
               this.rawTranslations[locale][
                 info.type === 'Decoy'
@@ -805,6 +809,7 @@ export default class Translations extends Masterfile {
                   '',
                 ) || info.type
             break
+          }
           case 'Executive':
             assetRef =
               this.rawTranslations[locale][
@@ -1007,9 +1012,11 @@ export default class Translations extends Masterfile {
     this.parsedTranslations[locale].evolutionQuests = {}
     Object.values(evoQuests).forEach((info) => {
       try {
-        const rawValue = this.rawTranslations[locale][info.assetsRef];
+        const rawValue = this.rawTranslations[locale][info.assetsRef]
         if (!rawValue) {
-          throw new Error(`Missing translation for assetsRef: ${info.assetsRef}`);
+          throw new Error(
+            `Missing translation for assetsRef: ${info.assetsRef}`,
+          )
         }
         const translated = rawValue.replace(
           '{0}',

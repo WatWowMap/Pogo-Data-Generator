@@ -28,7 +28,7 @@ export default class ApkReader {
   }
 
   removeEscapes(str: string) {
-    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/\"/g, '”')
+    return str.replace(/\r/g, '').replace(/\n/g, '').replace(/"/g, '”')
   }
 
   async fetchApk() {

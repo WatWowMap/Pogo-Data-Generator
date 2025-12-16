@@ -1,18 +1,18 @@
 import { Rpc } from '@na-ji/pogo-protos'
-import Masterfile from './Masterfile'
-import {
+import type {
   AllMoves,
   AllPokemon,
   AllTypes,
   TempEvolutions,
 } from '../typings/dataTypes'
-import { TypeProto, PokemonIdProto, MoveProto } from '../typings/protos'
-import {
+import type { SpeciesApi } from '../typings/general'
+import type {
   BasePokeApiStruct,
   PokeApiStats,
   PokeApiTypes,
 } from '../typings/pokeapi'
-import { SpeciesApi } from '../typings/general'
+import type { MoveProto, PokemonIdProto, TypeProto } from '../typings/protos'
+import Masterfile from './Masterfile'
 
 export default class PokeApi extends Masterfile {
   baseStats: AllPokemon
@@ -27,7 +27,10 @@ export default class PokeApi extends Masterfile {
 
   constructor(baseUrl?: string) {
     super()
-    this.apiBaseUrl = (baseUrl || 'https://pokeapi.co/api/v2').replace(/\/$/, '')
+    this.apiBaseUrl = (baseUrl || 'https://pokeapi.co/api/v2').replace(
+      /\/$/,
+      '',
+    )
     this.baseStats = {}
     this.tempEvos = {}
     this.types = {}
@@ -103,7 +106,7 @@ export default class PokeApi extends Masterfile {
 
   private normalizeUrl(url: string) {
     const match = url?.match(/\/api\/v2\/(.+)/)
-    if (match && match[1]) {
+    if (match?.[1]) {
       return this.buildUrl(match[1])
     }
     return url
@@ -183,7 +186,7 @@ export default class PokeApi extends Masterfile {
           !parsedPokemon[id].defense ||
           !parsedPokemon[id].stamina ||
           parsedPokemon[id].types.length === 0 ||
-          (pokeApiIds && pokeApiIds.includes(+id))
+          (pokeApiIds?.includes(+id))
         ) {
           await this.pokemonApi(id)
         }
@@ -521,9 +524,7 @@ export default class PokeApi extends Masterfile {
             },
           }: PokeApiTypes = id
             ? await this.fetch(
-                this.buildUrl(
-                  `type/${type.substring(13).toLowerCase()}`,
-                ),
+                this.buildUrl(`type/${type.substring(13).toLowerCase()}`),
               )
             : { damage_relations: {} }
           this.types[id] = {

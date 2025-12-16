@@ -1,6 +1,6 @@
-import { MiscProto } from './dataTypes'
-import { InvasionInfo } from './pogoinfo'
-import { PokeApi } from './pokeapi'
+import type { MiscProto } from './dataTypes'
+import type { InvasionInfo } from './pogoinfo'
+import type { PokeApi } from './pokeapi'
 
 type StringBool = string | boolean
 

@@ -1,7 +1,7 @@
 import { Rpc } from '@na-ji/pogo-protos'
-import { AllWeather } from '../typings/dataTypes'
-import { NiaMfObj } from '../typings/general'
-import { TypeProto } from '../typings/protos'
+import type { AllWeather } from '../typings/dataTypes'
+import type { NiaMfObj } from '../typings/general'
+import type { TypeProto } from '../typings/protos'
 
 import Masterfile from './Masterfile'
 export default class Weather extends Masterfile {

@@ -1,4 +1,4 @@
-import { AllPokemon, AllTypes } from './dataTypes'
+import type { AllPokemon, AllTypes } from './dataTypes'
 
 export interface PokeApiStats {
   abilities: {
