@@ -1,0 +1,57 @@
+import { TempEvolutions } from '../typings/dataTypes'
+
+export type TempEvoId = TempEvolutions['tempEvoId']
+
+export const tempEvoIdKey = (tempEvoId: TempEvoId): string =>
+  `${typeof tempEvoId}:${tempEvoId}`
+
+export const compareTempEvoId = (a: TempEvoId, b: TempEvoId): number => {
+  const aIsNumber = typeof a === 'number'
+  const bIsNumber = typeof b === 'number'
+
+  if (aIsNumber && bIsNumber) return a - b
+  if (aIsNumber) return -1
+  if (bIsNumber) return 1
+  return a.toString().localeCompare(b.toString())
+}
+
+export const sortTempEvolutions = (
+  tempEvolutions: TempEvolutions[],
+): TempEvolutions[] =>
+  tempEvolutions.sort((a, b) => compareTempEvoId(a.tempEvoId, b.tempEvoId))
+
+export const dedupeTempEvolutions = (
+  tempEvolutions: (TempEvolutions | undefined | null)[],
+  options: { prefer?: 'first' | 'last' } = {},
+): TempEvolutions[] => {
+  const prefer = options.prefer ?? 'last'
+  const deduped = new Map<string, TempEvolutions>()
+
+  for (const tempEvo of tempEvolutions) {
+    if (!tempEvo) continue
+    const key = tempEvoIdKey(tempEvo.tempEvoId)
+
+    if (prefer === 'first') {
+      if (!deduped.has(key)) deduped.set(key, tempEvo)
+      continue
+    }
+
+    deduped.set(key, tempEvo)
+  }
+
+  return sortTempEvolutions(Array.from(deduped.values()))
+}
+
+export const mergeTempEvolutions = (
+  estimated: (TempEvolutions | undefined | null)[] | undefined,
+  actual: (TempEvolutions | undefined | null)[] | undefined,
+  options: { prefer?: 'estimated' | 'actual' } = {},
+): TempEvolutions[] => {
+  const prefer = options.prefer ?? 'actual'
+  const estimatedList = Array.isArray(estimated) ? estimated : []
+  const actualList = Array.isArray(actual) ? actual : []
+
+  return prefer === 'actual'
+    ? dedupeTempEvolutions([...estimatedList, ...actualList], { prefer: 'last' })
+    : dedupeTempEvolutions([...actualList, ...estimatedList], { prefer: 'last' })
+}
