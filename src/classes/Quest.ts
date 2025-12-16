@@ -17,25 +17,28 @@ export default class Quests extends Masterfile {
 
   addQuest(category: string) {
     let parseTarget: AllQuests | undefined
-    let protoTarget: typeof Rpc.QuestType | typeof Rpc.QuestRewardProto.Type | typeof Rpc.QuestConditionProto.ConditionType | undefined
+    let protoTarget:
+      | typeof Rpc.QuestType
+      | typeof Rpc.QuestRewardProto.Type
+      | typeof Rpc.QuestConditionProto.ConditionType
+      | undefined
 
-    try {
-      switch (category) {
-        case 'types':
-          parseTarget = this.parsedQuestTypes
-          protoTarget = Rpc.QuestType
-          break
-        case 'rewards':
-          parseTarget = this.parsedRewardTypes
-          protoTarget = Rpc.QuestRewardProto.Type
-          break
-        case 'conditions':
-          parseTarget = this.parsedConditions
-          protoTarget = Rpc.QuestConditionProto.ConditionType
-          break
-      }
-    } catch (e) {
-      console.warn(e, `Failed to parse quest ${category}`)
+    switch (category) {
+      case 'types':
+        parseTarget = this.parsedQuestTypes
+        protoTarget = Rpc.QuestType
+        break
+      case 'rewards':
+        parseTarget = this.parsedRewardTypes
+        protoTarget = Rpc.QuestRewardProto.Type
+        break
+      case 'conditions':
+        parseTarget = this.parsedConditions
+        protoTarget = Rpc.QuestConditionProto.ConditionType
+        break
+      default:
+        console.warn(`Unknown quest category: ${category}`)
+        return
     }
     Object.entries(protoTarget).forEach((proto) => {
       try {

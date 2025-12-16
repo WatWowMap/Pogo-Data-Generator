@@ -410,7 +410,7 @@ export default class Pokemon extends Masterfile {
         }
         const values = Object.entries(
           object.data.pokemonExtendedSettings.sizeSettings,
-        ).map(([name, value]) => ({ name, value }))
+        ).map(([name, value]) => ({ name, value: Number(value) }))
 
         const protoForm = object.data.pokemonExtendedSettings.form
           ? typeof object.data.pokemonExtendedSettings.form === 'number'
