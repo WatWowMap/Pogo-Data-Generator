@@ -945,7 +945,7 @@ export default class Pokemon extends Masterfile {
     this.jungleCupRules.banned =
       bannedPokemon?.map((poke) => {
         return Rpc.HoloPokemonId[poke as PokemonIdProto]
-      })
+      }) ?? []
   }
 
   jungleEligibility() {
