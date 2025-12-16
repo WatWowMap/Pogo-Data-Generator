@@ -507,6 +507,34 @@ export default class PokeApi extends Masterfile {
               this.tempEvos[type][pokemonId].tempEvolutions = []
             }
 
+            const existingTempEvolution = this.tempEvos[type][
+              pokemonId
+            ].tempEvolutions.find(
+              (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
+            )
+            if (existingTempEvolution) {
+              const typesEqual =
+                (!existingTempEvolution.types && !newTheoretical.types) ||
+                (Array.isArray(existingTempEvolution.types) &&
+                  Array.isArray(newTheoretical.types) &&
+                  this.compare(
+                    existingTempEvolution.types,
+                    newTheoretical.types,
+                  ))
+              const isExactDuplicate =
+                existingTempEvolution.attack === newTheoretical.attack &&
+                existingTempEvolution.defense === newTheoretical.defense &&
+                existingTempEvolution.stamina === newTheoretical.stamina &&
+                existingTempEvolution.unreleased === newTheoretical.unreleased &&
+                typesEqual
+              if (isExactDuplicate) return
+
+              if (!existingTempEvolution.types && newTheoretical.types) {
+                existingTempEvolution.types = newTheoretical.types
+              }
+              return
+            }
+
             this.tempEvos[type][pokemonId].tempEvolutions.push(newTheoretical)
             this.tempEvos[type][pokemonId].tempEvolutions.sort((a, b) =>
               typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'

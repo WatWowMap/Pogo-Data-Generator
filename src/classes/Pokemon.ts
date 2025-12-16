@@ -1170,12 +1170,32 @@ export default class Pokemon extends Masterfile {
         ) {
           Object.keys(tempEvos[category]).forEach((id) => {
             try {
-              const tempEvolutions = [
+              const mergedTempEvolutions = [
                 ...tempEvos[category][id].tempEvolutions,
                 ...(this.parsedPokemon[id].tempEvolutions
                   ? this.parsedPokemon[id].tempEvolutions
                   : []),
               ]
+              const tempEvolutions = Array.from(
+                new Map(
+                  mergedTempEvolutions
+                    .filter(Boolean)
+                    .map((tempEvo) => [
+                      `${typeof tempEvo.tempEvoId}:${tempEvo.tempEvoId}`,
+                      tempEvo,
+                    ]),
+                ).values(),
+              ).sort((a, b) =>
+                typeof a.tempEvoId === 'number' && typeof b.tempEvoId === 'number'
+                  ? a.tempEvoId - b.tempEvoId
+                  : typeof a.tempEvoId === 'number'
+                    ? -1
+                    : typeof b.tempEvoId === 'number'
+                      ? 1
+                      : a.tempEvoId
+                          .toString()
+                          .localeCompare(b.tempEvoId.toString()),
+              )
               this.parsedPokemon[id] = {
                 ...this.parsedPokemon[id],
                 tempEvolutions,

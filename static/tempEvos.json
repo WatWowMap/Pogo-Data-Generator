@@ -479,13 +479,6 @@
           "defense": 239,
           "stamina": 190,
           "unreleased": true
-        },
-        {
-          "tempEvoId": 1,
-          "attack": 342,
-          "defense": 239,
-          "stamina": 190,
-          "unreleased": true
         }
       ]
     },
@@ -535,20 +528,6 @@
     },
     "978": {
       "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "attack": 262,
-          "defense": 232,
-          "stamina": 169,
-          "unreleased": true
-        },
-        {
-          "tempEvoId": 1,
-          "attack": 262,
-          "defense": 232,
-          "stamina": 169,
-          "unreleased": true
-        },
         {
           "tempEvoId": 1,
           "attack": 262,
