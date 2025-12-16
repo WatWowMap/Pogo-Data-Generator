@@ -1,8 +1,8 @@
 import { Rpc } from '@na-ji/pogo-protos'
 
-import { AllInvasions } from '../typings/dataTypes'
-import { Options } from '../typings/inputs'
-import { InvasionInfo } from '../typings/pogoinfo'
+import type { AllInvasions } from '../typings/dataTypes'
+import type { Options } from '../typings/inputs'
+import type { InvasionInfo } from '../typings/pogoinfo'
 import Masterfile from './Masterfile'
 
 export default class Invasion extends Masterfile {
@@ -97,7 +97,7 @@ export default class Invasion extends Masterfile {
             secondReward: false,
             thirdReward: false,
           }
-          if (pogoInfo && pogoInfo.active) {
+          if (pogoInfo?.active) {
             this.parsedInvasions[id].firstReward =
               pogoInfo.lineup.rewards.includes(0)
             this.parsedInvasions[id].secondReward =

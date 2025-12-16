@@ -1,4 +1,4 @@
-import { Rpc } from '@na-ji/pogo-protos'
+import type { Rpc } from '@na-ji/pogo-protos'
 
 export type WeatherProto =
   keyof typeof Rpc.GameplayWeatherProto.WeatherCondition
@@ -11,7 +11,10 @@ export type PokemonIdProto = keyof typeof Rpc.HoloPokemonId
 
 export type MoveProto = keyof typeof Rpc.HoloPokemonMove
 
-export type FormProto = Exclude<keyof typeof Rpc.PokemonDisplayProto.Form, number>
+export type FormProto = Exclude<
+  keyof typeof Rpc.PokemonDisplayProto.Form,
+  number
+>
 
 export type GenderProto = keyof typeof Rpc.PokemonDisplayProto.Gender
 

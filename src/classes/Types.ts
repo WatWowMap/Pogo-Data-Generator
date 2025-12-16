@@ -1,5 +1,5 @@
 import { Rpc } from '@na-ji/pogo-protos'
-import { AllTypes } from '../typings/dataTypes'
+import type { AllTypes } from '../typings/dataTypes'
 import Masterfile from './Masterfile'
 
 export default class Types extends Masterfile {

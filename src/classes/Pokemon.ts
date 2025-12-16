@@ -1,23 +1,20 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
-import Masterfile from './Masterfile'
-import {
+import type {
+  AllForms,
   AllPokemon,
-  TempEvolutions,
   Evolutions,
   SinglePokemon,
-  AllForms,
+  TempEvolutions,
 } from '../typings/dataTypes'
-import {
-  NiaMfObj,
-  Generation,
-  TempEvo,
+import type {
   EvoBranch,
   EvolutionQuest,
+  Generation,
+  NiaMfObj,
+  TempEvo,
 } from '../typings/general'
-import { Options } from '../typings/inputs'
-import { mergeTempEvolutions, sortTempEvolutions } from '../utils/tempEvolutions'
-import {
+import type { Options } from '../typings/inputs'
+import type {
   CostumeProto,
   FamilyProto,
   FormProto,
@@ -29,6 +26,8 @@ import {
   QuestTypeProto,
   TypeProto,
 } from '../typings/protos'
+import { mergeTempEvolutions, sortTempEvolutions } from '../utils/tempEvolutions'
+import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
 
@@ -414,7 +413,7 @@ export default class Pokemon extends Masterfile {
         }
         const values = Object.entries(
           object.data.pokemonExtendedSettings.sizeSettings,
-        ).map(([name, value]) => ({ name, value }))
+        ).map(([name, value]) => ({ name, value: Number(value) }))
 
         const protoForm = object.data.pokemonExtendedSettings.form
           ? typeof object.data.pokemonExtendedSettings.form === 'number'
@@ -447,7 +446,7 @@ export default class Pokemon extends Masterfile {
           if (this.parsedForms[formId]?.sizeSettings) {
             if (
               this.parsedForms[formId].sizeSettings.every(
-                (size) => pkmnSizeTree[size.name] == size.value,
+                (size) => pkmnSizeTree[size.name] === size.value,
               )
             ) {
               delete this.parsedForms[formId].sizeSettings
@@ -581,7 +580,7 @@ export default class Pokemon extends Masterfile {
       if (!this.parsedPokemon[id]) {
         this.parsedPokemon[id] = {}
       }
-      let formId: number = /^V\d{4}_POKEMON_/.test(templateId)
+      const formId: number = /^V\d{4}_POKEMON_/.test(templateId)
         ? Rpc.PokemonDisplayProto.Form[
             templateId.substring('V9999_POKEMON_'.length) as FormProto
           ]
@@ -655,8 +654,7 @@ export default class Pokemon extends Masterfile {
             form.family = family
           }
           if (
-            pokemonSettings.evolutionBranch &&
-            pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
+            pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
           ) {
             if (!form.evolutions) {
               form.evolutions = []
@@ -727,15 +725,28 @@ export default class Pokemon extends Masterfile {
           ...this.getGeneration(id),
         }
         if (id !== 235) {
-          this.parsedPokemon[id].quickMoves = this.getMoves(pokemonSettings.quickMoves)
-          this.parsedPokemon[id].chargedMoves = this.getMoves(pokemonSettings.cinematicMoves)
+          this.parsedPokemon[id].quickMoves = this.getMoves(
+            pokemonSettings.quickMoves,
+          )
+          this.parsedPokemon[id].chargedMoves = this.getMoves(
+            pokemonSettings.cinematicMoves,
+          )
         } else {
-          if (pokemonSettings.quickMoves && pokemonSettings.quickMoves.length) console.warn("unexpected Smeargle quick moves", pokemonSettings.quickMoves)
-          if (pokemonSettings.cinematicMoves && pokemonSettings.cinematicMoves.length) console.warn("unexpected Smeargle charged moves", pokemonSettings.cinematicMoves)
+          if (pokemonSettings.quickMoves?.length)
+            console.warn(
+              'unexpected Smeargle quick moves',
+              pokemonSettings.quickMoves,
+            )
+          if (
+            pokemonSettings.cinematicMoves?.length
+          )
+            console.warn(
+              'unexpected Smeargle charged moves',
+              pokemonSettings.cinematicMoves,
+            )
         }
         if (
-          pokemonSettings.evolutionBranch &&
-          pokemonSettings.evolutionBranch.some((evo) => evo.evolution)
+          pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
         ) {
           this.parsedPokemon[id].evolutions = this.compileEvos(
             pokemonSettings.evolutionBranch,
@@ -769,60 +780,63 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  addSourdoughMoveMappings({ data: {
-    sourdoughMoveMappingSettings: { mappings }
-  } }: NiaMfObj) {
-    for (let i = 0; i < mappings.length; i += 1) try {
-      let id = Rpc.HoloPokemonId[
-        mappings[i].pokemonId as PokemonIdProto
-      ]
-      if (!this.parsedPokemon[id]) {
-        this.parsedPokemon[id] = {}
-      }
-      let target = this.parsedPokemon[id]
-      if (mappings[i].form) {
-        const rawForm = mappings[i].form
-        const formId =
-          typeof rawForm === 'number'
-            ? rawForm
-            : /^\d+$/.test(rawForm)
-              ? +rawForm
-              : Rpc.PokemonDisplayProto.Form[rawForm as FormProto]
-        if (!this.parsedPokemon[id].forms) {
-          this.parsedPokemon[id].forms = []
+  addSourdoughMoveMappings({
+    data: {
+      sourdoughMoveMappingSettings: { mappings },
+    },
+  }: NiaMfObj) {
+    for (let i = 0; i < mappings.length; i += 1)
+      try {
+        const id = Rpc.HoloPokemonId[mappings[i].pokemonId as PokemonIdProto]
+        if (!this.parsedPokemon[id]) {
+          this.parsedPokemon[id] = {}
         }
-        const formProto =
-          typeof rawForm === 'number'
-            ? this.lookupForm(rawForm)
-            : /^\d+$/.test(rawForm)
-              ? this.lookupForm(+rawForm)
-              : rawForm
-        const formName = this.formName(id, formProto)
-        if (!this.skipForms(formName)) {
-          this.parsedForms[formId] = {
-            ...this.parsedForms[formId],
-            formName,
-            formId,
+        let target = this.parsedPokemon[id]
+        if (mappings[i].form) {
+          const rawForm = mappings[i].form
+          const formId =
+            typeof rawForm === 'number'
+              ? rawForm
+              : /^\d+$/.test(rawForm)
+                ? +rawForm
+                : Rpc.PokemonDisplayProto.Form[rawForm as FormProto]
+          if (!this.parsedPokemon[id].forms) {
+            this.parsedPokemon[id].forms = []
           }
-          if (!this.parsedPokemon[id].forms.includes(formId)) {
-            this.parsedPokemon[id].forms.push(formId)
+          const formProto =
+            typeof rawForm === 'number'
+              ? this.lookupForm(rawForm)
+              : /^\d+$/.test(rawForm)
+                ? this.lookupForm(+rawForm)
+                : rawForm
+          const formName = this.formName(id, formProto)
+          if (!this.skipForms(formName)) {
+            this.parsedForms[formId] = {
+              ...this.parsedForms[formId],
+              formName,
+              formId,
+            }
+            if (!this.parsedPokemon[id].forms.includes(formId)) {
+              this.parsedPokemon[id].forms.push(formId)
+            }
+            target = this.parsedForms[formId]
           }
-          target = this.parsedForms[formId]
         }
+        target.gmaxMove = Rpc.HoloPokemonMove[mappings[i].move as MoveProto]
+      } catch (e) {
+        console.warn(
+          e,
+          `Failed to parse gmax move mapping #${i}`,
+          JSON.stringify(mappings[i], null, 2),
+        )
       }
-      target.gmaxMove = Rpc.HoloPokemonMove[mappings[i].move as MoveProto]
-    } catch (e) {
-      console.warn(
-        e,
-        `Failed to parse gmax move mapping #${i}`,
-        JSON.stringify(mappings[i], null, 2),
-      )
-    }
   }
 
-  addSmeargleMovesSettings({ data: {
-    smeargleMovesSettings: { quickMoves, cinematicMoves }
-  } }: NiaMfObj) {
+  addSmeargleMovesSettings({
+    data: {
+      smeargleMovesSettings: { quickMoves, cinematicMoves },
+    },
+  }: NiaMfObj) {
     const id = 235
     if (!this.parsedPokemon[id]) {
       this.parsedPokemon[id] = {}
@@ -928,9 +942,10 @@ export default class Pokemon extends Masterfile {
         })
       }
     })
-    this.jungleCupRules.banned = bannedPokemon && bannedPokemon.map((poke) => {
-      return Rpc.HoloPokemonId[poke as PokemonIdProto]
-    })
+    this.jungleCupRules.banned =
+      bannedPokemon?.map((poke) => {
+        return Rpc.HoloPokemonId[poke as PokemonIdProto]
+      })
   }
 
   jungleEligibility() {
@@ -1044,8 +1059,8 @@ export default class Pokemon extends Masterfile {
             value !== undefined && value !== null
               ? value
               : defaultFormId !== undefined
-              ? defaultFormId
-              : undefined
+                ? defaultFormId
+                : undefined
           const resolveFormKey = (value?: number | null): string => {
             const resolved = resolveFormId(value)
             return resolved !== undefined ? `${resolved}` : 'unset'
@@ -1101,7 +1116,7 @@ export default class Pokemon extends Masterfile {
               const formIdentifier =
                 evo.formId !== undefined && evo.formId !== null
                   ? evo.formId
-                  : defaultFormId ?? 'unset'
+                  : (defaultFormId ?? 'unset')
               return `${evo.evoId ?? 'unknown'}:${formIdentifier}`
             }
             const seen = new Set(existingEvos.map((evo) => keyFor(evo)))
@@ -1125,8 +1140,7 @@ export default class Pokemon extends Masterfile {
               baseEntry.quickMoves,
               'quick moves',
             ) ??
-            (Array.isArray(existing.quickMoves) &&
-            existing.quickMoves.length
+            (Array.isArray(existing.quickMoves) && existing.quickMoves.length
               ? Array.from(new Set(existing.quickMoves))
               : undefined)
           const chargedMoves =

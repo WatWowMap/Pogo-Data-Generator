@@ -1,7 +1,6 @@
 import { Rpc } from '@na-ji/pogo-protos'
-
-import Masterfile from './Masterfile'
 import type { MiscProto } from '../typings/dataTypes'
+import Masterfile from './Masterfile'
 
 export default class Misc extends Masterfile {
   routeTypes: { [key: string]: MiscProto }
@@ -15,7 +14,7 @@ export default class Misc extends Masterfile {
     this.teams = {}
   }
 
-  parse(proto: typeof Rpc[keyof typeof Rpc]) {
+  parse(proto: (typeof Rpc)[keyof typeof Rpc]) {
     return Object.fromEntries(
       Object.entries(proto).map(([key, value]) => [
         value,

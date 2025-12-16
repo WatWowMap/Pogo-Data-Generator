@@ -1,6 +1,6 @@
 {
   "name": "pogo-data-generator",
-  "version": "1.21.2",
+  "version": "2.0.0",
   "description": "Pokemon GO project data generator",
   "author": "TurtIeSocks",
   "license": "Apache-2.0",
@@ -24,9 +24,8 @@
     "raw": "ts-node devWrapper.ts --test --raw",
     "invasions": "ts-node devWrapper.ts --test --invasions",
     "test": "tsc && ./node_modules/.bin/jest",
-    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "publishBuild": "rm -r dist && tsc",
-    "prettier": "prettier --write \"**/*.ts\""
+    "format": "biome format --write ./src/**/*.ts",
+    "publishBuild": "rm -r dist && tsc"
   },
   "repository": {
     "type": "git",
@@ -37,24 +36,16 @@
   },
   "dependencies": {
     "@na-ji/pogo-protos": "<3.0.0",
-    "jszip": "^3.10.1",
-    "node-fetch": "2.6.7"
+    "jszip": "^3.10.1"
   },
   "engines": {
-    "node": ">=16.0.0"
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "trailingComma": "all",
-    "semi": false,
-    "singleQuote": true
+    "node": ">=21.0.0"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "@types/node-fetch": "^2.6.2",
-    "jest": "^29.2.1",
-    "prettier": "^2.7.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.5.5"
+    "@biomejs/biome": "2.3.9",
+    "@types/node": "^24",
+    "jest": "^30.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
