@@ -95,6 +95,9 @@ const template = {
   weather: {
     enabled: true,
   },
+  cpm: {
+    enabled: true,
+  }
   translations: {
     enabled: true,
     options: {

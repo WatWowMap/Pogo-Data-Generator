@@ -169,6 +169,15 @@ export interface NiaMfObj {
       cardType?: string
       vfxAddress?: string
     }
+    playerLevel?: {
+      rankNum: number[]
+      requiredExperience: number[]
+      cpMultiplier: number[]
+      maxEggPlayerLevel: number
+      maxEncounterPlayerLevel: number
+      maxQuestEncounterPlayerLevel: number
+      extendedPlayerLevelThreshold: number
+    }
   }
 }
 

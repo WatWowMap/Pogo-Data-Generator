@@ -423,6 +423,18 @@ const baseTemplate: FullTemplate = {
       quests: true,
     },
   },
+  cpm: {
+    enabled: true,
+    options: {
+      keys: {
+        main: "level",
+      },
+    },
+    template: {
+      level: true,
+      multiplier: true,
+    },
+  },
 }
 
 export default baseTemplate

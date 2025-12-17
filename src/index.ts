@@ -1,6 +1,7 @@
 import base from './base'
 import ApkReader from './classes/Apk'
 import Invasions from './classes/Invasion'
+import Cpm from './classes/Cpm'
 import Items from './classes/Item'
 import LocationCards from './classes/LocationCards'
 import Masterfile from './classes/Masterfile'
@@ -48,6 +49,7 @@ export async function generate({
     questRewardTypes,
     invasions,
     weather,
+    cpm,
     translations,
     raids,
     routeTypes,
@@ -64,6 +66,7 @@ export async function generate({
   const AllInvasions = new Invasions(invasions.options)
   const AllTypes = new Types()
   const AllWeather = new Weather()
+  const AllCpm = new Cpm()
   const AllTranslations = new Translations(
     translations.options,
     translationApkUrl,
@@ -353,6 +356,8 @@ export async function generate({
         AllPokemon.addExtendedStats(data[i])
       } else if (data[i].data.locationCardSettings) {
         AllLocationCards.addLocationCard(data[i])
+      } else if (data[i].data.playerLevel) {
+        AllCpm.addCpm(data[i])
       }
     }
   }
@@ -636,6 +641,11 @@ export async function generate({
     final[teams.options.topLevelName || 'teams'] = raw
       ? AllMisc.teams
       : AllMisc.templater(AllMisc.teams, teams)
+  }
+  if (cpm.enabled) {
+    final[cpm.options.topLevelName || "cpm"] = raw
+      ? AllCpm.parsedCpm
+      : AllCpm.templater(AllCpm.parsedCpm, cpm)
   }
 
   if (test && pokeApi === true) {
