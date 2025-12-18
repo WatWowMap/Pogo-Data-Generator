@@ -427,7 +427,7 @@ const baseTemplate: FullTemplate = {
     enabled: true,
     options: {
       keys: {
-        main: "level",
+        main: 'level',
       },
     },
     template: {
