@@ -69,5 +69,7 @@ export const mergeTempEvolutions = (
   const estimatedList = Array.isArray(estimated) ? estimated : []
   const actualList = Array.isArray(actual) ? actual : []
 
-  return dedupeTempEvolutions([...estimatedList, ...actualList], { prefer: 'last' })
+  return dedupeTempEvolutions([...estimatedList, ...actualList], {
+    prefer: 'last',
+  })
 }

@@ -179,6 +179,7 @@ export interface PokemonSizeSettings {
   mUpperBound: number
   xlUpperBound: number
   xxlUpperBound: number
+  disablePokedexRecordDisplayForForms: boolean
 }
 
 export interface TempEvo {
