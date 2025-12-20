@@ -113,7 +113,9 @@ export default class PokeApi extends Masterfile {
     return url
   }
 
-  private buildStatMap(stats: PokeApiStats['stats']): { [stat: string]: number } {
+  private buildStatMap(stats: PokeApiStats['stats']): {
+    [stat: string]: number
+  } {
     const baseStats: { [stat: string]: number } = {}
     stats.forEach((stat) => {
       baseStats[stat.stat.name] = stat.base_stat
@@ -122,7 +124,9 @@ export default class PokeApi extends Masterfile {
   }
 
   private typeNameToTypeId(typeName: string): number {
-    return Rpc.HoloPokemonType[`POKEMON_TYPE_${typeName.toUpperCase()}` as TypeProto]
+    return Rpc.HoloPokemonType[
+      `POKEMON_TYPE_${typeName.toUpperCase()}` as TypeProto
+    ]
   }
 
   private mapTypeIds(types: PokeApiStats['types']): number[] {
@@ -234,7 +238,7 @@ export default class PokeApi extends Masterfile {
           !parsedPokemon[id].defense ||
           !parsedPokemon[id].stamina ||
           parsedPokemon[id].types.length === 0 ||
-          (pokeApiIds?.includes(+id))
+          pokeApiIds?.includes(+id)
         ) {
           await this.pokemonApi(id)
         }
@@ -267,7 +271,8 @@ export default class PokeApi extends Masterfile {
         0.79030001,
       )
 
-      const nerfCheck = cp > 4000 ? this.calculatePogoStats(baseStats, true) : initial
+      const nerfCheck =
+        cp > 4000 ? this.calculatePogoStats(baseStats, true) : initial
       this.baseStats[id] = {
         pokemonName: this.capitalize(statsData.name),
         quickMoves: statsData.moves
@@ -364,9 +369,9 @@ export default class PokeApi extends Masterfile {
   async tempEvoApi(parsedPokemon: AllPokemon) {
     const discoveredMega =
       (
-        (await this.fetch(
-          this.buildUrl('pokemon?limit=100000&offset=0'),
-        )) as { results?: BasePokeApiStruct[] }
+        (await this.fetch(this.buildUrl('pokemon?limit=100000&offset=0'))) as {
+          results?: BasePokeApiStruct[]
+        }
       )?.results
         ?.map((pokemon) => pokemon.name)
         ?.filter((name) => /-mega(?:-[xyz])?$/.test(name)) || []
@@ -406,10 +411,13 @@ export default class PokeApi extends Masterfile {
             attack: computedStats.attack,
             defense: computedStats.defense,
             stamina: computedStats.stamina,
-            types: baseTypes && this.compare(types, baseTypes) ? undefined : types,
+            types:
+              baseTypes && this.compare(types, baseTypes) ? undefined : types,
             unreleased: true,
           }
-          const alreadyExistsInGame = parsedPokemon[pokemonId]?.tempEvolutions?.some(
+          const alreadyExistsInGame = parsedPokemon[
+            pokemonId
+          ]?.tempEvolutions?.some(
             (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
           )
           if (alreadyExistsInGame) return
@@ -423,7 +431,9 @@ export default class PokeApi extends Masterfile {
 
           const existingTempEvolution = this.tempEvos[type][
             pokemonId
-          ].tempEvolutions.find((temp) => temp.tempEvoId === newTheoretical.tempEvoId)
+          ].tempEvolutions.find(
+            (temp) => temp.tempEvoId === newTheoretical.tempEvoId,
+          )
           if (existingTempEvolution) {
             const typesEqual =
               (!existingTempEvolution.types && !newTheoretical.types) ||

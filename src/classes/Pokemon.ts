@@ -26,7 +26,10 @@ import type {
   QuestTypeProto,
   TypeProto,
 } from '../typings/protos'
-import { mergeTempEvolutions, sortTempEvolutions } from '../utils/tempEvolutions'
+import {
+  mergeTempEvolutions,
+  sortTempEvolutions,
+} from '../utils/tempEvolutions'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -413,7 +416,7 @@ export default class Pokemon extends Masterfile {
         }
         const values = Object.entries(
           object.data.pokemonExtendedSettings.sizeSettings,
-        ).map(([name, value]) => ({ name, value: Number(value) }))
+        ).map(([name, value]) => ({ name, value }))
 
         const protoForm = object.data.pokemonExtendedSettings.form
           ? typeof object.data.pokemonExtendedSettings.form === 'number'
@@ -653,9 +656,7 @@ export default class Pokemon extends Masterfile {
           if (family !== primaryForm.family) {
             form.family = family
           }
-          if (
-            pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
-          ) {
+          if (pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)) {
             if (!form.evolutions) {
               form.evolutions = []
             }
@@ -737,17 +738,13 @@ export default class Pokemon extends Masterfile {
               'unexpected Smeargle quick moves',
               pokemonSettings.quickMoves,
             )
-          if (
-            pokemonSettings.cinematicMoves?.length
-          )
+          if (pokemonSettings.cinematicMoves?.length)
             console.warn(
               'unexpected Smeargle charged moves',
               pokemonSettings.cinematicMoves,
             )
         }
-        if (
-          pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)
-        ) {
+        if (pokemonSettings.evolutionBranch?.some((evo) => evo.evolution)) {
           this.parsedPokemon[id].evolutions = this.compileEvos(
             pokemonSettings.evolutionBranch,
           )
