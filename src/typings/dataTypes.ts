@@ -115,6 +115,13 @@ export interface AllForms {
   [id: string]: SingleForm
 }
 
+export interface AllCpm {
+  [level: string]: {
+    level?: number
+    multiplier?: number
+  }
+}
+
 export interface SinglePokemon extends SingleForm {
   pokedexId?: number
   pokemonName?: string
@@ -206,6 +213,7 @@ export interface FinalResult {
   moves?: AllMoves
   types?: AllTypes
   weather?: AllWeather
+  cpm?: AllCpm
   questRewardTypes?: AllQuests
   questConditions?: AllQuests
   locationCards?: AllLocationCards
