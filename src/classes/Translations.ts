@@ -858,6 +858,92 @@ export default class Translations extends Masterfile {
     }
   }
 
+  gruntQuotes(locale: string) {
+    try {
+      this.parsedTranslations[locale].gruntQuotes = {}
+      const prefix = this.options.prefix.gruntQuotes || 'grunt_quote_'
+
+      const charQuotes: { [id: number]: string[] } = {}
+
+      const addQuote = (charId: number, value: string) => {
+        if (!charQuotes[charId]) charQuotes[charId] = []
+        charQuotes[charId].push(value)
+      }
+
+      const TYPE_TO_IDS: { [key: string]: [number, number] } = {
+        bug: [6, 7], dark: [10, 11], dragon: [12, 13],
+        electric: [49, 50], fairy: [14, 15], fighting: [16, 17],
+        fire: [18, 19], flying: [20, 21], ghost: [47, 48],
+        grass: [22, 23], ground: [24, 25], ice: [26, 27],
+        metal: [28, 29], normal: [30, 31], poison: [32, 33],
+        psychic: [34, 35], rock: [36, 37], water: [38, 39],
+      }
+
+      const EXEC_TO_ID: { [key: string]: number } = {
+        cliff: 41, arlo: 42, sierra: 43, giovanni: 44,
+      }
+
+      for (const [key, value] of Object.entries(this.rawTranslations[locale])) {
+        if (!value) continue
+        let match: RegExpMatchArray | null
+
+        // Type quotes: combat_grunt_quote_{type}__female_speaker
+        match = key.match(/^combat_grunt_quote_(\w+)__female_speaker$/)
+        if (match) {
+          const type = match[1]
+          const ids = TYPE_TO_IDS[type]
+          if (ids) {
+            addQuote(ids[0], value)
+            addQuote(ids[1], value)
+          }
+          continue
+        }
+
+        // Generic numbered: combat_grunt_quote#N__female_speaker
+        match = key.match(/^combat_grunt_quote#(\d+)__female_speaker$/)
+        if (match) {
+          addQuote(5, value)
+          addQuote(4, value)
+          continue
+        }
+
+        // Balloon: combat_grunt_balloon_quote#N__female_speaker
+        match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
+        if (match) {
+          addQuote(51, value)
+          addQuote(52, value)
+          continue
+        }
+
+        // Executive numbered: combat_{name}_quote#N
+        match = key.match(/^combat_(cliff|arlo|sierra|giovanni)_quote#(\d+)$/)
+        if (match) {
+          addQuote(EXEC_TO_ID[match[1]], value)
+          continue
+        }
+
+        // Decoy: combat_grunt_decoy_quote#N
+        match = key.match(/^combat_grunt_decoy_quote#(\d+)$/)
+        if (match) {
+          addQuote(46, value)
+          addQuote(45, value)
+          continue
+        }
+      }
+
+      for (const [idStr, quotes] of Object.entries(charQuotes)) {
+        quotes.forEach((quote, i) => {
+          const key = i === 0
+            ? `${prefix}${idStr}`
+            : `${prefix}${idStr}_${i + 1}`
+          this.parsedTranslations[locale].gruntQuotes[key] = quote
+        })
+      }
+    } catch (e) {
+      console.warn(e, '\n', `Unable to translate grunt quotes for ${locale}`)
+    }
+  }
+
   weather(locale: string) {
     try {
       this.parsedTranslations[locale].weather = {
