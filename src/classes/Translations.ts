@@ -189,6 +189,7 @@ export default class Translations extends Masterfile {
       types: {},
       weather: {},
       grunts: {},
+      gruntQuotes: {},
       characterCategories: {},
       misc: {},
     }
@@ -310,6 +311,12 @@ export default class Translations extends Masterfile {
                 )
               ] = newValue
             }
+          } else if (key.startsWith('grunt_quote_')) {
+            trimmedKey = key.replace(
+              'grunt_quote_',
+              this.options.prefix.gruntQuotes || 'grunt_quote_',
+            )
+            this.manualTranslations[locale].gruntQuotes[trimmedKey] = value
           } else if (key.startsWith('grunt')) {
             trimmedKey = key.replace(
               'grunt_',
