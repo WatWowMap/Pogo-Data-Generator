@@ -1,11 +1,24 @@
 const Translations = require('../dist/classes/Translations').default
+const base = require('../dist/base').default
+
+const createOptions = (overrides = {}) => {
+  const options = JSON.parse(JSON.stringify(base.translations.options))
+  return {
+    ...options,
+    ...overrides,
+    prefix: {
+      ...options.prefix,
+      ...(overrides.prefix || {}),
+    },
+  }
+}
 
 describe('grunt quote translations', () => {
   test('maps current grunt quote keys to all matching invasion ids', () => {
-    const translations = new Translations({ prefix: {} })
+    const translations = new Translations(createOptions())
     translations.rawTranslations.en = {
-      'combat_grunt_balloon_quote#1__female_speaker': 'Balloon quote 1',
       'combat_grunt_balloon_quote#2__female_speaker': 'Balloon quote 2',
+      'combat_grunt_balloon_quote#1__female_speaker': 'Balloon quote 1',
       'combat_grunt_quote_steel__female_speaker': 'Steel quote',
       grunt_bf_combat_quote: 'GRUNTB female quote',
       grunt_bm_combat_quote: 'GRUNTB male quote',
@@ -37,5 +50,65 @@ describe('grunt quote translations', () => {
       .toBe('GRUNTB female quote')
     expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_54)
       .toBe('GRUNTB male quote')
+  })
+
+  test('skips balloon grunt quote ids when balloons are disabled', () => {
+    const translations = new Translations(
+      createOptions({ includeBalloons: false }),
+    )
+    translations.rawTranslations.en = {
+      'combat_grunt_balloon_quote#1__female_speaker': 'Balloon quote 1',
+    }
+    translations.parsedTranslations.en = {}
+
+    translations.gruntQuotes('en')
+
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_51)
+      .toBeUndefined()
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_90)
+      .toBeUndefined()
+  })
+
+  test('preserves duplicate grunt quote refs under useLanguageAsRef', () => {
+    const translations = new Translations(
+      createOptions({ useLanguageAsRef: 'en' }),
+    )
+    translations.rawTranslations.en = {
+      'combat_grunt_quote_steel__female_speaker': 'Steel quote',
+    }
+    translations.rawTranslations.fr = {
+      'combat_grunt_quote_steel__female_speaker': 'Citation acier',
+    }
+    translations.parsedTranslations.en = {}
+    translations.parsedTranslations.fr = {}
+
+    translations.gruntQuotes('en')
+    translations.gruntQuotes('fr')
+    translations.languageRef('en')
+    translations.languageRef('fr')
+
+    expect(translations.parsedTranslations.fr.gruntQuotes['Steel quote'])
+      .toBe('Citation acier')
+    expect(
+      translations.parsedTranslations.fr.gruntQuotes[
+        'Steel quote [grunt_quote_29]'
+      ],
+    ).toBe('Citation acier')
+  })
+
+  test('orders numbered grunt quotes by their explicit suffix', () => {
+    const translations = new Translations(createOptions())
+    translations.rawTranslations.en = {
+      'combat_cliff_quote#2': 'Cliff quote 2',
+      'combat_cliff_quote#1': 'Cliff quote 1',
+    }
+    translations.parsedTranslations.en = {}
+
+    translations.gruntQuotes('en')
+
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_41)
+      .toBe('Cliff quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_41_2)
+      .toBe('Cliff quote 2')
   })
 })

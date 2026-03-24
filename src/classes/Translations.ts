@@ -389,12 +389,20 @@ export default class Translations extends Masterfile {
       const languageRef: TranslationKeys = {}
       Object.keys(this.parsedTranslations[locale]).forEach((category) => {
         languageRef[category] = {}
+        const referenceCategory = this.reference[category] || {}
         Object.keys(this.parsedTranslations[locale][category]).forEach((x) => {
-          if (
-            this.reference[category][x] &&
-            !languageRef[category][this.reference[category][x]]
-          ) {
-            languageRef[category][this.reference[category][x]] =
+          const referenceKey = referenceCategory[x]
+          if (referenceKey !== undefined) {
+            let outputKey = referenceKey
+            if (languageRef[category][outputKey] !== undefined) {
+              outputKey = `${referenceKey} [${x}]`
+              let dedupeCount = 2
+              while (languageRef[category][outputKey] !== undefined) {
+                outputKey = `${referenceKey} [${x}]_${dedupeCount}`
+                dedupeCount += 1
+              }
+            }
+            languageRef[category][outputKey] =
               this.parsedTranslations[locale][category][x]
           }
         })
@@ -870,11 +878,15 @@ export default class Translations extends Masterfile {
       this.parsedTranslations[locale].gruntQuotes = {}
       const prefix = this.options.prefix.gruntQuotes || 'grunt_quote_'
 
-      const charQuotes: { [id: number]: string[] } = {}
+      const charQuotes: { [id: number]: { [quoteNumber: number]: string } } = {}
 
-      const addQuote = (charId: number, value: string) => {
-        if (!charQuotes[charId]) charQuotes[charId] = []
-        charQuotes[charId].push(value)
+      const addQuote = (
+        charId: number,
+        value: string,
+        quoteNumber: number = 1,
+      ) => {
+        if (!charQuotes[charId]) charQuotes[charId] = {}
+        charQuotes[charId][quoteNumber] = value
       }
 
       const TYPE_TO_IDS: { [key: string]: [number, number] } = {
@@ -885,11 +897,12 @@ export default class Translations extends Masterfile {
         metal: [28, 29], steel: [28, 29], normal: [30, 31], poison: [32, 33],
         psychic: [34, 35], rock: [36, 37], water: [38, 39],
       }
-      const BALLOON_GRUNT_IDS = Object.entries(
-        Rpc.EnumWrapper.InvasionCharacter,
-      )
-        .filter(([name]) => name.includes('BALLOON_GRUNT'))
-        .map(([, id]) => Number(id))
+      const BALLOON_GRUNT_IDS =
+        this.options.includeBalloons === false
+          ? []
+          : Object.entries(Rpc.EnumWrapper.InvasionCharacter)
+              .filter(([name]) => name.includes('BALLOON_GRUNT'))
+              .map(([, id]) => Number(id))
 
       const EXEC_TO_ID: { [key: string]: number } = {
         cliff: 41, arlo: 42, sierra: 43, giovanni: 44,
@@ -914,15 +927,17 @@ export default class Translations extends Masterfile {
         // Generic numbered: combat_grunt_quote#N__female_speaker
         match = key.match(/^combat_grunt_quote#(\d+)__female_speaker$/)
         if (match) {
-          addQuote(5, value)
-          addQuote(4, value)
+          const quoteNumber = Number(match[1])
+          addQuote(5, value, quoteNumber)
+          addQuote(4, value, quoteNumber)
           continue
         }
 
         // Balloon: combat_grunt_balloon_quote#N__female_speaker
         match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
         if (match) {
-          BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value))
+          const quoteNumber = Number(match[1])
+          BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value, quoteNumber))
           continue
         }
 
@@ -936,26 +951,31 @@ export default class Translations extends Masterfile {
         // Executive numbered: combat_{name}_quote#N
         match = key.match(/^combat_(cliff|arlo|sierra|giovanni)_quote#(\d+)$/)
         if (match) {
-          addQuote(EXEC_TO_ID[match[1]], value)
+          addQuote(EXEC_TO_ID[match[1]], value, Number(match[2]))
           continue
         }
 
         // Decoy: combat_grunt_decoy_quote#N
         match = key.match(/^combat_grunt_decoy_quote#(\d+)$/)
         if (match) {
-          addQuote(46, value)
-          addQuote(45, value)
+          const quoteNumber = Number(match[1])
+          addQuote(46, value, quoteNumber)
+          addQuote(45, value, quoteNumber)
           continue
         }
       }
 
       for (const [idStr, quotes] of Object.entries(charQuotes)) {
-        quotes.forEach((quote, i) => {
-          const key = i === 0
-            ? `${prefix}${idStr}`
-            : `${prefix}${idStr}_${i + 1}`
-          this.parsedTranslations[locale].gruntQuotes[key] = quote
-        })
+        Object.keys(quotes)
+          .map((quoteNumber) => Number(quoteNumber))
+          .sort((a, b) => a - b)
+          .forEach((quoteNumber) => {
+            const key = quoteNumber === 1
+              ? `${prefix}${idStr}`
+              : `${prefix}${idStr}_${quoteNumber}`
+            this.parsedTranslations[locale].gruntQuotes[key] =
+              quotes[quoteNumber]
+          })
       }
     } catch (e) {
       console.warn(e, '\n', `Unable to translate grunt quotes for ${locale}`)
