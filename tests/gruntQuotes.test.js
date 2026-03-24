@@ -65,6 +65,30 @@ describe('grunt quote translations', () => {
     expect(merged.translations.options.includeBalloons).toBe(false)
   })
 
+  test('treats an omitted invasion balloon toggle as disabled in translations', () => {
+    const merged = Masterfile.templateMerger({
+      invasions: {
+        options: {
+          topLevelName: 'rocket_invasions',
+        },
+      },
+    }, base)
+    const translations = new Translations(merged.translations.options)
+
+    expect(merged.invasions.options.includeBalloons).toBeUndefined()
+    expect(merged.translations.options.includeBalloons).toBe(false)
+
+    translations.rawTranslations.en = {
+      'combat_grunt_balloon_quote#1__female_speaker': 'Balloon quote 1',
+    }
+    translations.parsedTranslations.en = {}
+
+    translations.gruntQuotes('en')
+
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_51)
+      .toBeUndefined()
+  })
+
   test('does not share translation balloon toggle state across merges', () => {
     const freshBase = JSON.parse(JSON.stringify(base))
 
