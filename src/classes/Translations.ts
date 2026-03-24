@@ -882,7 +882,7 @@ export default class Translations extends Masterfile {
         electric: [49, 50], fairy: [14, 15], fighting: [16, 17],
         fire: [18, 19], flying: [20, 21], ghost: [47, 48],
         grass: [22, 23], ground: [24, 25], ice: [26, 27],
-        metal: [28, 29], normal: [30, 31], poison: [32, 33],
+        metal: [28, 29], steel: [28, 29], normal: [30, 31], poison: [32, 33],
         psychic: [34, 35], rock: [36, 37], water: [38, 39],
       }
       const BALLOON_GRUNT_IDS = Object.entries(
@@ -923,6 +923,13 @@ export default class Translations extends Masterfile {
         match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
         if (match) {
           BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value))
+          continue
+        }
+
+        // GRUNTB: grunt_b{f|m}_combat_quote
+        match = key.match(/^grunt_b([fm])_combat_quote$/)
+        if (match) {
+          addQuote(match[1] === 'f' ? 53 : 54, value)
           continue
         }
 

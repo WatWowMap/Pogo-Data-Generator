@@ -1,11 +1,14 @@
 const Translations = require('../dist/classes/Translations').default
 
 describe('grunt quote translations', () => {
-  test('reuses balloon quotes for typed balloon grunt ids', () => {
+  test('maps current grunt quote keys to all matching invasion ids', () => {
     const translations = new Translations({ prefix: {} })
     translations.rawTranslations.en = {
       'combat_grunt_balloon_quote#1__female_speaker': 'Balloon quote 1',
       'combat_grunt_balloon_quote#2__female_speaker': 'Balloon quote 2',
+      'combat_grunt_quote_steel__female_speaker': 'Steel quote',
+      grunt_bf_combat_quote: 'GRUNTB female quote',
+      grunt_bm_combat_quote: 'GRUNTB male quote',
     }
     translations.parsedTranslations.en = {}
 
@@ -25,5 +28,14 @@ describe('grunt quote translations', () => {
         translations.parsedTranslations.en.gruntQuotes[`grunt_quote_${id}_2`],
       ).toBe('Balloon quote 2')
     })
+
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_28)
+      .toBe('Steel quote')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_29)
+      .toBe('Steel quote')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_53)
+      .toBe('GRUNTB female quote')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_54)
+      .toBe('GRUNTB male quote')
   })
 })
