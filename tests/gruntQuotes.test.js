@@ -65,6 +65,23 @@ describe('grunt quote translations', () => {
     expect(merged.translations.options.includeBalloons).toBe(false)
   })
 
+  test('does not share translation balloon toggle state across merges', () => {
+    const freshBase = JSON.parse(JSON.stringify(base))
+
+    const first = Masterfile.templateMerger({
+      invasions: {
+        options: {
+          includeBalloons: false,
+        },
+      },
+    }, freshBase)
+    const second = Masterfile.templateMerger({}, freshBase)
+
+    expect(first.translations.options.includeBalloons).toBe(false)
+    expect(second.translations.options.includeBalloons).toBe(true)
+    expect(freshBase.translations.options.includeBalloons).toBeUndefined()
+  })
+
   test('skips balloon grunt quote ids when balloons are disabled', () => {
     const translations = new Translations(
       createOptions({ includeBalloons: false }),
@@ -136,5 +153,42 @@ describe('grunt quote translations', () => {
       .toBe('Sierra quote 1')
     expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_524)
       .toBe('Giovanni quote 1')
+  })
+
+  test('maps unnumbered executive and decoy quote keys as the first quote', () => {
+    const translations = new Translations(createOptions())
+    translations.rawTranslations.en = {
+      'combat_cliff_quote#1': 'Cliff quote 1',
+      combat_cliff_quote: 'Cliff fallback quote',
+      combat_arlo_quote: 'Arlo quote 1',
+      combat_sierra_quote: 'Sierra quote 1',
+      combat_giovanni_quote: 'Giovanni quote 1',
+      'combat_grunt_decoy_quote#1': 'Decoy quote 1',
+      combat_grunt_decoy_quote: 'Decoy fallback quote',
+    }
+    translations.parsedTranslations.en = {}
+
+    translations.gruntQuotes('en')
+
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_41)
+      .toBe('Cliff quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_527)
+      .toBe('Cliff quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_42)
+      .toBe('Arlo quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_526)
+      .toBe('Arlo quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_43)
+      .toBe('Sierra quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_525)
+      .toBe('Sierra quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_44)
+      .toBe('Giovanni quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_524)
+      .toBe('Giovanni quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_45)
+      .toBe('Decoy quote 1')
+    expect(translations.parsedTranslations.en.gruntQuotes.grunt_quote_46)
+      .toBe('Decoy quote 1')
   })
 })

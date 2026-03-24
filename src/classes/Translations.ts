@@ -884,9 +884,12 @@ export default class Translations extends Masterfile {
         charId: number,
         value: string,
         quoteNumber: number = 1,
+        overwrite = true,
       ) => {
         if (!charQuotes[charId]) charQuotes[charId] = {}
-        charQuotes[charId][quoteNumber] = value
+        if (overwrite || charQuotes[charId][quoteNumber] === undefined) {
+          charQuotes[charId][quoteNumber] = value
+        }
       }
 
       const TYPE_TO_IDS: { [key: string]: [number, number] } = {
@@ -951,21 +954,24 @@ export default class Translations extends Masterfile {
           continue
         }
 
-        // Executive numbered: combat_{name}_quote#N
-        match = key.match(/^combat_(cliff|arlo|sierra|giovanni)_quote#(\d+)$/)
+        // Executive quotes: combat_{name}_quote or combat_{name}_quote#N
+        match = key.match(
+          /^combat_(cliff|arlo|sierra|giovanni)_quote(?:#(\d+))?$/,
+        )
         if (match) {
+          const quoteNumber = match[2] ? Number(match[2]) : 1
           EXEC_TO_IDS[match[1]].forEach((id) =>
-            addQuote(id, value, Number(match[2])),
+            addQuote(id, value, quoteNumber, !!match[2]),
           )
           continue
         }
 
-        // Decoy: combat_grunt_decoy_quote#N
-        match = key.match(/^combat_grunt_decoy_quote#(\d+)$/)
+        // Decoy quotes: combat_grunt_decoy_quote or combat_grunt_decoy_quote#N
+        match = key.match(/^combat_grunt_decoy_quote(?:#(\d+))?$/)
         if (match) {
-          const quoteNumber = Number(match[1])
-          addQuote(46, value, quoteNumber)
-          addQuote(45, value, quoteNumber)
+          const quoteNumber = match[1] ? Number(match[1]) : 1
+          addQuote(46, value, quoteNumber, !!match[1])
+          addQuote(45, value, quoteNumber, !!match[1])
           continue
         }
       }
