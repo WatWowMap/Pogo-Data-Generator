@@ -19,14 +19,16 @@ export default class Masterfile {
   ): FullTemplate {
     const baseline: { [key: string]: any } = base
     const merged: { [key: string]: any } = {}
+    const cloneValue = (value: any) =>
+      value && typeof value === 'object' ? structuredClone(value) : value
     Object.keys(base).forEach((category) => {
-      merged[category] = template[category] || {}
+      merged[category] = cloneValue(template[category]) || {}
       Object.keys(baseline[category]).forEach((subKey) => {
         if (merged[category][subKey] === undefined) {
           merged[category][subKey] =
             typeof baseline[category][subKey] === 'boolean'
               ? false
-              : baseline[category][subKey]
+              : cloneValue(baseline[category][subKey])
         }
       })
       if (category !== 'globalOptions') {
@@ -44,20 +46,23 @@ export default class Masterfile {
         })
       }
       if (category === 'translations' && template.translations) {
+        const translationOptions = template.translations.options || {}
         merged.translations.options.questVariables = {
           ...base.translations.options.questVariables,
-          ...template.translations.options.questVariables,
+          ...translationOptions.questVariables,
         }
         merged.translations.options.prefix = {
           ...base.translations.options.prefix,
-          ...template.translations.options.prefix,
+          ...translationOptions.prefix,
         }
-        if (!template.translations.options.questTitleTermsToSkip) {
+        if (!translationOptions.questTitleTermsToSkip) {
           merged.translations.options.questTitleTermsToSkip =
-            base.translations.options.questTitleTermsToSkip
+            [...base.translations.options.questTitleTermsToSkip]
         }
       }
     })
+    merged.translations.options.includeBalloons =
+      !!merged.invasions.options.includeBalloons
     return merged
   }
 

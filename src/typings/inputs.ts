@@ -273,6 +273,7 @@ export interface TranslationsTemplate {
   items?: boolean
   types?: boolean
   characters?: boolean
+  gruntQuotes?: boolean
   weather?: boolean
   misc?: boolean
   pokemonCategories?: boolean

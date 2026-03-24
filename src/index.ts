@@ -465,6 +465,9 @@ export async function generate({
           if (translations.template.characters) {
             AllTranslations.characters(localeCode, AllInvasions.parsedInvasions)
           }
+          if (translations.template.gruntQuotes) {
+            AllTranslations.gruntQuotes(localeCode)
+          }
           if (translations.template.weather) {
             AllTranslations.weather(localeCode)
           }

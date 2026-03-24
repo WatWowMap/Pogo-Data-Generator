@@ -189,6 +189,7 @@ export default class Translations extends Masterfile {
       types: {},
       weather: {},
       grunts: {},
+      gruntQuotes: {},
       characterCategories: {},
       misc: {},
     }
@@ -310,6 +311,12 @@ export default class Translations extends Masterfile {
                 )
               ] = newValue
             }
+          } else if (key.startsWith('grunt_quote_')) {
+            trimmedKey = key.replace(
+              'grunt_quote_',
+              this.options.prefix.gruntQuotes || 'grunt_quote_',
+            )
+            this.manualTranslations[locale].gruntQuotes[trimmedKey] = value
           } else if (key.startsWith('grunt')) {
             trimmedKey = key.replace(
               'grunt_',
@@ -382,12 +389,20 @@ export default class Translations extends Masterfile {
       const languageRef: TranslationKeys = {}
       Object.keys(this.parsedTranslations[locale]).forEach((category) => {
         languageRef[category] = {}
+        const referenceCategory = this.reference[category] || {}
         Object.keys(this.parsedTranslations[locale][category]).forEach((x) => {
-          if (
-            this.reference[category][x] &&
-            !languageRef[category][this.reference[category][x]]
-          ) {
-            languageRef[category][this.reference[category][x]] =
+          const referenceKey = referenceCategory[x]
+          if (referenceKey !== undefined) {
+            let outputKey = referenceKey
+            if (languageRef[category][outputKey] !== undefined) {
+              outputKey = `${referenceKey} [${x}]`
+              let dedupeCount = 2
+              while (languageRef[category][outputKey] !== undefined) {
+                outputKey = `${referenceKey} [${x}]_${dedupeCount}`
+                dedupeCount += 1
+              }
+            }
+            languageRef[category][outputKey] =
               this.parsedTranslations[locale][category][x]
           }
         })
@@ -855,6 +870,126 @@ export default class Translations extends Masterfile {
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate characters for ${locale}`)
+    }
+  }
+
+  gruntQuotes(locale: string) {
+    try {
+      this.parsedTranslations[locale].gruntQuotes = {}
+      const prefix = this.options.prefix.gruntQuotes || 'grunt_quote_'
+
+      const charQuotes: { [id: number]: { [quoteNumber: number]: string } } = {}
+
+      const addQuote = (
+        charId: number,
+        value: string,
+        quoteNumber: number = 1,
+        overwrite = true,
+      ) => {
+        if (!charQuotes[charId]) charQuotes[charId] = {}
+        if (overwrite || charQuotes[charId][quoteNumber] === undefined) {
+          charQuotes[charId][quoteNumber] = value
+        }
+      }
+
+      const TYPE_TO_IDS: { [key: string]: [number, number] } = {
+        bug: [6, 7], dark: [10, 11], dragon: [12, 13],
+        electric: [49, 50], fairy: [14, 15], fighting: [16, 17],
+        fire: [18, 19], flying: [20, 21], ghost: [47, 48],
+        grass: [22, 23], ground: [24, 25], ice: [26, 27],
+        metal: [28, 29], steel: [28, 29], normal: [30, 31], poison: [32, 33],
+        psychic: [34, 35], rock: [36, 37], water: [38, 39],
+      }
+      const BALLOON_GRUNT_IDS =
+        this.options.includeBalloons === false
+          ? []
+          : Object.entries(Rpc.EnumWrapper.InvasionCharacter)
+              .filter(([name]) => name.includes('BALLOON_GRUNT'))
+              .map(([, id]) => Number(id))
+
+      const EXEC_TO_IDS: { [key: string]: number[] } = {
+        cliff: [41, 527],
+        arlo: [42, 526],
+        sierra: [43, 525],
+        giovanni: [44, 524],
+      }
+
+      for (const [key, value] of Object.entries(this.rawTranslations[locale])) {
+        if (!value) continue
+        let match: RegExpMatchArray | null
+
+        // Type quotes: combat_grunt_quote_{type}__female_speaker
+        match = key.match(/^combat_grunt_quote_(\w+)__female_speaker$/)
+        if (match) {
+          const type = match[1]
+          const ids = TYPE_TO_IDS[type]
+          if (ids) {
+            addQuote(ids[0], value)
+            addQuote(ids[1], value)
+          }
+          continue
+        }
+
+        // Generic numbered: combat_grunt_quote#N__female_speaker
+        match = key.match(/^combat_grunt_quote#(\d+)__female_speaker$/)
+        if (match) {
+          const quoteNumber = Number(match[1])
+          addQuote(5, value, quoteNumber)
+          addQuote(4, value, quoteNumber)
+          continue
+        }
+
+        // Balloon: combat_grunt_balloon_quote#N__female_speaker
+        match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
+        if (match) {
+          const quoteNumber = Number(match[1])
+          BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value, quoteNumber))
+          continue
+        }
+
+        // GRUNTB: grunt_b{f|m}_combat_quote
+        match = key.match(/^grunt_b([fm])_combat_quote$/)
+        if (match) {
+          addQuote(match[1] === 'f' ? 53 : 54, value)
+          continue
+        }
+
+        // Executive quotes: combat_{name}_quote or combat_{name}_quote#N
+        match = key.match(
+          /^combat_(cliff|arlo|sierra|giovanni)_quote(?:#(\d+))?$/,
+        )
+        if (match) {
+          const quoteNumber = match[2] ? Number(match[2]) : 1
+          EXEC_TO_IDS[match[1]].forEach((id) =>
+            addQuote(id, value, quoteNumber, !!match[2]),
+          )
+          continue
+        }
+
+        // Decoy quotes: combat_grunt_decoy_quote or combat_grunt_decoy_quote#N
+        match = key.match(/^combat_grunt_decoy_quote(?:#(\d+))?$/)
+        if (match) {
+          const quoteNumber = match[1] ? Number(match[1]) : 1
+          addQuote(46, value, quoteNumber, !!match[1])
+          addQuote(45, value, quoteNumber, !!match[1])
+          continue
+        }
+      }
+
+      for (const [idStr, quotes] of Object.entries(charQuotes)) {
+        Object.keys(quotes)
+          .map((quoteNumber) => Number(quoteNumber))
+          .sort((a, b) => a - b)
+          .forEach((quoteNumber) => {
+            const key = quoteNumber === 1
+              ? `${prefix}${idStr}`
+              : `${prefix}${idStr}_${quoteNumber}`
+            this.parsedTranslations[locale].gruntQuotes[key] =
+              quotes[quoteNumber]
+          })
+      }
+    } catch (e) {
+      console.warn(e, '\n', `Unable to translate grunt quotes for ${locale}`)
     }
   }
 
