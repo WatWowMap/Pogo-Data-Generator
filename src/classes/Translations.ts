@@ -904,8 +904,11 @@ export default class Translations extends Masterfile {
               .filter(([name]) => name.includes('BALLOON_GRUNT'))
               .map(([, id]) => Number(id))
 
-      const EXEC_TO_ID: { [key: string]: number } = {
-        cliff: 41, arlo: 42, sierra: 43, giovanni: 44,
+      const EXEC_TO_IDS: { [key: string]: number[] } = {
+        cliff: [41, 527],
+        arlo: [42, 526],
+        sierra: [43, 525],
+        giovanni: [44, 524],
       }
 
       for (const [key, value] of Object.entries(this.rawTranslations[locale])) {
@@ -951,7 +954,9 @@ export default class Translations extends Masterfile {
         // Executive numbered: combat_{name}_quote#N
         match = key.match(/^combat_(cliff|arlo|sierra|giovanni)_quote#(\d+)$/)
         if (match) {
-          addQuote(EXEC_TO_ID[match[1]], value, Number(match[2]))
+          EXEC_TO_IDS[match[1]].forEach((id) =>
+            addQuote(id, value, Number(match[2])),
+          )
           continue
         }
 

@@ -58,6 +58,8 @@ export default class Masterfile {
         }
       }
     })
+    merged.translations.options.includeBalloons =
+      merged.invasions.options.includeBalloons
     return merged
   }
 
