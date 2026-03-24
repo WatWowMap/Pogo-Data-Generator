@@ -885,6 +885,11 @@ export default class Translations extends Masterfile {
         metal: [28, 29], normal: [30, 31], poison: [32, 33],
         psychic: [34, 35], rock: [36, 37], water: [38, 39],
       }
+      const BALLOON_GRUNT_IDS = Object.entries(
+        Rpc.EnumWrapper.InvasionCharacter,
+      )
+        .filter(([name]) => name.includes('BALLOON_GRUNT'))
+        .map(([, id]) => Number(id))
 
       const EXEC_TO_ID: { [key: string]: number } = {
         cliff: 41, arlo: 42, sierra: 43, giovanni: 44,
@@ -917,8 +922,7 @@ export default class Translations extends Masterfile {
         // Balloon: combat_grunt_balloon_quote#N__female_speaker
         match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
         if (match) {
-          addQuote(51, value)
-          addQuote(52, value)
+          BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value))
           continue
         }
 
