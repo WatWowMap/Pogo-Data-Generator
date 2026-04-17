@@ -202,13 +202,18 @@ export default class Masterfile {
 
     const loopFields = (
       fieldKey: string,
-      x: number,
+      x: any,
       templateChild: any,
       data: any,
     ) => {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
-      const ref = reference[fieldKey] ? reference[fieldKey][x] : x
+      const ref =
+        x && typeof x === 'object'
+          ? x
+          : reference[fieldKey]
+            ? reference[fieldKey][x]
+            : x
 
       try {
         Object.entries(ref).forEach((subField) => {

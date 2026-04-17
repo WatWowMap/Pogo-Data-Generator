@@ -310,6 +310,8 @@ describe('Pokemon form changes', () => {
       {
         availableForms: localForms,
         targetForm: localForms,
+        quickMoves: localMoves,
+        chargedMoves: localMoves,
         existingMoves: localMoves,
         replacementMoves: localMoves,
         fusionMove1: localMoves,
