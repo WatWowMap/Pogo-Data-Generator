@@ -33,6 +33,7 @@ import {
   mergeTempEvolutions,
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
+import { normalizeItemId } from '../utils/itemId'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -259,14 +260,7 @@ export default class Pokemon extends Masterfile {
   }
 
   resolveItemId(value?: string | number): number | string | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return (
-      Rpc.Item[value as ItemProto] ??
-      Rpc.Item[`ITEM_${value}` as ItemProto] ??
-      value
-    )
+    return normalizeItemId(value)
   }
 
   resolveMoveId(value?: string | number): number | undefined {

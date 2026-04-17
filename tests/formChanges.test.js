@@ -1,10 +1,26 @@
 const Pokemon = require('../dist/classes/Pokemon').default
+const Item = require('../dist/classes/Item').default
 const base = require('../dist/base').default
 const { Rpc } = require('@na-ji/pogo-protos')
 
 const createPokemon = () => {
   const options = JSON.parse(JSON.stringify(base.pokemon.options))
   return new Pokemon(options)
+}
+
+const createItems = () => {
+  const options = JSON.parse(JSON.stringify(base.items.options))
+  return new Item(options)
+}
+
+const createFormTemplate = () =>
+  JSON.parse(JSON.stringify(base.pokemon.template.forms))
+
+const createFormTemplateOptions = () => {
+  const options = JSON.parse(JSON.stringify(base.pokemon.options))
+  Object.assign(options, JSON.parse(JSON.stringify(base.globalOptions)))
+  options.keys.main = 'formId'
+  return options
 }
 
 const basePokemonSettings = ({
@@ -185,6 +201,235 @@ describe('Pokemon form changes', () => {
             },
           ],
         },
+      },
+    ])
+  })
+
+  test('keeps templated form-change singleton references singular', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const targetFormId = Rpc.PokemonDisplayProto.Form.KYUREM_BLACK
+
+    allPokemon.parsedForms[formId] = {
+      formId,
+      formName: 'Normal',
+      formChanges: [
+        {
+          availableForms: [targetFormId],
+          componentPokemonSettings: {
+            pokedexId: Rpc.HoloPokemonId.ZEKROM,
+            formChangeType: 'FUSE',
+            fusionMove1: Rpc.HoloPokemonMove.DRAGON_BREATH_FAST,
+            fusionMove2: Rpc.HoloPokemonMove.FREEZE_SHOCK,
+            locationCardSettings: [
+              {
+                basePokemonLocationCard: 101,
+                componentPokemonLocationCard: 102,
+                fusionPokemonLocationCard: 103,
+              },
+            ],
+          },
+          moveReassignment: {
+            chargedMoves: [
+              {
+                existingMoves: [Rpc.HoloPokemonMove.GLACIATE],
+                replacementMoves: [Rpc.HoloPokemonMove.FREEZE_SHOCK],
+              },
+            ],
+          },
+          formChangeBonusAttributes: [
+            {
+              targetForm: targetFormId,
+            },
+          ],
+          locationCardSettings: [
+            {
+              existingLocationCard: 101,
+              replacementLocationCard: 103,
+            },
+          ],
+        },
+      ],
+    }
+
+    const template = createFormTemplate()
+    template.formChanges.componentPokemonSettings.fusionMove1 = 'moveName'
+    template.formChanges.componentPokemonSettings.fusionMove2 = 'moveName'
+    template.formChanges.componentPokemonSettings.locationCardSettings = {
+      basePokemonLocationCard: 'formatted',
+      componentPokemonLocationCard: 'formatted',
+      fusionPokemonLocationCard: 'formatted',
+    }
+    template.formChanges.moveReassignment = {
+      chargedMoves: {
+        existingMoves: 'moveName',
+        replacementMoves: 'moveName',
+      },
+    }
+    template.formChanges.formChangeBonusAttributes = {
+      targetForm: 'formName',
+    }
+    template.formChanges.locationCardSettings = {
+      existingLocationCard: 'formatted',
+      replacementLocationCard: 'formatted',
+    }
+
+    const localMoves = {
+      [Rpc.HoloPokemonMove.DRAGON_BREATH_FAST]: {
+        moveId: Rpc.HoloPokemonMove.DRAGON_BREATH_FAST,
+        moveName: 'Dragon Breath',
+      },
+      [Rpc.HoloPokemonMove.FREEZE_SHOCK]: {
+        moveId: Rpc.HoloPokemonMove.FREEZE_SHOCK,
+        moveName: 'Freeze Shock',
+      },
+      [Rpc.HoloPokemonMove.GLACIATE]: {
+        moveId: Rpc.HoloPokemonMove.GLACIATE,
+        moveName: 'Glaciate',
+      },
+    }
+    const localForms = {
+      [targetFormId]: {
+        formId: targetFormId,
+        formName: 'Black',
+        proto: 'KYUREM_BLACK',
+      },
+    }
+    const localLocationCards = {
+      101: { id: 101, formatted: 'Base Card' },
+      102: { id: 102, formatted: 'Component Card' },
+      103: { id: 103, formatted: 'Fusion Card' },
+    }
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        availableForms: localForms,
+        targetForm: localForms,
+        existingMoves: localMoves,
+        replacementMoves: localMoves,
+        fusionMove1: localMoves,
+        fusionMove2: localMoves,
+        existingLocationCard: localLocationCards,
+        replacementLocationCard: localLocationCards,
+        basePokemonLocationCard: localLocationCards,
+        componentPokemonLocationCard: localLocationCards,
+        fusionPokemonLocationCard: localLocationCards,
+      },
+    )
+    const renderedFormChange = templated[formId].form_changes[0]
+
+    expect(Array.isArray(renderedFormChange.component_pokemon_settings)).toBe(
+      false,
+    )
+    expect(renderedFormChange.component_pokemon_settings).toEqual({
+      pokedex_id: Rpc.HoloPokemonId.ZEKROM,
+      form_change_type: 'FUSE',
+      fusion_move1: 'Dragon Breath',
+      fusion_move2: 'Freeze Shock',
+      location_card_settings: [
+        {
+          base_pokemon_location_card: 'Base Card',
+          component_pokemon_location_card: 'Component Card',
+          fusion_pokemon_location_card: 'Fusion Card',
+        },
+      ],
+    })
+    expect(Array.isArray(renderedFormChange.move_reassignment)).toBe(false)
+    expect(renderedFormChange.move_reassignment).toEqual({
+      charged_moves: [
+        {
+          existing_moves: ['Glaciate'],
+          replacement_moves: ['Freeze Shock'],
+        },
+      ],
+    })
+    expect(
+      Array.isArray(renderedFormChange.form_change_bonus_attributes[0].target_form),
+    ).toBe(false)
+    expect(renderedFormChange.form_change_bonus_attributes).toEqual([
+      {
+        target_form: 'Black',
+      },
+    ])
+    expect(
+      Array.isArray(renderedFormChange.location_card_settings[0].existing_location_card),
+    ).toBe(false)
+    expect(renderedFormChange.location_card_settings).toEqual([
+      {
+        existing_location_card: 'Base Card',
+        replacement_location_card: 'Fusion Card',
+      },
+    ])
+  })
+
+  test('resolves unknown unprefixed fusion resources in templated output', () => {
+    const allPokemon = createPokemon()
+    const allItems = createItems()
+    const unknownFusionResource = 'FUSION_RESOURCE_PROTO_LAG_TEST'
+    const storedFusionResource = `ITEM_${unknownFusionResource}`
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+
+    expect(Rpc.Item[storedFusionResource]).toBeUndefined()
+
+    allItems.addItem({
+      templateId: storedFusionResource,
+      data: {
+        itemSettings: {
+          itemId: storedFusionResource,
+          itemType: 'ITEM_TYPE_NONE',
+          category: 'ITEM_CATEGORY_MISC',
+          dropTrainerLevel: 1,
+        },
+      },
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              item: unknownFusionResource,
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].itemRequirement,
+    ).toBe(storedFusionResource)
+    expect(allItems.parsedItems[storedFusionResource].itemId).toBe(
+      storedFusionResource,
+    )
+
+    const template = createFormTemplate()
+    template.formChanges.itemRequirement = 'itemName'
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        itemRequirement: allItems.parsedItems,
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        item_requirement: ['Fusion Resource Proto Lag Test'],
       },
     ])
   })

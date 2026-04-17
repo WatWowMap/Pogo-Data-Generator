@@ -1,8 +1,7 @@
-import { Rpc } from '@na-ji/pogo-protos'
 import type { AllItems } from '../typings/dataTypes'
 import type { NiaMfObj } from '../typings/general'
 import type { Options } from '../typings/inputs'
-import type { ItemProto } from '../typings/protos'
+import { normalizeItemId } from '../utils/itemId'
 import Masterfile from './Masterfile'
 
 export default class Item extends Masterfile {
@@ -28,10 +27,7 @@ export default class Item extends Masterfile {
         !dropTrainerLevel ||
         dropTrainerLevel <= this.options.minTrainerLevel
       ) {
-        const id =
-          typeof itemId === 'string'
-            ? Rpc.Item[itemId as ItemProto] ?? itemId
-            : itemId
+        const id = normalizeItemId(itemId)
         this.parsedItems[id] = {
           itemId: id,
           itemName: templateId
