@@ -44,6 +44,15 @@ export default class Masterfile {
             }
           }
         })
+        if (
+          baseline[category].options?.makeSingular ||
+          template[category]?.options?.makeSingular
+        ) {
+          merged[category].options.makeSingular = {
+            ...(cloneValue(baseline[category].options?.makeSingular) || {}),
+            ...(cloneValue(template[category]?.options?.makeSingular) || {}),
+          }
+        }
       }
       if (category === 'translations' && template.translations) {
         const translationOptions = template.translations.options || {}

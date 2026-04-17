@@ -1,5 +1,6 @@
 const Pokemon = require('../dist/classes/Pokemon').default
 const Item = require('../dist/classes/Item').default
+const Masterfile = require('../dist/classes/Masterfile').default
 const base = require('../dist/base').default
 const { Rpc } = require('@na-ji/pogo-protos')
 
@@ -364,6 +365,72 @@ describe('Pokemon form changes', () => {
         replacement_location_card: 'Fusion Card',
       },
     ])
+  })
+
+  test('keeps form-change singleton refs singular for partial custom options', () => {
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const merged = Masterfile.templateMerger(
+      {
+        pokemon: {
+          enabled: true,
+          options: {
+            keys: {
+              main: 'formId',
+            },
+          },
+          template: {
+            forms: {
+              formChanges: {
+                componentPokemonSettings: {
+                  fusionMove1: 'moveName',
+                },
+              },
+            },
+          },
+        },
+      },
+      base,
+    )
+    const allPokemon = new Pokemon(merged.pokemon.options)
+
+    allPokemon.parsedForms[formId] = {
+      formId,
+      formName: 'Normal',
+      formChanges: [
+        {
+          componentPokemonSettings: {
+            fusionMove1: Rpc.HoloPokemonMove.DRAGON_BREATH_FAST,
+          },
+        },
+      ],
+    }
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template: merged.pokemon.template.forms,
+        options: merged.pokemon.options,
+      },
+      {
+        fusionMove1: {
+          [Rpc.HoloPokemonMove.DRAGON_BREATH_FAST]: {
+            moveName: 'Dragon Breath',
+          },
+        },
+      },
+    )
+
+    expect(Array.isArray(templated[formId].formChanges[0].componentPokemonSettings)).toBe(
+      false,
+    )
+    expect(
+      Array.isArray(
+        templated[formId].formChanges[0].componentPokemonSettings.fusionMove1,
+      ),
+    ).toBe(false)
+    expect(
+      templated[formId].formChanges[0].componentPokemonSettings.fusionMove1,
+    ).toBe('Dragon Breath')
   })
 
   test('resolves unknown unprefixed fusion resources in templated output', () => {
