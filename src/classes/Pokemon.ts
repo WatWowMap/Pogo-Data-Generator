@@ -1246,11 +1246,12 @@ export default class Pokemon extends Masterfile {
       this.parsedPokeForms = {}
       Object.values(this.parsedPokemon).forEach((pokemon) => {
         if (pokemon.forms) {
-          const baseFormId = pokemon.forms.includes(0)
-            ? 0
-            : pokemon.defaultFormId &&
-                pokemon.forms.includes(pokemon.defaultFormId)
+          const baseFormId =
+            pokemon.defaultFormId !== undefined &&
+            pokemon.forms.includes(pokemon.defaultFormId)
               ? pokemon.defaultFormId
+              : pokemon.forms.includes(0)
+                ? 0
               : pokemon.forms.find(
                     (formId) => this.parsedForms[formId]?.formName === 'Normal',
                   ) ?? pokemon.forms[0]
