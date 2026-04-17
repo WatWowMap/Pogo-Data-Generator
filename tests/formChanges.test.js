@@ -541,6 +541,51 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedPokeForms['800_2720'].formChanges).toBeUndefined()
   })
 
+  test('keeps base form changes on the default split form without form zero', () => {
+    const allPokemon = createPokemon()
+
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA] = {
+      pokemonName: 'Hoopa',
+      pokedexId: Rpc.HoloPokemonId.HOOPA,
+      forms: [
+        Rpc.PokemonDisplayProto.Form.HOOPA,
+        Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
+      ],
+      formChanges: [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+          candyCost: 50,
+        },
+      ],
+    }
+    allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA] = {
+      formId: Rpc.PokemonDisplayProto.Form.HOOPA,
+      formName: 'Normal',
+    }
+    allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND] = {
+      formId: Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
+      formName: 'Unbound',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA}`
+      ].formChanges,
+    ).toEqual([
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+        candyCost: 50,
+      },
+    ])
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].formChanges,
+    ).toBeUndefined()
+  })
+
   test('parses gated form changes with move and bread requirements', () => {
     const allPokemon = createPokemon()
 
