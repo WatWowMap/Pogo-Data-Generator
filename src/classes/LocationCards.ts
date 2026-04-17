@@ -25,15 +25,16 @@ export default class LocationCards extends Masterfile {
       const { locationCard, imageUrl, cardType, vfxAddress } =
         locationCardSettings
       const id = normalizeLocationCardId(locationCard)
-      const proto =
-        typeof locationCard === 'number'
-          ? Rpc.LocationCard[locationCard]
-          : locationCard
-      const resolvedProto = proto || templateId
       if (id === undefined) {
         console.warn('Unable to resolve location card id', locationCard)
         return
       }
+      const resolvedProto =
+        typeof id === 'number' && typeof Rpc.LocationCard[id] === 'string'
+          ? (Rpc.LocationCard[id] as string)
+          : typeof locationCard === 'string'
+            ? locationCard
+            : templateId
       const formattedProto = resolvedProto.replace(
         /^LC_(SPECIALBACKGROUND_|SPECIAL_BACKGROUND_)?/,
         '',

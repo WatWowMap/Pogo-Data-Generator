@@ -177,6 +177,57 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
   })
 
+  test('reconciles default-form changes when form settings are parsed late', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED
+    const settings = basePokemonSettings({
+      pokemonId: 'HOOPA',
+      type: 'POKEMON_TYPE_PSYCHIC',
+      type2: 'POKEMON_TYPE_GHOST',
+      familyId: 'FAMILY_HOOPA',
+      quickMoves: ['CONFUSION_FAST'],
+      cinematicMoves: ['PSYCHIC'],
+      formChange: [
+        {
+          availableForm: ['HOOPA_UNBOUND'],
+          candyCost: 50,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON_HOOPA_CONFINED',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON_HOOPA',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addForm({
+      templateId: 'FORMS_V0720_POKEMON_HOOPA',
+      data: {
+        formSettings: {
+          pokemon: 'HOOPA',
+          forms: [{ form: 'HOOPA_CONFINED' }, { form: 'HOOPA_UNBOUND' }],
+        },
+      },
+    })
+
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].formChanges).toEqual(
+      [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+          candyCost: 50,
+        },
+      ],
+    )
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+  })
+
   test('parses fusion form changes on form-specific entries', () => {
     const allPokemon = createPokemon()
     const fusionItemId =
@@ -851,6 +902,32 @@ describe('Pokemon form changes', () => {
         ],
       },
     ])
+  })
+
+  test('resolves numeric-string location card ids to real proto names', () => {
+    const allLocationCards = createLocationCards()
+    const locationCardId = '87'
+    const proto = Rpc.LocationCard[+locationCardId]
+
+    allLocationCards.addLocationCard({
+      templateId: 'LC_SPECIALBACKGROUND_TEST',
+      data: {
+        locationCardSettings: {
+          locationCard: locationCardId,
+        },
+      },
+    })
+
+    expect(allLocationCards.parsedLocationCards[locationCardId]).toEqual({
+      id: +locationCardId,
+      proto,
+      formatted: allLocationCards.capitalize(
+        proto.replace(/^LC_(SPECIALBACKGROUND_|SPECIAL_BACKGROUND_)?/, ''),
+      ),
+      imageUrl: undefined,
+      cardType: undefined,
+      vfxAddress: undefined,
+    })
   })
 
   test('merges base and form-specific form changes on split default forms', () => {

@@ -342,6 +342,23 @@ export default class Pokemon extends Masterfile {
     )
   }
 
+  reconcileDefaultFormChanges(id: number) {
+    const pokemon = this.parsedPokemon[id]
+    const defaultForm = this.parsedForms[pokemon?.defaultFormId]
+    if (!pokemon?.formChanges || !defaultForm?.formChanges) {
+      return
+    }
+    const defaultFormChanges = this.diffFormChanges(
+      defaultForm.formChanges,
+      pokemon.formChanges,
+    )
+    if (defaultFormChanges.length) {
+      defaultForm.formChanges = defaultFormChanges
+    } else {
+      delete defaultForm.formChanges
+    }
+  }
+
   compileFormChanges(formChanges?: RawFormChange[]): FormChanges[] {
     if (!Array.isArray(formChanges)) return []
     try {
@@ -893,6 +910,7 @@ export default class Pokemon extends Masterfile {
             }
           }
         }
+        this.reconcileDefaultFormChanges(id)
         if (this.options.includeUnset && !this.options.noFormPlaceholders) {
           this.parsedPokemon[id].forms.push(0)
         }
@@ -1092,18 +1110,7 @@ export default class Pokemon extends Masterfile {
         const formChanges = this.compileFormChanges(pokemonSettings.formChange)
         if (formChanges.length) {
           this.parsedPokemon[id].formChanges = formChanges
-          const defaultForm = this.parsedForms[this.parsedPokemon[id].defaultFormId]
-          if (defaultForm?.formChanges) {
-            const defaultFormChanges = this.diffFormChanges(
-              defaultForm.formChanges,
-              formChanges,
-            )
-            if (defaultFormChanges.length) {
-              defaultForm.formChanges = defaultFormChanges
-            } else {
-              delete defaultForm.formChanges
-            }
-          }
+          this.reconcileDefaultFormChanges(id)
         }
         if (pokemonSettings.tempEvoOverrides) {
           this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
