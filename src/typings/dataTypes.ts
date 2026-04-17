@@ -72,7 +72,7 @@ export interface SingleMove {
 
 export interface AllItems {
   [id: string]: {
-    itemId: number
+    itemId: number | string
     itemName: string
     proto: string
     type: string
@@ -143,6 +143,7 @@ interface SingleForm extends BaseStats {
   formId?: number
   isCostume?: boolean
   evolutions?: Evolutions[]
+  formChanges?: FormChanges[]
   tempEvolutions?: TempEvolutions[]
   quickMoves?: number[]
   chargedMoves?: number[]
@@ -163,6 +164,82 @@ interface SingleForm extends BaseStats {
   }[]
   sizeSettings?: { name: string; value: number }[]
   gmaxMove?: number
+}
+
+export interface FormChanges {
+  availableForms?: number[]
+  candyCost?: number
+  stardustCost?: number
+  itemRequirement?: number | string
+  itemCostCount?: number
+  questRequirements?: FormChangeQuestRequirement[]
+  componentPokemonSettings?: FormChangeComponentPokemonSettings
+  moveReassignment?: FormChangeMoveReassignment
+  requiredQuickMoves?: FormChangeMoveRequirement[]
+  requiredChargedMoves?: FormChangeMoveRequirement[]
+  requiredBreadMoves?: FormChangeBreadMoveRequirement[]
+  priority?: number
+  formChangeBonusAttributes?: FormChangeBonusAttributes[]
+  locationCardSettings?: FormChangeLocationCardSettings[]
+}
+
+export interface FormChangeQuestRequirement {
+  questRequirement?: string
+  description?: string
+  target?: number
+}
+
+export interface FormChangeComponentPokemonSettings {
+  pokedexId?: number
+  formId?: number
+  componentCandyCost?: number
+  formChangeType?: string
+  fusionMove1?: number
+  fusionMove2?: number
+  locationCardSettings?: FormChangeComponentLocationCardSettings[]
+  familyId?: number
+}
+
+export interface FormChangeMoveReassignment {
+  quickMoves?: MoveReassignment[]
+  chargedMoves?: MoveReassignment[]
+}
+
+export interface MoveReassignment {
+  existingMoves?: number[]
+  replacementMoves?: number[]
+}
+
+export interface FormChangeMoveRequirement {
+  requiredMoves?: number[]
+}
+
+export interface FormChangeBreadMoveRequirement {
+  moveTypes?: string[]
+  moveLevel?: string
+}
+
+export interface FormChangeBonusAttributes {
+  targetForm?: number
+  breadMode?: string
+  clearBreadMode?: boolean
+  maxMoves?: BreadMoveSlot[]
+}
+
+export interface BreadMoveSlot {
+  moveType?: string
+  moveLevel?: string
+}
+
+export interface FormChangeLocationCardSettings {
+  existingLocationCard?: number
+  replacementLocationCard?: number
+}
+
+export interface FormChangeComponentLocationCardSettings {
+  basePokemonLocationCard?: number
+  componentPokemonLocationCard?: number
+  fusionPokemonLocationCard?: number
 }
 
 export interface TempEvolutions extends BaseStats {

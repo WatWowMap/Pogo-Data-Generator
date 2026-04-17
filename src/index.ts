@@ -537,6 +537,7 @@ export async function generate({
   const localWeather = localeCheck
     ? AllTranslations.masterfile.weather
     : AllWeather.parsedWeather
+  const localLocationCards = AllLocationCards.parsedLocationCards
   const localEvolutionQuests = localeCheck
     ? AllTranslations.masterfile.evolutionQuests
     : AllPokemon.evolutionQuests
@@ -551,8 +552,20 @@ export async function generate({
           eliteChargedMoves: localMoves,
           types: localTypes,
           forms: localForms,
+          availableForms: localForms,
+          targetForm: localForms,
           itemRequirement: localItems,
           questRequirement: localEvolutionQuests,
+          existingMoves: localMoves,
+          replacementMoves: localMoves,
+          requiredMoves: localMoves,
+          fusionMove1: localMoves,
+          fusionMove2: localMoves,
+          existingLocationCard: localLocationCards,
+          replacementLocationCard: localLocationCards,
+          basePokemonLocationCard: localLocationCards,
+          componentPokemonLocationCard: localLocationCards,
+          fusionPokemonLocationCard: localLocationCards,
           // TODO gmaxMove
         })
     if (pokemon.options.includeRawForms || raw) {

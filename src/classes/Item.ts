@@ -29,7 +29,9 @@ export default class Item extends Masterfile {
         dropTrainerLevel <= this.options.minTrainerLevel
       ) {
         const id =
-          typeof itemId === 'string' ? Rpc.Item[itemId as ItemProto] : itemId
+          typeof itemId === 'string'
+            ? Rpc.Item[itemId as ItemProto] ?? itemId
+            : itemId
         this.parsedItems[id] = {
           itemId: id,
           itemName: templateId

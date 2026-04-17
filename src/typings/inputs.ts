@@ -112,6 +112,7 @@ interface Form extends BaseStats {
           | StringBool
       }
     | StringBool
+  formChanges?: FormChange | StringBool
   tempEvolutions?: TempEvolution | StringBool
   quickMoves?: Move | StringBool
   chargedMoves?: Move | StringBool
@@ -134,6 +135,88 @@ type CostumeOverrideEvo = {
   costumeId?: boolean
   costumeProto?: boolean
   costumeName?: boolean
+}
+
+type FormChange = {
+  availableForms?: FormChangeAvailableForm | StringBool
+  candyCost?: boolean
+  stardustCost?: boolean
+  itemRequirement?: boolean | string
+  itemCostCount?: boolean
+  questRequirements?: FormChangeQuestRequirement | StringBool
+  componentPokemonSettings?: FormChangeComponentPokemonSettings | StringBool
+  moveReassignment?: FormChangeMoveReassignmentContainer | StringBool
+  requiredQuickMoves?: FormChangeMoveRequirement | StringBool
+  requiredChargedMoves?: FormChangeMoveRequirement | StringBool
+  requiredBreadMoves?: FormChangeBreadMoveRequirement | StringBool
+  priority?: boolean
+  formChangeBonusAttributes?: FormChangeBonusAttributes | StringBool
+  locationCardSettings?: FormChangeLocationCardSettings | StringBool
+}
+
+type FormChangeAvailableForm = {
+  formId?: boolean
+  formName?: boolean
+  proto?: boolean
+}
+
+type FormChangeQuestRequirement = {
+  questRequirement?: boolean
+  description?: boolean
+  target?: boolean
+}
+
+type FormChangeComponentPokemonSettings = {
+  pokedexId?: boolean
+  formId?: boolean
+  componentCandyCost?: boolean
+  formChangeType?: boolean
+  fusionMove1?: Move | StringBool
+  fusionMove2?: Move | StringBool
+  familyId?: boolean
+  locationCardSettings?: FormChangeComponentLocationCardSettings | StringBool
+}
+
+type FormChangeComponentLocationCardSettings = {
+  basePokemonLocationCard?: boolean | string
+  componentPokemonLocationCard?: boolean | string
+  fusionPokemonLocationCard?: boolean | string
+}
+
+type FormChangeMoveReassignmentContainer = {
+  quickMoves?: FormChangeMoveReassignment | StringBool
+  chargedMoves?: FormChangeMoveReassignment | StringBool
+}
+
+type FormChangeMoveReassignment = {
+  existingMoves?: Move | StringBool
+  replacementMoves?: Move | StringBool
+}
+
+type FormChangeMoveRequirement = {
+  requiredMoves?: Move | StringBool
+}
+
+type FormChangeBreadMoveRequirement = {
+  moveTypes?: boolean
+  moveLevel?: boolean
+}
+
+type FormChangeBonusAttributes = {
+  targetForm?: FormChangeAvailableForm | StringBool
+  breadMode?: boolean
+  clearBreadMode?: boolean
+  maxMoves?: BreadMoveSlot | StringBool
+}
+
+type BreadMoveSlot = {
+  moveType?: boolean
+  moveLevel?: boolean
+}
+
+type FormChangeLocationCardSettings = {
+  existingLocationCard?: boolean | string
+  replacementLocationCard?: boolean | string
 }
 
 type Move = {
