@@ -170,7 +170,7 @@ interface SingleForm extends BaseStats {
 }
 
 export interface FormChanges {
-  availableForms?: number[]
+  availableForms?: (number | string)[]
   candyCost?: number
   stardustCost?: number
   itemRequirement?: number | string
@@ -193,14 +193,14 @@ export interface FormChangeQuestRequirement {
 }
 
 export interface FormChangeComponentPokemonSettings {
-  pokedexId?: number
-  formId?: number
+  pokedexId?: number | string
+  formId?: number | string
   componentCandyCost?: number
   formChangeType?: string
-  fusionMove1?: number
-  fusionMove2?: number
+  fusionMove1?: number | string
+  fusionMove2?: number | string
   locationCardSettings?: FormChangeComponentLocationCardSettings[]
-  familyId?: number
+  familyId?: number | string
 }
 
 export interface FormChangeMoveReassignment {
@@ -209,12 +209,12 @@ export interface FormChangeMoveReassignment {
 }
 
 export interface MoveReassignment {
-  existingMoves?: number[]
-  replacementMoves?: number[]
+  existingMoves?: (number | string)[]
+  replacementMoves?: (number | string)[]
 }
 
 export interface FormChangeMoveRequirement {
-  requiredMoves?: number[]
+  requiredMoves?: (number | string)[]
 }
 
 export interface FormChangeBreadMoveRequirement {
@@ -223,7 +223,7 @@ export interface FormChangeBreadMoveRequirement {
 }
 
 export interface FormChangeBonusAttributes {
-  targetForm?: number
+  targetForm?: number | string
   breadMode?: string
   clearBreadMode?: boolean
   maxMoves?: BreadMoveSlot[]

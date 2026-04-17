@@ -245,36 +245,40 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  resolvePokemonId(value?: string | number): number | undefined {
+  resolveEnumId(
+    enumObject: { [key: string]: string | number },
+    value?: string | number,
+  ): number | string | undefined {
     if (value === undefined || value === null || value === '') return undefined
     if (typeof value === 'number') return value
     if (/^\d+$/.test(value)) return +value
-    return Rpc.HoloPokemonId[value as PokemonIdProto]
+    return enumObject[value] ?? value
   }
 
-  resolveFormId(value?: string | number): number | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return Rpc.PokemonDisplayProto.Form[value as FormProto]
+  resolvePokemonId(value?: string | number): number | string | undefined {
+    return this.resolveEnumId(Rpc.HoloPokemonId, value as PokemonIdProto)
+  }
+
+  resolveFormId(value?: string | number): number | string | undefined {
+    return this.resolveEnumId(
+      Rpc.PokemonDisplayProto.Form,
+      value as FormProto,
+    )
   }
 
   resolveItemId(value?: string | number): number | string | undefined {
     return normalizeItemId(value)
   }
 
-  resolveMoveId(value?: string | number): number | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return Rpc.HoloPokemonMove[value as MoveProto]
+  resolveMoveId(value?: string | number): number | string | undefined {
+    return this.resolveEnumId(Rpc.HoloPokemonMove, value as MoveProto)
   }
 
-  resolveFamilyId(value?: string | number): number | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return Rpc.HoloPokemonFamilyId[value as FamilyProto]
+  resolveFamilyId(value?: string | number): number | string | undefined {
+    return this.resolveEnumId(
+      Rpc.HoloPokemonFamilyId,
+      value as FamilyProto,
+    )
   }
 
   resolveLocationCardId(value?: string | number): number | string | undefined {
@@ -292,6 +296,52 @@ export default class Pokemon extends Masterfile {
       : undefined
   }
 
+  resolveMoveIds(moves: (string | number)[]): (number | string)[] {
+    if (!moves) return []
+    try {
+      return moves
+        .map((move) => this.resolveMoveId(move))
+        .filter((move): move is number | string => move !== undefined)
+    } catch (e) {
+      console.warn(e, `Failed to lookup moves for ${moves}`)
+      return []
+    }
+  }
+
+  formChangeKey(formChange: FormChanges) {
+    return JSON.stringify(formChange)
+  }
+
+  dedupeFormChanges(formChanges: FormChanges[] = []) {
+    const seenFormChanges = new Set<string>()
+    return formChanges.filter((formChange) => {
+      const key = this.formChangeKey(formChange)
+      if (seenFormChanges.has(key)) {
+        return false
+      }
+      seenFormChanges.add(key)
+      return true
+    })
+  }
+
+  mergeFormChanges(...formChanges: (FormChanges[] | undefined)[]) {
+    return this.dedupeFormChanges(formChanges.flat().filter(Boolean) as FormChanges[])
+  }
+
+  diffFormChanges(
+    formChanges?: FormChanges[],
+    baseFormChanges?: FormChanges[],
+  ): FormChanges[] {
+    const baseKeys = new Set(
+      this.dedupeFormChanges(baseFormChanges).map((formChange) =>
+        this.formChangeKey(formChange),
+      ),
+    )
+    return this.dedupeFormChanges(formChanges).filter(
+      (formChange) => !baseKeys.has(this.formChangeKey(formChange)),
+    )
+  }
+
   compileFormChanges(formChanges?: RawFormChange[]): FormChanges[] {
     if (!Array.isArray(formChanges)) return []
     try {
@@ -300,7 +350,9 @@ export default class Pokemon extends Masterfile {
           const availableForms =
             formChange.availableForm
               ?.map((form) => this.resolveFormId(form))
-              .filter((formId): formId is number => formId !== undefined) || []
+              .filter(
+                (formId): formId is number | string => formId !== undefined,
+              ) || []
           const questRequirements =
             formChange.questRequirement
               ?.map((requirement) => ({
@@ -362,8 +414,10 @@ export default class Pokemon extends Masterfile {
                 quickMoves:
                   formChange.moveReassignment.quickMoves
                     ?.map((moves) => ({
-                      existingMoves: this.getMoves(moves.existingMoves || []),
-                      replacementMoves: this.getMoves(
+                      existingMoves: this.resolveMoveIds(
+                        moves.existingMoves || [],
+                      ),
+                      replacementMoves: this.resolveMoveIds(
                         moves.replacementMoves || [],
                       ),
                     }))
@@ -375,8 +429,10 @@ export default class Pokemon extends Masterfile {
                 chargedMoves:
                   formChange.moveReassignment.cinematicMoves
                     ?.map((moves) => ({
-                      existingMoves: this.getMoves(moves.existingMoves || []),
-                      replacementMoves: this.getMoves(
+                      existingMoves: this.resolveMoveIds(
+                        moves.existingMoves || [],
+                      ),
+                      replacementMoves: this.resolveMoveIds(
                         moves.replacementMoves || [],
                       ),
                     }))
@@ -390,13 +446,13 @@ export default class Pokemon extends Masterfile {
           const requiredQuickMoves =
             formChange.requiredQuickMoves
               ?.map((moves) => ({
-                requiredMoves: this.getMoves(moves.requiredMoves || []),
+                requiredMoves: this.resolveMoveIds(moves.requiredMoves || []),
               }))
               .filter((moves) => moves.requiredMoves.length) || []
           const requiredChargedMoves =
             formChange.requiredCinematicMoves
               ?.map((moves) => ({
-                requiredMoves: this.getMoves(moves.requiredMoves || []),
+                requiredMoves: this.resolveMoveIds(moves.requiredMoves || []),
               }))
               .filter((moves) => moves.requiredMoves.length) || []
           const requiredBreadMoves =
@@ -939,9 +995,14 @@ export default class Pokemon extends Masterfile {
               ...this.compileEvos(pokemonSettings.evolutionBranch),
             )
           }
-          const formChanges = this.compileFormChanges(pokemonSettings.formChange)
+          const formChanges = this.diffFormChanges(
+            this.compileFormChanges(pokemonSettings.formChange),
+            primaryForm.formChanges,
+          )
           if (formChanges.length) {
             form.formChanges = formChanges
+          } else {
+            delete form.formChanges
           }
           if (pokemonSettings.tempEvoOverrides) {
             form.tempEvolutions = this.compileTempEvos(
@@ -1031,6 +1092,18 @@ export default class Pokemon extends Masterfile {
         const formChanges = this.compileFormChanges(pokemonSettings.formChange)
         if (formChanges.length) {
           this.parsedPokemon[id].formChanges = formChanges
+          const defaultForm = this.parsedForms[this.parsedPokemon[id].defaultFormId]
+          if (defaultForm?.formChanges) {
+            const defaultFormChanges = this.diffFormChanges(
+              defaultForm.formChanges,
+              formChanges,
+            )
+            if (defaultFormChanges.length) {
+              defaultForm.formChanges = defaultFormChanges
+            } else {
+              delete defaultForm.formChanges
+            }
+          }
         }
         if (pokemonSettings.tempEvoOverrides) {
           this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(
@@ -1254,18 +1327,10 @@ export default class Pokemon extends Masterfile {
                   ) ?? pokemon.forms[0]
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
-            const seenFormChanges = new Set<string>()
-            const formChanges = [
-              ...(form === baseFormId ? pokemon.formChanges || [] : []),
-              ...(formDetails?.formChanges || []),
-            ].filter((formChange) => {
-              const key = JSON.stringify(formChange)
-              if (seenFormChanges.has(key)) {
-                return false
-              }
-              seenFormChanges.add(key)
-              return true
-            })
+            const formChanges = this.mergeFormChanges(
+              form === baseFormId ? pokemon.formChanges : undefined,
+              formDetails?.formChanges,
+            )
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
               evolutions: form === 0 ? pokemon.evolutions : undefined,

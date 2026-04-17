@@ -123,6 +123,60 @@ describe('Pokemon form changes', () => {
     )
   })
 
+  test('does not duplicate base form changes on the default form in normal output', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM] = {
+      pokemonName: 'Kyurem',
+      pokedexId: Rpc.HoloPokemonId.KYUREM,
+      forms: [formId],
+      defaultFormId: formId,
+    }
+    allPokemon.parsedForms[formId] = {
+      formId,
+      formName: 'Normal',
+    }
+
+    const settings = basePokemonSettings({
+      pokemonId: 'KYUREM',
+      type: 'POKEMON_TYPE_DRAGON',
+      type2: 'POKEMON_TYPE_ICE',
+      familyId: 'FAMILY_KYUREM',
+      quickMoves: ['DRAGON_BREATH_FAST'],
+      cinematicMoves: ['GLACIATE'],
+      formChange: [
+        {
+          availableForm: ['KYUREM_BLACK'],
+          candyCost: 30,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].formChanges).toEqual(
+      [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK],
+          candyCost: 30,
+        },
+      ],
+    )
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+  })
+
   test('parses fusion form changes on form-specific entries', () => {
     const allPokemon = createPokemon()
     const fusionItemId =
@@ -208,6 +262,94 @@ describe('Pokemon form changes', () => {
             },
           ],
         },
+      },
+    ])
+  })
+
+  test('preserves unresolved enum refs inside form changes', () => {
+    const allPokemon = createPokemon()
+
+    expect(
+      allPokemon.compileFormChanges([
+        {
+          availableForm: ['FUTURE_FORM_ONLY'],
+          componentPokemonSettings: {
+            pokedexId: 'FUTURE_MON',
+            form: 'FUTURE_COMPONENT_FORM',
+            fusionMove1: 'FUTURE_MOVE_1',
+            fusionMove2: 'FUTURE_MOVE_2',
+            familyId: 'FAMILY_FUTURE',
+          },
+          moveReassignment: {
+            quickMoves: [
+              {
+                existingMoves: ['FUTURE_MOVE_3'],
+                replacementMoves: ['FUTURE_MOVE_4'],
+              },
+            ],
+            cinematicMoves: [
+              {
+                existingMoves: ['FUTURE_MOVE_5'],
+                replacementMoves: ['FUTURE_MOVE_6'],
+              },
+            ],
+          },
+          requiredQuickMoves: [
+            {
+              requiredMoves: ['FUTURE_MOVE_7'],
+            },
+          ],
+          requiredCinematicMoves: [
+            {
+              requiredMoves: ['FUTURE_MOVE_8'],
+            },
+          ],
+          formChangeBonusAttributes: [
+            {
+              targetForm: 'FUTURE_TARGET_FORM',
+            },
+          ],
+        },
+      ]),
+    ).toEqual([
+      {
+        availableForms: ['FUTURE_FORM_ONLY'],
+        componentPokemonSettings: {
+          pokedexId: 'FUTURE_MON',
+          formId: 'FUTURE_COMPONENT_FORM',
+          fusionMove1: 'FUTURE_MOVE_1',
+          fusionMove2: 'FUTURE_MOVE_2',
+          familyId: 'FAMILY_FUTURE',
+        },
+        moveReassignment: {
+          quickMoves: [
+            {
+              existingMoves: ['FUTURE_MOVE_3'],
+              replacementMoves: ['FUTURE_MOVE_4'],
+            },
+          ],
+          chargedMoves: [
+            {
+              existingMoves: ['FUTURE_MOVE_5'],
+              replacementMoves: ['FUTURE_MOVE_6'],
+            },
+          ],
+        },
+        requiredQuickMoves: [
+          {
+            requiredMoves: ['FUTURE_MOVE_7'],
+          },
+        ],
+        requiredChargedMoves: [
+          {
+            requiredMoves: ['FUTURE_MOVE_8'],
+          },
+        ],
+        formChangeBonusAttributes: [
+          {
+            targetForm: 'FUTURE_TARGET_FORM',
+          },
+        ],
       },
     ])
   })
