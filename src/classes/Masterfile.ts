@@ -211,9 +211,10 @@ export default class Masterfile {
       const ref =
         x && typeof x === 'object'
           ? x
-          : reference[fieldKey]
-            ? reference[fieldKey][x]
-            : x
+          : reference[fieldKey]?.[x] ?? x
+      if (ref === undefined || ref === null || typeof ref !== 'object') {
+        return ref
+      }
 
       try {
         Object.entries(ref).forEach((subField) => {

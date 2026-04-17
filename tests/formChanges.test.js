@@ -354,6 +354,85 @@ describe('Pokemon form changes', () => {
     ])
   })
 
+  test('falls back to raw strings when templating unresolved form-change refs', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+
+    allPokemon.parsedForms[formId] = {
+      formId,
+      formName: 'Normal',
+      formChanges: [
+        {
+          availableForms: ['FUTURE_FORM_ONLY'],
+          moveReassignment: {
+            chargedMoves: [
+              {
+                existingMoves: ['FUTURE_MOVE_1'],
+                replacementMoves: ['FUTURE_MOVE_2'],
+              },
+            ],
+          },
+        },
+      ],
+    }
+
+    const template = createFormTemplate()
+    template.formChanges.moveReassignment = {
+      chargedMoves: {
+        existingMoves: 'moveName',
+        replacementMoves: 'moveName',
+      },
+    }
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        availableForms: {
+          [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK]: {
+            formName: 'Black',
+          },
+        },
+        quickMoves: {
+          [Rpc.HoloPokemonMove.DRAGON_BREATH_FAST]: {
+            moveName: 'Dragon Breath',
+          },
+        },
+        chargedMoves: {
+          [Rpc.HoloPokemonMove.GLACIATE]: {
+            moveName: 'Glaciate',
+          },
+        },
+        existingMoves: {
+          [Rpc.HoloPokemonMove.GLACIATE]: {
+            moveName: 'Glaciate',
+          },
+        },
+        replacementMoves: {
+          [Rpc.HoloPokemonMove.FREEZE_SHOCK]: {
+            moveName: 'Freeze Shock',
+          },
+        },
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        available_forms: ['FUTURE_FORM_ONLY'],
+        move_reassignment: {
+          charged_moves: [
+            {
+              existing_moves: ['FUTURE_MOVE_1'],
+              replacement_moves: ['FUTURE_MOVE_2'],
+            },
+          ],
+        },
+      },
+    ])
+  })
+
   test('keeps templated form-change singleton references singular', () => {
     const allPokemon = createPokemon()
     const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
