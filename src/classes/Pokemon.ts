@@ -22,7 +22,6 @@ import type {
   FormProto,
   GenderProto,
   ItemProto,
-  LocationCardProto,
   MegaProto,
   MoveProto,
   PokemonIdProto,
@@ -34,6 +33,7 @@ import {
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
 import { normalizeItemId } from '../utils/itemId'
+import { normalizeLocationCardId } from '../utils/locationCardId'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -277,11 +277,8 @@ export default class Pokemon extends Masterfile {
     return Rpc.HoloPokemonFamilyId[value as FamilyProto]
   }
 
-  resolveLocationCardId(value?: string | number): number | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return Rpc.LocationCard[value as LocationCardProto]
+  resolveLocationCardId(value?: string | number): number | string | undefined {
+    return normalizeLocationCardId(value)
   }
 
   enumName(
@@ -1256,12 +1253,25 @@ export default class Pokemon extends Masterfile {
                     (formId) => this.parsedForms[formId]?.formName === 'Normal',
                   ) ?? pokemon.forms[0]
           pokemon.forms.forEach((form) => {
+            const formDetails = this.parsedForms[form]
+            const seenFormChanges = new Set<string>()
+            const formChanges = [
+              ...(form === baseFormId ? pokemon.formChanges || [] : []),
+              ...(formDetails?.formChanges || []),
+            ].filter((formChange) => {
+              const key = JSON.stringify(formChange)
+              if (seenFormChanges.has(key)) {
+                return false
+              }
+              seenFormChanges.add(key)
+              return true
+            })
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
               evolutions: form === 0 ? pokemon.evolutions : undefined,
-              formChanges: form === baseFormId ? pokemon.formChanges : undefined,
               tempEvolutions: form === 0 ? pokemon.tempEvolutions : undefined,
-              ...this.parsedForms[form],
+              ...formDetails,
+              formChanges: formChanges.length ? formChanges : undefined,
               forms: [form],
             }
           })

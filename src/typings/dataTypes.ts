@@ -87,7 +87,10 @@ export interface MiscProto {
   formatted: string
 }
 
-export interface LocationCardInfo extends MiscProto {
+export interface LocationCardInfo {
+  id: number | string
+  proto: string
+  formatted: string
   imageUrl?: string
   cardType?: string
   vfxAddress?: string
@@ -232,14 +235,14 @@ export interface BreadMoveSlot {
 }
 
 export interface FormChangeLocationCardSettings {
-  existingLocationCard?: number
-  replacementLocationCard?: number
+  existingLocationCard?: number | string
+  replacementLocationCard?: number | string
 }
 
 export interface FormChangeComponentLocationCardSettings {
-  basePokemonLocationCard?: number
-  componentPokemonLocationCard?: number
-  fusionPokemonLocationCard?: number
+  basePokemonLocationCard?: number | string
+  componentPokemonLocationCard?: number | string
+  fusionPokemonLocationCard?: number | string
 }
 
 export interface TempEvolutions extends BaseStats {

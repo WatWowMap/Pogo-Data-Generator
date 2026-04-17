@@ -1,5 +1,6 @@
 const Pokemon = require('../dist/classes/Pokemon').default
 const Item = require('../dist/classes/Item').default
+const LocationCards = require('../dist/classes/LocationCards').default
 const Masterfile = require('../dist/classes/Masterfile').default
 const base = require('../dist/base').default
 const { Rpc } = require('@na-ji/pogo-protos')
@@ -12,6 +13,11 @@ const createPokemon = () => {
 const createItems = () => {
   const options = JSON.parse(JSON.stringify(base.items.options))
   return new Item(options)
+}
+
+const createLocationCards = () => {
+  const options = JSON.parse(JSON.stringify(base.locationCards.options))
+  return new LocationCards(options)
 }
 
 const createFormTemplate = () =>
@@ -501,6 +507,173 @@ describe('Pokemon form changes', () => {
         item_requirement: ['Fusion Resource Proto Lag Test'],
       },
     ])
+  })
+
+  test('preserves unknown location card refs in raw and templated form changes', () => {
+    const allPokemon = createPokemon()
+    const allLocationCards = createLocationCards()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const locationCards = {
+      existing: 'LC_SPECIALBACKGROUND_PROTO_LAG_EXISTING',
+      replacement: 'LC_SPECIALBACKGROUND_PROTO_LAG_REPLACEMENT',
+      base: 'LC_SPECIALBACKGROUND_PROTO_LAG_BASE',
+      component: 'LC_SPECIALBACKGROUND_PROTO_LAG_COMPONENT',
+      fusion: 'LC_SPECIALBACKGROUND_PROTO_LAG_FUSION',
+    }
+
+    Object.values(locationCards).forEach((locationCard) => {
+      expect(Rpc.LocationCard[locationCard]).toBeUndefined()
+      allLocationCards.addLocationCard({
+        templateId: locationCard,
+        data: {
+          locationCardSettings: {
+            locationCard,
+          },
+        },
+      })
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              locationCardSettings: [
+                {
+                  existingLocationCard: locationCards.existing,
+                  replacementLocationCard: locationCards.replacement,
+                },
+              ],
+              componentPokemonSettings: {
+                locationCardSettings: [
+                  {
+                    basePokemonLocationCard: locationCards.base,
+                    componentPokemonLocationCard: locationCards.component,
+                    fusionPokemonLocationCard: locationCards.fusion,
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].locationCardSettings,
+    ).toEqual([
+      {
+        existingLocationCard: locationCards.existing,
+        replacementLocationCard: locationCards.replacement,
+      },
+    ])
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].componentPokemonSettings
+        .locationCardSettings,
+    ).toEqual([
+      {
+        basePokemonLocationCard: locationCards.base,
+        componentPokemonLocationCard: locationCards.component,
+        fusionPokemonLocationCard: locationCards.fusion,
+      },
+    ])
+
+    const template = createFormTemplate()
+    template.formChanges.componentPokemonSettings.locationCardSettings = {
+      basePokemonLocationCard: 'formatted',
+      componentPokemonLocationCard: 'formatted',
+      fusionPokemonLocationCard: 'formatted',
+    }
+    template.formChanges.locationCardSettings = {
+      existingLocationCard: 'formatted',
+      replacementLocationCard: 'formatted',
+    }
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        existingLocationCard: allLocationCards.parsedLocationCards,
+        replacementLocationCard: allLocationCards.parsedLocationCards,
+        basePokemonLocationCard: allLocationCards.parsedLocationCards,
+        componentPokemonLocationCard: allLocationCards.parsedLocationCards,
+        fusionPokemonLocationCard: allLocationCards.parsedLocationCards,
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        component_pokemon_settings: {
+          location_card_settings: [
+            {
+              base_pokemon_location_card: 'Proto Lag Base',
+              component_pokemon_location_card: 'Proto Lag Component',
+              fusion_pokemon_location_card: 'Proto Lag Fusion',
+            },
+          ],
+        },
+        location_card_settings: [
+          {
+            existing_location_card: 'Proto Lag Existing',
+            replacement_location_card: 'Proto Lag Replacement',
+          },
+        ],
+      },
+    ])
+  })
+
+  test('merges base and form-specific form changes on split default forms', () => {
+    const allPokemon = createPokemon()
+
+    allPokemon.parsedPokemon[800] = {
+      pokemonName: 'Necrozma',
+      pokedexId: 800,
+      forms: [2717, 2720],
+      formChanges: [
+        {
+          availableForms: [2718],
+          candyCost: 30,
+        },
+      ],
+    }
+    allPokemon.parsedForms[2717] = {
+      formId: 2717,
+      formName: 'Normal',
+      formChanges: [
+        {
+          availableForms: [2719],
+          candyCost: 1000,
+        },
+      ],
+    }
+    allPokemon.parsedForms[2720] = {
+      formId: 2720,
+      formName: 'Ultra',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(allPokemon.parsedPokeForms['800_2717'].formChanges).toEqual([
+      {
+        availableForms: [2718],
+        candyCost: 30,
+      },
+      {
+        availableForms: [2719],
+        candyCost: 1000,
+      },
+    ])
+    expect(allPokemon.parsedPokeForms['800_2720'].formChanges).toBeUndefined()
   })
 
   test('does not leak base form changes to non-base split form entries', () => {
