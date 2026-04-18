@@ -248,60 +248,90 @@ export default class Pokemon extends Masterfile {
   resolveEnumId(
     enumObject: { [key: string]: string | number },
     value?: string | number,
-  ): number | string | undefined {
+    label = 'value',
+  ): number | undefined {
     if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    return enumObject[value] ?? value
+    if (typeof value === 'number') {
+      if (typeof enumObject[value] === 'string') return value
+      console.warn(`Unable to resolve form change ${label}`, value)
+      return undefined
+    }
+    if (/^\d+$/.test(value)) return this.resolveEnumId(enumObject, +value, label)
+    const resolved = enumObject[value]
+    if (typeof resolved === 'number') return resolved
+    console.warn(`Unable to resolve form change ${label}`, value)
+    return undefined
   }
 
-  resolvePokemonId(value?: string | number): number | string | undefined {
-    return this.resolveEnumId(Rpc.HoloPokemonId, value as PokemonIdProto)
+  resolvePokemonId(value?: string | number): number | undefined {
+    return this.resolveEnumId(Rpc.HoloPokemonId, value as PokemonIdProto, 'pokemon')
   }
 
-  resolveFormId(value?: string | number): number | string | undefined {
+  resolveFormId(value?: string | number): number | undefined {
     return this.resolveEnumId(
       Rpc.PokemonDisplayProto.Form,
       value as FormProto,
+      'form',
     )
   }
 
-  resolveItemId(value?: string | number): number | string | undefined {
-    return normalizeItemId(value)
+  resolveItemId(value?: string | number): number | undefined {
+    const resolved = normalizeItemId(value)
+    if (resolved === undefined && value !== undefined && value !== null && value !== '') {
+      console.warn('Unable to resolve form change item', value)
+    }
+    return resolved
   }
 
-  resolveMoveId(value?: string | number): number | string | undefined {
-    return this.resolveEnumId(Rpc.HoloPokemonMove, value as MoveProto)
+  resolveMoveId(value?: string | number): number | undefined {
+    return this.resolveEnumId(Rpc.HoloPokemonMove, value as MoveProto, 'move')
   }
 
-  resolveFamilyId(value?: string | number): number | string | undefined {
+  resolveFamilyId(value?: string | number): number | undefined {
     return this.resolveEnumId(
       Rpc.HoloPokemonFamilyId,
       value as FamilyProto,
+      'family',
     )
   }
 
-  resolveLocationCardId(value?: string | number): number | string | undefined {
-    return normalizeLocationCardId(value)
+  resolveLocationCardId(value?: string | number): number | undefined {
+    const resolved = normalizeLocationCardId(value)
+    if (resolved === undefined && value !== undefined && value !== null && value !== '') {
+      console.warn('Unable to resolve form change location card', value)
+    }
+    return resolved
   }
 
   enumName(
     enumObject: { [key: string]: string | number },
     value?: string | number,
+    label = 'value',
   ): string | undefined {
     if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'string') return value
-    return typeof enumObject[value] === 'string'
-      ? (enumObject[value] as string)
-      : undefined
+    if (typeof value === 'string') {
+      if (/^\d+$/.test(value)) return this.enumName(enumObject, +value, label)
+      if (enumObject[value] !== undefined) return value
+      console.warn(`Unable to resolve form change ${label}`, value)
+      return undefined
+    }
+    if (typeof enumObject[value] === 'string') {
+      return enumObject[value] as string
+    }
+    const matchedEntry = Object.entries(enumObject).find(
+      ([key, enumValue]) => !/^\d+$/.test(key) && enumValue === value,
+    )
+    if (matchedEntry) return matchedEntry[0]
+    console.warn(`Unable to resolve form change ${label}`, value)
+    return undefined
   }
 
-  resolveMoveIds(moves: (string | number)[]): (number | string)[] {
+  resolveMoveIds(moves: (string | number)[]): number[] {
     if (!moves) return []
     try {
       return moves
         .map((move) => this.resolveMoveId(move))
-        .filter((move): move is number | string => move !== undefined)
+        .filter((move): move is number => move !== undefined)
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
       return []
@@ -367,9 +397,7 @@ export default class Pokemon extends Masterfile {
           const availableForms =
             formChange.availableForm
               ?.map((form) => this.resolveFormId(form))
-              .filter(
-                (formId): formId is number | string => formId !== undefined,
-              ) || []
+              .filter((formId): formId is number => formId !== undefined) || []
           const questRequirements =
             formChange.questRequirement
               ?.map((requirement) => ({
@@ -396,6 +424,7 @@ export default class Pokemon extends Masterfile {
                 formChangeType: this.enumName(
                   Rpc.ComponentPokemonSettingsProto.FormChangeType,
                   formChange.componentPokemonSettings.formChangeType,
+                  'form change type',
                 ),
                 fusionMove1: this.resolveMoveId(
                   formChange.componentPokemonSettings.fusionMove1,
@@ -490,6 +519,7 @@ export default class Pokemon extends Masterfile {
                 breadMode: this.enumName(
                   Rpc.BreadModeEnum.Modifier,
                   attributes.breadMode,
+                  'bread mode',
                 ),
                 clearBreadMode: attributes.clearBreadMode,
                 maxMoves:
@@ -498,10 +528,12 @@ export default class Pokemon extends Masterfile {
                       moveType: this.enumName(
                         Rpc.BreadMoveSlotProto.BreadMoveType,
                         move.moveType,
+                        'bread move type',
                       ),
                       moveLevel: this.enumName(
                         Rpc.BreadMoveLevels,
                         move.moveLevel,
+                        'bread move level',
                       ),
                     }))
                     .filter(

@@ -28,6 +28,10 @@ export default class Item extends Masterfile {
         dropTrainerLevel <= this.options.minTrainerLevel
       ) {
         const id = normalizeItemId(itemId)
+        if (id === undefined) {
+          console.warn('Unable to resolve item id', itemId)
+          return
+        }
         this.parsedItems[id] = {
           itemId: id,
           itemName: templateId

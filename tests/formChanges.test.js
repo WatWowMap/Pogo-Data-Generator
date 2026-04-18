@@ -230,9 +230,7 @@ describe('Pokemon form changes', () => {
 
   test('parses fusion form changes on form-specific entries', () => {
     const allPokemon = createPokemon()
-    const fusionItemId =
-      Rpc.Item.ITEM_FUSION_RESOURCE_BLACK_KYUREM ??
-      'ITEM_FUSION_RESOURCE_BLACK_KYUREM'
+    const fusionItemId = Rpc.Item.ITEM_FUSION_RESOURCE_BLACK_KYUREM
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
@@ -280,44 +278,46 @@ describe('Pokemon form changes', () => {
       },
     })
 
+    const expectedFormChange = {
+      availableForms: [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK],
+      candyCost: 30,
+      itemCostCount: 1000,
+      componentPokemonSettings: {
+        pokedexId: Rpc.HoloPokemonId.ZEKROM,
+        componentCandyCost: 30,
+        formChangeType: 'FUSE',
+        locationCardSettings: [
+          {
+            basePokemonLocationCard:
+              Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_001,
+            componentPokemonLocationCard:
+              Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_WHITE_001,
+            fusionPokemonLocationCard:
+              Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_WHITE_001,
+          },
+        ],
+        familyId: Rpc.HoloPokemonFamilyId.FAMILY_ZEKROM,
+      },
+      moveReassignment: {
+        chargedMoves: [
+          {
+            existingMoves: [Rpc.HoloPokemonMove.GLACIATE],
+            replacementMoves: [Rpc.HoloPokemonMove.FREEZE_SHOCK],
+          },
+        ],
+      },
+    }
+    if (fusionItemId !== undefined) {
+      expectedFormChange.itemRequirement = fusionItemId
+    }
+
     expect(
       allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL]
         .formChanges,
-    ).toEqual([
-      {
-        availableForms: [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK],
-        candyCost: 30,
-        itemRequirement: fusionItemId,
-        itemCostCount: 1000,
-        componentPokemonSettings: {
-          pokedexId: Rpc.HoloPokemonId.ZEKROM,
-          componentCandyCost: 30,
-          formChangeType: 'FUSE',
-          locationCardSettings: [
-            {
-              basePokemonLocationCard:
-                Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_001,
-              componentPokemonLocationCard:
-                Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_WHITE_001,
-              fusionPokemonLocationCard:
-                Rpc.LocationCard.LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_WHITE_001,
-            },
-          ],
-          familyId: Rpc.HoloPokemonFamilyId.FAMILY_ZEKROM,
-        },
-        moveReassignment: {
-          chargedMoves: [
-            {
-              existingMoves: [Rpc.HoloPokemonMove.GLACIATE],
-              replacementMoves: [Rpc.HoloPokemonMove.FREEZE_SHOCK],
-            },
-          ],
-        },
-      },
-    ])
+    ).toEqual([expectedFormChange])
   })
 
-  test('preserves unresolved enum refs inside form changes', () => {
+  test('drops unresolved form-change refs and warns', () => {
     const allPokemon = createPokemon()
 
     expect(
@@ -327,6 +327,8 @@ describe('Pokemon form changes', () => {
           componentPokemonSettings: {
             pokedexId: 'FUTURE_MON',
             form: 'FUTURE_COMPONENT_FORM',
+            componentCandyCost: 10,
+            formChangeType: 'FUSE',
             fusionMove1: 'FUTURE_MOVE_1',
             fusionMove2: 'FUTURE_MOVE_2',
             familyId: 'FAMILY_FUTURE',
@@ -358,130 +360,39 @@ describe('Pokemon form changes', () => {
           formChangeBonusAttributes: [
             {
               targetForm: 'FUTURE_TARGET_FORM',
+              breadMode: 'BREAD_MODE',
+              clearBreadMode: true,
             },
           ],
         },
       ]),
     ).toEqual([
       {
-        availableForms: ['FUTURE_FORM_ONLY'],
         componentPokemonSettings: {
-          pokedexId: 'FUTURE_MON',
-          formId: 'FUTURE_COMPONENT_FORM',
-          fusionMove1: 'FUTURE_MOVE_1',
-          fusionMove2: 'FUTURE_MOVE_2',
-          familyId: 'FAMILY_FUTURE',
+          componentCandyCost: 10,
+          formChangeType: 'FUSE',
         },
-        moveReassignment: {
-          quickMoves: [
-            {
-              existingMoves: ['FUTURE_MOVE_3'],
-              replacementMoves: ['FUTURE_MOVE_4'],
-            },
-          ],
-          chargedMoves: [
-            {
-              existingMoves: ['FUTURE_MOVE_5'],
-              replacementMoves: ['FUTURE_MOVE_6'],
-            },
-          ],
-        },
-        requiredQuickMoves: [
-          {
-            requiredMoves: ['FUTURE_MOVE_7'],
-          },
-        ],
-        requiredChargedMoves: [
-          {
-            requiredMoves: ['FUTURE_MOVE_8'],
-          },
-        ],
         formChangeBonusAttributes: [
           {
-            targetForm: 'FUTURE_TARGET_FORM',
+            breadMode: 'BREAD_MODE',
+            clearBreadMode: true,
           },
         ],
       },
     ])
-  })
 
-  test('falls back to raw strings when templating unresolved form-change refs', () => {
-    const allPokemon = createPokemon()
-    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
-
-    allPokemon.parsedForms[formId] = {
-      formId,
-      formName: 'Normal',
-      formChanges: [
-        {
-          availableForms: ['FUTURE_FORM_ONLY'],
-          moveReassignment: {
-            chargedMoves: [
-              {
-                existingMoves: ['FUTURE_MOVE_1'],
-                replacementMoves: ['FUTURE_MOVE_2'],
-              },
-            ],
-          },
-        },
-      ],
-    }
-
-    const template = createFormTemplate()
-    template.formChanges.moveReassignment = {
-      chargedMoves: {
-        existingMoves: 'moveName',
-        replacementMoves: 'moveName',
-      },
-    }
-    const templated = allPokemon.templater(
-      { [formId]: allPokemon.parsedForms[formId] },
-      {
-        template,
-        options: createFormTemplateOptions(),
-      },
-      {
-        availableForms: {
-          [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK]: {
-            formName: 'Black',
-          },
-        },
-        quickMoves: {
-          [Rpc.HoloPokemonMove.DRAGON_BREATH_FAST]: {
-            moveName: 'Dragon Breath',
-          },
-        },
-        chargedMoves: {
-          [Rpc.HoloPokemonMove.GLACIATE]: {
-            moveName: 'Glaciate',
-          },
-        },
-        existingMoves: {
-          [Rpc.HoloPokemonMove.GLACIATE]: {
-            moveName: 'Glaciate',
-          },
-        },
-        replacementMoves: {
-          [Rpc.HoloPokemonMove.FREEZE_SHOCK]: {
-            moveName: 'Freeze Shock',
-          },
-        },
-      },
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve form change form',
+      'FUTURE_FORM_ONLY',
     )
-
-    expect(templated[formId].form_changes).toEqual([
-      {
-        available_forms: ['FUTURE_FORM_ONLY'],
-        move_reassignment: {
-          charged_moves: [
-            {
-              existing_moves: ['FUTURE_MOVE_1'],
-              replacement_moves: ['FUTURE_MOVE_2'],
-            },
-          ],
-        },
-      },
-    ])
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve form change pokemon',
+      'FUTURE_MON',
+    )
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve form change move',
+      'FUTURE_MOVE_8',
+    )
   })
 
   test('keeps templated form-change singleton references singular', () => {
@@ -713,7 +624,7 @@ describe('Pokemon form changes', () => {
     ).toBe('Dragon Breath')
   })
 
-  test('resolves unknown unprefixed fusion resources in templated output', () => {
+  test('drops unknown fusion resources from raw and templated output', () => {
     const allPokemon = createPokemon()
     const allItems = createItems()
     const unknownFusionResource = 'FUSION_RESOURCE_PROTO_LAG_TEST'
@@ -753,11 +664,15 @@ describe('Pokemon form changes', () => {
       },
     })
 
-    expect(
-      allPokemon.parsedForms[formId].formChanges[0].itemRequirement,
-    ).toBe(storedFusionResource)
-    expect(allItems.parsedItems[storedFusionResource].itemId).toBe(
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+    expect(allItems.parsedItems[storedFusionResource]).toBeUndefined()
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve item id',
       storedFusionResource,
+    )
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve form change item',
+      unknownFusionResource,
     )
 
     const template = createFormTemplate()
@@ -774,14 +689,10 @@ describe('Pokemon form changes', () => {
       },
     )
 
-    expect(templated[formId].form_changes).toEqual([
-      {
-        item_requirement: ['Fusion Resource Proto Lag Test'],
-      },
-    ])
+    expect(templated[formId].form_changes).toBeUndefined()
   })
 
-  test('preserves unknown location card refs in raw and templated form changes', () => {
+  test('drops unknown location card refs in raw and templated form changes', () => {
     const allPokemon = createPokemon()
     const allLocationCards = createLocationCards()
     const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
@@ -804,6 +715,7 @@ describe('Pokemon form changes', () => {
         },
       })
     })
+    expect(allLocationCards.parsedLocationCards).toEqual({})
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
@@ -838,24 +750,15 @@ describe('Pokemon form changes', () => {
       },
     })
 
-    expect(
-      allPokemon.parsedForms[formId].formChanges[0].locationCardSettings,
-    ).toEqual([
-      {
-        existingLocationCard: locationCards.existing,
-        replacementLocationCard: locationCards.replacement,
-      },
-    ])
-    expect(
-      allPokemon.parsedForms[formId].formChanges[0].componentPokemonSettings
-        .locationCardSettings,
-    ).toEqual([
-      {
-        basePokemonLocationCard: locationCards.base,
-        componentPokemonLocationCard: locationCards.component,
-        fusionPokemonLocationCard: locationCards.fusion,
-      },
-    ])
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve location card id',
+      locationCards.existing,
+    )
+    expect(console.warn).toHaveBeenCalledWith(
+      'Unable to resolve form change location card',
+      locationCards.base,
+    )
 
     const template = createFormTemplate()
     template.formChanges.componentPokemonSettings.locationCardSettings = {
@@ -883,25 +786,7 @@ describe('Pokemon form changes', () => {
       },
     )
 
-    expect(templated[formId].form_changes).toEqual([
-      {
-        component_pokemon_settings: {
-          location_card_settings: [
-            {
-              base_pokemon_location_card: 'Proto Lag Base',
-              component_pokemon_location_card: 'Proto Lag Component',
-              fusion_pokemon_location_card: 'Proto Lag Fusion',
-            },
-          ],
-        },
-        location_card_settings: [
-          {
-            existing_location_card: 'Proto Lag Existing',
-            replacement_location_card: 'Proto Lag Replacement',
-          },
-        ],
-      },
-    ])
+    expect(templated[formId].form_changes).toBeUndefined()
   })
 
   test('resolves numeric-string location card ids to real proto names', () => {

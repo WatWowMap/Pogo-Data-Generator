@@ -1,16 +1,16 @@
 import { Rpc } from '@na-ji/pogo-protos'
 import type { ItemProto } from '../typings/protos'
 
-export function normalizeItemId(
-  value?: string | number,
-): number | string | undefined {
+export function normalizeItemId(value?: string | number): number | undefined {
   if (value === undefined || value === null || value === '') return undefined
-  if (typeof value === 'number') return value
-  if (/^\d+$/.test(value)) return +value
+  if (typeof value === 'number') {
+    return typeof Rpc.Item[value] === 'string' ? value : undefined
+  }
+  if (/^\d+$/.test(value)) return normalizeItemId(+value)
 
   const directMatch = Rpc.Item[value as ItemProto]
   if (directMatch !== undefined) return directMatch
 
   const prefixedValue = value.startsWith('ITEM_') ? value : `ITEM_${value}`
-  return Rpc.Item[prefixedValue as ItemProto] ?? prefixedValue
+  return Rpc.Item[prefixedValue as ItemProto]
 }

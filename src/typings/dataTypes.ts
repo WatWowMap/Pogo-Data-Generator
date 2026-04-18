@@ -72,7 +72,7 @@ export interface SingleMove {
 
 export interface AllItems {
   [id: string]: {
-    itemId: number | string
+    itemId: number
     itemName: string
     proto: string
     type: string
@@ -88,7 +88,7 @@ export interface MiscProto {
 }
 
 export interface LocationCardInfo {
-  id: number | string
+  id: number
   proto: string
   formatted: string
   imageUrl?: string
@@ -170,10 +170,10 @@ interface SingleForm extends BaseStats {
 }
 
 export interface FormChanges {
-  availableForms?: (number | string)[]
+  availableForms?: number[]
   candyCost?: number
   stardustCost?: number
-  itemRequirement?: number | string
+  itemRequirement?: number
   itemCostCount?: number
   questRequirements?: FormChangeQuestRequirement[]
   componentPokemonSettings?: FormChangeComponentPokemonSettings
@@ -193,14 +193,14 @@ export interface FormChangeQuestRequirement {
 }
 
 export interface FormChangeComponentPokemonSettings {
-  pokedexId?: number | string
-  formId?: number | string
+  pokedexId?: number
+  formId?: number
   componentCandyCost?: number
   formChangeType?: string
-  fusionMove1?: number | string
-  fusionMove2?: number | string
+  fusionMove1?: number
+  fusionMove2?: number
   locationCardSettings?: FormChangeComponentLocationCardSettings[]
-  familyId?: number | string
+  familyId?: number
 }
 
 export interface FormChangeMoveReassignment {
@@ -209,12 +209,12 @@ export interface FormChangeMoveReassignment {
 }
 
 export interface MoveReassignment {
-  existingMoves?: (number | string)[]
-  replacementMoves?: (number | string)[]
+  existingMoves?: number[]
+  replacementMoves?: number[]
 }
 
 export interface FormChangeMoveRequirement {
-  requiredMoves?: (number | string)[]
+  requiredMoves?: number[]
 }
 
 export interface FormChangeBreadMoveRequirement {
@@ -223,7 +223,7 @@ export interface FormChangeBreadMoveRequirement {
 }
 
 export interface FormChangeBonusAttributes {
-  targetForm?: number | string
+  targetForm?: number
   breadMode?: string
   clearBreadMode?: boolean
   maxMoves?: BreadMoveSlot[]
@@ -235,14 +235,14 @@ export interface BreadMoveSlot {
 }
 
 export interface FormChangeLocationCardSettings {
-  existingLocationCard?: number | string
-  replacementLocationCard?: number | string
+  existingLocationCard?: number
+  replacementLocationCard?: number
 }
 
 export interface FormChangeComponentLocationCardSettings {
-  basePokemonLocationCard?: number | string
-  componentPokemonLocationCard?: number | string
-  fusionPokemonLocationCard?: number | string
+  basePokemonLocationCard?: number
+  componentPokemonLocationCard?: number
+  fusionPokemonLocationCard?: number
 }
 
 export interface TempEvolutions extends BaseStats {
