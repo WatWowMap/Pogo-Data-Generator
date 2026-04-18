@@ -1340,8 +1340,9 @@ export default class Pokemon extends Masterfile {
             )
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
-              evolutions: form === 0 ? pokemon.evolutions : undefined,
-              tempEvolutions: form === 0 ? pokemon.tempEvolutions : undefined,
+              evolutions: form === baseFormId ? pokemon.evolutions : undefined,
+              tempEvolutions:
+                form === baseFormId ? pokemon.tempEvolutions : undefined,
               ...formDetails,
               formChanges: formChanges.length ? formChanges : undefined,
               forms: [form],

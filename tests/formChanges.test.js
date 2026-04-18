@@ -232,7 +232,7 @@ describe('Pokemon form changes', () => {
     const allPokemon = createPokemon()
     const fusionItemId =
       Rpc.Item.ITEM_FUSION_RESOURCE_BLACK_KYUREM ??
-      'FUSION_RESOURCE_BLACK_KYUREM'
+      'ITEM_FUSION_RESOURCE_BLACK_KYUREM'
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
@@ -1016,6 +1016,8 @@ describe('Pokemon form changes', () => {
 
   test('keeps base form changes on the default split form without form zero', () => {
     const allPokemon = createPokemon()
+    const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]
+    const tempEvolutions = [{ tempEvoId: 'TEMP_EVOLUTION_MEGA' }]
 
     allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA] = {
       pokemonName: 'Hoopa',
@@ -1024,12 +1026,14 @@ describe('Pokemon form changes', () => {
         Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
         Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
       ],
+      evolutions,
       formChanges: [
         {
           availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
           candyCost: 50,
         },
       ],
+      tempEvolutions,
     }
     allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED] = {
       formId: Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
@@ -1054,13 +1058,35 @@ describe('Pokemon form changes', () => {
     ])
     expect(
       allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
+      ].evolutions,
+    ).toEqual(evolutions)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
+      ].tempEvolutions,
+    ).toEqual(tempEvolutions)
+    expect(
+      allPokemon.parsedPokeForms[
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
       ].formChanges,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].evolutions,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].tempEvolutions,
     ).toBeUndefined()
   })
 
   test('prefers the explicit default split form over unset form zero', () => {
     const allPokemon = createPokemon()
+    const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]
+    const tempEvolutions = [{ tempEvoId: 'TEMP_EVOLUTION_MEGA' }]
 
     allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA] = {
       pokemonName: 'Hoopa',
@@ -1071,12 +1097,14 @@ describe('Pokemon form changes', () => {
         Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
         Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
       ],
+      evolutions,
       formChanges: [
         {
           availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
           candyCost: 50,
         },
       ],
+      tempEvolutions,
     }
     allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED] = {
       formId: Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
@@ -1093,6 +1121,12 @@ describe('Pokemon form changes', () => {
       allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.HOOPA}_0`].formChanges,
     ).toBeUndefined()
     expect(
+      allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.HOOPA}_0`].evolutions,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.HOOPA}_0`].tempEvolutions,
+    ).toBeUndefined()
+    expect(
       allPokemon.parsedPokeForms[
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
       ].formChanges,
@@ -1102,6 +1136,16 @@ describe('Pokemon form changes', () => {
         candyCost: 50,
       },
     ])
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
+      ].evolutions,
+    ).toEqual(evolutions)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
+      ].tempEvolutions,
+    ).toEqual(tempEvolutions)
   })
 
   test('parses gated form changes with move and bread requirements', () => {
