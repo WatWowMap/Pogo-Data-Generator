@@ -1963,7 +1963,7 @@ describe('Pokemon form changes', () => {
       allPokemon.parsedPokeForms[
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
       ].defaultFormId,
-    ).toBe(Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND)
+    ).toBe(0)
     expect(
       allPokemon.parsedPokeForms[
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
@@ -2060,7 +2060,7 @@ describe('Pokemon form changes', () => {
 
     allPokemon.makeFormsSeparate()
 
-    expect(allPokemon.parsedPokeForms['999_1234'].defaultFormId).toBe(1234)
+    expect(allPokemon.parsedPokeForms['999_1234'].defaultFormId).toBe(0)
     expect(allPokemon.parsedPokeForms['999_1234'].formChanges).toEqual([
       {
         availableForms: [1235],

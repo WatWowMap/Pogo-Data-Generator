@@ -1469,8 +1469,19 @@ export default class Pokemon extends Masterfile {
       Object.values(this.parsedPokemon).forEach((pokemon) => {
         if (pokemon.forms) {
           const baseFormId = this.visibleBaseFormId(pokemon, true)
+          const baseFormName =
+            baseFormId !== undefined ? this.parsedForms[baseFormId]?.formName : undefined
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
+            const splitDefaultFormId =
+              baseFormId !== undefined &&
+              ((
+                pokemon.defaultFormId !== undefined &&
+                pokemon.defaultFormId !== 0
+              ) ||
+                baseFormName === 'Normal')
+                ? baseFormId
+                : pokemon.defaultFormId
             const formChanges = this.mergeFormChanges(
               form === baseFormId ? pokemon.formChanges : undefined,
               formDetails?.formChanges,
@@ -1485,8 +1496,7 @@ export default class Pokemon extends Masterfile {
             )
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
-              defaultFormId:
-                baseFormId !== undefined ? baseFormId : pokemon.defaultFormId,
+              defaultFormId: splitDefaultFormId,
               ...formDetails,
               evolutions: evolutions.length ? evolutions : undefined,
               formChanges: formChanges.length ? formChanges : undefined,
