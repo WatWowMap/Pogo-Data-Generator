@@ -437,6 +437,14 @@ export default class Pokemon extends Masterfile {
     if (visibleNormalFormId !== undefined) {
       return visibleNormalFormId
     }
+    if (pokemon.forms.includes(0)) {
+      if (pokemon.defaultFormId === 0) {
+        return 0
+      }
+      if (!allowFallbackToFirstForm) {
+        return 0
+      }
+    }
     if (allowFallbackToFirstForm) {
       const firstVisibleFormId = pokemon.forms.find((formId) => formId !== 0)
       if (firstVisibleFormId !== undefined) {
@@ -1481,14 +1489,19 @@ export default class Pokemon extends Masterfile {
               baseFormId !== undefined &&
               baseFormId !== 0 &&
               baseFormName !== 'Normal'
+            const rewriteUnsetDefaultFormId =
+              pokemon.defaultFormId === 0 &&
+              !pokemon.forms.includes(0) &&
+              baseFormId !== undefined
             const splitDefaultFormId =
-              !preserveHiddenDefaultFormId &&
-              baseFormId !== undefined &&
-              ((
-                pokemon.defaultFormId !== undefined &&
-                pokemon.defaultFormId !== 0
-              ) ||
-                baseFormName === 'Normal')
+              rewriteUnsetDefaultFormId ||
+              (!preserveHiddenDefaultFormId &&
+                baseFormId !== undefined &&
+                ((
+                  pokemon.defaultFormId !== undefined &&
+                  pokemon.defaultFormId !== 0
+                ) ||
+                  baseFormName === 'Normal'))
                 ? baseFormId
                 : pokemon.defaultFormId
             const formChanges = this.mergeFormChanges(

@@ -1932,7 +1932,7 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedPokeForms['800_2717'].defaultFormId).toBe(2717)
   })
 
-  test('prefers a visible split form over synthetic form zero when no normal carrier exists', () => {
+  test('keeps synthetic form zero as the split carrier when default form is unset', () => {
     const allPokemon = createPokemon()
     const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]
 
@@ -1958,16 +1958,6 @@ describe('Pokemon form changes', () => {
 
     expect(
       allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.HOOPA}_0`].formChanges,
-    ).toBeUndefined()
-    expect(
-      allPokemon.parsedPokeForms[
-        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
-      ].defaultFormId,
-    ).toBe(0)
-    expect(
-      allPokemon.parsedPokeForms[
-        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
-      ].formChanges,
     ).toEqual([
       {
         availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
@@ -1977,7 +1967,20 @@ describe('Pokemon form changes', () => {
     expect(
       allPokemon.parsedPokeForms[
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].defaultFormId,
+    ).toBe(0)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].formChanges,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
       ].evolutions,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.HOOPA}_0`].evolutions,
     ).toEqual(evolutions)
   })
 
@@ -2099,7 +2102,7 @@ describe('Pokemon form changes', () => {
 
     allPokemon.makeFormsSeparate()
 
-    expect(allPokemon.parsedPokeForms['999_1234'].defaultFormId).toBe(0)
+    expect(allPokemon.parsedPokeForms['999_1234'].defaultFormId).toBe(1234)
     expect(allPokemon.parsedPokeForms['999_1234'].formChanges).toEqual([
       {
         availableForms: [1235],
