@@ -32,7 +32,7 @@ export default class LocationCards extends Masterfile {
       const resolvedProto =
         typeof id === 'number' && typeof Rpc.LocationCard[id] === 'string'
           ? (Rpc.LocationCard[id] as string)
-          : typeof locationCard === 'string'
+          : typeof locationCard === 'string' && !/^\d+$/.test(locationCard)
             ? locationCard
             : templateId
       const formattedProto = resolvedProto.replace(

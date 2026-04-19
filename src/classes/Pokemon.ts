@@ -374,7 +374,15 @@ export default class Pokemon extends Masterfile {
 
   reconcileDefaultFormChanges(id: number) {
     const pokemon = this.parsedPokemon[id]
-    const defaultForm = this.parsedForms[pokemon?.defaultFormId]
+    const actualDefaultFormId =
+      pokemon?.defaultFormId && pokemon.defaultFormId !== 0
+        ? pokemon.defaultFormId
+        : pokemon?.forms?.find(
+            (formId) =>
+              formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
+          ) ??
+          pokemon?.forms?.find((formId) => formId !== 0)
+    const defaultForm = this.parsedForms[actualDefaultFormId]
     if (!pokemon?.formChanges || !defaultForm?.formChanges) {
       return
     }
@@ -765,12 +773,6 @@ export default class Pokemon extends Masterfile {
                 this.options.skipNormalIfUnset
               )
             ) {
-              if (
-                this.parsedPokemon[id].defaultFormId === undefined &&
-                formName === 'Normal'
-              ) {
-                this.parsedPokemon[id].defaultFormId = +formId
-              }
               this.parsedForms[formId] = {
                 ...this.parsedForms[formId],
                 formName,

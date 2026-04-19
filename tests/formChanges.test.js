@@ -207,11 +207,10 @@ describe('Pokemon form changes', () => {
         pokemonSettings: settings,
       },
     })
+    allPokemon.missingPokemon()
     allPokemon.generateProtoForms()
 
-    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].defaultFormId).toBe(
-      formId,
-    )
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].defaultFormId).toBe(0)
     expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].formChanges).toEqual(
       [
         {
@@ -1049,6 +1048,82 @@ describe('Pokemon form changes', () => {
           {
             existing_location_card: locationCards.existing,
             replacement_location_card: locationCards.replacement,
+          },
+        ],
+      },
+    ])
+  })
+
+  test('keeps template metadata for digit-string location card ids', () => {
+    const allPokemon = createPokemon()
+    const allLocationCards = createLocationCards()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const locationCard = '999998'
+
+    expect(Rpc.LocationCard[+locationCard]).toBeUndefined()
+
+    allLocationCards.addLocationCard({
+      templateId: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
+      data: {
+        locationCardSettings: {
+          locationCard,
+        },
+      },
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              locationCardSettings: [
+                {
+                  existingLocationCard: locationCard,
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(allLocationCards.parsedLocationCards[+locationCard]).toEqual({
+      id: +locationCard,
+      proto: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
+      formatted: 'Future Test',
+      imageUrl: undefined,
+      cardType: undefined,
+      vfxAddress: undefined,
+    })
+
+    const template = createFormTemplate()
+    template.formChanges.locationCardSettings = {
+      existingLocationCard: 'formatted',
+    }
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        existingLocationCard: allLocationCards.parsedLocationCards,
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        location_card_settings: [
+          {
+            existing_location_card: 'Future Test',
           },
         ],
       },
