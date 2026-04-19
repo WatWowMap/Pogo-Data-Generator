@@ -2034,6 +2034,45 @@ describe('Pokemon form changes', () => {
     ).toEqual(tempEvolutions)
   })
 
+  test('preserves a hidden default form id when form zero still exists', () => {
+    const allPokemon = createPokemon()
+
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA] = {
+      pokemonName: 'Hoopa',
+      pokedexId: Rpc.HoloPokemonId.HOOPA,
+      defaultFormId: Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
+      forms: [0, Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+      formChanges: [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+          candyCost: 50,
+        },
+      ],
+    }
+    allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND] = {
+      formId: Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
+      formName: 'Unbound',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].defaultFormId,
+    ).toBe(Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].formChanges,
+    ).toEqual([
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+        candyCost: 50,
+      },
+    ])
+  })
+
   test('uses the first visible form as the split base when form zero is omitted', () => {
     const allPokemon = createPokemon()
     const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]

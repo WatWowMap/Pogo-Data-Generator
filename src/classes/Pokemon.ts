@@ -1473,7 +1473,16 @@ export default class Pokemon extends Masterfile {
             baseFormId !== undefined ? this.parsedForms[baseFormId]?.formName : undefined
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
+            const preserveHiddenDefaultFormId =
+              pokemon.defaultFormId !== undefined &&
+              pokemon.defaultFormId !== 0 &&
+              !pokemon.forms.includes(pokemon.defaultFormId) &&
+              pokemon.forms.includes(0) &&
+              baseFormId !== undefined &&
+              baseFormId !== 0 &&
+              baseFormName !== 'Normal'
             const splitDefaultFormId =
+              !preserveHiddenDefaultFormId &&
               baseFormId !== undefined &&
               ((
                 pokemon.defaultFormId !== undefined &&
