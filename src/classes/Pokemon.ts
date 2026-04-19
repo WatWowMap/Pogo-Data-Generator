@@ -765,12 +765,19 @@ export default class Pokemon extends Masterfile {
                 this.options.skipNormalIfUnset
               )
             ) {
+              if (
+                this.parsedPokemon[id].defaultFormId === undefined &&
+                formName === 'Normal'
+              ) {
+                this.parsedPokemon[id].defaultFormId = +formId
+              }
               this.parsedForms[formId] = {
                 ...this.parsedForms[formId],
                 formName,
                 proto: name,
                 formId: +formId,
               }
+              this.reconcileDefaultFormChanges(id)
               PokemonOverrides.addFormData(this, formId)
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
                 this.parsedPokemon[id].forms.push(+formId)

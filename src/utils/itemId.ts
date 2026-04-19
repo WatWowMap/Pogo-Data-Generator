@@ -3,10 +3,8 @@ import type { ItemProto } from '../typings/protos'
 
 export function normalizeItemId(value?: string | number): number | undefined {
   if (value === undefined || value === null || value === '') return undefined
-  if (typeof value === 'number') {
-    return typeof Rpc.Item[value] === 'string' ? value : undefined
-  }
-  if (/^\d+$/.test(value)) return normalizeItemId(+value)
+  if (typeof value === 'number') return value
+  if (/^\d+$/.test(value)) return +value
 
   const directMatch = Rpc.Item[value as ItemProto]
   if (directMatch !== undefined) return directMatch

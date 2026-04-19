@@ -177,6 +177,52 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
   })
 
+  test('reconciles default-form changes after proto-only form discovery', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const settings = basePokemonSettings({
+      pokemonId: 'KYUREM',
+      type: 'POKEMON_TYPE_DRAGON',
+      type2: 'POKEMON_TYPE_ICE',
+      familyId: 'FAMILY_KYUREM',
+      quickMoves: ['DRAGON_BREATH_FAST'],
+      cinematicMoves: ['GLACIATE'],
+      formChange: [
+        {
+          availableForm: ['KYUREM_BLACK'],
+          candyCost: 30,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.generateProtoForms()
+
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].defaultFormId).toBe(
+      formId,
+    )
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].formChanges).toEqual(
+      [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.KYUREM_BLACK],
+          candyCost: 30,
+        },
+      ],
+    )
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+  })
+
   test('reconciles default-form changes when form settings are parsed late', () => {
     const allPokemon = createPokemon()
     const formId = Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED
@@ -692,6 +738,86 @@ describe('Pokemon form changes', () => {
     expect(templated[formId].form_changes).toBeUndefined()
   })
 
+  test('keeps numeric fusion resources in raw and templated output', () => {
+    const allPokemon = createPokemon()
+    const allItems = createItems()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const futureItemId = 999999
+
+    expect(Rpc.Item[futureItemId]).toBeUndefined()
+
+    allItems.addItem({
+      templateId: 'ITEM_FUTURE_TEST',
+      data: {
+        itemSettings: {
+          itemId: futureItemId,
+          itemType: 'ITEM_TYPE_NONE',
+          category: 'ITEM_CATEGORY_MISC',
+          dropTrainerLevel: 1,
+        },
+      },
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              item: futureItemId,
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].itemRequirement,
+    ).toBe(futureItemId)
+    expect(allItems.parsedItems[futureItemId]).toEqual({
+      itemId: futureItemId,
+      itemName: 'Future Test',
+      proto: 'ITEM_FUTURE_TEST',
+      type: 'None',
+      category: 'Misc',
+      minTrainerLevel: 1,
+    })
+    expect(console.warn).not.toHaveBeenCalledWith(
+      'Unable to resolve item id',
+      futureItemId,
+    )
+    expect(console.warn).not.toHaveBeenCalledWith(
+      'Unable to resolve form change item',
+      futureItemId,
+    )
+
+    const template = createFormTemplate()
+    template.formChanges.itemRequirement = 'itemName'
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        itemRequirement: allItems.parsedItems,
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        item_requirement: ['Future Test'],
+      },
+    ])
+  })
+
   test('drops unknown location card refs in raw and templated form changes', () => {
     const allPokemon = createPokemon()
     const allLocationCards = createLocationCards()
@@ -787,6 +913,146 @@ describe('Pokemon form changes', () => {
     )
 
     expect(templated[formId].form_changes).toBeUndefined()
+  })
+
+  test('keeps numeric location card ids in raw and templated form changes', () => {
+    const allPokemon = createPokemon()
+    const allLocationCards = createLocationCards()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const locationCards = {
+      existing: 999998,
+      replacement: 999997,
+      base: 999996,
+      component: 999995,
+      fusion: 999994,
+    }
+
+    Object.values(locationCards).forEach((locationCard) => {
+      expect(Rpc.LocationCard[locationCard]).toBeUndefined()
+    })
+
+    allLocationCards.addLocationCard({
+      templateId: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
+      data: {
+        locationCardSettings: {
+          locationCard: locationCards.existing,
+        },
+      },
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              locationCardSettings: [
+                {
+                  existingLocationCard: locationCards.existing,
+                  replacementLocationCard: locationCards.replacement,
+                },
+              ],
+              componentPokemonSettings: {
+                locationCardSettings: [
+                  {
+                    basePokemonLocationCard: locationCards.base,
+                    componentPokemonLocationCard: locationCards.component,
+                    fusionPokemonLocationCard: locationCards.fusion,
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].locationCardSettings,
+    ).toEqual([
+      {
+        existingLocationCard: locationCards.existing,
+        replacementLocationCard: locationCards.replacement,
+      },
+    ])
+    expect(
+      allPokemon.parsedForms[formId].formChanges[0].componentPokemonSettings
+        .locationCardSettings,
+    ).toEqual([
+      {
+        basePokemonLocationCard: locationCards.base,
+        componentPokemonLocationCard: locationCards.component,
+        fusionPokemonLocationCard: locationCards.fusion,
+      },
+    ])
+    expect(allLocationCards.parsedLocationCards[locationCards.existing]).toEqual({
+      id: locationCards.existing,
+      proto: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
+      formatted: 'Future Test',
+      imageUrl: undefined,
+      cardType: undefined,
+      vfxAddress: undefined,
+    })
+    expect(console.warn).not.toHaveBeenCalledWith(
+      'Unable to resolve location card id',
+      locationCards.existing,
+    )
+    expect(console.warn).not.toHaveBeenCalledWith(
+      'Unable to resolve form change location card',
+      locationCards.base,
+    )
+
+    const template = createFormTemplate()
+    template.formChanges.componentPokemonSettings.locationCardSettings = {
+      basePokemonLocationCard: 'id',
+      componentPokemonLocationCard: 'id',
+      fusionPokemonLocationCard: 'id',
+    }
+    template.formChanges.locationCardSettings = {
+      existingLocationCard: 'id',
+      replacementLocationCard: 'id',
+    }
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        existingLocationCard: allLocationCards.parsedLocationCards,
+        replacementLocationCard: allLocationCards.parsedLocationCards,
+        basePokemonLocationCard: allLocationCards.parsedLocationCards,
+        componentPokemonLocationCard: allLocationCards.parsedLocationCards,
+        fusionPokemonLocationCard: allLocationCards.parsedLocationCards,
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        component_pokemon_settings: {
+          location_card_settings: [
+            {
+              base_pokemon_location_card: locationCards.base,
+              component_pokemon_location_card: locationCards.component,
+              fusion_pokemon_location_card: locationCards.fusion,
+            },
+          ],
+        },
+        location_card_settings: [
+          {
+            existing_location_card: locationCards.existing,
+            replacement_location_card: locationCards.replacement,
+          },
+        ],
+      },
+    ])
   })
 
   test('resolves numeric-string location card ids to real proto names', () => {
