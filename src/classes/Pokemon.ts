@@ -32,6 +32,7 @@ import {
   mergeTempEvolutions,
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
+import { enumName, resolveEnumId } from '../utils/enum'
 import { normalizeItemId } from '../utils/itemId'
 import { normalizeLocationCardId } from '../utils/locationCardId'
 import Masterfile from './Masterfile'
@@ -245,37 +246,17 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  resolveEnumId(
-    enumObject: { [key: string]: string | number },
-    value?: string | number,
-    label = 'value',
-  ): number | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') return value
-    if (/^\d+$/.test(value)) return +value
-    const resolved = enumObject[value]
-    if (typeof resolved === 'number') return resolved
-    console.warn(`Unable to resolve form change ${label}`, value)
-    return undefined
-  }
-
-  resolvePokemonId(value?: string | number): number | undefined {
-    return this.resolveEnumId(Rpc.HoloPokemonId, value as PokemonIdProto, 'pokemon')
-  }
-
-  resolveFormId(value?: string | number): number | undefined {
-    return this.resolveEnumId(
-      Rpc.PokemonDisplayProto.Form,
-      value as FormProto,
-      'form',
-    )
-  }
-
   resolveFormIds(forms: (string | number)[]): number[] {
     if (!forms) return []
     try {
       return forms
-        .map((form) => this.resolveFormId(form))
+        .map((form) =>
+          resolveEnumId(
+            Rpc.PokemonDisplayProto.Form,
+            form as FormProto,
+            'form',
+          ),
+        )
         .filter((form): form is number => form !== undefined)
         .sort((a, b) => a - b)
     } catch (e) {
@@ -292,18 +273,6 @@ export default class Pokemon extends Masterfile {
     return resolved
   }
 
-  resolveMoveId(value?: string | number): number | undefined {
-    return this.resolveEnumId(Rpc.HoloPokemonMove, value as MoveProto, 'move')
-  }
-
-  resolveFamilyId(value?: string | number): number | undefined {
-    return this.resolveEnumId(
-      Rpc.HoloPokemonFamilyId,
-      value as FamilyProto,
-      'family',
-    )
-  }
-
   resolveLocationCardId(value?: string | number): number | undefined {
     const resolved = normalizeLocationCardId(value)
     if (resolved === undefined && value !== undefined && value !== null && value !== '') {
@@ -312,34 +281,13 @@ export default class Pokemon extends Masterfile {
     return resolved
   }
 
-  enumName(
-    enumObject: { [key: string]: string | number },
-    value?: string | number,
-    label = 'value',
-  ): string | undefined {
-    if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'string') {
-      if (/^\d+$/.test(value)) return this.enumName(enumObject, +value, label)
-      if (enumObject[value] !== undefined) return value
-      console.warn(`Unable to resolve form change ${label}`, value)
-      return undefined
-    }
-    if (typeof enumObject[value] === 'string') {
-      return enumObject[value] as string
-    }
-    const matchedEntry = Object.entries(enumObject).find(
-      ([key, enumValue]) => !/^\d+$/.test(key) && enumValue === value,
-    )
-    if (matchedEntry) return matchedEntry[0]
-    console.warn(`Unable to resolve form change ${label}`, value)
-    return undefined
-  }
-
   resolveMoveIds(moves: (string | number)[]): number[] {
     if (!moves) return []
     try {
       return moves
-        .map((move) => this.resolveMoveId(move))
+        .map((move) =>
+          resolveEnumId(Rpc.HoloPokemonMove, move as MoveProto, 'move'),
+        )
         .filter((move): move is number => move !== undefined)
         .sort((a, b) => a - b)
     } catch (e) {
@@ -424,24 +372,32 @@ export default class Pokemon extends Masterfile {
               ) || []
           const componentPokemonSettings = formChange.componentPokemonSettings
             ? {
-                pokedexId: this.resolvePokemonId(
+                pokedexId: resolveEnumId(
+                  Rpc.HoloPokemonId,
                   formChange.componentPokemonSettings.pokedexId,
+                  'pokemon',
                 ),
-                formId: this.resolveFormId(
+                formId: resolveEnumId(
+                  Rpc.PokemonDisplayProto.Form,
                   formChange.componentPokemonSettings.form,
+                  'form',
                 ),
                 componentCandyCost:
                   formChange.componentPokemonSettings.componentCandyCost,
-                formChangeType: this.enumName(
+                formChangeType: enumName(
                   Rpc.ComponentPokemonSettingsProto.FormChangeType,
                   formChange.componentPokemonSettings.formChangeType,
                   'form change type',
                 ),
-                fusionMove1: this.resolveMoveId(
+                fusionMove1: resolveEnumId(
+                  Rpc.HoloPokemonMove,
                   formChange.componentPokemonSettings.fusionMove1,
+                  'move',
                 ),
-                fusionMove2: this.resolveMoveId(
+                fusionMove2: resolveEnumId(
+                  Rpc.HoloPokemonMove,
                   formChange.componentPokemonSettings.fusionMove2,
+                  'move',
                 ),
                 locationCardSettings:
                   formChange.componentPokemonSettings.locationCardSettings
@@ -461,8 +417,10 @@ export default class Pokemon extends Masterfile {
                         (value) => value !== undefined,
                       ),
                     ) || undefined,
-                familyId: this.resolveFamilyId(
+                familyId: resolveEnumId(
+                  Rpc.HoloPokemonFamilyId,
                   formChange.componentPokemonSettings.familyId,
+                  'family',
                 ),
               }
             : undefined
@@ -516,7 +474,11 @@ export default class Pokemon extends Masterfile {
             formChange.requiredBreadMoves
               ?.map((moves) => ({
                 moveTypes: moves.moveTypes?.filter(Boolean) || undefined,
-                moveLevel: this.enumName(Rpc.BreadMoveLevels, moves.moveLevel),
+                moveLevel: enumName(
+                  Rpc.BreadMoveLevels,
+                  moves.moveLevel,
+                  'bread move level',
+                ),
               }))
               .filter(
                 (moves) =>
@@ -526,8 +488,12 @@ export default class Pokemon extends Masterfile {
           const formChangeBonusAttributes =
             formChange.formChangeBonusAttributes
               ?.map((attributes) => ({
-                targetForm: this.resolveFormId(attributes.targetForm),
-                breadMode: this.enumName(
+                targetForm: resolveEnumId(
+                  Rpc.PokemonDisplayProto.Form,
+                  attributes.targetForm,
+                  'form',
+                ),
+                breadMode: enumName(
                   Rpc.BreadModeEnum.Modifier,
                   attributes.breadMode,
                   'bread mode',
@@ -536,12 +502,12 @@ export default class Pokemon extends Masterfile {
                 maxMoves:
                   attributes.maxMoves
                     ?.map((move) => ({
-                      moveType: this.enumName(
+                      moveType: enumName(
                         Rpc.BreadMoveSlotProto.BreadMoveType,
                         move.moveType,
                         'bread move type',
                       ),
-                      moveLevel: this.enumName(
+                      moveLevel: enumName(
                         Rpc.BreadMoveLevels,
                         move.moveLevel,
                         'bread move level',

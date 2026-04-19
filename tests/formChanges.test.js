@@ -661,15 +661,15 @@ describe('Pokemon form changes', () => {
     ])
 
     expect(console.warn).toHaveBeenCalledWith(
-      'Unable to resolve form change form',
+      'Unable to resolve form',
       'FUTURE_FORM_ONLY',
     )
     expect(console.warn).toHaveBeenCalledWith(
-      'Unable to resolve form change pokemon',
+      'Unable to resolve pokemon',
       'FUTURE_MON',
     )
     expect(console.warn).toHaveBeenCalledWith(
-      'Unable to resolve form change move',
+      'Unable to resolve move',
       'FUTURE_MOVE_8',
     )
   })
