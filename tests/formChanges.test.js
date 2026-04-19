@@ -222,6 +222,53 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
   })
 
+  test('reconciles default-form changes after missing pokemon when proto discovery is disabled', () => {
+    const options = JSON.parse(JSON.stringify(base.pokemon.options))
+    options.includeProtos = false
+    const allPokemon = new Pokemon(options)
+    const formId = Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND
+    const settings = basePokemonSettings({
+      pokemonId: 'HOOPA',
+      type: 'POKEMON_TYPE_PSYCHIC',
+      type2: 'POKEMON_TYPE_GHOST',
+      familyId: 'FAMILY_HOOPA',
+      quickMoves: ['CONFUSION_FAST'],
+      cinematicMoves: ['SHADOW_BALL'],
+      formChange: [
+        {
+          availableForm: ['HOOPA_UNBOUND'],
+          candyCost: 50,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON_HOOPA_UNBOUND',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON_HOOPA',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+
+    expect(allPokemon.parsedForms[formId].formChanges).toEqual([
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+        candyCost: 50,
+      },
+    ])
+
+    allPokemon.missingPokemon()
+
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].defaultFormId).toBe(0)
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].forms).toContain(0)
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+  })
+
   test('reconciles default-form changes when form settings are parsed late', () => {
     const allPokemon = createPokemon()
     const formId = Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED

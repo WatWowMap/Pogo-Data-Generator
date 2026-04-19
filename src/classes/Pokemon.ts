@@ -1390,6 +1390,7 @@ export default class Pokemon extends Masterfile {
           ) {
             this.parsedPokemon[id].forms.push(0)
           }
+          this.reconcileDefaultFormChanges(+id)
         }
       } catch (e) {
         console.warn(e, `Failed to parse Future Pokemon for ${id}`)
