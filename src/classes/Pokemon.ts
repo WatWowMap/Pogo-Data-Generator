@@ -417,16 +417,62 @@ export default class Pokemon extends Masterfile {
     )
   }
 
+  visibleBaseFormId(
+    pokemon?: SinglePokemon,
+    allowFallbackToFirstForm = false,
+  ): number | undefined {
+    if (!pokemon?.forms?.length) {
+      return undefined
+    }
+    if (
+      pokemon.defaultFormId !== undefined &&
+      pokemon.defaultFormId !== 0 &&
+      pokemon.forms.includes(pokemon.defaultFormId)
+    ) {
+      return pokemon.defaultFormId
+    }
+    const visibleNormalFormId = pokemon.forms.find(
+      (formId) => formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
+    )
+    if (visibleNormalFormId !== undefined) {
+      return visibleNormalFormId
+    }
+    if (pokemon.forms.includes(0)) {
+      return 0
+    }
+    if (allowFallbackToFirstForm && pokemon.defaultFormId === undefined) {
+      return pokemon.forms[0]
+    }
+    return undefined
+  }
+
+  formChangeCarrierFormId(pokemon?: SinglePokemon): number | undefined {
+    if (!pokemon) {
+      return undefined
+    }
+    if (
+      pokemon.defaultFormId !== undefined &&
+      pokemon.defaultFormId !== 0 &&
+      this.parsedForms[pokemon.defaultFormId]
+    ) {
+      return pokemon.defaultFormId
+    }
+    const visibleNormalFormId = pokemon.forms?.find(
+      (formId) => formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
+    )
+    if (visibleNormalFormId !== undefined) {
+      return visibleNormalFormId
+    }
+    if (pokemon.forms?.includes(0)) {
+      return 0
+    }
+    return undefined
+  }
+
   reconcileDefaultFormChanges(id: number) {
     const pokemon = this.parsedPokemon[id]
-    const actualDefaultFormId =
-      pokemon?.defaultFormId && pokemon.defaultFormId !== 0
-        ? pokemon.defaultFormId
-        : pokemon?.forms?.find(
-            (formId) =>
-              formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
-          )
-    if (!pokemon?.formChanges || !actualDefaultFormId) {
+    const formChangeCarrierFormId = this.formChangeCarrierFormId(pokemon)
+    if (!pokemon?.formChanges || formChangeCarrierFormId === undefined) {
       return
     }
     pokemon.forms
@@ -1103,9 +1149,8 @@ export default class Pokemon extends Masterfile {
               ...this.compileEvos(pokemonSettings.evolutionBranch),
             )
           }
-          const formChanges = this.diffFormChanges(
+          const formChanges = this.dedupeFormChanges(
             this.compileFormChanges(pokemonSettings.formChange),
-            primaryForm.formChanges,
           )
           if (formChanges.length) {
             form.formChanges = formChanges
@@ -1138,6 +1183,7 @@ export default class Pokemon extends Masterfile {
               pokemonSettings.allowNoevolveEvolution,
             )
           }
+          this.reconcileDefaultFormChanges(id)
         }
       } else {
         this.parsedPokemon[id] = {
@@ -1413,20 +1459,7 @@ export default class Pokemon extends Masterfile {
       this.parsedPokeForms = {}
       Object.values(this.parsedPokemon).forEach((pokemon) => {
         if (pokemon.forms) {
-          const visibleNormalFormId = pokemon.forms.find(
-            (formId) => formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
-          )
-          const baseFormId =
-            pokemon.defaultFormId !== undefined &&
-            pokemon.defaultFormId !== 0 &&
-            pokemon.forms.includes(pokemon.defaultFormId)
-              ? pokemon.defaultFormId
-              : visibleNormalFormId ??
-                (pokemon.forms.includes(0)
-                  ? 0
-                  : pokemon.defaultFormId === undefined
-                    ? pokemon.forms[0]
-                    : undefined)
+          const baseFormId = this.visibleBaseFormId(pokemon, true)
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
             const formChanges = this.mergeFormChanges(

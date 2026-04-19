@@ -1932,6 +1932,64 @@ describe('Pokemon form changes', () => {
     ).toBeUndefined()
   })
 
+  test('preserves duplicate form changes when no visible split base exists', () => {
+    const allPokemon = createPokemon()
+    const sharedFormChanges = [
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+        candyCost: 50,
+      },
+    ]
+    const settings = basePokemonSettings({
+      pokemonId: 'HOOPA',
+      type: 'POKEMON_TYPE_PSYCHIC',
+      type2: 'POKEMON_TYPE_GHOST',
+      familyId: 'FAMILY_HOOPA',
+      quickMoves: ['CONFUSION_FAST'],
+      cinematicMoves: ['SHADOW_BALL'],
+      formChange: [
+        {
+          availableForm: ['HOOPA_UNBOUND'],
+          candyCost: 50,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0720_POKEMON_HOOPA_UNBOUND',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].defaultFormId =
+      Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].forms = [
+      Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
+    ]
+
+    allPokemon.reconcileDefaultFormChanges(Rpc.HoloPokemonId.HOOPA)
+
+    expect(
+      allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND]
+        .formChanges,
+    ).toEqual(sharedFormChanges)
+
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].formChanges,
+    ).toEqual(sharedFormChanges)
+  })
+
   test('parses gated form changes with move and bread requirements', () => {
     const allPokemon = createPokemon()
 
