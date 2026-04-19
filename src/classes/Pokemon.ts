@@ -271,6 +271,19 @@ export default class Pokemon extends Masterfile {
     )
   }
 
+  resolveFormIds(forms: (string | number)[]): number[] {
+    if (!forms) return []
+    try {
+      return forms
+        .map((form) => this.resolveFormId(form))
+        .filter((form): form is number => form !== undefined)
+        .sort((a, b) => a - b)
+    } catch (e) {
+      console.warn(e, `Failed to lookup forms for ${forms}`)
+      return []
+    }
+  }
+
   resolveItemId(value?: string | number): number | undefined {
     const resolved = normalizeItemId(value)
     if (resolved === undefined && value !== undefined && value !== null && value !== '') {
@@ -441,9 +454,7 @@ export default class Pokemon extends Masterfile {
       return formChanges
         .map((formChange) => {
           const availableForms =
-            formChange.availableForm
-              ?.map((form) => this.resolveFormId(form))
-              .filter((formId): formId is number => formId !== undefined) || []
+            this.resolveFormIds(formChange.availableForm || [])
           const questRequirements =
             formChange.questRequirement
               ?.map((requirement) => ({
@@ -1402,15 +1413,20 @@ export default class Pokemon extends Masterfile {
       this.parsedPokeForms = {}
       Object.values(this.parsedPokemon).forEach((pokemon) => {
         if (pokemon.forms) {
+          const visibleNormalFormId = pokemon.forms.find(
+            (formId) => formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
+          )
           const baseFormId =
             pokemon.defaultFormId !== undefined &&
             pokemon.defaultFormId !== 0 &&
             pokemon.forms.includes(pokemon.defaultFormId)
               ? pokemon.defaultFormId
-              : pokemon.forms.find(
-                    (formId) => this.parsedForms[formId]?.formName === 'Normal',
-                  ) ??
-                  (pokemon.forms.includes(0) ? 0 : pokemon.forms[0])
+              : visibleNormalFormId ??
+                (pokemon.forms.includes(0)
+                  ? 0
+                  : pokemon.defaultFormId === undefined
+                    ? pokemon.forms[0]
+                    : undefined)
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
             const formChanges = this.mergeFormChanges(
@@ -1427,7 +1443,8 @@ export default class Pokemon extends Masterfile {
             )
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
-              defaultFormId: baseFormId,
+              defaultFormId:
+                baseFormId !== undefined ? baseFormId : pokemon.defaultFormId,
               ...formDetails,
               evolutions: evolutions.length ? evolutions : undefined,
               formChanges: formChanges.length ? formChanges : undefined,

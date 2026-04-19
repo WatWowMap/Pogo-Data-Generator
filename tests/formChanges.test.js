@@ -367,6 +367,80 @@ describe('Pokemon form changes', () => {
     ])
   })
 
+  test('dedupes form changes regardless of available form order', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+    const availableForms = [
+      Rpc.PokemonDisplayProto.Form.KYUREM_BLACK,
+      Rpc.PokemonDisplayProto.Form.KYUREM_WHITE,
+    ].sort((a, b) => a - b)
+    const baseSettings = basePokemonSettings({
+      pokemonId: 'KYUREM',
+      type: 'POKEMON_TYPE_DRAGON',
+      type2: 'POKEMON_TYPE_ICE',
+      familyId: 'FAMILY_KYUREM',
+      quickMoves: ['DRAGON_BREATH_FAST'],
+      cinematicMoves: ['GLACIATE'],
+      formChange: [
+        {
+          availableForm: ['KYUREM_WHITE', 'KYUREM_BLACK'],
+          candyCost: 30,
+        },
+      ],
+    })
+    const formSettings = basePokemonSettings({
+      pokemonId: 'KYUREM',
+      type: 'POKEMON_TYPE_DRAGON',
+      type2: 'POKEMON_TYPE_ICE',
+      familyId: 'FAMILY_KYUREM',
+      quickMoves: ['DRAGON_BREATH_FAST'],
+      cinematicMoves: ['GLACIATE'],
+      formChange: [
+        {
+          availableForm: ['KYUREM_BLACK', 'KYUREM_WHITE'],
+          candyCost: 30,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: formSettings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON',
+      data: {
+        pokemonSettings: baseSettings,
+      },
+    })
+    allPokemon.missingPokemon()
+    allPokemon.generateProtoForms()
+
+    expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].formChanges).toEqual(
+      [
+        {
+          availableForms,
+          candyCost: 30,
+        },
+      ],
+    )
+    expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
+
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[`${Rpc.HoloPokemonId.KYUREM}_${formId}`]
+        .formChanges,
+    ).toEqual([
+      {
+        availableForms,
+        candyCost: 30,
+      },
+    ])
+  })
+
   test('reconciles alternate-form duplicates after the default form is known', () => {
     const allPokemon = createPokemon()
     const normalFormId = Rpc.PokemonDisplayProto.Form.CHERRIM_NORMAL
@@ -1808,6 +1882,54 @@ describe('Pokemon form changes', () => {
       },
     ])
     expect(allPokemon.parsedPokeForms['800_2717'].defaultFormId).toBe(2717)
+  })
+
+  test('does not promote a visible non-default split form to the base form', () => {
+    const allPokemon = createPokemon()
+    const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]
+    const tempEvolutions = [{ tempEvoId: 'TEMP_EVOLUTION_MEGA' }]
+
+    allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA] = {
+      pokemonName: 'Hoopa',
+      pokedexId: Rpc.HoloPokemonId.HOOPA,
+      defaultFormId: Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED,
+      forms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+      evolutions,
+      formChanges: [
+        {
+          availableForms: [Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND],
+          candyCost: 50,
+        },
+      ],
+      tempEvolutions,
+    }
+    allPokemon.parsedForms[Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND] = {
+      formId: Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND,
+      formName: 'Unbound',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].defaultFormId,
+    ).toBe(Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].formChanges,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].evolutions,
+    ).toBeUndefined()
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
+      ].tempEvolutions,
+    ).toBeUndefined()
   })
 
   test('parses gated form changes with move and bread requirements', () => {
