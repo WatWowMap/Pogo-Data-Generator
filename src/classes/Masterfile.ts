@@ -44,6 +44,15 @@ export default class Masterfile {
             }
           }
         })
+        if (
+          baseline[category].options?.makeSingular ||
+          template[category]?.options?.makeSingular
+        ) {
+          merged[category].options.makeSingular = {
+            ...(cloneValue(baseline[category].options?.makeSingular) || {}),
+            ...(cloneValue(template[category]?.options?.makeSingular) || {}),
+          }
+        }
       }
       if (category === 'translations' && template.translations) {
         const translationOptions = template.translations.options || {}
@@ -193,13 +202,19 @@ export default class Masterfile {
 
     const loopFields = (
       fieldKey: string,
-      x: number,
+      x: any,
       templateChild: any,
       data: any,
     ) => {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
-      const ref = reference[fieldKey] ? reference[fieldKey][x] : x
+      const ref =
+        x && typeof x === 'object'
+          ? x
+          : reference[fieldKey]?.[x] ?? x
+      if (ref === undefined || ref === null || typeof ref !== 'object') {
+        return ref
+      }
 
       try {
         Object.entries(ref).forEach((subField) => {

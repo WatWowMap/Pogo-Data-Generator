@@ -1,5 +1,31 @@
 import type { FullTemplate } from './typings/inputs'
 
+const formChangeTemplate = {
+  availableForms: 'formName',
+  candyCost: false,
+  stardustCost: false,
+  itemRequirement: false,
+  itemCostCount: false,
+  questRequirements: false,
+  componentPokemonSettings: {
+    pokedexId: true,
+    formId: true,
+    formChangeType: true,
+    componentCandyCost: false,
+    fusionMove1: false,
+    fusionMove2: false,
+    familyId: false,
+    locationCardSettings: false,
+  },
+  moveReassignment: false,
+  requiredQuickMoves: false,
+  requiredChargedMoves: false,
+  requiredBreadMoves: false,
+  priority: false,
+  formChangeBonusAttributes: false,
+  locationCardSettings: false,
+}
+
 const baseTemplate: FullTemplate = {
   globalOptions: {
     keyJoiner: '_',
@@ -34,6 +60,16 @@ const baseTemplate: FullTemplate = {
       makeSingular: {
         itemRequirement: false,
         questRequirement: false,
+        componentPokemonSettings: true,
+        moveReassignment: true,
+        targetForm: true,
+        fusionMove1: true,
+        fusionMove2: true,
+        existingLocationCard: true,
+        replacementLocationCard: true,
+        basePokemonLocationCard: true,
+        componentPokemonLocationCard: true,
+        fusionPokemonLocationCard: true,
       },
       unsetDefaultForm: false,
       includeUnset: false,
@@ -65,6 +101,7 @@ const baseTemplate: FullTemplate = {
           tradeBonus: false,
           questRequirement: false,
         },
+        formChanges: structuredClone(formChangeTemplate),
         tempEvolutions: {},
         attack: true,
         defense: true,
@@ -125,6 +162,7 @@ const baseTemplate: FullTemplate = {
         tradeBonus: false,
         questRequirement: false,
       },
+      formChanges: structuredClone(formChangeTemplate),
       legendary: true,
       mythic: true,
       buddyGroupNumber: true,
