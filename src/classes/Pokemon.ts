@@ -440,10 +440,7 @@ export default class Pokemon extends Masterfile {
     if (pokemon.forms.includes(0)) {
       return 0
     }
-    if (
-      allowFallbackToFirstForm &&
-      (pokemon.defaultFormId === undefined || pokemon.defaultFormId === 0)
-    ) {
+    if (allowFallbackToFirstForm) {
       return pokemon.forms[0]
     }
     return undefined
@@ -455,8 +452,7 @@ export default class Pokemon extends Masterfile {
     }
     if (
       pokemon.defaultFormId !== undefined &&
-      pokemon.defaultFormId !== 0 &&
-      pokemon.forms.includes(pokemon.defaultFormId)
+      pokemon.defaultFormId !== 0
     ) {
       return pokemon.defaultFormId
     }
