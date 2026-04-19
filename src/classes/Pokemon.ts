@@ -440,20 +440,23 @@ export default class Pokemon extends Masterfile {
     if (pokemon.forms.includes(0)) {
       return 0
     }
-    if (allowFallbackToFirstForm && pokemon.defaultFormId === undefined) {
+    if (
+      allowFallbackToFirstForm &&
+      (pokemon.defaultFormId === undefined || pokemon.defaultFormId === 0)
+    ) {
       return pokemon.forms[0]
     }
     return undefined
   }
 
   formChangeCarrierFormId(pokemon?: SinglePokemon): number | undefined {
-    if (!pokemon) {
+    if (!pokemon?.forms?.length) {
       return undefined
     }
     if (
       pokemon.defaultFormId !== undefined &&
       pokemon.defaultFormId !== 0 &&
-      this.parsedForms[pokemon.defaultFormId]
+      pokemon.forms.includes(pokemon.defaultFormId)
     ) {
       return pokemon.defaultFormId
     }
@@ -465,6 +468,9 @@ export default class Pokemon extends Masterfile {
     }
     if (pokemon.forms?.includes(0)) {
       return 0
+    }
+    if (pokemon.defaultFormId === 0) {
+      return pokemon.forms[0]
     }
     return undefined
   }
@@ -874,11 +880,11 @@ export default class Pokemon extends Masterfile {
                 proto: name,
                 formId: +formId,
               }
-              this.reconcileDefaultFormChanges(id)
               PokemonOverrides.addFormData(this, formId)
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
                 this.parsedPokemon[id].forms.push(+formId)
               }
+              this.reconcileDefaultFormChanges(id)
             }
           }
         }

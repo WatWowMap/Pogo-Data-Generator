@@ -496,9 +496,14 @@ describe('Pokemon form changes', () => {
       },
     })
 
-    expect(allPokemon.parsedForms[overcastFormId].formChanges).toBeUndefined()
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual(
+      duplicateFormChanges,
+    )
 
     allPokemon.generateProtoForms()
+
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toBeUndefined()
+
     allPokemon.makeFormsSeparate()
 
     expect(
@@ -1930,6 +1935,47 @@ describe('Pokemon form changes', () => {
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_UNBOUND}`
       ].tempEvolutions,
     ).toBeUndefined()
+  })
+
+  test('uses the first visible form as the split base when form zero is omitted', () => {
+    const allPokemon = createPokemon()
+    const evolutions = [{ evoId: Rpc.HoloPokemonId.HOOPA, candyCost: 50 }]
+    const tempEvolutions = [{ tempEvoId: 'TEMP_EVOLUTION_MEGA' }]
+
+    allPokemon.parsedPokemon[999] = {
+      pokemonName: 'Test',
+      pokedexId: 999,
+      defaultFormId: 0,
+      forms: [1234],
+      evolutions,
+      formChanges: [
+        {
+          availableForms: [1235],
+          candyCost: 10,
+        },
+      ],
+      tempEvolutions,
+    }
+    allPokemon.parsedForms[1234] = {
+      formId: 1234,
+      formName: 'Alt',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(allPokemon.parsedPokeForms['999_1234'].defaultFormId).toBe(1234)
+    expect(allPokemon.parsedPokeForms['999_1234'].formChanges).toEqual([
+      {
+        availableForms: [1235],
+        candyCost: 10,
+      },
+    ])
+    expect(allPokemon.parsedPokeForms['999_1234'].evolutions).toEqual(
+      evolutions,
+    )
+    expect(allPokemon.parsedPokeForms['999_1234'].tempEvolutions).toEqual(
+      tempEvolutions,
+    )
   })
 
   test('preserves duplicate form changes when no visible split base exists', () => {
