@@ -306,6 +306,25 @@ export default class Pokemon extends Masterfile {
                     requirement.description ||
                     requirement.target !== undefined,
                 ) || []
+            const componentLocationCardSettings =
+              formChange.componentPokemonSettings?.locationCardSettings
+                ?.map((settings) => ({
+                  basePokemonLocationCard: LocationCards.resolveId(
+                    settings.basePokemonLocationCard,
+                    'form change location card',
+                  ),
+                  componentPokemonLocationCard: LocationCards.resolveId(
+                    settings.componentPokemonLocationCard,
+                    'form change location card',
+                  ),
+                  fusionPokemonLocationCard: LocationCards.resolveId(
+                    settings.fusionPokemonLocationCard,
+                    'form change location card',
+                  ),
+                }))
+                .filter((settings) =>
+                  Object.values(settings).some((value) => value !== undefined),
+                ) || []
             const componentPokemonSettings = formChange.componentPokemonSettings
               ? {
                   pokedexId: resolveEnumId(
@@ -335,27 +354,9 @@ export default class Pokemon extends Masterfile {
                     formChange.componentPokemonSettings.fusionMove2,
                     'move',
                   ),
-                  locationCardSettings:
-                    formChange.componentPokemonSettings.locationCardSettings
-                      ?.map((settings) => ({
-                        basePokemonLocationCard: LocationCards.resolveId(
-                          settings.basePokemonLocationCard,
-                          'form change location card',
-                        ),
-                        componentPokemonLocationCard: LocationCards.resolveId(
-                          settings.componentPokemonLocationCard,
-                          'form change location card',
-                        ),
-                        fusionPokemonLocationCard: LocationCards.resolveId(
-                          settings.fusionPokemonLocationCard,
-                          'form change location card',
-                        ),
-                      }))
-                      .filter((settings) =>
-                        Object.values(settings).some(
-                          (value) => value !== undefined,
-                        ),
-                      ) || undefined,
+                  locationCardSettings: componentLocationCardSettings.length
+                    ? componentLocationCardSettings
+                    : undefined,
                   familyId: resolveEnumId(
                     Rpc.HoloPokemonFamilyId,
                     formChange.componentPokemonSettings.familyId,
@@ -427,14 +428,17 @@ export default class Pokemon extends Masterfile {
                 .filter((moves) => moves.requiredMoves.length) || []
             const requiredBreadMoves =
               formChange.requiredBreadMoves
-                ?.map((moves) => ({
-                  moveTypes: moves.moveTypes?.filter(Boolean) || undefined,
-                  moveLevel: enumName(
-                    Rpc.BreadMoveLevels,
-                    moves.moveLevel,
-                    'bread move level',
-                  ),
-                }))
+                ?.map((moves) => {
+                  const moveTypes = moves.moveTypes?.filter(Boolean) || []
+                  return {
+                    moveTypes: moveTypes.length ? moveTypes : undefined,
+                    moveLevel: enumName(
+                      Rpc.BreadMoveLevels,
+                      moves.moveLevel,
+                      'bread move level',
+                    ),
+                  }
+                })
                 .filter(
                   (moves) =>
                     (moves.moveTypes?.length || 0) > 0 ||
@@ -442,19 +446,8 @@ export default class Pokemon extends Masterfile {
                 ) || []
             const formChangeBonusAttributes =
               formChange.formChangeBonusAttributes
-                ?.map((attributes) => ({
-                  targetForm: resolveEnumId(
-                    Rpc.PokemonDisplayProto.Form,
-                    attributes.targetForm,
-                    'form',
-                  ),
-                  breadMode: enumName(
-                    Rpc.BreadModeEnum.Modifier,
-                    attributes.breadMode,
-                    'bread mode',
-                  ),
-                  clearBreadMode: attributes.clearBreadMode,
-                  maxMoves:
+                ?.map((attributes) => {
+                  const maxMoves =
                     attributes.maxMoves
                       ?.map((move) => ({
                         moveType: enumName(
@@ -472,8 +465,22 @@ export default class Pokemon extends Masterfile {
                         (move) =>
                           move.moveType !== undefined ||
                           move.moveLevel !== undefined,
-                      ) || undefined,
-                }))
+                      ) || []
+                  return {
+                    targetForm: resolveEnumId(
+                      Rpc.PokemonDisplayProto.Form,
+                      attributes.targetForm,
+                      'form',
+                    ),
+                    breadMode: enumName(
+                      Rpc.BreadModeEnum.Modifier,
+                      attributes.breadMode,
+                      'bread mode',
+                    ),
+                    clearBreadMode: attributes.clearBreadMode,
+                    maxMoves: maxMoves.length ? maxMoves : undefined,
+                  }
+                })
                 .filter((attributes) =>
                   Object.entries(attributes).some(([key, value]) =>
                     key === 'maxMoves'
