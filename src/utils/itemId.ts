@@ -12,3 +12,19 @@ export function normalizeItemId(value?: string | number): number | undefined {
   const prefixedValue = value.startsWith('ITEM_') ? value : `ITEM_${value}`
   return Rpc.Item[prefixedValue as ItemProto]
 }
+
+export function resolveItemId(
+  value?: string | number,
+  label = 'item id',
+): number | undefined {
+  const resolved = normalizeItemId(value)
+  if (
+    resolved === undefined &&
+    value !== undefined &&
+    value !== null &&
+    value !== ''
+  ) {
+    console.warn(`Unable to resolve ${label}`, value)
+  }
+  return resolved
+}

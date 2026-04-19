@@ -1,7 +1,7 @@
 import type { AllItems } from '../typings/dataTypes'
 import type { NiaMfObj } from '../typings/general'
 import type { Options } from '../typings/inputs'
-import { normalizeItemId } from '../utils/itemId'
+import { resolveItemId } from '../utils/itemId'
 import Masterfile from './Masterfile'
 
 export default class Item extends Masterfile {
@@ -27,9 +27,8 @@ export default class Item extends Masterfile {
         !dropTrainerLevel ||
         dropTrainerLevel <= this.options.minTrainerLevel
       ) {
-        const id = normalizeItemId(itemId)
+        const id = resolveItemId(itemId)
         if (id === undefined) {
-          console.warn('Unable to resolve item id', itemId)
           return
         }
         this.parsedItems[id] = {

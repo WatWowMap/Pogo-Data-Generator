@@ -32,9 +32,9 @@ import {
   mergeTempEvolutions,
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
-import { enumName, resolveEnumId } from '../utils/enum'
-import { normalizeItemId } from '../utils/itemId'
-import { normalizeLocationCardId } from '../utils/locationCardId'
+import { enumName, resolveEnumId, resolveEnumIds } from '../utils/enum'
+import { resolveItemId } from '../utils/itemId'
+import { resolveLocationCardId } from '../utils/locationCardId'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -246,56 +246,6 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  resolveFormIds(forms: (string | number)[]): number[] {
-    if (!forms) return []
-    try {
-      return forms
-        .map((form) =>
-          resolveEnumId(
-            Rpc.PokemonDisplayProto.Form,
-            form as FormProto,
-            'form',
-          ),
-        )
-        .filter((form): form is number => form !== undefined)
-        .sort((a, b) => a - b)
-    } catch (e) {
-      console.warn(e, `Failed to lookup forms for ${forms}`)
-      return []
-    }
-  }
-
-  resolveItemId(value?: string | number): number | undefined {
-    const resolved = normalizeItemId(value)
-    if (resolved === undefined && value !== undefined && value !== null && value !== '') {
-      console.warn('Unable to resolve form change item', value)
-    }
-    return resolved
-  }
-
-  resolveLocationCardId(value?: string | number): number | undefined {
-    const resolved = normalizeLocationCardId(value)
-    if (resolved === undefined && value !== undefined && value !== null && value !== '') {
-      console.warn('Unable to resolve form change location card', value)
-    }
-    return resolved
-  }
-
-  resolveMoveIds(moves: (string | number)[]): number[] {
-    if (!moves) return []
-    try {
-      return moves
-        .map((move) =>
-          resolveEnumId(Rpc.HoloPokemonMove, move as MoveProto, 'move'),
-        )
-        .filter((move): move is number => move !== undefined)
-        .sort((a, b) => a - b)
-    } catch (e) {
-      console.warn(e, `Failed to lookup moves for ${moves}`)
-      return []
-    }
-  }
-
   formChangeKey(formChange: FormChanges) {
     return JSON.stringify(formChange)
   }
@@ -356,7 +306,11 @@ export default class Pokemon extends Masterfile {
       return formChanges
         .map((formChange) => {
           const availableForms =
-            this.resolveFormIds(formChange.availableForm || [])
+            resolveEnumIds(
+              Rpc.PokemonDisplayProto.Form,
+              formChange.availableForm || [],
+              'form',
+            )
           const questRequirements =
             formChange.questRequirement
               ?.map((requirement) => ({
@@ -402,14 +356,17 @@ export default class Pokemon extends Masterfile {
                 locationCardSettings:
                   formChange.componentPokemonSettings.locationCardSettings
                     ?.map((settings) => ({
-                      basePokemonLocationCard: this.resolveLocationCardId(
+                      basePokemonLocationCard: resolveLocationCardId(
                         settings.basePokemonLocationCard,
+                        'form change location card',
                       ),
-                      componentPokemonLocationCard: this.resolveLocationCardId(
+                      componentPokemonLocationCard: resolveLocationCardId(
                         settings.componentPokemonLocationCard,
+                        'form change location card',
                       ),
-                      fusionPokemonLocationCard: this.resolveLocationCardId(
+                      fusionPokemonLocationCard: resolveLocationCardId(
                         settings.fusionPokemonLocationCard,
+                        'form change location card',
                       ),
                     }))
                     .filter((settings) =>
@@ -429,11 +386,15 @@ export default class Pokemon extends Masterfile {
                 quickMoves:
                   formChange.moveReassignment.quickMoves
                     ?.map((moves) => ({
-                      existingMoves: this.resolveMoveIds(
+                      existingMoves: resolveEnumIds(
+                        Rpc.HoloPokemonMove,
                         moves.existingMoves || [],
+                        'move',
                       ),
-                      replacementMoves: this.resolveMoveIds(
+                      replacementMoves: resolveEnumIds(
+                        Rpc.HoloPokemonMove,
                         moves.replacementMoves || [],
+                        'move',
                       ),
                     }))
                     .filter(
@@ -444,11 +405,15 @@ export default class Pokemon extends Masterfile {
                 chargedMoves:
                   formChange.moveReassignment.cinematicMoves
                     ?.map((moves) => ({
-                      existingMoves: this.resolveMoveIds(
+                      existingMoves: resolveEnumIds(
+                        Rpc.HoloPokemonMove,
                         moves.existingMoves || [],
+                        'move',
                       ),
-                      replacementMoves: this.resolveMoveIds(
+                      replacementMoves: resolveEnumIds(
+                        Rpc.HoloPokemonMove,
                         moves.replacementMoves || [],
+                        'move',
                       ),
                     }))
                     .filter(
@@ -461,13 +426,21 @@ export default class Pokemon extends Masterfile {
           const requiredQuickMoves =
             formChange.requiredQuickMoves
               ?.map((moves) => ({
-                requiredMoves: this.resolveMoveIds(moves.requiredMoves || []),
+                requiredMoves: resolveEnumIds(
+                  Rpc.HoloPokemonMove,
+                  moves.requiredMoves || [],
+                  'move',
+                ),
               }))
               .filter((moves) => moves.requiredMoves.length) || []
           const requiredChargedMoves =
             formChange.requiredCinematicMoves
               ?.map((moves) => ({
-                requiredMoves: this.resolveMoveIds(moves.requiredMoves || []),
+                requiredMoves: resolveEnumIds(
+                  Rpc.HoloPokemonMove,
+                  moves.requiredMoves || [],
+                  'move',
+                ),
               }))
               .filter((moves) => moves.requiredMoves.length) || []
           const requiredBreadMoves =
@@ -531,11 +504,13 @@ export default class Pokemon extends Masterfile {
           const locationCardSettings =
             formChange.locationCardSettings
               ?.map((settings) => ({
-                existingLocationCard: this.resolveLocationCardId(
+                existingLocationCard: resolveLocationCardId(
                   settings.existingLocationCard,
+                  'form change location card',
                 ),
-                replacementLocationCard: this.resolveLocationCardId(
+                replacementLocationCard: resolveLocationCardId(
                   settings.replacementLocationCard,
+                  'form change location card',
                 ),
               }))
               .filter((settings) =>
@@ -545,7 +520,10 @@ export default class Pokemon extends Masterfile {
             availableForms: availableForms.length ? availableForms : undefined,
             candyCost: formChange.candyCost,
             stardustCost: formChange.stardustCost,
-            itemRequirement: this.resolveItemId(formChange.item),
+            itemRequirement: resolveItemId(
+              formChange.item,
+              'form change item',
+            ),
             itemCostCount: formChange.itemCostCount,
             questRequirements: questRequirements.length
               ? questRequirements

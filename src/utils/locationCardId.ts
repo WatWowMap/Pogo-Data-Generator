@@ -10,3 +10,19 @@ export function normalizeLocationCardId(
 
   return Rpc.LocationCard[value as LocationCardProto]
 }
+
+export function resolveLocationCardId(
+  value?: string | number,
+  label = 'location card id',
+): number | undefined {
+  const resolved = normalizeLocationCardId(value)
+  if (
+    resolved === undefined &&
+    value !== undefined &&
+    value !== null &&
+    value !== ''
+  ) {
+    console.warn(`Unable to resolve ${label}`, value)
+  }
+  return resolved
+}

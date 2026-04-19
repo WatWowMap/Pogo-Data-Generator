@@ -2,7 +2,7 @@ import { Rpc } from '@na-ji/pogo-protos'
 import type { AllLocationCards } from '../typings/dataTypes'
 import type { NiaMfObj } from '../typings/general'
 import type { Options } from '../typings/inputs'
-import { normalizeLocationCardId } from '../utils/locationCardId'
+import { resolveLocationCardId } from '../utils/locationCardId'
 import Masterfile from './Masterfile'
 
 export default class LocationCards extends Masterfile {
@@ -24,9 +24,8 @@ export default class LocationCards extends Masterfile {
     try {
       const { locationCard, imageUrl, cardType, vfxAddress } =
         locationCardSettings
-      const id = normalizeLocationCardId(locationCard)
+      const id = resolveLocationCardId(locationCard)
       if (id === undefined) {
-        console.warn('Unable to resolve location card id', locationCard)
         return
       }
       const resolvedProto =

@@ -14,6 +14,17 @@ export function resolveEnumId(
   return undefined
 }
 
+export function resolveEnumIds(
+  enumObject: { [key: string]: string | number },
+  values: (string | number)[] = [],
+  label = 'value',
+): number[] {
+  return values
+    .map((value) => resolveEnumId(enumObject, value, label))
+    .filter((value): value is number => value !== undefined)
+    .sort((a, b) => a - b)
+}
+
 export function enumName(
   enumObject: { [key: string]: string | number },
   value?: string | number,
