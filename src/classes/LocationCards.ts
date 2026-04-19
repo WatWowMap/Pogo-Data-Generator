@@ -5,35 +5,24 @@ import type { Options } from '../typings/inputs'
 import type { LocationCardProto } from '../typings/protos'
 import Masterfile from './Masterfile'
 
-function normalizeLocationCardId(
-  value?: string | number,
-): number | undefined {
-  if (value === undefined || value === null || value === '') return undefined
-  if (typeof value === 'number') return value
-  if (/^\d+$/.test(value)) return +value
-
-  return Rpc.LocationCard[value as LocationCardProto]
-}
-
-export function resolveLocationCardId(
-  value?: string | number,
-  label = 'location card id',
-): number | undefined {
-  const resolved = normalizeLocationCardId(value)
-  if (
-    resolved === undefined &&
-    value !== undefined &&
-    value !== null &&
-    value !== ''
-  ) {
-    console.warn(`Unable to resolve ${label}`, value)
-  }
-  return resolved
-}
-
 export default class LocationCards extends Masterfile {
   options: Options
   parsedLocationCards: AllLocationCards
+
+  static resolveId(
+    value?: string | number,
+    label = 'location card id',
+  ): number | undefined {
+    if (value === undefined || value === null || value === '') return undefined
+    if (typeof value === 'number') return value
+    if (/^\d+$/.test(value)) return +value
+
+    const resolved = Rpc.LocationCard[value as LocationCardProto]
+    if (resolved !== undefined) return resolved
+
+    console.warn(`Unable to resolve ${label}`, value)
+    return undefined
+  }
 
   constructor(options: Options) {
     super()
@@ -50,7 +39,7 @@ export default class LocationCards extends Masterfile {
     try {
       const { locationCard, imageUrl, cardType, vfxAddress } =
         locationCardSettings
-      const id = resolveLocationCardId(locationCard)
+      const id = LocationCards.resolveId(locationCard)
       if (id === undefined) {
         return
       }

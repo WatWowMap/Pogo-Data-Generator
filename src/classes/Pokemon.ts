@@ -33,8 +33,8 @@ import {
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
 import { enumName, resolveEnumId, resolveEnumIds } from '../utils/enum'
-import { resolveItemId } from './Item'
-import { resolveLocationCardId } from './LocationCards'
+import Item from './Item'
+import LocationCards from './LocationCards'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
@@ -338,15 +338,15 @@ export default class Pokemon extends Masterfile {
                   locationCardSettings:
                     formChange.componentPokemonSettings.locationCardSettings
                       ?.map((settings) => ({
-                        basePokemonLocationCard: resolveLocationCardId(
+                        basePokemonLocationCard: LocationCards.resolveId(
                           settings.basePokemonLocationCard,
                           'form change location card',
                         ),
-                        componentPokemonLocationCard: resolveLocationCardId(
+                        componentPokemonLocationCard: LocationCards.resolveId(
                           settings.componentPokemonLocationCard,
                           'form change location card',
                         ),
-                        fusionPokemonLocationCard: resolveLocationCardId(
+                        fusionPokemonLocationCard: LocationCards.resolveId(
                           settings.fusionPokemonLocationCard,
                           'form change location card',
                         ),
@@ -486,11 +486,11 @@ export default class Pokemon extends Masterfile {
             const locationCardSettings =
               formChange.locationCardSettings
                 ?.map((settings) => ({
-                  existingLocationCard: resolveLocationCardId(
+                  existingLocationCard: LocationCards.resolveId(
                     settings.existingLocationCard,
                     'form change location card',
                   ),
-                  replacementLocationCard: resolveLocationCardId(
+                  replacementLocationCard: LocationCards.resolveId(
                     settings.replacementLocationCard,
                     'form change location card',
                   ),
@@ -502,7 +502,7 @@ export default class Pokemon extends Masterfile {
               availableForms: availableForms.length ? availableForms : undefined,
               candyCost: formChange.candyCost,
               stardustCost: formChange.stardustCost,
-              itemRequirement: resolveItemId(
+              itemRequirement: Item.resolveId(
                 formChange.item,
                 'form change item',
               ),
