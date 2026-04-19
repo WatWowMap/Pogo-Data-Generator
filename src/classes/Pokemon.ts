@@ -328,10 +328,31 @@ export default class Pokemon extends Masterfile {
       return moves
         .map((move) => this.resolveMoveId(move))
         .filter((move): move is number => move !== undefined)
+        .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
       return []
     }
+  }
+
+  evolutionKey(evolution: Evolutions) {
+    return JSON.stringify(evolution)
+  }
+
+  dedupeEvolutions(evolutions: Evolutions[] = []) {
+    const seenEvolutions = new Set<string>()
+    return evolutions.filter((evolution) => {
+      const key = this.evolutionKey(evolution)
+      if (seenEvolutions.has(key)) {
+        return false
+      }
+      seenEvolutions.add(key)
+      return true
+    })
+  }
+
+  mergeEvolutions(...evolutions: (Evolutions[] | undefined)[]) {
+    return this.dedupeEvolutions(evolutions.flat().filter(Boolean) as Evolutions[])
   }
 
   formChangeKey(formChange: FormChanges) {
@@ -1381,14 +1402,23 @@ export default class Pokemon extends Masterfile {
               form === baseFormId ? pokemon.formChanges : undefined,
               formDetails?.formChanges,
             )
+            const evolutions = this.mergeEvolutions(
+              form === baseFormId ? pokemon.evolutions : undefined,
+              formDetails?.evolutions,
+            )
+            const tempEvolutions = mergeTempEvolutions(
+              form === baseFormId ? pokemon.tempEvolutions : undefined,
+              formDetails?.tempEvolutions,
+            )
             this.parsedPokeForms[`${pokemon.pokedexId}_${form}`] = {
               ...pokemon,
               defaultFormId: baseFormId,
-              evolutions: form === baseFormId ? pokemon.evolutions : undefined,
-              tempEvolutions:
-                form === baseFormId ? pokemon.tempEvolutions : undefined,
               ...formDetails,
+              evolutions: evolutions.length ? evolutions : undefined,
               formChanges: formChanges.length ? formChanges : undefined,
+              tempEvolutions: tempEvolutions.length
+                ? tempEvolutions
+                : undefined,
               forms: [form],
             }
           })
