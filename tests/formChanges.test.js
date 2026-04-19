@@ -499,6 +499,107 @@ describe('Pokemon form changes', () => {
     )
   })
 
+  test('keeps numeric enum ids in form changes', () => {
+    const allPokemon = createPokemon()
+    const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
+
+    allPokemon.addPokemon({
+      templateId: 'V0646_POKEMON_KYUREM_NORMAL',
+      data: {
+        pokemonSettings: basePokemonSettings({
+          pokemonId: 'KYUREM',
+          type: 'POKEMON_TYPE_DRAGON',
+          type2: 'POKEMON_TYPE_ICE',
+          familyId: 'FAMILY_KYUREM',
+          quickMoves: ['DRAGON_BREATH_FAST'],
+          cinematicMoves: ['GLACIATE'],
+          formChange: [
+            {
+              availableForm: [999999],
+              moveReassignment: {
+                cinematicMoves: [
+                  {
+                    existingMoves: [999998],
+                    replacementMoves: [999997],
+                  },
+                ],
+              },
+              requiredCinematicMoves: [
+                {
+                  requiredMoves: [999996],
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    })
+
+    expect(allPokemon.parsedForms[formId].formChanges).toEqual([
+      {
+        availableForms: [999999],
+        moveReassignment: {
+          chargedMoves: [
+            {
+              existingMoves: [999998],
+              replacementMoves: [999997],
+            },
+          ],
+        },
+        requiredChargedMoves: [
+          {
+            requiredMoves: [999996],
+          },
+        ],
+      },
+    ])
+
+    const template = createFormTemplate()
+    template.formChanges.availableForms = 'formName'
+    template.formChanges.moveReassignment = {
+      chargedMoves: {
+        existingMoves: 'moveName',
+        replacementMoves: 'moveName',
+      },
+    }
+    template.formChanges.requiredChargedMoves = {
+      requiredMoves: 'moveName',
+    }
+
+    const templated = allPokemon.templater(
+      { [formId]: allPokemon.parsedForms[formId] },
+      {
+        template,
+        options: createFormTemplateOptions(),
+      },
+      {
+        availableForms: {},
+        existingMoves: {},
+        replacementMoves: {},
+        requiredMoves: {},
+      },
+    )
+
+    expect(templated[formId].form_changes).toEqual([
+      {
+        available_forms: [999999],
+        move_reassignment: {
+          charged_moves: [
+            {
+              existing_moves: [999998],
+              replacement_moves: [999997],
+            },
+          ],
+        },
+        required_charged_moves: [
+          {
+            required_moves: [999996],
+          },
+        ],
+      },
+    ])
+  })
+
   test('keeps templated form-change singleton references singular', () => {
     const allPokemon = createPokemon()
     const formId = Rpc.PokemonDisplayProto.Form.KYUREM_NORMAL
@@ -1431,6 +1532,41 @@ describe('Pokemon form changes', () => {
         `${Rpc.HoloPokemonId.HOOPA}_${Rpc.PokemonDisplayProto.Form.HOOPA_CONFINED}`
       ].tempEvolutions,
     ).toEqual(tempEvolutions)
+  })
+
+  test('prefers the real normal split form over placeholder form zero', () => {
+    const allPokemon = createPokemon()
+
+    allPokemon.parsedPokemon[800] = {
+      pokemonName: 'Necrozma',
+      pokedexId: 800,
+      defaultFormId: 0,
+      forms: [0, 2717, 2720],
+      formChanges: [
+        {
+          availableForms: [2718],
+          candyCost: 30,
+        },
+      ],
+    }
+    allPokemon.parsedForms[2717] = {
+      formId: 2717,
+      formName: 'Normal',
+    }
+    allPokemon.parsedForms[2720] = {
+      formId: 2720,
+      formName: 'Ultra',
+    }
+
+    allPokemon.makeFormsSeparate()
+
+    expect(allPokemon.parsedPokeForms['800_0'].formChanges).toBeUndefined()
+    expect(allPokemon.parsedPokeForms['800_2717'].formChanges).toEqual([
+      {
+        availableForms: [2718],
+        candyCost: 30,
+      },
+    ])
   })
 
   test('parses gated form changes with move and bread requirements', () => {

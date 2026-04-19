@@ -251,12 +251,8 @@ export default class Pokemon extends Masterfile {
     label = 'value',
   ): number | undefined {
     if (value === undefined || value === null || value === '') return undefined
-    if (typeof value === 'number') {
-      if (typeof enumObject[value] === 'string') return value
-      console.warn(`Unable to resolve form change ${label}`, value)
-      return undefined
-    }
-    if (/^\d+$/.test(value)) return this.resolveEnumId(enumObject, +value, label)
+    if (typeof value === 'number') return value
+    if (/^\d+$/.test(value)) return +value
     const resolved = enumObject[value]
     if (typeof resolved === 'number') return resolved
     console.warn(`Unable to resolve form change ${label}`, value)
@@ -1365,13 +1361,13 @@ export default class Pokemon extends Masterfile {
         if (pokemon.forms) {
           const baseFormId =
             pokemon.defaultFormId !== undefined &&
+            pokemon.defaultFormId !== 0 &&
             pokemon.forms.includes(pokemon.defaultFormId)
               ? pokemon.defaultFormId
-              : pokemon.forms.includes(0)
-                ? 0
               : pokemon.forms.find(
                     (formId) => this.parsedForms[formId]?.formName === 'Normal',
-                  ) ?? pokemon.forms[0]
+                  ) ??
+                  (pokemon.forms.includes(0) ? 0 : pokemon.forms[0])
           pokemon.forms.forEach((form) => {
             const formDetails = this.parsedForms[form]
             const formChanges = this.mergeFormChanges(
