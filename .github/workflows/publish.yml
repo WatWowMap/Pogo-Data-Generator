@@ -3,6 +3,7 @@ name: Publish
 on:
   release:
     types: [created]
+  workflow_dispatch:
 
 permissions:
   id-token: write  # Required for OIDC
@@ -49,5 +50,5 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
       - run: yarn
-      - run: tsc
+      - run: ./node_modules/.bin/tsc
       - run: npm publish
