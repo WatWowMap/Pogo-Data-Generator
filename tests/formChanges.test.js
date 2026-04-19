@@ -1561,12 +1561,14 @@ describe('Pokemon form changes', () => {
     allPokemon.makeFormsSeparate()
 
     expect(allPokemon.parsedPokeForms['800_0'].formChanges).toBeUndefined()
+    expect(allPokemon.parsedPokeForms['800_0'].defaultFormId).toBe(2717)
     expect(allPokemon.parsedPokeForms['800_2717'].formChanges).toEqual([
       {
         availableForms: [2718],
         candyCost: 30,
       },
     ])
+    expect(allPokemon.parsedPokeForms['800_2717'].defaultFormId).toBe(2717)
   })
 
   test('parses gated form changes with move and bread requirements', () => {
