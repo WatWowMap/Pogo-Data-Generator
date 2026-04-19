@@ -33,37 +33,11 @@ import {
   sortTempEvolutions,
 } from '../utils/tempEvolutions'
 import { enumName, resolveEnumId, resolveEnumIds } from '../utils/enum'
-import { resolveItemId } from '../utils/itemId'
-import { resolveLocationCardId } from '../utils/locationCardId'
+import { resolveItemId } from './Item'
+import { resolveLocationCardId } from './LocationCards'
 import Masterfile from './Masterfile'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
-
-const dedupeFormChanges = (formChanges: FormChanges[] = []) => {
-  const seenFormChanges = new Set<string>()
-  return formChanges.filter((formChange) => {
-    const key = JSON.stringify(formChange)
-    if (seenFormChanges.has(key)) {
-      return false
-    }
-    seenFormChanges.add(key)
-    return true
-  })
-}
-
-const diffFormChanges = (
-  formChanges?: FormChanges[],
-  baseFormChanges?: FormChanges[],
-): FormChanges[] => {
-  const baseKeys = new Set(
-    dedupeFormChanges(baseFormChanges).map((formChange) =>
-      JSON.stringify(formChange),
-    ),
-  )
-  return dedupeFormChanges(formChanges).filter(
-    (formChange) => !baseKeys.has(JSON.stringify(formChange)),
-  )
-}
 
 const reconcileBaseFormChanges = (
   parsedPokemon: AllPokemon,
@@ -81,7 +55,18 @@ const reconcileBaseFormChanges = (
       if (!form?.formChanges) {
         return
       }
-      const formChanges = diffFormChanges(form.formChanges, pokemon.formChanges)
+      const seenFormChanges = new Set<string>()
+      const baseFormChanges = new Set(
+        pokemon.formChanges.map((formChange) => JSON.stringify(formChange)),
+      )
+      const formChanges = form.formChanges.filter((formChange) => {
+        const key = JSON.stringify(formChange)
+        if (seenFormChanges.has(key) || baseFormChanges.has(key)) {
+          return false
+        }
+        seenFormChanges.add(key)
+        return true
+      })
       if (formChanges.length) {
         form.formChanges = formChanges
       } else {
@@ -300,9 +285,9 @@ export default class Pokemon extends Masterfile {
   compileFormChanges(formChanges?: RawFormChange[]): FormChanges[] {
     if (!Array.isArray(formChanges)) return []
     try {
-      return dedupeFormChanges(
-        formChanges
-          .map((formChange) => {
+      const seenFormChanges = new Set<string>()
+      return formChanges
+        .map((formChange) => {
             const availableForms = resolveEnumIds(
               Rpc.PokemonDisplayProto.Form,
               formChange.availableForm || [],
@@ -562,11 +547,18 @@ export default class Pokemon extends Masterfile {
             return Object.values(normalized).some((value) => value !== undefined)
               ? normalized
               : undefined
-          })
-          .filter(
-            (formChange): formChange is FormChanges => formChange !== undefined,
-          ),
-      )
+        })
+        .filter((formChange): formChange is FormChanges => {
+          if (!formChange) {
+            return false
+          }
+          const key = JSON.stringify(formChange)
+          if (seenFormChanges.has(key)) {
+            return false
+          }
+          seenFormChanges.add(key)
+          return true
+        })
     } catch (e) {
       console.warn(
         e,
