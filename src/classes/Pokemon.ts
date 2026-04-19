@@ -335,24 +335,39 @@ export default class Pokemon extends Masterfile {
     }
   }
 
-  evolutionKey(evolution: Evolutions) {
-    return JSON.stringify(evolution)
-  }
-
-  dedupeEvolutions(evolutions: Evolutions[] = []) {
-    const seenEvolutions = new Set<string>()
-    return evolutions.filter((evolution) => {
-      const key = this.evolutionKey(evolution)
-      if (seenEvolutions.has(key)) {
-        return false
-      }
-      seenEvolutions.add(key)
-      return true
+  evolutionMergeKey(evolution: Evolutions) {
+    return JSON.stringify({
+      evoId: evolution.evoId,
+      genderRequirement: evolution.genderRequirement,
+      candyCost: evolution.candyCost,
+      itemRequirement: evolution.itemRequirement,
+      tradeBonus: evolution.tradeBonus,
+      mustBeBuddy: evolution.mustBeBuddy,
+      onlyDaytime: evolution.onlyDaytime,
+      onlyNighttime: evolution.onlyNighttime,
+      questRequirement: evolution.questRequirement,
     })
   }
 
-  mergeEvolutions(...evolutions: (Evolutions[] | undefined)[]) {
-    return this.dedupeEvolutions(evolutions.flat().filter(Boolean) as Evolutions[])
+  mergeSplitFormEvolutions(
+    baseEvolutions?: Evolutions[],
+    formEvolutions?: Evolutions[],
+  ) {
+    const baseList = Array.isArray(baseEvolutions) ? baseEvolutions : []
+    const formList = Array.isArray(formEvolutions) ? formEvolutions : []
+
+    if (!baseList.length) return formList
+    if (!formList.length) return baseList
+
+    const formKeys = new Set(
+      formList.map((evolution) => this.evolutionMergeKey(evolution)),
+    )
+
+    return formList.concat(
+      baseList.filter(
+        (evolution) => !formKeys.has(this.evolutionMergeKey(evolution)),
+      ),
+    )
   }
 
   formChangeKey(formChange: FormChanges) {
@@ -1402,7 +1417,7 @@ export default class Pokemon extends Masterfile {
               form === baseFormId ? pokemon.formChanges : undefined,
               formDetails?.formChanges,
             )
-            const evolutions = this.mergeEvolutions(
+            const evolutions = this.mergeSplitFormEvolutions(
               form === baseFormId ? pokemon.evolutions : undefined,
               formDetails?.evolutions,
             )
