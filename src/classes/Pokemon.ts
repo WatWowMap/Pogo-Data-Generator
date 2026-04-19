@@ -377,19 +377,26 @@ export default class Pokemon extends Masterfile {
             (formId) =>
               formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
           )
-    const defaultForm = this.parsedForms[actualDefaultFormId]
-    if (!pokemon?.formChanges || !defaultForm?.formChanges) {
+    if (!pokemon?.formChanges || !actualDefaultFormId) {
       return
     }
-    const defaultFormChanges = this.diffFormChanges(
-      defaultForm.formChanges,
-      pokemon.formChanges,
-    )
-    if (defaultFormChanges.length) {
-      defaultForm.formChanges = defaultFormChanges
-    } else {
-      delete defaultForm.formChanges
-    }
+    pokemon.forms
+      ?.filter((formId) => formId !== 0)
+      .forEach((formId) => {
+        const form = this.parsedForms[formId]
+        if (!form?.formChanges) {
+          return
+        }
+        const formChanges = this.diffFormChanges(
+          form.formChanges,
+          pokemon.formChanges,
+        )
+        if (formChanges.length) {
+          form.formChanges = formChanges
+        } else {
+          delete form.formChanges
+        }
+      })
   }
 
   compileFormChanges(formChanges?: RawFormChange[]): FormChanges[] {

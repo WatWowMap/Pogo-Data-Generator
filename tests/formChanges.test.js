@@ -273,8 +273,9 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
   })
 
-  test('does not strip alternate-form changes before the default form is known', () => {
+  test('reconciles alternate-form duplicates after the default form is known', () => {
     const allPokemon = createPokemon()
+    const normalFormId = Rpc.PokemonDisplayProto.Form.CHERRIM_NORMAL
     const overcastFormId = Rpc.PokemonDisplayProto.Form.CHERRIM_OVERCAST
     const settings = basePokemonSettings({
       pokemonId: 'CHERRIM',
@@ -289,6 +290,12 @@ describe('Pokemon form changes', () => {
         },
       ],
     })
+    const duplicateFormChanges = [
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.CHERRIM_SUNNY],
+        candyCost: 25,
+      },
+    ]
 
     allPokemon.addPokemon({
       templateId: 'V0421_POKEMON_CHERRIM_OVERCAST',
@@ -303,12 +310,9 @@ describe('Pokemon form changes', () => {
       },
     })
 
-    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual([
-      {
-        availableForms: [Rpc.PokemonDisplayProto.Form.CHERRIM_SUNNY],
-        candyCost: 25,
-      },
-    ])
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual(
+      duplicateFormChanges,
+    )
 
     allPokemon.addForm({
       templateId: 'FORMS_V0421_POKEMON_CHERRIM',
@@ -324,12 +328,21 @@ describe('Pokemon form changes', () => {
       },
     })
 
-    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual([
-      {
-        availableForms: [Rpc.PokemonDisplayProto.Form.CHERRIM_SUNNY],
-        candyCost: 25,
-      },
-    ])
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toBeUndefined()
+
+    allPokemon.generateProtoForms()
+    allPokemon.makeFormsSeparate()
+
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.CHERRIM}_${normalFormId}`
+      ].formChanges,
+    ).toEqual(duplicateFormChanges)
+    expect(
+      allPokemon.parsedPokeForms[
+        `${Rpc.HoloPokemonId.CHERRIM}_${overcastFormId}`
+      ].formChanges,
+    ).toBeUndefined()
   })
 
   test('parses fusion form changes on form-specific entries', () => {
