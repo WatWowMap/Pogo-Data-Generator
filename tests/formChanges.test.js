@@ -273,6 +273,65 @@ describe('Pokemon form changes', () => {
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
   })
 
+  test('does not strip alternate-form changes before the default form is known', () => {
+    const allPokemon = createPokemon()
+    const overcastFormId = Rpc.PokemonDisplayProto.Form.CHERRIM_OVERCAST
+    const settings = basePokemonSettings({
+      pokemonId: 'CHERRIM',
+      type: 'POKEMON_TYPE_GRASS',
+      familyId: 'FAMILY_CHERRIM',
+      quickMoves: ['BULLET_SEED_FAST'],
+      cinematicMoves: ['SOLAR_BEAM'],
+      formChange: [
+        {
+          availableForm: ['CHERRIM_SUNNY'],
+          candyCost: 25,
+        },
+      ],
+    })
+
+    allPokemon.addPokemon({
+      templateId: 'V0421_POKEMON_CHERRIM_OVERCAST',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+    allPokemon.addPokemon({
+      templateId: 'V0421_POKEMON',
+      data: {
+        pokemonSettings: settings,
+      },
+    })
+
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual([
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.CHERRIM_SUNNY],
+        candyCost: 25,
+      },
+    ])
+
+    allPokemon.addForm({
+      templateId: 'FORMS_V0421_POKEMON_CHERRIM',
+      data: {
+        formSettings: {
+          pokemon: 'CHERRIM',
+          forms: [
+            { form: 'CHERRIM_NORMAL' },
+            { form: 'CHERRIM_OVERCAST' },
+            { form: 'CHERRIM_SUNNY' },
+          ],
+        },
+      },
+    })
+
+    expect(allPokemon.parsedForms[overcastFormId].formChanges).toEqual([
+      {
+        availableForms: [Rpc.PokemonDisplayProto.Form.CHERRIM_SUNNY],
+        candyCost: 25,
+      },
+    ])
+  })
+
   test('parses fusion form changes on form-specific entries', () => {
     const allPokemon = createPokemon()
     const fusionItemId = Rpc.Item.ITEM_FUSION_RESOURCE_BLACK_KYUREM

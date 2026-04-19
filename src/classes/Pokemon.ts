@@ -380,8 +380,7 @@ export default class Pokemon extends Masterfile {
         : pokemon?.forms?.find(
             (formId) =>
               formId !== 0 && this.parsedForms[formId]?.formName === 'Normal',
-          ) ??
-          pokemon?.forms?.find((formId) => formId !== 0)
+          )
     const defaultForm = this.parsedForms[actualDefaultFormId]
     if (!pokemon?.formChanges || !defaultForm?.formChanges) {
       return
