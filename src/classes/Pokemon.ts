@@ -437,6 +437,12 @@ export default class Pokemon extends Masterfile {
     if (visibleNormalFormId !== undefined) {
       return visibleNormalFormId
     }
+    if (allowFallbackToFirstForm) {
+      const firstVisibleFormId = pokemon.forms.find((formId) => formId !== 0)
+      if (firstVisibleFormId !== undefined) {
+        return firstVisibleFormId
+      }
+    }
     if (pokemon.forms.includes(0)) {
       return 0
     }
