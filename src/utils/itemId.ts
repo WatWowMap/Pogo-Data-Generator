@@ -1,7 +1,7 @@
 import { Rpc } from '@na-ji/pogo-protos'
 import type { ItemProto } from '../typings/protos'
 
-export function normalizeItemId(value?: string | number): number | undefined {
+function normalizeItemId(value?: string | number): number | undefined {
   if (value === undefined || value === null || value === '') return undefined
   if (typeof value === 'number') return value
   if (/^\d+$/.test(value)) return +value

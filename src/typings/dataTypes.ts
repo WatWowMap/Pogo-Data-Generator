@@ -87,10 +87,7 @@ export interface MiscProto {
   formatted: string
 }
 
-export interface LocationCardInfo {
-  id: number
-  proto: string
-  formatted: string
+export interface LocationCardInfo extends MiscProto {
   imageUrl?: string
   cardType?: string
   vfxAddress?: string

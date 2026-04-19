@@ -1,7 +1,7 @@
 import { Rpc } from '@na-ji/pogo-protos'
 import type { LocationCardProto } from '../typings/protos'
 
-export function normalizeLocationCardId(
+function normalizeLocationCardId(
   value?: string | number,
 ): number | undefined {
   if (value === undefined || value === null || value === '') return undefined
