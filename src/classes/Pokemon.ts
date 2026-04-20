@@ -727,6 +727,8 @@ export default class Pokemon extends Masterfile {
               }
               PokemonOverrides.addFormData(this, formId)
               if (!this.parsedPokemon[id].forms.includes(+formId)) {
+                if (!this.parsedPokemon[id].forms)
+                  this.parsedPokemon[id].forms = []
                 this.parsedPokemon[id].forms.push(+formId)
               }
               reconcileBaseFormChanges(
