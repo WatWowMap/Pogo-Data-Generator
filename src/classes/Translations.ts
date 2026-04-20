@@ -245,7 +245,7 @@ export default class Translations extends Masterfile {
         availableManualTranslations.includes(`${locale}.json`)
       ) {
         const manual: { [key: string]: string } = await this.fetch(
-          `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/manual/${locale}.json`,
+          `https://raw.githubusercontent.com/WatWowMap/pogo-translations/refs/heads/master/static/manual/${locale}.json`,
         )
 
         Object.entries(manual).forEach((pair) => {
