@@ -50,21 +50,29 @@ export default class ApkReader {
   }
 
   async fetchApk(filename?: string) {
+    this.apkFilename = null
+    this.files = null
+
     try {
       const first = filename || (await this.getLatestApkFilename())
 
       if (!first) {
         throw new Error('Unable to determine latest APK filename')
       }
-      this.apkFilename = first
 
       const response = await fetch(`https://mirror.unownhash.com/apks/${first}`)
+      if (!response.ok) {
+        throw new Error('Unable to fetch APK')
+      }
       const apk = await response.arrayBuffer()
-      const zip = new JSZip()
-      const raw = await zip.loadAsync(apk)
+      const raw = await new JSZip().loadAsync(apk)
       const file = raw.files['base.apk']
+      if (!file) {
+        throw new Error('Missing base.apk in APK bundle')
+      }
       const buffer = await file.async('nodebuffer')
-      this.files = await zip.loadAsync(buffer)
+      this.files = await new JSZip().loadAsync(buffer)
+      this.apkFilename = first
     } catch (e) {
       console.warn(e, 'Issue with downloading APK')
     }

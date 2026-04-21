@@ -25,14 +25,6 @@ jobs:
           node-version: 24
           cache: 'yarn'
 
-      - name: Restore APK Cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pogo-data-generator
-          key: ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-apk-cache-v1-
-
       - name: Install Dependencies
         run: yarn
 
@@ -55,13 +47,6 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org/
 
-      - name: Restore APK Cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pogo-data-generator
-          key: ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-apk-cache-v1-
       # Ensure npm 11.5.1 or later is installed
       - name: Update npm
         run: npm install -g npm@latest
