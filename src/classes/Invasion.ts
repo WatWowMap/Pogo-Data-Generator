@@ -22,7 +22,7 @@ export default class Invasion extends Masterfile {
         (this.options.customInvasions === undefined && override)
       ) {
         return this.fetch(
-          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/custom-invasions.json',
+          'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/refs/heads/master/custom-invasions.json',
         )
       } else if (this.options.customInvasions) {
         return this.options.customInvasions as InvasionInfo

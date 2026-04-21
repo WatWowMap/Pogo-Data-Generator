@@ -18,8 +18,8 @@ import type {
   Input,
   InvasionsOnly,
   Locales,
-  PrimeApkCacheInput,
   PokemonTemplate,
+  PrimeApkCacheInput,
   TranslationsTemplate,
 } from './typings/inputs'
 import type { InvasionInfo } from './typings/pogoinfo'
@@ -396,7 +396,7 @@ export async function generate({
     if (pokeApi === true) return AllPokeApi[category]
     if (pokeApi) return pokeApi[category]
     return AllPokeApi.fetch(
-      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`,
+      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/refs/heads/main/static/${category}.json`,
     )
   }
 
@@ -430,7 +430,7 @@ export async function generate({
     (translations.template as TranslationsTemplate).characters
   ) {
     const invasionData: InvasionInfo = await AllInvasions.fetch(
-      'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
+      'https://raw.githubusercontent.com/WatWowMap/event-info/refs/heads/main/grunts/classic.json',
     )
     AllInvasions.invasions(
       AllInvasions.mergeInvasions(
@@ -442,7 +442,7 @@ export async function generate({
 
   if (translations.enabled) {
     const availableManualTranslations = await AllTranslations.fetch(
-      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json',
+      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/refs/heads/master/index.json',
     )
     await Promise.all(
       Object.entries(translations.locales).map(async (langCode) => {
@@ -678,7 +678,7 @@ export async function invasions({
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
-    'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
+    'https://raw.githubusercontent.com/WatWowMap/event-info/refs/heads/main/grunts/classic.json',
   )
   AllInvasions.invasions(
     AllInvasions.mergeInvasions(

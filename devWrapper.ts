@@ -6,7 +6,7 @@ import types from './static/types.json'
 
 const main = async () => {
   const mfData = await fetch(
-    'https://raw.githubusercontent.com/PokeMiners/game_masters/master/latest/latest.json',
+    'https://raw.githubusercontent.com/alexelgt/game_masters/refs/heads/master/GAME_MASTER.json',
   )
   const mf = await mfData.json()
   fs.writeFileSync('./latest.json', JSON.stringify(mf, null, 2), 'utf8')
