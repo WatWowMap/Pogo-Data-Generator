@@ -16,6 +16,14 @@ jobs:
           node-version: 24
           cache: 'yarn'
 
+      - name: Restore APK Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pogo-data-generator
+          key: ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-apk-cache-v1-
+
       - name: Install Dependencies
         run: yarn
 
