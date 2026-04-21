@@ -364,6 +364,19 @@ export interface TranslationsTemplate {
   quests?: boolean
 }
 
+export interface ApkLocaleTexts {
+  [key: string]: string
+}
+
+export interface ApkTexts {
+  [locale: string]: ApkLocaleTexts
+}
+
+export interface ApkCacheAdapter {
+  load(expectedFilename?: string): Promise<ApkTexts | null>
+  save(apkFilename: string, texts: ApkTexts): Promise<void>
+}
+
 export interface Input {
   url?: string
   translationApkUrl?: string
@@ -371,13 +384,17 @@ export interface Input {
   template?: FullTemplate
   test?: boolean
   raw?: boolean
-  apkCachePath?: string
+  apkCache?: ApkCacheAdapter
   pokeApi?: boolean | PokeApi
   pokeApiBaseUrl?: string
 }
 
 export interface PrimeApkCacheInput {
   force?: boolean
+  apkCachePath?: string
+}
+
+export interface NodeApkCacheInput {
   apkCachePath?: string
 }
 

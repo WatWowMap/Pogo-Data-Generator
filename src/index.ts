@@ -15,21 +15,41 @@ import Weather from './classes/Weather'
 import type { AllInvasions, FinalResult } from './typings/dataTypes'
 import type { NiaMfObj } from './typings/general'
 import type {
+  ApkTexts,
   Input,
   InvasionsOnly,
   Locales,
   PokemonTemplate,
-  PrimeApkCacheInput,
   TranslationsTemplate,
 } from './typings/inputs'
 import type { InvasionInfo } from './typings/pogoinfo'
 
-export async function primeApkCache({
-  force,
-  apkCachePath,
-}: PrimeApkCacheInput = {}) {
-  const apk = new ApkReader(apkCachePath)
-  return apk.primeCache(force)
+async function getApkTexts(
+  apk: ApkReader,
+  apkCache?: Input['apkCache'],
+): Promise<ApkTexts> {
+  const latestFilename = await apk.getLatestApkFilename()
+
+  if (!latestFilename) {
+    return {}
+  }
+
+  if (apkCache) {
+    const cached = await apkCache.load(latestFilename)
+    if (cached) {
+      return cached
+    }
+  }
+
+  await apk.fetchApk(latestFilename)
+  await apk.extractTexts()
+  apk.cleanup()
+
+  if (apkCache && apk.apkFilename) {
+    await apkCache.save(apk.apkFilename, apk.texts)
+  }
+
+  return apk.texts
 }
 
 export async function generate({
@@ -39,7 +59,7 @@ export async function generate({
   translationRemoteUrl,
   raw,
   pokeApi,
-  apkCachePath,
+  apkCache,
   test,
   pokeApiBaseUrl,
 }: Input = {}): Promise<FinalResult> {
@@ -82,7 +102,7 @@ export async function generate({
   const AllPokeApi = new PokeApi(pokeApiBaseUrl)
   const AllMisc = new Misc()
   const AllLocationCards = new LocationCards(locationCards.options)
-  const apk = new ApkReader(apkCachePath)
+  const apk = new ApkReader()
   const enabledLocales = Object.values(translations.locales).filter(Boolean)
 
   AllMisc.parseRaidLevels()
@@ -95,7 +115,7 @@ export async function generate({
   }
 
   if (translations.enabled && enabledLocales.length > 0) {
-    AllTranslations.fromApk = await apk.primeCache()
+    AllTranslations.fromApk = await getApkTexts(apk, apkCache)
   }
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)

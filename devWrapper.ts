@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { generate, invasions } from './src/index'
+import { createNodeApkCache, primeApkCache } from './src/node'
 import baseStats from './static/baseStats.json'
 import tempEvos from './static/tempEvos.json'
 import types from './static/types.json'
@@ -13,10 +14,12 @@ const main = async () => {
 
   const usePokeApiStaging = process.argv.includes('--pokeapi-staging')
   const usePokeApi = usePokeApiStaging || process.argv.includes('--pokeapi')
+  const apkCache = createNodeApkCache()
   console.time('Generated in')
   const data = await generate({
     raw: process.argv.includes('--raw'),
     test: process.argv.includes('--test'),
+    apkCache,
     pokeApi: usePokeApi || {
       baseStats,
       tempEvos,
@@ -35,6 +38,9 @@ const main = async () => {
         'utf8',
         () => {},
       )
+    }
+    if (process.argv.includes('--apk')) {
+      await primeApkCache()
     }
     if (data?.AllPokeApi) {
       const { baseStats, tempEvos, types } = data.AllPokeApi

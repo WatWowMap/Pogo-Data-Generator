@@ -1,35 +1,13 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import path from 'node:path'
 import JSZip from 'jszip'
-
-interface ApkTextCache {
-  apkFilename: string
-  texts: Record<string, Record<string, string>>
-}
-
-const isApkTextCache = (value: unknown): value is ApkTextCache => {
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-  const candidate = value as {
-    apkFilename?: unknown
-    texts?: unknown
-  }
-  return (
-    typeof candidate.apkFilename === 'string' &&
-    !!candidate.texts &&
-    typeof candidate.texts === 'object'
-  )
-}
+import type { ApkTexts } from '../typings/inputs'
 
 export default class ApkReader {
-  texts: Record<string, Record<string, string>>
+  texts: ApkTexts
   codeMap: Record<string, string>
   files: JSZip | null
-  cachePath: string
   apkFilename: string | null
 
-  constructor(cachePath?: string) {
+  constructor() {
     this.texts = {}
     this.codeMap = {
       'pt-br': 'pt-br',
@@ -49,7 +27,6 @@ export default class ApkReader {
       'tr-tr': 'tr',
     }
     this.files = null
-    this.cachePath = path.resolve(cachePath || '.cache/apk-texts.json')
     this.apkFilename = null
   }
 
@@ -93,61 +70,6 @@ export default class ApkReader {
     }
   }
 
-  async loadCachedTexts(expectedFilename?: string) {
-    try {
-      const cached = await readFile(this.cachePath, 'utf8')
-      const parsed: unknown = JSON.parse(cached)
-      if (!isApkTextCache(parsed)) {
-        return false
-      }
-      if (expectedFilename && parsed.apkFilename !== expectedFilename) {
-        return false
-      }
-      this.apkFilename = parsed.apkFilename
-      this.texts = parsed.texts
-      return true
-    } catch {
-      return false
-    }
-  }
-
-  async writeCachedTexts() {
-    try {
-      await mkdir(path.dirname(this.cachePath), { recursive: true })
-      if (!this.apkFilename) {
-        throw new Error('Missing APK filename for cache write')
-      }
-      const payload: ApkTextCache = {
-        apkFilename: this.apkFilename,
-        texts: this.texts,
-      }
-      await writeFile(this.cachePath, JSON.stringify(payload), 'utf8')
-    } catch (e) {
-      console.warn(e, 'Issue with writing APK text cache')
-    }
-  }
-
-  async primeCache(force = false) {
-    const latestFilename = await this.getLatestApkFilename()
-
-    if (!latestFilename) {
-      if (await this.loadCachedTexts()) {
-        return this.texts
-      }
-      return this.texts
-    }
-
-    if (!force && (await this.loadCachedTexts(latestFilename))) {
-      return this.texts
-    }
-
-    this.texts = {}
-    await this.fetchApk(latestFilename)
-    await this.extractTexts()
-    this.cleanup()
-    return this.texts
-  }
-
   async extractTexts() {
     if (!this.files) return
     try {
@@ -180,7 +102,6 @@ export default class ApkReader {
           }
         }),
       )
-      await this.writeCachedTexts()
     } catch (e) {
       console.warn(e, 'Issue with extracting texts')
     }
