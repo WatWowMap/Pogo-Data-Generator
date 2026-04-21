@@ -3,6 +3,7 @@ import type {
   AllMoves,
   AllPokemon,
   AllTypes,
+  SinglePokemon,
   TempEvolutions,
 } from '../typings/dataTypes'
 import type { SpeciesApi } from '../typings/general'
@@ -103,6 +104,21 @@ export default class PokeApi extends Masterfile {
 
   private isKnownMove(move?: number): move is number {
     return !!move && !!this.moveReference?.[move]
+  }
+
+  private hasExactMoves(moves: number[] | undefined, expected: number[]) {
+    return (
+      Array.isArray(moves) &&
+      moves.length === expected.length &&
+      moves.every((move, index) => move === expected[index])
+    )
+  }
+
+  private shouldFetchPlaceholderMoves(pokemon?: SinglePokemon) {
+    return (
+      this.hasExactMoves(pokemon?.quickMoves, [Rpc.HoloPokemonMove.SPLASH_FAST]) &&
+      this.hasExactMoves(pokemon?.chargedMoves, [Rpc.HoloPokemonMove.STRUGGLE])
+    )
   }
 
   private buildUrl(path: string) {
@@ -242,9 +258,10 @@ export default class PokeApi extends Masterfile {
           !parsedPokemon[id].defense ||
           !parsedPokemon[id].stamina ||
           parsedPokemon[id].types.length === 0 ||
-          pokeApiIds?.includes(+id)
+          pokeApiIds?.includes(+id) ||
+          this.shouldFetchPlaceholderMoves(parsedPokemon[id])
         ) {
-          await this.pokemonApi(id)
+          await this.pokemonApi(id, false)
         }
       }),
     )
@@ -257,10 +274,10 @@ export default class PokeApi extends Masterfile {
         extraPokemon.push(i)
       }
     }
-    await Promise.all(extraPokemon.map((id) => this.pokemonApi(id)))
+    await Promise.all(extraPokemon.map((id) => this.pokemonApi(id, true)))
   }
 
-  async pokemonApi(id: string | number) {
+  async pokemonApi(id: string | number, unreleased = false) {
     try {
       const statsData: PokeApiStats = await this.fetch(
         this.buildUrl(`pokemon/${id}`),
@@ -309,7 +326,7 @@ export default class PokeApi extends Masterfile {
           ? this.inconsistentStats[id].stamina || nerfCheck.stamina
           : nerfCheck.stamina,
         types: this.mapTypeIds(statsData.types),
-        unreleased: true,
+        ...(unreleased ? { unreleased: true } : {}),
       }
     } catch (e) {
       console.warn(e, `Failed to parse PokeApi Stats for #${id}`)

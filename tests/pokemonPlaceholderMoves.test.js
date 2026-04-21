@@ -21,6 +21,20 @@ const createEntry = ({ pokemonName, pokedexId, quickMoves, chargedMoves }) => ({
   chargedMoves,
 })
 
+const createCompleteEntry = ({
+  pokemonName,
+  pokedexId,
+  quickMoves,
+  chargedMoves,
+  types = [Rpc.HoloPokemonType.POKEMON_TYPE_PSYCHIC],
+}) => ({
+  ...createEntry({ pokemonName, pokedexId, quickMoves, chargedMoves }),
+  attack: 54,
+  defense: 57,
+  stamina: 125,
+  types,
+})
+
 const createPokeApiResponse = (name) => ({
   name,
   moves: [
@@ -102,6 +116,53 @@ describe('Pokemon placeholder moves', () => {
     expect(pokeApi.baseStats[129].chargedMoves).toEqual([
       Rpc.HoloPokemonMove.THUNDERBOLT,
     ])
+    expect(pokeApi.baseStats[129].unreleased).toBeUndefined()
+  })
+
+  test('pokemonApi marks extra estimated entries as unreleased when requested', async () => {
+    const pokeApi = createPokeApi()
+
+    jest
+      .spyOn(pokeApi, 'fetch')
+      .mockResolvedValue(createPokeApiResponse('magikarp'))
+
+    await pokeApi.pokemonApi(129, true)
+
+    expect(pokeApi.baseStats[129].unreleased).toBe(true)
+  })
+
+  test('baseStatsApi fetches exact Splash and Struggle placeholders even when GM stats and types are present', async () => {
+    const pokeApi = createPokeApi()
+    const pokemonApiSpy = jest.spyOn(pokeApi, 'pokemonApi').mockResolvedValue()
+
+    await pokeApi.baseStatsApi({
+      789: createCompleteEntry({
+        pokemonName: 'Cosmog',
+        pokedexId: 789,
+        quickMoves: [Rpc.HoloPokemonMove.SPLASH_FAST],
+        chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+      }),
+      1024: createCompleteEntry({
+        pokemonName: 'Terapagos',
+        pokedexId: 1024,
+        quickMoves: [Rpc.HoloPokemonMove.TAKE_DOWN_FAST],
+        chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+      }),
+    })
+
+    expect(pokemonApiSpy).toHaveBeenCalledTimes(1)
+    expect(pokemonApiSpy).toHaveBeenCalledWith('789', false)
+  })
+
+  test('extraPokemon marks missing species as unreleased estimates', async () => {
+    const pokeApi = createPokeApi()
+    const pokemonApiSpy = jest.spyOn(pokeApi, 'pokemonApi').mockResolvedValue()
+    pokeApi.maxPokemon = 1
+
+    await pokeApi.extraPokemon({})
+
+    expect(pokemonApiSpy).toHaveBeenCalledTimes(1)
+    expect(pokemonApiSpy).toHaveBeenCalledWith(1, true)
   })
 
   test.each([129, 789, 790, 1022])(
