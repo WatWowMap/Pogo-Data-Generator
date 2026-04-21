@@ -39,7 +39,6 @@ export async function generate({
   translationRemoteUrl,
   raw,
   pokeApi,
-  useApkCache,
   apkCachePath,
   test,
   pokeApiBaseUrl,
@@ -96,13 +95,7 @@ export async function generate({
   }
 
   if (translations.enabled && enabledLocales.length > 0) {
-    const hasCachedApkTexts = await apk.loadCachedTexts()
-
-    if (hasCachedApkTexts) {
-      AllTranslations.fromApk = apk.texts
-    } else if (useApkCache) {
-      AllTranslations.fromApk = await apk.primeCache()
-    }
+    AllTranslations.fromApk = await apk.primeCache()
   }
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
