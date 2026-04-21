@@ -18,10 +18,19 @@ import type {
   Input,
   InvasionsOnly,
   Locales,
+  PrimeApkCacheInput,
   PokemonTemplate,
   TranslationsTemplate,
 } from './typings/inputs'
 import type { InvasionInfo } from './typings/pogoinfo'
+
+export async function primeApkCache({
+  force,
+  apkCachePath,
+}: PrimeApkCacheInput = {}) {
+  const apk = new ApkReader(apkCachePath)
+  return apk.primeCache(force)
+}
 
 export async function generate({
   template,
@@ -30,6 +39,8 @@ export async function generate({
   translationRemoteUrl,
   raw,
   pokeApi,
+  useApkCache,
+  apkCachePath,
   test,
   pokeApiBaseUrl,
 }: Input = {}): Promise<FinalResult> {
@@ -70,21 +81,29 @@ export async function generate({
     translationRemoteUrl,
   )
   const AllPokeApi = new PokeApi(pokeApiBaseUrl)
-  await AllPokeApi.setMaxPokemonId()
-  const generations = await AllPokeApi.getGenerations()
-  AllPokemon.generations = generations
   const AllMisc = new Misc()
   const AllLocationCards = new LocationCards(locationCards.options)
-  const apk = new ApkReader()
+  const apk = new ApkReader(apkCachePath)
+  const enabledLocales = Object.values(translations.locales).filter(Boolean)
 
   AllMisc.parseRaidLevels()
   AllMisc.parseRouteTypes()
   AllMisc.parseTeams()
 
-  await apk.fetchApk()
-  await apk.extractTexts()
-  apk.cleanup()
-  AllTranslations.fromApk = apk.texts
+  if (pokeApi === true) {
+    await AllPokeApi.setMaxPokemonId()
+    AllPokemon.generations = await AllPokeApi.getGenerations()
+  }
+
+  if (translations.enabled && enabledLocales.length > 0) {
+    const hasCachedApkTexts = await apk.loadCachedTexts()
+
+    if (hasCachedApkTexts) {
+      AllTranslations.fromApk = apk.texts
+    } else if (useApkCache) {
+      AllTranslations.fromApk = await apk.primeCache()
+    }
+  }
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
 

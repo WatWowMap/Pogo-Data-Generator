@@ -371,8 +371,15 @@ export interface Input {
   template?: FullTemplate
   test?: boolean
   raw?: boolean
+  useApkCache?: boolean
+  apkCachePath?: string
   pokeApi?: boolean | PokeApi
   pokeApiBaseUrl?: string
+}
+
+export interface PrimeApkCacheInput {
+  force?: boolean
+  apkCachePath?: string
 }
 
 export interface FullTemplate {

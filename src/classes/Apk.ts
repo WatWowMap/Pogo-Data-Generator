@@ -1,11 +1,14 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
 import JSZip from 'jszip'
 
 export default class ApkReader {
   texts: Record<string, Record<string, string>>
   codeMap: Record<string, string>
   files: JSZip | null
+  cachePath: string
 
-  constructor() {
+  constructor(cachePath?: string) {
     this.texts = {}
     this.codeMap = {
       'pt-br': 'pt-br',
@@ -25,6 +28,7 @@ export default class ApkReader {
       'tr-tr': 'tr',
     }
     this.files = null
+    this.cachePath = path.resolve(cachePath || '.cache/apk-texts.json')
   }
 
   removeEscapes(str: string) {
@@ -51,6 +55,37 @@ export default class ApkReader {
     } catch (e) {
       console.warn(e, 'Issue with downloading APK')
     }
+  }
+
+  async loadCachedTexts() {
+    try {
+      const cached = await readFile(this.cachePath, 'utf8')
+      this.texts = JSON.parse(cached)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  async writeCachedTexts() {
+    try {
+      await mkdir(path.dirname(this.cachePath), { recursive: true })
+      await writeFile(this.cachePath, JSON.stringify(this.texts), 'utf8')
+    } catch (e) {
+      console.warn(e, 'Issue with writing APK text cache')
+    }
+  }
+
+  async primeCache(force = false) {
+    if (!force && (await this.loadCachedTexts())) {
+      return this.texts
+    }
+
+    this.texts = {}
+    await this.fetchApk()
+    await this.extractTexts()
+    this.cleanup()
+    return this.texts
   }
 
   async extractTexts() {
@@ -85,6 +120,7 @@ export default class ApkReader {
           }
         }),
       )
+      await this.writeCachedTexts()
     } catch (e) {
       console.warn(e, 'Issue with extracting texts')
     }

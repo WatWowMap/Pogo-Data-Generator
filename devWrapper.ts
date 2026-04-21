@@ -13,10 +13,12 @@ const main = async () => {
 
   const usePokeApiStaging = process.argv.includes('--pokeapi-staging')
   const usePokeApi = usePokeApiStaging || process.argv.includes('--pokeapi')
+  const useApkCache = process.argv.includes('--apk-cache')
   console.time('Generated in')
   const data = await generate({
     raw: process.argv.includes('--raw'),
     test: process.argv.includes('--test'),
+    useApkCache,
     pokeApi: usePokeApi || {
       baseStats,
       tempEvos,
@@ -26,6 +28,10 @@ const main = async () => {
       ? 'https://staging.pokeapi.co/api/v2'
       : undefined,
   })
+
+  if (useApkCache) {
+    console.log('APK text cache enabled for this run')
+  }
 
   if (process.argv.includes('--test')) {
     if (process.argv.includes('--invasions')) {
