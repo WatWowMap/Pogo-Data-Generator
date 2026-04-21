@@ -15,6 +15,7 @@ import Weather from './classes/Weather'
 import type { AllInvasions, FinalResult } from './typings/dataTypes'
 import type { NiaMfObj } from './typings/general'
 import type {
+  ApkTexts,
   Input,
   InvasionsOnly,
   Locales,
@@ -23,6 +24,34 @@ import type {
 } from './typings/inputs'
 import type { InvasionInfo } from './typings/pogoinfo'
 
+async function getApkTexts(
+  apk: ApkReader,
+  apkCache?: Input['apkCache'],
+): Promise<ApkTexts> {
+  const latestFilename = await apk.getLatestApkFilename()
+
+  if (!latestFilename) {
+    return {}
+  }
+
+  if (apkCache) {
+    const cached = await apkCache.load(latestFilename)
+    if (cached) {
+      return cached
+    }
+  }
+
+  await apk.fetchApk(latestFilename)
+  await apk.extractTexts()
+  apk.cleanup()
+
+  if (apkCache && apk.apkFilename) {
+    await apkCache.save(apk.apkFilename, apk.texts)
+  }
+
+  return apk.texts
+}
+
 export async function generate({
   template,
   url,
@@ -30,6 +59,7 @@ export async function generate({
   translationRemoteUrl,
   raw,
   pokeApi,
+  apkCache,
   test,
   pokeApiBaseUrl,
 }: Input = {}): Promise<FinalResult> {
@@ -70,21 +100,23 @@ export async function generate({
     translationRemoteUrl,
   )
   const AllPokeApi = new PokeApi(pokeApiBaseUrl)
-  await AllPokeApi.setMaxPokemonId()
-  const generations = await AllPokeApi.getGenerations()
-  AllPokemon.generations = generations
   const AllMisc = new Misc()
   const AllLocationCards = new LocationCards(locationCards.options)
   const apk = new ApkReader()
+  const enabledLocales = Object.values(translations.locales).filter(Boolean)
 
   AllMisc.parseRaidLevels()
   AllMisc.parseRouteTypes()
   AllMisc.parseTeams()
 
-  await apk.fetchApk()
-  await apk.extractTexts()
-  apk.cleanup()
-  AllTranslations.fromApk = apk.texts
+  if (pokeApi === true) {
+    await AllPokeApi.setMaxPokemonId()
+    AllPokemon.generations = await AllPokeApi.getGenerations()
+  }
+
+  if (translations.enabled && enabledLocales.length > 0) {
+    AllTranslations.fromApk = await getApkTexts(apk, apkCache)
+  }
 
   const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
 
@@ -384,7 +416,7 @@ export async function generate({
     if (pokeApi === true) return AllPokeApi[category]
     if (pokeApi) return pokeApi[category]
     return AllPokeApi.fetch(
-      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/main/static/${category}.json`,
+      `https://raw.githubusercontent.com/WatWowMap/Pogo-Data-Generator/refs/heads/main/static/${category}.json`,
     )
   }
 
@@ -418,7 +450,7 @@ export async function generate({
     (translations.template as TranslationsTemplate).characters
   ) {
     const invasionData: InvasionInfo = await AllInvasions.fetch(
-      'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
+      'https://raw.githubusercontent.com/WatWowMap/event-info/refs/heads/main/grunts/classic.json',
     )
     AllInvasions.invasions(
       AllInvasions.mergeInvasions(
@@ -430,7 +462,7 @@ export async function generate({
 
   if (translations.enabled) {
     const availableManualTranslations = await AllTranslations.fetch(
-      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json',
+      'https://raw.githubusercontent.com/WatWowMap/pogo-translations/refs/heads/master/index.json',
     )
     await Promise.all(
       Object.entries(translations.locales).map(async (langCode) => {
@@ -666,7 +698,7 @@ export async function invasions({
   const finalTemplate = template || base.invasions
   const AllInvasions = new Invasions(finalTemplate.options)
   const invasionData: InvasionInfo = await AllInvasions.fetch(
-    'https://raw.githubusercontent.com/WatWowMap/event-info/main/grunts/classic.json',
+    'https://raw.githubusercontent.com/WatWowMap/event-info/refs/heads/main/grunts/classic.json',
   )
   AllInvasions.invasions(
     AllInvasions.mergeInvasions(

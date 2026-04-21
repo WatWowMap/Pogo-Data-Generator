@@ -6,3 +6,4 @@ master-latest.json
 .DS_Store
 invasions.json
 latest.json
+.cache/

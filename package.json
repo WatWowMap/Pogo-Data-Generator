@@ -17,12 +17,23 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    }
+  },
   "scripts": {
     "start": "node .",
     "generate": "ts-node devWrapper.ts --test",
     "pokeapi": "ts-node devWrapper.ts --test --pokeapi",
     "raw": "ts-node devWrapper.ts --test --raw",
     "invasions": "ts-node devWrapper.ts --test --invasions",
+    "apk": "ts-node devWrapper.ts --test --apk",
     "test": "tsc && ./node_modules/.bin/jest",
     "format": "biome format --write ./src/**/*.ts",
     "publishBuild": "rm -r dist && tsc"

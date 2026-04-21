@@ -16,11 +16,26 @@ jobs:
           node-version: 24
           cache: 'yarn'
 
+      - name: Restore APK Cache
+        id: apk-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/pogo-data-generator
+          key: ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}-
+
       - name: Install Dependencies
         run: yarn
 
       - name: Generate Check
         run: yarn generate
+
+      - name: Save APK Cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/pogo-data-generator
+          key: ${{ steps.apk-cache.outputs.cache-primary-key }}
 
       - name: Invasion Check
         run: yarn invasions

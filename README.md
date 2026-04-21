@@ -40,10 +40,20 @@ Usage:
 ```js
 // commonJS
 const { generate } = require('pogo-data-generator')
-// es6 with invasion function
+const { createNodeApkCache, primeApkCache } = require('pogo-data-generator/node')
+// es6 with exported helpers
 import { generate, invasions } from 'pogo-data-generator'
+import { createNodeApkCache, primeApkCache } from 'pogo-data-generator/node'
 
 const data = await generate() // returns the default settings
+
+const apkCache = createNodeApkCache()
+
+await primeApkCache()
+// downloads the APK texts once and saves them to the OS cache directory in Node environments
+
+const cachedData = await generate({ apkCache })
+// automatically reuses the primed APK cache when it matches the latest APK filename
 
 const template = {
   pokemon: {
@@ -131,8 +141,15 @@ The generate function accepts an object with the following properties:
 - `url` (string): Custom url to fetch the masterfile from, results not guaranteed
 - `test` (boolean): Writes the masterfile to a local json
 - `raw` (boolean): Returns the data in its raw format without any template processing
+- `apkCache` (object): Optional server-side cache adapter for APK texts
 - `pokeApi` (boolean): Fetches fresh data from PokeAPI
 - `pokeApiBaseUrl` (string): Overrides the default PokeAPI endpoint (defaults to `https://pokeapi.co/api/v2`)
+
+Node-only cache helpers are exported from `pogo-data-generator/node`:
+
+- `createNodeApkCache(options?)`: Creates a filesystem-backed APK cache adapter for server environments
+- `force` (boolean): Rebuilds the APK cache even if the cache already matches the latest APK filename
+- `apkCachePath` (string): Writes the APK cache to a custom file path instead of the OS cache directory
 
 To view some static examples of what this library can create, check out these repos:
 [Masterfiles](https://github.com/WatWowMap/Masterfile-Generator)
