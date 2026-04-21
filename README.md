@@ -50,7 +50,7 @@ const data = await generate() // returns the default settings
 const apkCache = createNodeApkCache()
 
 await primeApkCache()
-// downloads the APK texts once and saves them to .cache/apk-texts.json in Node environments
+// downloads the APK texts once and saves them to the OS cache directory in Node environments
 
 const cachedData = await generate({ apkCache })
 // automatically reuses the primed APK cache when it matches the latest APK filename
@@ -149,7 +149,7 @@ Node-only cache helpers are exported from `pogo-data-generator/node`:
 
 - `createNodeApkCache(options?)`: Creates a filesystem-backed APK cache adapter for server environments
 - `force` (boolean): Rebuilds the APK cache even if the cache already matches the latest APK filename
-- `apkCachePath` (string): Writes the APK cache to a custom file path
+- `apkCachePath` (string): Writes the APK cache to a custom file path instead of the OS cache directory
 
 To view some static examples of what this library can create, check out these repos:
 [Masterfiles](https://github.com/WatWowMap/Masterfile-Generator)

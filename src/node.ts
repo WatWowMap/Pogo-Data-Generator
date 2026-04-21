@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import ApkReader from './classes/Apk'
 import type {
@@ -28,10 +29,28 @@ const isApkTextCacheFile = (value: unknown): value is ApkTextCacheFile => {
   )
 }
 
+const defaultNodeApkCachePath = () => {
+  if (process.platform === 'darwin') {
+    return path.join(os.homedir(), 'Library', 'Caches', 'pogo-data-generator')
+  }
+  if (process.platform === 'win32') {
+    return path.join(
+      process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
+      'pogo-data-generator',
+    )
+  }
+  return path.join(
+    process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'),
+    'pogo-data-generator',
+  )
+}
+
 export function createNodeApkCache({
   apkCachePath,
 }: NodeApkCacheInput = {}): ApkCacheAdapter {
-  const resolvedPath = path.resolve(apkCachePath || '.cache/apk-texts.json')
+  const resolvedPath = path.resolve(
+    apkCachePath || path.join(defaultNodeApkCachePath(), 'apk-texts.json'),
+  )
 
   return {
     async load(expectedFilename?: string) {
