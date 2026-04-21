@@ -364,6 +364,11 @@ export interface TranslationsTemplate {
   quests?: boolean
 }
 
+export interface CpmTemplate {
+  level?: boolean
+  multiplier?: boolean
+}
+
 export interface Input {
   url?: string
   translationApkUrl?: string
@@ -459,6 +464,11 @@ export interface FullTemplate {
     enabled?: boolean
     options: Options
     template: MiscProto | keyof MiscProto
+  }
+  cpm?: {
+    enabled?: boolean
+    options: Options
+    template: CpmTemplate | string
   }
 }
 
