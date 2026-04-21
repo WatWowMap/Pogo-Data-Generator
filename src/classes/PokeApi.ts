@@ -101,6 +101,10 @@ export default class PokeApi extends Masterfile {
     this.moveReference = parsed
   }
 
+  private isKnownMove(move?: number): move is number {
+    return !!move && !!this.moveReference?.[move]
+  }
+
   private buildUrl(path: string) {
     return `${this.apiBaseUrl}/${path.replace(/^\//, '')}`
   }
@@ -284,7 +288,7 @@ export default class PokeApi extends Masterfile {
                   .replace(/-/g, '_')}_FAST` as MoveProto
               ],
           )
-          .filter((move) => move && this.moveReference[move]?.power)
+          .filter((move): move is number => this.isKnownMove(move))
           .sort((a, b) => a - b),
         chargedMoves: statsData.moves
           .map(
@@ -293,7 +297,7 @@ export default class PokeApi extends Masterfile {
                 move.move.name.toUpperCase().replace(/-/g, '_') as MoveProto
               ],
           )
-          .filter((move) => move && this.moveReference[move]?.power)
+          .filter((move): move is number => this.isKnownMove(move))
           .sort((a, b) => a - b),
         attack: this.inconsistentStats[id]
           ? this.inconsistentStats[id].attack || nerfCheck.attack
