@@ -465,8 +465,10 @@ export default class PokeApi extends Masterfile {
           if (!evolvedPokemon.has(+id)) {
             const evoData = await this.fetchSpecies(id)
             if (this.baseStats[id]) {
-              this.baseStats[id].legendary = evoData.is_legendary
-              this.baseStats[id].mythic = evoData.is_mythical
+              this.baseStats[id].legendary =
+                parsedPokemon[id]?.legendary ?? evoData.is_legendary
+              this.baseStats[id].mythic =
+                parsedPokemon[id]?.mythic ?? evoData.is_mythical
             }
             if (evoData.evolves_from_species) {
               const prevEvoId = this.resolveStructId(evoData.evolves_from_species)
@@ -507,8 +509,10 @@ export default class PokeApi extends Masterfile {
       Object.keys(this.baseStats).map(async (id) => {
         try {
           const evoData = await this.fetchSpecies(id)
-          this.baseStats[id].legendary = evoData.is_legendary
-          this.baseStats[id].mythic = evoData.is_mythical
+          this.baseStats[id].legendary =
+            parsedPokemon[id]?.legendary ?? evoData.is_legendary
+          this.baseStats[id].mythic =
+            parsedPokemon[id]?.mythic ?? evoData.is_mythical
         } catch (e) {
           console.warn(e, `Failed to apply PokeApi species flags for #${id}`)
         }

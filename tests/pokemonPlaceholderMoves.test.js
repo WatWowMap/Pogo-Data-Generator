@@ -403,6 +403,33 @@ describe('Pokemon placeholder moves', () => {
     })
   })
 
+  test('evoApi keeps GM legendary flags when species data disagrees', async () => {
+    const pokeApi = createPokeApi()
+
+    pokeApi.baseStats[1009] = {
+      pokemonName: 'Walking-wake',
+    }
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon-species/1009')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.evoApi(new Set(), {
+      1009: {
+        pokemonName: 'Walking Wake',
+        pokedexId: 1009,
+        legendary: true,
+        mythic: false,
+      },
+    })
+
+    expect(pokeApi.baseStats[1009].legendary).toBe(true)
+    expect(pokeApi.baseStats[1009].mythic).toBe(false)
+  })
+
   test.each([129, 789, 790])(
     'keeps exact Splash and Struggle placeholders when pokemonApi fallback data still contains Splash for %i',
     async (pokedexId) => {
