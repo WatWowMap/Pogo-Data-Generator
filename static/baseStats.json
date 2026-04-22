@@ -33,7 +33,9 @@
         "evoId": 899,
         "formId": 3218
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "290": {
     "evolutions": [
@@ -41,7 +43,9 @@
         "evoId": 292,
         "formId": 1439
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "789": {
     "pokemonName": "Cosmog",
@@ -69,7 +73,9 @@
     "stamina": 125,
     "types": [
       14
-    ]
+    ],
+    "legendary": true,
+    "mythic": false
   },
   "801": {
     "pokemonName": "Magearna",
@@ -135,7 +141,9 @@
         "evoId": 1018,
         "formId": 3330
       }
-    ]
+    ],
+    "legendary": false,
+    "mythic": false
   },
   "902": {
     "pokemonName": "Basculegion-male",

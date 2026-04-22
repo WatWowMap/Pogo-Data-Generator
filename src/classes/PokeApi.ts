@@ -471,6 +471,17 @@ export default class PokeApi extends Masterfile {
         }
       }),
     )
+    await Promise.all(
+      Object.keys(this.baseStats).map(async (id) => {
+        try {
+          const evoData = await this.fetchSpecies(id)
+          this.baseStats[id].legendary = evoData.is_legendary
+          this.baseStats[id].mythic = evoData.is_mythical
+        } catch (e) {
+          console.warn(e, `Failed to apply PokeApi species flags for #${id}`)
+        }
+      }),
+    )
   }
 
   async tempEvoApi(parsedPokemon: AllPokemon) {

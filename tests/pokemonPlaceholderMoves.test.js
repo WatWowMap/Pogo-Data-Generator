@@ -230,6 +230,41 @@ describe('Pokemon placeholder moves', () => {
     expect(pokemonApiSpy).toHaveBeenCalledWith(1, true)
   })
 
+  test('evoApi preserves legendary and mythic flags for parent placeholders even when species cache is warm', async () => {
+    const pokeApi = createPokeApi()
+
+    pokeApi.speciesCache['234'] = createSpeciesResponse()
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon-species/899')) {
+        return createSpeciesResponse({
+          name: 'stantler',
+          url: 'https://example.test/api/v2/pokemon-species/234/',
+        })
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.evoApi(new Set(), {
+      234: {
+        pokemonName: 'Stantler',
+        pokedexId: 234,
+        defaultFormId: 0,
+      },
+      899: {
+        pokemonName: 'Wyrdeer',
+        pokedexId: 899,
+        defaultFormId: 3218,
+      },
+    })
+
+    expect(pokeApi.baseStats[234]).toEqual({
+      evolutions: [{ evoId: 899, formId: 3218 }],
+      legendary: false,
+      mythic: false,
+    })
+  })
+
   test.each([129, 789, 790])(
     'keeps exact Splash and Struggle placeholders when pokemonApi fallback data still contains Splash for %i',
     async (pokedexId) => {
