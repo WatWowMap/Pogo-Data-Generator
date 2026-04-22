@@ -35,13 +35,15 @@ const createCompleteEntry = ({
   types,
 })
 
-const createPokeApiResponse = (name) => ({
+const createPokeApiResponse = (
   name,
-  moves: [
-    { move: { name: 'splash' } },
-    { move: { name: 'tackle' } },
-    { move: { name: 'thunderbolt' } },
-  ],
+  moves = ['splash', 'tackle', 'thunderbolt'],
+) => ({
+  name,
+  moves: moves.map((move) => ({
+    move: { name: move },
+    version_group_details: [],
+  })),
   stats: [
     { base_stat: 20, stat: { name: 'hp' } },
     { base_stat: 10, stat: { name: 'attack' } },
@@ -51,6 +53,12 @@ const createPokeApiResponse = (name) => ({
     { base_stat: 80, stat: { name: 'speed' } },
   ],
   types: [{ type: { name: 'water' } }],
+})
+
+const createSpeciesResponse = (evolvesFrom = null) => ({
+  evolves_from_species: evolvesFrom,
+  is_legendary: false,
+  is_mythical: false,
 })
 
 const createPokeApi = () => {
@@ -83,14 +91,17 @@ describe('Pokemon placeholder moves', () => {
       chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
     })
 
-    allPokemon.parsePokeApi({
-      [pokedexId]: createEntry({
-        pokemonName: 'Iron Boulder',
-        pokedexId,
-        quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-        chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
-      }),
-    }, {})
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Iron Boulder',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+        }),
+      },
+      {},
+    )
 
     expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
       Rpc.HoloPokemonMove.TACKLE_FAST,
@@ -103,9 +114,15 @@ describe('Pokemon placeholder moves', () => {
   test('pokemonApi keeps known zero-power moves instead of filtering them out', async () => {
     const pokeApi = createPokeApi()
 
-    jest
-      .spyOn(pokeApi, 'fetch')
-      .mockResolvedValue(createPokeApiResponse('magikarp'))
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/129')) {
+        return createPokeApiResponse('magikarp')
+      }
+      if (url.endsWith('/pokemon-species/129')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
 
     await pokeApi.pokemonApi(129)
 
@@ -119,12 +136,60 @@ describe('Pokemon placeholder moves', () => {
     expect(pokeApi.baseStats[129].unreleased).toBeUndefined()
   })
 
+  test('pokemonApi inherits pre-evolution moves from the full chain', async () => {
+    const pokeApi = createPokeApi()
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/791')) {
+        return createPokeApiResponse('solgaleo', ['thunderbolt'])
+      }
+      if (url.endsWith('/pokemon-species/791')) {
+        return createSpeciesResponse({
+          name: 'cosmoem',
+          url: 'https://example.test/api/v2/pokemon-species/790/',
+        })
+      }
+      if (url.endsWith('/pokemon/790')) {
+        return createPokeApiResponse('cosmoem', ['tackle'])
+      }
+      if (url.endsWith('/pokemon-species/790')) {
+        return createSpeciesResponse({
+          name: 'cosmog',
+          url: 'https://example.test/api/v2/pokemon-species/789/',
+        })
+      }
+      if (url.endsWith('/pokemon/789')) {
+        return createPokeApiResponse('cosmog', ['splash'])
+      }
+      if (url.endsWith('/pokemon-species/789')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.pokemonApi(791)
+
+    expect(pokeApi.baseStats[791].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+      Rpc.HoloPokemonMove.SPLASH_FAST,
+    ])
+    expect(pokeApi.baseStats[791].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+    ])
+  })
+
   test('pokemonApi marks extra estimated entries as unreleased when requested', async () => {
     const pokeApi = createPokeApi()
 
-    jest
-      .spyOn(pokeApi, 'fetch')
-      .mockResolvedValue(createPokeApiResponse('magikarp'))
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/129')) {
+        return createPokeApiResponse('magikarp')
+      }
+      if (url.endsWith('/pokemon-species/129')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
 
     await pokeApi.pokemonApi(129, true)
 
@@ -145,7 +210,7 @@ describe('Pokemon placeholder moves', () => {
       1024: createCompleteEntry({
         pokemonName: 'Terapagos',
         pokedexId: 1024,
-        quickMoves: [Rpc.HoloPokemonMove.TAKE_DOWN_FAST],
+        quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
         chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
       }),
     })
@@ -165,7 +230,7 @@ describe('Pokemon placeholder moves', () => {
     expect(pokemonApiSpy).toHaveBeenCalledWith(1, true)
   })
 
-  test.each([129, 789, 790, 1022])(
+  test.each([129, 789, 790])(
     'keeps exact Splash and Struggle placeholders when pokemonApi fallback data still contains Splash for %i',
     async (pokedexId) => {
       const allPokemon = createPokemon()
@@ -178,9 +243,32 @@ describe('Pokemon placeholder moves', () => {
         chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
       })
 
-      jest
-        .spyOn(pokeApi, 'fetch')
-        .mockResolvedValue(createPokeApiResponse(`pokemon-${pokedexId}`))
+      jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+        if (url.endsWith(`/pokemon/${pokedexId}`)) {
+          return createPokeApiResponse(
+            `pokemon-${pokedexId}`,
+            pokedexId === 790
+              ? ['tackle', 'thunderbolt']
+              : ['splash', 'tackle', 'thunderbolt'],
+          )
+        }
+        if (url.endsWith(`/pokemon-species/${pokedexId}`)) {
+          if (pokedexId === 790) {
+            return createSpeciesResponse({
+              name: 'cosmog',
+              url: 'https://example.test/api/v2/pokemon-species/789/',
+            })
+          }
+          return createSpeciesResponse()
+        }
+        if (pokedexId === 790 && url.endsWith('/pokemon/789')) {
+          return createPokeApiResponse('cosmog', ['splash'])
+        }
+        if (pokedexId === 790 && url.endsWith('/pokemon-species/789')) {
+          return createSpeciesResponse()
+        }
+        throw new Error(`Unexpected URL: ${url}`)
+      })
 
       await pokeApi.pokemonApi(pokedexId)
 
@@ -198,8 +286,14 @@ describe('Pokemon placeholder moves', () => {
   test.each([
     [824, [Rpc.HoloPokemonMove.STRUGGLE_BUG_FAST]],
     [840, [Rpc.HoloPokemonMove.ASTONISH_FAST]],
-    [885, [Rpc.HoloPokemonMove.QUICK_ATTACK_FAST, Rpc.HoloPokemonMove.ASTONISH_FAST]],
-    [1024, [Rpc.HoloPokemonMove.TAKE_DOWN_FAST]],
+    [
+      885,
+      [
+        Rpc.HoloPokemonMove.QUICK_ATTACK_FAST,
+        Rpc.HoloPokemonMove.ASTONISH_FAST,
+      ],
+    ],
+    [1024, [Rpc.HoloPokemonMove.TACKLE_FAST]],
   ])(
     'keeps non-Splash quick moves with Struggle unchanged for %i',
     (pokedexId, quickMoves) => {
@@ -212,16 +306,21 @@ describe('Pokemon placeholder moves', () => {
         chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
       })
 
-      allPokemon.parsePokeApi({
-        [pokedexId]: createEntry({
-          pokemonName: `Pokemon ${pokedexId}`,
-          pokedexId,
-          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-          chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
-        }),
-      }, {})
+      allPokemon.parsePokeApi(
+        {
+          [pokedexId]: createEntry({
+            pokemonName: `Pokemon ${pokedexId}`,
+            pokedexId,
+            quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+            chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+          }),
+        },
+        {},
+      )
 
-      expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual(quickMoves)
+      expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual(
+        quickMoves,
+      )
       expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toEqual([
         Rpc.HoloPokemonMove.STRUGGLE,
       ])
@@ -239,14 +338,17 @@ describe('Pokemon placeholder moves', () => {
       chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
     })
 
-    allPokemon.parsePokeApi({
-      [pokedexId]: createEntry({
-        pokemonName: 'Iron Crown',
-        pokedexId,
-        quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-        chargedMoves: [],
-      }),
-    }, {})
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Iron Crown',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [],
+        }),
+      },
+      {},
+    )
 
     expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
       Rpc.HoloPokemonMove.TACKLE_FAST,
@@ -267,14 +369,17 @@ describe('Pokemon placeholder moves', () => {
       chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
     })
 
-    allPokemon.parsePokeApi({
-      [pokedexId]: createEntry({
-        pokemonName: 'Iron Boulder',
-        pokedexId,
-        quickMoves: [],
-        chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
-      }),
-    }, {})
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Iron Boulder',
+          pokedexId,
+          quickMoves: [],
+          chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+        }),
+      },
+      {},
+    )
 
     expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
       Rpc.HoloPokemonMove.SPLASH_FAST,

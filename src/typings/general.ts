@@ -292,10 +292,12 @@ export interface EvoBranch {
 }
 
 export interface SpeciesApi {
-  evolves_from_species: {
-    name: string
-    url: string
-  }
+  evolves_from_species?:
+    | {
+        name: string
+        url: string
+      }
+    | null
   is_legendary: boolean
   is_mythical: boolean
 }

@@ -2,8 +2,8 @@ import { Rpc } from '@na-ji/pogo-protos'
 import type {
   AllMoves,
   AllPokemon,
-  AllTypes,
   SinglePokemon,
+  AllTypes,
   TempEvolutions,
 } from '../typings/dataTypes'
 import type { SpeciesApi } from '../typings/general'
@@ -25,6 +25,8 @@ export default class PokeApi extends Masterfile {
     [id: string]: { attack?: number; defense?: number; stamina?: number }
   }
   moveReference: AllMoves
+  private pokemonStatsCache: { [id: string]: Promise<PokeApiStats> | PokeApiStats }
+  private speciesCache: { [id: string]: Promise<SpeciesApi> | SpeciesApi }
   private apiBaseUrl: string
 
   constructor(baseUrl?: string) {
@@ -36,6 +38,8 @@ export default class PokeApi extends Masterfile {
     this.baseStats = {}
     this.tempEvos = {}
     this.types = {}
+    this.pokemonStatsCache = {}
+    this.speciesCache = {}
     this.maxPokemon = 1008
     this.inconsistentStats = {
       24: {
@@ -161,6 +165,114 @@ export default class PokeApi extends Masterfile {
       .sort((a, b) => a - b)
   }
 
+  private resolveStructId(struct?: BasePokeApiStruct | null): number | undefined {
+    if (!struct) {
+      return undefined
+    }
+    const protoId =
+      Rpc.HoloPokemonId[
+        struct.name.toUpperCase().replace(/-/g, '_') as PokemonIdProto
+      ]
+    if (protoId) {
+      return protoId
+    }
+    const idFromUrl = Number.parseInt(struct.url.split('/').at(-2) || '', 10)
+    return Number.isFinite(idFromUrl) ? idFromUrl : undefined
+  }
+
+  private async fetchPokemonStats(id: string | number): Promise<PokeApiStats> {
+    const cacheKey = `${id}`
+    if (!this.pokemonStatsCache[cacheKey]) {
+      this.pokemonStatsCache[cacheKey] = (this.fetch(
+        this.buildUrl(`pokemon/${id}`),
+      ) as Promise<PokeApiStats>).catch((error) => {
+        delete this.pokemonStatsCache[cacheKey]
+        throw error
+      })
+    }
+    const statsData = await this.pokemonStatsCache[cacheKey]
+    this.pokemonStatsCache[cacheKey] = statsData
+    return statsData
+  }
+
+  private async fetchSpecies(id: string | number): Promise<SpeciesApi> {
+    const cacheKey = `${id}`
+    if (!this.speciesCache[cacheKey]) {
+      this.speciesCache[cacheKey] = (this.fetch(
+        this.buildUrl(`pokemon-species/${id}`),
+      ) as Promise<SpeciesApi>).catch((error) => {
+        delete this.speciesCache[cacheKey]
+        throw error
+      })
+    }
+    const speciesData = await this.speciesCache[cacheKey]
+    this.speciesCache[cacheKey] = speciesData
+    return speciesData
+  }
+
+  private mapPokeApiMoves(statsData: PokeApiStats) {
+    return {
+      quickMoves: statsData.moves
+        .map(
+          (move) =>
+            Rpc.HoloPokemonMove[
+              `${move.move.name
+                .toUpperCase()
+                .replace(/-/g, '_')}_FAST` as MoveProto
+            ],
+        )
+        .filter((move): move is number => this.isKnownMove(move)),
+      chargedMoves: statsData.moves
+        .map(
+          (move) =>
+            Rpc.HoloPokemonMove[
+              move.move.name.toUpperCase().replace(/-/g, '_') as MoveProto
+            ],
+        )
+        .filter((move): move is number => this.isKnownMove(move)),
+    }
+  }
+
+  private mergeMoveLists(...moveLists: number[][]) {
+    return Array.from(new Set(moveLists.flat())).sort((a, b) => a - b)
+  }
+
+  private async getInheritedMoves(
+    id: string | number,
+    seen = new Set<string>(),
+  ): Promise<{ quickMoves: number[]; chargedMoves: number[] }> {
+    const cacheKey = `${id}`
+    if (seen.has(cacheKey)) {
+      return { quickMoves: [], chargedMoves: [] }
+    }
+    seen.add(cacheKey)
+    try {
+      const statsData = await this.fetchPokemonStats(id)
+      const currentMoves = this.mapPokeApiMoves(statsData)
+      const speciesData = await this.fetchSpecies(id)
+      const previousId = this.resolveStructId(speciesData.evolves_from_species)
+      if (!previousId) {
+        return {
+          quickMoves: [...currentMoves.quickMoves].sort((a, b) => a - b),
+          chargedMoves: [...currentMoves.chargedMoves].sort((a, b) => a - b),
+        }
+      }
+      const previousMoves = await this.getInheritedMoves(previousId, seen)
+      return {
+        quickMoves: this.mergeMoveLists(
+          currentMoves.quickMoves,
+          previousMoves.quickMoves,
+        ),
+        chargedMoves: this.mergeMoveLists(
+          currentMoves.chargedMoves,
+          previousMoves.chargedMoves,
+        ),
+      }
+    } finally {
+      seen.delete(cacheKey)
+    }
+  }
+
   private calculatePogoStats(
     baseStats: { [stat: string]: number },
     nerf: boolean = false,
@@ -279,9 +391,8 @@ export default class PokeApi extends Masterfile {
 
   async pokemonApi(id: string | number, unreleased = false) {
     try {
-      const statsData: PokeApiStats = await this.fetch(
-        this.buildUrl(`pokemon/${id}`),
-      )
+      const statsData = await this.fetchPokemonStats(id)
+      const inheritedMoves = await this.getInheritedMoves(id)
 
       const baseStats = this.buildStatMap(statsData.stats)
       const initial = this.calculatePogoStats(baseStats)
@@ -296,26 +407,8 @@ export default class PokeApi extends Masterfile {
         cp > 4000 ? this.calculatePogoStats(baseStats, true) : initial
       this.baseStats[id] = {
         pokemonName: this.capitalize(statsData.name),
-        quickMoves: statsData.moves
-          .map(
-            (move) =>
-              Rpc.HoloPokemonMove[
-                `${move.move.name
-                  .toUpperCase()
-                  .replace(/-/g, '_')}_FAST` as MoveProto
-              ],
-          )
-          .filter((move): move is number => this.isKnownMove(move))
-          .sort((a, b) => a - b),
-        chargedMoves: statsData.moves
-          .map(
-            (move) =>
-              Rpc.HoloPokemonMove[
-                move.move.name.toUpperCase().replace(/-/g, '_') as MoveProto
-              ],
-          )
-          .filter((move): move is number => this.isKnownMove(move))
-          .sort((a, b) => a - b),
+        quickMoves: inheritedMoves.quickMoves,
+        chargedMoves: inheritedMoves.chargedMoves,
         attack: this.inconsistentStats[id]
           ? this.inconsistentStats[id].attack || nerfCheck.attack
           : nerfCheck.attack,
@@ -338,20 +431,13 @@ export default class PokeApi extends Masterfile {
       Object.keys(parsedPokemon).map(async (id) => {
         try {
           if (!evolvedPokemon.has(+id)) {
-            const evoData: SpeciesApi = await this.fetch(
-              this.buildUrl(`pokemon-species/${id}`),
-            )
+            const evoData = await this.fetchSpecies(id)
             if (this.baseStats[id]) {
               this.baseStats[id].legendary = evoData.is_legendary
               this.baseStats[id].mythic = evoData.is_mythical
             }
             if (evoData.evolves_from_species) {
-              const prevEvoId =
-                Rpc.HoloPokemonId[
-                  evoData.evolves_from_species.name
-                    .toUpperCase()
-                    .replace(/-/g, '_') as PokemonIdProto
-                ] ?? +evoData.evolves_from_species.url.split('/').at(-2)
+              const prevEvoId = this.resolveStructId(evoData.evolves_from_species)
               if (prevEvoId) {
                 if (!this.baseStats[prevEvoId]) {
                   this.baseStats[prevEvoId] = {}
