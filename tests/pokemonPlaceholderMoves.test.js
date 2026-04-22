@@ -86,6 +86,12 @@ describe('Pokemon placeholder moves', () => {
     const allPokemon = createPokemon()
     const pokedexId = 1022
 
+    allPokemon.parsedPokemon[25] = createEntry({
+      pokemonName: 'Pikachu',
+      pokedexId: 25,
+      quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+    })
     allPokemon.parsedPokemon[pokedexId] = createEntry({
       pokemonName: 'Iron Boulder',
       pokedexId,
@@ -100,6 +106,47 @@ describe('Pokemon placeholder moves', () => {
           pokedexId,
           quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
           chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+        }),
+      },
+      {},
+    )
+
+    expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+    ])
+    expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+    ])
+  })
+
+  test('filters hidden fallback charged moves during placeholder replacement', () => {
+    const allPokemon = createPokemon()
+    const pokedexId = 801
+
+    allPokemon.parsedPokemon[25] = createEntry({
+      pokemonName: 'Pikachu',
+      pokedexId: 25,
+      quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
+    })
+    allPokemon.parsedPokemon[pokedexId] = createEntry({
+      pokemonName: 'Magearna',
+      pokedexId,
+      quickMoves: [Rpc.HoloPokemonMove.SPLASH_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+    })
+
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Magearna',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [
+            Rpc.HoloPokemonMove.THUNDERBOLT,
+            Rpc.HoloPokemonMove.RETURN,
+            Rpc.HoloPokemonMove.FRUSTRATION,
+          ],
         }),
       },
       {},

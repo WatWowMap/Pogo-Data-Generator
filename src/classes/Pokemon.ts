@@ -1372,6 +1372,16 @@ export default class Pokemon extends Masterfile {
       this.options.includeEstimatedPokemon === true ||
       this.options.includeEstimatedPokemon.baseStats
     ) {
+      const gmChargedMovePool = new Set<number>()
+      const collectStandardMoves = (entry?: {
+        chargedMoves?: number[]
+      }) => {
+        cleanNumberList(entry?.chargedMoves).forEach((move) =>
+          gmChargedMovePool.add(move),
+        )
+      }
+      Object.values(this.parsedPokemon).forEach(collectStandardMoves)
+      Object.values(this.parsedForms).forEach(collectStandardMoves)
       Object.keys(baseStats).forEach((id) => {
         try {
           if (!this.parsedPokemon[id]) {
@@ -1504,6 +1514,9 @@ export default class Pokemon extends Masterfile {
           const actualChargedMoves = cleanNumberList(existing.chargedMoves)
           const fallbackQuickMoves = cleanNumberList(baseEntry.quickMoves)
           const fallbackChargedMoves = cleanNumberList(baseEntry.chargedMoves)
+          const placeholderFallbackChargedMoves = fallbackChargedMoves.filter(
+            (move) => gmChargedMovePool.has(move),
+          )
           const preferEstimatedPlaceholderQuickMoves =
             shouldPreferEstimatedPlaceholderQuickMoves(
               actualQuickMoves,
@@ -1512,7 +1525,7 @@ export default class Pokemon extends Masterfile {
             )
           const preferEstimatedPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
-            fallbackChargedMoves.length > 0
+            placeholderFallbackChargedMoves.length > 0
           if (preferEstimatedPlaceholderQuickMoves) {
             console.warn(
               `[BASE_STATS] Replacing placeholder moves for ${id} with PokeApi data`,
@@ -1528,7 +1541,7 @@ export default class Pokemon extends Masterfile {
                 ) ?? (actualQuickMoves.length ? actualQuickMoves : undefined)
           const chargedMoves =
             preferEstimatedPlaceholderChargedMoves
-              ? fallbackChargedMoves
+              ? placeholderFallbackChargedMoves
               : preferActualNumbers(
                   existing.chargedMoves,
                   baseEntry.chargedMoves,
