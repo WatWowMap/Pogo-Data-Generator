@@ -96,6 +96,12 @@ const shouldPreferEstimatedPlaceholderQuickMoves = (
   !fallbackQuickMoves.includes(Rpc.HoloPokemonMove.SPLASH_FAST) &&
   fallbackQuickMoves.length > 0
 
+const excludedPlaceholderFallbackChargedMoves = new Set([
+  Rpc.HoloPokemonMove.FRUSTRATION,
+  Rpc.HoloPokemonMove.REST,
+  Rpc.HoloPokemonMove.RETURN,
+])
+
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
   parsedPokeForms: AllPokemon
@@ -1372,16 +1378,6 @@ export default class Pokemon extends Masterfile {
       this.options.includeEstimatedPokemon === true ||
       this.options.includeEstimatedPokemon.baseStats
     ) {
-      const gmChargedMovePool = new Set<number>()
-      const collectStandardMoves = (entry?: {
-        chargedMoves?: number[]
-      }) => {
-        cleanNumberList(entry?.chargedMoves).forEach((move) =>
-          gmChargedMovePool.add(move),
-        )
-      }
-      Object.values(this.parsedPokemon).forEach(collectStandardMoves)
-      Object.values(this.parsedForms).forEach(collectStandardMoves)
       Object.keys(baseStats).forEach((id) => {
         try {
           if (!this.parsedPokemon[id]) {
@@ -1515,7 +1511,7 @@ export default class Pokemon extends Masterfile {
           const fallbackQuickMoves = cleanNumberList(baseEntry.quickMoves)
           const fallbackChargedMoves = cleanNumberList(baseEntry.chargedMoves)
           const placeholderFallbackChargedMoves = fallbackChargedMoves.filter(
-            (move) => gmChargedMovePool.has(move),
+            (move) => !excludedPlaceholderFallbackChargedMoves.has(move),
           )
           const preferEstimatedPlaceholderQuickMoves =
             shouldPreferEstimatedPlaceholderQuickMoves(

@@ -86,12 +86,6 @@ describe('Pokemon placeholder moves', () => {
     const allPokemon = createPokemon()
     const pokedexId = 1022
 
-    allPokemon.parsedPokemon[25] = createEntry({
-      pokemonName: 'Pikachu',
-      pokedexId: 25,
-      quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-      chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
-    })
     allPokemon.parsedPokemon[pokedexId] = createEntry({
       pokemonName: 'Iron Boulder',
       pokedexId,
@@ -123,12 +117,6 @@ describe('Pokemon placeholder moves', () => {
     const allPokemon = createPokemon()
     const pokedexId = 801
 
-    allPokemon.parsedPokemon[25] = createEntry({
-      pokemonName: 'Pikachu',
-      pokedexId: 25,
-      quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-      chargedMoves: [Rpc.HoloPokemonMove.THUNDERBOLT],
-    })
     allPokemon.parsedPokemon[pokedexId] = createEntry({
       pokemonName: 'Magearna',
       pokedexId,
@@ -146,6 +134,7 @@ describe('Pokemon placeholder moves', () => {
             Rpc.HoloPokemonMove.THUNDERBOLT,
             Rpc.HoloPokemonMove.RETURN,
             Rpc.HoloPokemonMove.FRUSTRATION,
+            Rpc.HoloPokemonMove.REST,
           ],
         }),
       },
@@ -180,6 +169,7 @@ describe('Pokemon placeholder moves', () => {
           chargedMoves: [
             Rpc.HoloPokemonMove.RETURN,
             Rpc.HoloPokemonMove.FRUSTRATION,
+            Rpc.HoloPokemonMove.REST,
           ],
         }),
       },
