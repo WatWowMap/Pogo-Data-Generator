@@ -182,6 +182,35 @@ describe('Pokemon placeholder moves', () => {
     expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toBeUndefined()
   })
 
+  test('filters hidden charged moves for fully estimated species entries too', () => {
+    const allPokemon = createPokemon()
+    const pokedexId = 801
+
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Magearna',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [
+            Rpc.HoloPokemonMove.THUNDERBOLT,
+            Rpc.HoloPokemonMove.RETURN,
+            Rpc.HoloPokemonMove.FRUSTRATION,
+            Rpc.HoloPokemonMove.REST,
+          ],
+        }),
+      },
+      {},
+    )
+
+    expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+    ])
+    expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+    ])
+  })
+
   test('pokemonApi keeps known zero-power moves instead of filtering them out', async () => {
     const pokeApi = createPokeApi()
 

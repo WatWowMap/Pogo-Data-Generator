@@ -1510,7 +1510,7 @@ export default class Pokemon extends Masterfile {
           const actualChargedMoves = cleanNumberList(existing.chargedMoves)
           const fallbackQuickMoves = cleanNumberList(baseEntry.quickMoves)
           const fallbackChargedMoves = cleanNumberList(baseEntry.chargedMoves)
-          const placeholderFallbackChargedMoves = fallbackChargedMoves.filter(
+          const sanitizedFallbackChargedMoves = fallbackChargedMoves.filter(
             (move) => !excludedPlaceholderFallbackChargedMoves.has(move),
           )
           const preferEstimatedPlaceholderQuickMoves =
@@ -1522,10 +1522,10 @@ export default class Pokemon extends Masterfile {
           const shouldDropPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
             fallbackChargedMoves.length > 0 &&
-            placeholderFallbackChargedMoves.length === 0
+            sanitizedFallbackChargedMoves.length === 0
           const preferEstimatedPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
-            placeholderFallbackChargedMoves.length > 0
+            sanitizedFallbackChargedMoves.length > 0
           if (preferEstimatedPlaceholderQuickMoves) {
             console.warn(
               `[BASE_STATS] Replacing placeholder moves for ${id} with PokeApi data`,
@@ -1541,12 +1541,12 @@ export default class Pokemon extends Masterfile {
                 ) ?? (actualQuickMoves.length ? actualQuickMoves : undefined)
           const chargedMoves =
             preferEstimatedPlaceholderChargedMoves
-              ? placeholderFallbackChargedMoves
+              ? sanitizedFallbackChargedMoves
               : shouldDropPlaceholderChargedMoves
                 ? undefined
               : preferActualNumbers(
                   existing.chargedMoves,
-                  baseEntry.chargedMoves,
+                  sanitizedFallbackChargedMoves,
                   'charged moves',
                 ) ??
                 (actualChargedMoves.length ? actualChargedMoves : undefined)
