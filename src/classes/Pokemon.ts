@@ -1523,6 +1523,10 @@ export default class Pokemon extends Masterfile {
               actualChargedMoves,
               fallbackQuickMoves,
             )
+          const shouldDropPlaceholderChargedMoves =
+            preferEstimatedPlaceholderQuickMoves &&
+            fallbackChargedMoves.length > 0 &&
+            placeholderFallbackChargedMoves.length === 0
           const preferEstimatedPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
             placeholderFallbackChargedMoves.length > 0
@@ -1542,6 +1546,8 @@ export default class Pokemon extends Masterfile {
           const chargedMoves =
             preferEstimatedPlaceholderChargedMoves
               ? placeholderFallbackChargedMoves
+              : shouldDropPlaceholderChargedMoves
+                ? undefined
               : preferActualNumbers(
                   existing.chargedMoves,
                   baseEntry.chargedMoves,

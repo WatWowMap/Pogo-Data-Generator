@@ -160,6 +160,38 @@ describe('Pokemon placeholder moves', () => {
     ])
   })
 
+  test('drops placeholder charged moves when every fallback charged move is filtered out', () => {
+    const allPokemon = createPokemon()
+    const pokedexId = 801
+
+    allPokemon.parsedPokemon[pokedexId] = createEntry({
+      pokemonName: 'Magearna',
+      pokedexId,
+      quickMoves: [Rpc.HoloPokemonMove.SPLASH_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+    })
+
+    allPokemon.parsePokeApi(
+      {
+        [pokedexId]: createEntry({
+          pokemonName: 'Magearna',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [
+            Rpc.HoloPokemonMove.RETURN,
+            Rpc.HoloPokemonMove.FRUSTRATION,
+          ],
+        }),
+      },
+      {},
+    )
+
+    expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+    ])
+    expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toBeUndefined()
+  })
+
   test('pokemonApi keeps known zero-power moves instead of filtering them out', async () => {
     const pokeApi = createPokeApi()
 
