@@ -27,6 +27,7 @@ export default class PokeApi extends Masterfile {
   moveReference: AllMoves
   private pokemonStatsCache: { [id: string]: Promise<PokeApiStats> | PokeApiStats }
   private speciesCache: { [id: string]: Promise<SpeciesApi> | SpeciesApi }
+  private inheritedMoveParentOverrides: { [id: string]: string }
   private apiBaseUrl: string
 
   constructor(baseUrl?: string) {
@@ -40,6 +41,10 @@ export default class PokeApi extends Masterfile {
     this.types = {}
     this.pokemonStatsCache = {}
     this.speciesCache = {}
+    this.inheritedMoveParentOverrides = {
+      'basculegion-female': 'basculin-white-striped',
+      'basculegion-male': 'basculin-white-striped',
+    }
     this.maxPokemon = 1008
     this.inconsistentStats = {
       24: {
@@ -210,6 +215,20 @@ export default class PokeApi extends Masterfile {
     return speciesData
   }
 
+  private async fetchSpeciesForPokemon(
+    id: string | number,
+    statsData: PokeApiStats,
+  ): Promise<SpeciesApi> {
+    const speciesId = this.resolveStructId(statsData.species)
+    if (speciesId !== undefined) {
+      return this.fetchSpecies(speciesId)
+    }
+    if (statsData.species?.name) {
+      return this.fetchSpecies(statsData.species.name)
+    }
+    return this.fetchSpecies(id)
+  }
+
   private mapPokeApiMoves(statsData: PokeApiStats) {
     return {
       quickMoves: statsData.moves
@@ -237,6 +256,16 @@ export default class PokeApi extends Masterfile {
     return Array.from(new Set(moveLists.flat())).sort((a, b) => a - b)
   }
 
+  private resolveInheritedParentIdentifier(
+    pokemonName: string,
+    speciesData: SpeciesApi,
+  ): string | number | undefined {
+    return (
+      this.inheritedMoveParentOverrides[pokemonName] ||
+      this.resolveStructId(speciesData.evolves_from_species)
+    )
+  }
+
   private async getInheritedMoves(
     id: string | number,
     seen = new Set<string>(),
@@ -249,12 +278,15 @@ export default class PokeApi extends Masterfile {
     try {
       const statsData = await this.fetchPokemonStats(id)
       const currentMoves = this.mapPokeApiMoves(statsData)
-      const speciesData = await this.fetchSpecies(id)
-      const previousId = this.resolveStructId(speciesData.evolves_from_species)
+      const speciesData = await this.fetchSpeciesForPokemon(id, statsData)
+      const previousId = this.resolveInheritedParentIdentifier(
+        statsData.name,
+        speciesData,
+      )
       if (!previousId) {
         return {
-          quickMoves: [...currentMoves.quickMoves].sort((a, b) => a - b),
-          chargedMoves: [...currentMoves.chargedMoves].sort((a, b) => a - b),
+          quickMoves: this.mergeMoveLists(currentMoves.quickMoves),
+          chargedMoves: this.mergeMoveLists(currentMoves.chargedMoves),
         }
       }
       const previousMoves = await this.getInheritedMoves(previousId, seen)

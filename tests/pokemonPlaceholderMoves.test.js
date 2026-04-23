@@ -38,6 +38,7 @@ const createCompleteEntry = ({
 const createPokeApiResponse = (
   name,
   moves = ['splash', 'tackle', 'thunderbolt'],
+  species,
 ) => ({
   name,
   moves: moves.map((move) => ({
@@ -52,6 +53,7 @@ const createPokeApiResponse = (
     { base_stat: 20, stat: { name: 'special-defense' } },
     { base_stat: 80, stat: { name: 'speed' } },
   ],
+  ...(species ? { species } : {}),
   types: [{ type: { name: 'water' } }],
 })
 
@@ -174,6 +176,44 @@ describe('Pokemon placeholder moves', () => {
       Rpc.HoloPokemonMove.SPLASH_FAST,
     ])
     expect(pokeApi.baseStats[791].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+    ])
+  })
+
+  test('pokemonApi keeps inherited moves form-aware for form-restricted evolutions', async () => {
+    const pokeApi = createPokeApi()
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/902')) {
+        return createPokeApiResponse('basculegion-male', ['thunderbolt'], {
+          name: 'basculegion',
+          url: 'https://example.test/api/v2/pokemon-species/902/',
+        })
+      }
+      if (url.endsWith('/pokemon-species/902')) {
+        return createSpeciesResponse({
+          name: 'basculin',
+          url: 'https://example.test/api/v2/pokemon-species/550/',
+        })
+      }
+      if (url.endsWith('/pokemon/basculin-white-striped')) {
+        return createPokeApiResponse('basculin-white-striped', ['splash'], {
+          name: 'basculin',
+          url: 'https://example.test/api/v2/pokemon-species/550/',
+        })
+      }
+      if (url.endsWith('/pokemon-species/550')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.pokemonApi(902)
+
+    expect(pokeApi.baseStats[902].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.SPLASH_FAST,
+    ])
+    expect(pokeApi.baseStats[902].chargedMoves).toEqual([
       Rpc.HoloPokemonMove.THUNDERBOLT,
     ])
   })
