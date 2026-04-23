@@ -98,7 +98,6 @@ const shouldPreferEstimatedPlaceholderQuickMoves = (
 
 const excludedPlaceholderFallbackChargedMoves = new Set([
   Rpc.HoloPokemonMove.FRUSTRATION,
-  Rpc.HoloPokemonMove.REST,
   Rpc.HoloPokemonMove.RETURN,
 ])
 

@@ -18,7 +18,6 @@ import Masterfile from './Masterfile'
 
 const excludedFallbackChargedMoves = new Set([
   Rpc.HoloPokemonMove.FRUSTRATION,
-  Rpc.HoloPokemonMove.REST,
   Rpc.HoloPokemonMove.RETURN,
 ])
 

@@ -152,6 +152,7 @@ describe('Pokemon placeholder moves', () => {
     ])
     expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toEqual([
       Rpc.HoloPokemonMove.THUNDERBOLT,
+      Rpc.HoloPokemonMove.REST,
     ])
   })
 
@@ -172,11 +173,7 @@ describe('Pokemon placeholder moves', () => {
           pokemonName: 'Magearna',
           pokedexId,
           quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-          chargedMoves: [
-            Rpc.HoloPokemonMove.RETURN,
-            Rpc.HoloPokemonMove.FRUSTRATION,
-            Rpc.HoloPokemonMove.REST,
-          ],
+          chargedMoves: [Rpc.HoloPokemonMove.RETURN, Rpc.HoloPokemonMove.FRUSTRATION],
         }),
       },
       {},
@@ -214,6 +211,7 @@ describe('Pokemon placeholder moves', () => {
     ])
     expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toEqual([
       Rpc.HoloPokemonMove.THUNDERBOLT,
+      Rpc.HoloPokemonMove.REST,
     ])
   })
 
@@ -293,11 +291,12 @@ describe('Pokemon placeholder moves', () => {
     })
 
     expect(sanitized[801].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.REST,
       Rpc.HoloPokemonMove.THUNDERBOLT,
     ])
     expect(sanitized[801]._hiddenOnlyChargedMoves).toBeUndefined()
-    expect(sanitized[802].chargedMoves).toEqual([])
-    expect(sanitized[802]._hiddenOnlyChargedMoves).toBe(true)
+    expect(sanitized[802].chargedMoves).toEqual([Rpc.HoloPokemonMove.REST])
+    expect(sanitized[802]._hiddenOnlyChargedMoves).toBeUndefined()
   })
 
   test('live pokeapi placeholder replacement drops hidden-only charged moves', async () => {
@@ -314,7 +313,7 @@ describe('Pokemon placeholder moves', () => {
 
     jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
       if (url.endsWith('/pokemon/801')) {
-        return createPokeApiResponse('magearna', ['tackle', 'rest'])
+        return createPokeApiResponse('magearna', ['tackle', 'return'])
       }
       if (url.endsWith('/pokemon-species/801')) {
         return createSpeciesResponse()
@@ -348,7 +347,7 @@ describe('Pokemon placeholder moves', () => {
           pokemonName: 'Magearna',
           pokedexId,
           quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
-          chargedMoves: [Rpc.HoloPokemonMove.REST],
+          chargedMoves: [Rpc.HoloPokemonMove.RETURN],
         }),
       }),
       {},
