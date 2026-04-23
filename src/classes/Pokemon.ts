@@ -75,6 +75,32 @@ const reconcileBaseFormChanges = (
     })
 }
 
+const cleanNumberList = (arr?: number[]) =>
+  Array.isArray(arr)
+    ? Array.from(
+        new Set(arr.filter((value): value is number => typeof value === 'number')),
+      )
+    : []
+
+const hasExactPlaceholderMoves = (moves: number[], expected: number[]) =>
+  moves.length === expected.length &&
+  moves.every((value, index) => value === expected[index])
+
+const shouldPreferEstimatedPlaceholderQuickMoves = (
+  actualQuickMoves: number[],
+  actualChargedMoves: number[],
+  fallbackQuickMoves: number[],
+) =>
+  hasExactPlaceholderMoves(actualQuickMoves, [Rpc.HoloPokemonMove.SPLASH_FAST]) &&
+  hasExactPlaceholderMoves(actualChargedMoves, [Rpc.HoloPokemonMove.STRUGGLE]) &&
+  !fallbackQuickMoves.includes(Rpc.HoloPokemonMove.SPLASH_FAST) &&
+  fallbackQuickMoves.length > 0
+
+const excludedPlaceholderFallbackChargedMoves = new Set([
+  Rpc.HoloPokemonMove.FRUSTRATION,
+  Rpc.HoloPokemonMove.RETURN,
+])
+
 export default class Pokemon extends Masterfile {
   parsedPokemon: AllPokemon
   parsedPokeForms: AllPokemon
@@ -1379,18 +1405,8 @@ export default class Pokemon extends Masterfile {
             fallback: number[] | undefined,
             label: string,
           ): number[] | undefined => {
-            const clean = (arr?: number[]) =>
-              Array.isArray(arr)
-                ? Array.from(
-                    new Set(
-                      arr.filter(
-                        (value): value is number => typeof value === 'number',
-                      ),
-                    ),
-                  )
-                : []
-            const actualValues = clean(actual)
-            const fallbackValues = clean(fallback)
+            const actualValues = cleanNumberList(actual)
+            const fallbackValues = cleanNumberList(fallback)
             if (actualValues.length) {
               if (fallbackValues.length) {
                 const fallbackSet = new Set(fallbackValues)
@@ -1489,34 +1505,66 @@ export default class Pokemon extends Masterfile {
               }
             })
           }
+          const {
+            _hiddenOnlyChargedMoves,
+            ...cacheEntry
+          } = baseEntry
+          const actualQuickMoves = cleanNumberList(existing.quickMoves)
+          const actualChargedMoves = cleanNumberList(existing.chargedMoves)
+          const fallbackQuickMoves = cleanNumberList(cacheEntry.quickMoves)
+          const fallbackChargedMoves = cleanNumberList(cacheEntry.chargedMoves)
+          const sanitizedFallbackChargedMoves = fallbackChargedMoves.filter(
+            (move) => !excludedPlaceholderFallbackChargedMoves.has(move),
+          )
+          const hasHiddenOnlyFallbackChargedMoves =
+            _hiddenOnlyChargedMoves === true
+          const preferEstimatedPlaceholderQuickMoves =
+            shouldPreferEstimatedPlaceholderQuickMoves(
+              actualQuickMoves,
+              actualChargedMoves,
+              fallbackQuickMoves,
+            )
+          const shouldDropPlaceholderChargedMoves =
+            preferEstimatedPlaceholderQuickMoves &&
+            (fallbackChargedMoves.length > 0 ||
+              hasHiddenOnlyFallbackChargedMoves) &&
+            sanitizedFallbackChargedMoves.length === 0
+          const preferEstimatedPlaceholderChargedMoves =
+            preferEstimatedPlaceholderQuickMoves &&
+            sanitizedFallbackChargedMoves.length > 0
+          if (preferEstimatedPlaceholderQuickMoves) {
+            console.warn(
+              `[BASE_STATS] Replacing placeholder moves for ${id} with PokeApi data`,
+            )
+          }
           const quickMoves =
-            preferActualNumbers(
-              existing.quickMoves,
-              baseEntry.quickMoves,
-              'quick moves',
-            ) ??
-            (Array.isArray(existing.quickMoves) && existing.quickMoves.length
-              ? Array.from(new Set(existing.quickMoves))
-              : undefined)
+            preferEstimatedPlaceholderQuickMoves
+              ? fallbackQuickMoves
+              : preferActualNumbers(
+                  existing.quickMoves,
+                  cacheEntry.quickMoves,
+                  'quick moves',
+                ) ?? (actualQuickMoves.length ? actualQuickMoves : undefined)
           const chargedMoves =
-            preferActualNumbers(
-              existing.chargedMoves,
-              baseEntry.chargedMoves,
-              'charged moves',
-            ) ??
-            (Array.isArray(existing.chargedMoves) &&
-            existing.chargedMoves.length
-              ? Array.from(new Set(existing.chargedMoves))
-              : undefined)
+            preferEstimatedPlaceholderChargedMoves
+              ? sanitizedFallbackChargedMoves
+              : shouldDropPlaceholderChargedMoves
+                ? undefined
+              : preferActualNumbers(
+                  existing.chargedMoves,
+                  sanitizedFallbackChargedMoves,
+                  'charged moves',
+                ) ??
+                (actualChargedMoves.length ? actualChargedMoves : undefined)
           const types =
-            preferActualNumbers(existing.types, baseEntry.types, 'types') ??
+            preferActualNumbers(existing.types, cacheEntry.types, 'types') ??
             (Array.isArray(existing.types) && existing.types.length
               ? Array.from(new Set(existing.types))
               : undefined)
           this.parsedPokemon[id] = {
-            ...baseEntry,
+            ...cacheEntry,
             ...existing,
-            pokemonName: existing.pokemonName || baseEntry.pokemonName,
+            pokemonName: existing.pokemonName || cacheEntry.pokemonName,
             quickMoves,
             chargedMoves,
             types,

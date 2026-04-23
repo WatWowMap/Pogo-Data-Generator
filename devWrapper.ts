@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { sanitizePokeApiBaseStatsForCache } from './src/classes/PokeApi'
 import { generate, invasions } from './src/index'
 import { createNodeApkCache, primeApkCache } from './src/node'
 import baseStats from './static/baseStats.json'
@@ -46,7 +47,7 @@ const main = async () => {
       const { baseStats, tempEvos, types } = data.AllPokeApi
       fs.writeFile(
         './static/baseStats.json',
-        JSON.stringify(baseStats, null, 2),
+        JSON.stringify(sanitizePokeApiBaseStatsForCache(baseStats), null, 2),
         'utf8',
         () => {},
       )
