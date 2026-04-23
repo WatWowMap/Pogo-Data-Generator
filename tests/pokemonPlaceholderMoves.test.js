@@ -1,5 +1,8 @@
 const Pokemon = require('../dist/classes/Pokemon').default
-const PokeApi = require('../dist/classes/PokeApi').default
+const {
+  default: PokeApi,
+  sanitizePokeApiBaseStatsForCache,
+} = require('../dist/classes/PokeApi')
 const base = require('../dist/base').default
 const { Rpc } = require('@na-ji/pogo-protos')
 
@@ -68,6 +71,9 @@ const createPokeApi = () => {
   pokeApi.moves = {
     [Rpc.HoloPokemonMove.SPLASH_FAST]: { power: 0 },
     [Rpc.HoloPokemonMove.TACKLE_FAST]: { power: 5 },
+    [Rpc.HoloPokemonMove.REST]: { power: 0 },
+    [Rpc.HoloPokemonMove.RETURN]: { power: 35 },
+    [Rpc.HoloPokemonMove.FRUSTRATION]: { power: 10 },
     [Rpc.HoloPokemonMove.THUNDERBOLT]: { power: 80 },
   }
   return pokeApi
@@ -234,6 +240,124 @@ describe('Pokemon placeholder moves', () => {
       Rpc.HoloPokemonMove.THUNDERBOLT,
     ])
     expect(pokeApi.baseStats[129].unreleased).toBeUndefined()
+  })
+
+  test('pokemonApi keeps hidden-only charged fallback moves in live data', async () => {
+    const pokeApi = createPokeApi()
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/801')) {
+        return createPokeApiResponse('magearna', [
+          'tackle',
+          'thunderbolt',
+          'return',
+          'frustration',
+          'rest',
+        ])
+      }
+      if (url.endsWith('/pokemon-species/801')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.pokemonApi(801)
+
+    expect(pokeApi.baseStats[801].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+      Rpc.HoloPokemonMove.REST,
+      Rpc.HoloPokemonMove.FRUSTRATION,
+      Rpc.HoloPokemonMove.RETURN,
+    ])
+  })
+
+  test('sanitizePokeApiBaseStatsForCache filters hidden charged moves for static caches', () => {
+    const sanitized = sanitizePokeApiBaseStatsForCache({
+      801: createEntry({
+        pokemonName: 'Magearna',
+        pokedexId: 801,
+        quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+        chargedMoves: [
+          Rpc.HoloPokemonMove.REST,
+          Rpc.HoloPokemonMove.RETURN,
+          Rpc.HoloPokemonMove.FRUSTRATION,
+          Rpc.HoloPokemonMove.THUNDERBOLT,
+        ],
+      }),
+      802: createEntry({
+        pokemonName: 'Marshadow',
+        pokedexId: 802,
+        quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+        chargedMoves: [Rpc.HoloPokemonMove.REST],
+      }),
+    })
+
+    expect(sanitized[801].chargedMoves).toEqual([
+      Rpc.HoloPokemonMove.THUNDERBOLT,
+    ])
+    expect(sanitized[801]._hiddenOnlyChargedMoves).toBeUndefined()
+    expect(sanitized[802].chargedMoves).toEqual([])
+    expect(sanitized[802]._hiddenOnlyChargedMoves).toBe(true)
+  })
+
+  test('live pokeapi placeholder replacement drops hidden-only charged moves', async () => {
+    const allPokemon = createPokemon()
+    const pokeApi = createPokeApi()
+    const pokedexId = 801
+
+    allPokemon.parsedPokemon[pokedexId] = createEntry({
+      pokemonName: 'Magearna',
+      pokedexId,
+      quickMoves: [Rpc.HoloPokemonMove.SPLASH_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+    })
+
+    jest.spyOn(pokeApi, 'fetch').mockImplementation(async (url) => {
+      if (url.endsWith('/pokemon/801')) {
+        return createPokeApiResponse('magearna', ['tackle', 'rest'])
+      }
+      if (url.endsWith('/pokemon-species/801')) {
+        return createSpeciesResponse()
+      }
+      throw new Error(`Unexpected URL: ${url}`)
+    })
+
+    await pokeApi.pokemonApi(pokedexId)
+    allPokemon.parsePokeApi(pokeApi.baseStats, {})
+
+    expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+    ])
+    expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toBeUndefined()
+  })
+
+  test('static cache placeholder replacement drops hidden-only charged moves', () => {
+    const allPokemon = createPokemon()
+    const pokedexId = 801
+
+    allPokemon.parsedPokemon[pokedexId] = createEntry({
+      pokemonName: 'Magearna',
+      pokedexId,
+      quickMoves: [Rpc.HoloPokemonMove.SPLASH_FAST],
+      chargedMoves: [Rpc.HoloPokemonMove.STRUGGLE],
+    })
+
+    allPokemon.parsePokeApi(
+      sanitizePokeApiBaseStatsForCache({
+        [pokedexId]: createEntry({
+          pokemonName: 'Magearna',
+          pokedexId,
+          quickMoves: [Rpc.HoloPokemonMove.TACKLE_FAST],
+          chargedMoves: [Rpc.HoloPokemonMove.REST],
+        }),
+      }),
+      {},
+    )
+
+    expect(allPokemon.parsedPokemon[pokedexId].quickMoves).toEqual([
+      Rpc.HoloPokemonMove.TACKLE_FAST,
+    ])
+    expect(allPokemon.parsedPokemon[pokedexId].chargedMoves).toBeUndefined()
   })
 
   test('pokemonApi inherits pre-evolution moves from the full chain', async () => {

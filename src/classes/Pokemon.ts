@@ -1506,13 +1506,19 @@ export default class Pokemon extends Masterfile {
               }
             })
           }
+          const {
+            _hiddenOnlyChargedMoves,
+            ...cacheEntry
+          } = baseEntry
           const actualQuickMoves = cleanNumberList(existing.quickMoves)
           const actualChargedMoves = cleanNumberList(existing.chargedMoves)
-          const fallbackQuickMoves = cleanNumberList(baseEntry.quickMoves)
-          const fallbackChargedMoves = cleanNumberList(baseEntry.chargedMoves)
+          const fallbackQuickMoves = cleanNumberList(cacheEntry.quickMoves)
+          const fallbackChargedMoves = cleanNumberList(cacheEntry.chargedMoves)
           const sanitizedFallbackChargedMoves = fallbackChargedMoves.filter(
             (move) => !excludedPlaceholderFallbackChargedMoves.has(move),
           )
+          const hasHiddenOnlyFallbackChargedMoves =
+            _hiddenOnlyChargedMoves === true
           const preferEstimatedPlaceholderQuickMoves =
             shouldPreferEstimatedPlaceholderQuickMoves(
               actualQuickMoves,
@@ -1521,7 +1527,8 @@ export default class Pokemon extends Masterfile {
             )
           const shouldDropPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
-            fallbackChargedMoves.length > 0 &&
+            (fallbackChargedMoves.length > 0 ||
+              hasHiddenOnlyFallbackChargedMoves) &&
             sanitizedFallbackChargedMoves.length === 0
           const preferEstimatedPlaceholderChargedMoves =
             preferEstimatedPlaceholderQuickMoves &&
@@ -1536,7 +1543,7 @@ export default class Pokemon extends Masterfile {
               ? fallbackQuickMoves
               : preferActualNumbers(
                   existing.quickMoves,
-                  baseEntry.quickMoves,
+                  cacheEntry.quickMoves,
                   'quick moves',
                 ) ?? (actualQuickMoves.length ? actualQuickMoves : undefined)
           const chargedMoves =
@@ -1551,14 +1558,14 @@ export default class Pokemon extends Masterfile {
                 ) ??
                 (actualChargedMoves.length ? actualChargedMoves : undefined)
           const types =
-            preferActualNumbers(existing.types, baseEntry.types, 'types') ??
+            preferActualNumbers(existing.types, cacheEntry.types, 'types') ??
             (Array.isArray(existing.types) && existing.types.length
               ? Array.from(new Set(existing.types))
               : undefined)
           this.parsedPokemon[id] = {
-            ...baseEntry,
+            ...cacheEntry,
             ...existing,
-            pokemonName: existing.pokemonName || baseEntry.pokemonName,
+            pokemonName: existing.pokemonName || cacheEntry.pokemonName,
             quickMoves,
             chargedMoves,
             types,

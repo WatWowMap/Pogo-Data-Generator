@@ -16,6 +16,37 @@ import type { MoveProto, PokemonIdProto, TypeProto } from '../typings/protos'
 import { sortTempEvolutions } from '../utils/tempEvolutions'
 import Masterfile from './Masterfile'
 
+const excludedFallbackChargedMoves = new Set([
+  Rpc.HoloPokemonMove.FRUSTRATION,
+  Rpc.HoloPokemonMove.REST,
+  Rpc.HoloPokemonMove.RETURN,
+])
+
+export const sanitizePokeApiBaseStatsForCache = (baseStats: AllPokemon) =>
+  Object.fromEntries(
+    Object.entries(baseStats).map(([id, entry]) => {
+      if (!entry?.chargedMoves?.length) {
+        return [id, entry]
+      }
+      const chargedMoves = entry.chargedMoves.filter(
+        (move) => !excludedFallbackChargedMoves.has(move),
+      )
+      if (chargedMoves.length === entry.chargedMoves.length) {
+        return [id, entry]
+      }
+      return [
+        id,
+        {
+          ...entry,
+          chargedMoves,
+          ...(chargedMoves.length === 0
+            ? { _hiddenOnlyChargedMoves: true }
+            : {}),
+        },
+      ]
+    }),
+  ) as AllPokemon
+
 export default class PokeApi extends Masterfile {
   baseStats: AllPokemon
   tempEvos: { [id: string]: AllPokemon }
@@ -269,7 +300,10 @@ export default class PokeApi extends Masterfile {
   private async getInheritedMoves(
     id: string | number,
     seen = new Set<string>(),
-  ): Promise<{ quickMoves: number[]; chargedMoves: number[] }> {
+  ): Promise<{
+    quickMoves: number[]
+    chargedMoves: number[]
+  }> {
     const cacheKey = `${id}`
     if (seen.has(cacheKey)) {
       return { quickMoves: [], chargedMoves: [] }

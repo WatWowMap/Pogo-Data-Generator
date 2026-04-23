@@ -138,6 +138,7 @@ export interface SinglePokemon extends SingleForm {
 }
 
 interface SingleForm extends BaseStats {
+  _hiddenOnlyChargedMoves?: boolean
   formName?: string
   proto?: string
   formId?: number
