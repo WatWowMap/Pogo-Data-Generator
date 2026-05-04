@@ -1,6 +1,6 @@
 import { Rpc } from '@na-ji/pogo-protos'
+import type { LocationCardSettings } from 'pogo-masterfile-types'
 import type { AllLocationCards } from '../typings/dataTypes'
-import type { NiaMfObj } from '../typings/general'
 import type { Options } from '../typings/inputs'
 import type { LocationCardProto } from '../typings/protos'
 import Masterfile from './Masterfile'
@@ -30,9 +30,8 @@ export default class LocationCards extends Masterfile {
     this.parsedLocationCards = {}
   }
 
-  addLocationCard(object: NiaMfObj) {
-    const { templateId, data } = object
-    const { locationCardSettings } = data
+  addLocationCard(object: LocationCardSettings['data']) {
+    const { templateId, locationCardSettings } = object
     if (!locationCardSettings) {
       return
     }

@@ -1,6 +1,6 @@
 import { Rpc } from '@na-ji/pogo-protos'
+import type { CombatMove, MoveSettings } from 'pogo-masterfile-types'
 import type { AllMoves } from '../typings/dataTypes'
-import type { NiaMfObj } from '../typings/general'
 import type { MoveProto, TypeProto } from '../typings/protos'
 import Masterfile from './Masterfile'
 
@@ -26,11 +26,8 @@ export default class Moves extends Masterfile {
     })
   }
 
-  addMoveSettings(object: NiaMfObj) {
-    const {
-      templateId,
-      data: { moveSettings },
-    } = object
+  addMoveSettings(object: MoveSettings['data']) {
+    const { templateId, moveSettings } = object
     try {
       const isMax = templateId.startsWith('VN_BM_')
       const proto = isMax ? templateId : templateId.substring(11)
@@ -59,11 +56,8 @@ export default class Moves extends Masterfile {
     }
   }
 
-  addCombatMove(object: NiaMfObj) {
-    const {
-      templateId,
-      data: { combatMove },
-    } = object
+  addCombatMove(object: CombatMove['data']) {
+    const { templateId, combatMove } = object
     try {
       const id: number =
         Rpc.HoloPokemonMove[templateId.substring(18) as MoveProto]

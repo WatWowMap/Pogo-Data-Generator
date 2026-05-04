@@ -1,5 +1,4 @@
-import type { Rpc } from '@na-ji/pogo-protos'
-
+// import type { Rpc } from '@na-ji/pogo-protos'
 export interface GuessedMega {
   attack?: number
   defense?: number
@@ -24,155 +23,6 @@ export interface EvolutionQuest {
   translated?: string
 }
 
-export interface NiaMfObj {
-  templateId: string
-  data: {
-    templateId: string
-    pokemonSettings?: {
-      pokemonId: string
-      modelScale: number
-      type: string
-      type2: string
-      encounter: {
-        baseCaptureRate: number
-        baseFleeRate: number
-        bonusCandyCaptureReward: number
-        bonusStardustCaptureReward: number
-      }
-      stats: {
-        baseStamina: number
-        baseAttack: number
-        baseDefense: number
-      }
-      quickMoves: string[]
-      cinematicMoves: string[]
-      eliteQuickMove: string[]
-      eliteCinematicMove: string[]
-      evolutionIds: string[]
-      evolutionPips: number
-      pokedexHeightM: number
-      pokedexWeightKg: number
-      familyId: string
-      candyToEvolve: number
-      kmBuddyDistance: number
-      evolutionBranch: EvoBranch[]
-      tempEvoOverrides: TempEvo[]
-      formChange?: RawFormChange[]
-      thirdMove: {
-        stardustToUnlock: number
-        candyToUnlock: number
-      }
-      isTransferable: boolean
-      isDeployable: boolean
-      isTradable: boolean
-      buddyGroupNumber: number
-      buddyWalkedMegaEnergyAward: number
-      rarity: string
-      pokemonClass: keyof typeof Rpc.HoloPokemonClass
-      shadow: {
-        purificationStardustNeeded: number
-        purificationCandyNeeded: number
-      }
-      allowNoevolveEvolution: string[]
-    }
-    formSettings?: {
-      pokemon: string
-      forms: {
-        form?: string | number
-        isCostume: boolean
-      }[]
-    }
-    moveSettings?: {
-      movementId: string
-      pokemonType: string
-      power?: number
-      durationMs: number
-      energyDelta?: number
-      vfxName: string
-      obMoveSettingsNumber18: number[]
-    }
-    combatMove?: {
-      uniqueId: string | number
-      type: string
-      power: number
-      durationTurns?: number
-      energyDelta: number
-      buffs?: {
-        attackerAttackStatStageChange?: number
-        attackerDefenseStatStageChange?: number
-        targetAttackStatStageChange?: number
-        targetDefenseStatStageChange?: number
-        buffActivationChance: number
-      }[]
-    }
-    sourdoughMoveMappingSettings?: {
-      mappings: {
-        pokemonId: string
-        form?: string | number
-        move: string
-      }[]
-    }
-    smeargleMovesSettings?: {
-      quickMoves: string[]
-      cinematicMoves: string[]
-    }
-    itemSettings?: {
-      itemId: string | number
-      itemType: string | number
-      category: string
-      dropTrainerLevel: number
-    }
-    combatLeague?: {
-      bannedPokemon: string[]
-      pokemonCondition: {
-        type: string
-        withPokemonCpLimit: {
-          maxCp: number
-        }
-        withPokemonType: {
-          pokemonType: string[]
-        }
-      }[]
-    }
-    weatherAffinities?: {
-      weatherCondition: string
-      pokemonType: string[]
-    }
-    evolutionQuestTemplate?: {
-      questTemplateId: string
-      questType: string
-      goals: {
-        condition: {
-          type: string
-          withThrowType: {
-            throwType: string
-          }
-          withPokemonType: {
-            pokemonType: string[]
-          }
-        }[]
-        target: number
-      }[]
-      context: string
-      display: {
-        description: string
-        title: string
-      }
-    }
-    pokemonExtendedSettings?: {
-      uniqueId: string
-      form?: string | number
-      sizeSettings: PokemonSizeSettings
-    }
-    locationCardSettings?: {
-      locationCard: string | number
-      imageUrl?: string
-      cardType?: string
-      vfxAddress?: string
-    }
-  }
-}
-
 export interface PokemonSizeSettings {
   xxsLowerBound: number
   xsLowerBound: number
@@ -184,15 +34,15 @@ export interface PokemonSizeSettings {
 }
 
 export interface TempEvo {
-  tempEvoId: string
-  stats: {
+  tempEvoId?: string
+  stats?: {
     baseStamina: number
     baseAttack: number
     baseDefense: number
   }
-  averageHeightM: number
-  averageWeightKg: number
-  typeOverride1: string
+  averageHeightM?: number
+  averageWeightKg?: number
+  typeOverride1?: string
   typeOverride2?: string
 }
 
@@ -273,31 +123,28 @@ export interface RawFormChangeLocationCardSettings {
 }
 
 export interface EvoBranch {
-  evolution: string
-  candyCost: number
-  form: string | number
-  genderRequirement: string
-  evolutionItemRequirement: string
-  temporaryEvolution: string
-  temporaryEvolutionEnergyCost: number
-  temporaryEvolutionEnergyCostSubsequent: number
-  noCandyCostViaTrade: boolean
-  buddyDistance: boolean
-  mustBeBuddy: boolean
-  onlyDaytime: boolean
-  onlyNighttime: boolean
-  questDisplay: {
+  evolution?: string
+  candyCost?: number
+  form?: string | number
+  genderRequirement?: string
+  evolutionItemRequirement?: string
+  temporaryEvolution?: string
+  temporaryEvolutionEnergyCost?: number
+  temporaryEvolutionEnergyCostSubsequent?: number
+  noCandyCostViaTrade?: boolean
+  mustBeBuddy?: boolean
+  onlyDaytime?: boolean
+  onlyNighttime?: boolean
+  questDisplay?: {
     questRequirementTemplateId: string
   }[]
 }
 
 export interface SpeciesApi {
-  evolves_from_species?:
-    | {
-        name: string
-        url: string
-      }
-    | null
+  evolves_from_species?: {
+    name: string
+    url: string
+  } | null
   is_legendary: boolean
   is_mythical: boolean
 }

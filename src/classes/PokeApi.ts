@@ -55,7 +55,9 @@ export default class PokeApi extends Masterfile {
     [id: string]: { attack?: number; defense?: number; stamina?: number }
   }
   moveReference: AllMoves
-  private pokemonStatsCache: { [id: string]: Promise<PokeApiStats> | PokeApiStats }
+  private pokemonStatsCache: {
+    [id: string]: Promise<PokeApiStats> | PokeApiStats
+  }
   private speciesCache: { [id: string]: Promise<SpeciesApi> | SpeciesApi }
   private inheritedMoveParentOverrides: { [id: string]: string }
   private apiBaseUrl: string
@@ -155,7 +157,9 @@ export default class PokeApi extends Masterfile {
 
   private shouldFetchPlaceholderMoves(pokemon?: SinglePokemon) {
     return (
-      this.hasExactMoves(pokemon?.quickMoves, [Rpc.HoloPokemonMove.SPLASH_FAST]) &&
+      this.hasExactMoves(pokemon?.quickMoves, [
+        Rpc.HoloPokemonMove.SPLASH_FAST,
+      ]) &&
       this.hasExactMoves(pokemon?.chargedMoves, [Rpc.HoloPokemonMove.STRUGGLE])
     )
   }
@@ -200,7 +204,9 @@ export default class PokeApi extends Masterfile {
       .sort((a, b) => a - b)
   }
 
-  private resolveStructId(struct?: BasePokeApiStruct | null): number | undefined {
+  private resolveStructId(
+    struct?: BasePokeApiStruct | null,
+  ): number | undefined {
     if (!struct) {
       return undefined
     }
@@ -218,9 +224,9 @@ export default class PokeApi extends Masterfile {
   private async fetchPokemonStats(id: string | number): Promise<PokeApiStats> {
     const cacheKey = `${id}`
     if (!this.pokemonStatsCache[cacheKey]) {
-      this.pokemonStatsCache[cacheKey] = (this.fetch(
-        this.buildUrl(`pokemon/${id}`),
-      ) as Promise<PokeApiStats>).catch((error) => {
+      this.pokemonStatsCache[cacheKey] = (
+        this.fetch(this.buildUrl(`pokemon/${id}`)) as Promise<PokeApiStats>
+      ).catch((error) => {
         delete this.pokemonStatsCache[cacheKey]
         throw error
       })
@@ -233,9 +239,11 @@ export default class PokeApi extends Masterfile {
   private async fetchSpecies(id: string | number): Promise<SpeciesApi> {
     const cacheKey = `${id}`
     if (!this.speciesCache[cacheKey]) {
-      this.speciesCache[cacheKey] = (this.fetch(
-        this.buildUrl(`pokemon-species/${id}`),
-      ) as Promise<SpeciesApi>).catch((error) => {
+      this.speciesCache[cacheKey] = (
+        this.fetch(
+          this.buildUrl(`pokemon-species/${id}`),
+        ) as Promise<SpeciesApi>
+      ).catch((error) => {
         delete this.speciesCache[cacheKey]
         throw error
       })
@@ -504,7 +512,9 @@ export default class PokeApi extends Masterfile {
                 parsedPokemon[id]?.mythic ?? evoData.is_mythical
             }
             if (evoData.evolves_from_species) {
-              const prevEvoId = this.resolveStructId(evoData.evolves_from_species)
+              const prevEvoId = this.resolveStructId(
+                evoData.evolves_from_species,
+              )
               if (prevEvoId) {
                 if (!this.baseStats[prevEvoId]) {
                   this.baseStats[prevEvoId] = {}

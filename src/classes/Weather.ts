@@ -1,8 +1,7 @@
 import { Rpc } from '@na-ji/pogo-protos'
+import type { WeatherAffinities } from 'pogo-masterfile-types'
 import type { AllWeather } from '../typings/dataTypes'
-import type { NiaMfObj } from '../typings/general'
 import type { TypeProto } from '../typings/protos'
-
 import Masterfile from './Masterfile'
 export default class Weather extends Masterfile {
   rawWeather: { [id: string]: number[] }
@@ -32,11 +31,9 @@ export default class Weather extends Masterfile {
     )
   }
 
-  addWeather(object: NiaMfObj) {
+  addWeather(object: WeatherAffinities['data']) {
     const {
-      data: {
-        weatherAffinities: { weatherCondition, pokemonType },
-      },
+      weatherAffinities: { weatherCondition, pokemonType },
     } = object
     this.rawWeather[weatherCondition] = pokemonType
       .map((type) => {

@@ -447,7 +447,7 @@ export default class Translations extends Masterfile {
 
             Object.keys(data[category]).forEach((id) => {
               const questEvo = ref[data[category][id].assetsRef]
-              if (category == 'evolutionQuests' && questEvo) {
+              if (category === 'evolutionQuests' && questEvo) {
                 this.masterfile[category][id] = {
                   ...data[category][id],
                   i18n: questEvo,
@@ -893,12 +893,25 @@ export default class Translations extends Masterfile {
       }
 
       const TYPE_TO_IDS: { [key: string]: [number, number] } = {
-        bug: [6, 7], dark: [10, 11], dragon: [12, 13],
-        electric: [49, 50], fairy: [14, 15], fighting: [16, 17],
-        fire: [18, 19], flying: [20, 21], ghost: [47, 48],
-        grass: [22, 23], ground: [24, 25], ice: [26, 27],
-        metal: [28, 29], steel: [28, 29], normal: [30, 31], poison: [32, 33],
-        psychic: [34, 35], rock: [36, 37], water: [38, 39],
+        bug: [6, 7],
+        dark: [10, 11],
+        dragon: [12, 13],
+        electric: [49, 50],
+        fairy: [14, 15],
+        fighting: [16, 17],
+        fire: [18, 19],
+        flying: [20, 21],
+        ghost: [47, 48],
+        grass: [22, 23],
+        ground: [24, 25],
+        ice: [26, 27],
+        metal: [28, 29],
+        steel: [28, 29],
+        normal: [30, 31],
+        poison: [32, 33],
+        psychic: [34, 35],
+        rock: [36, 37],
+        water: [38, 39],
       }
       const BALLOON_GRUNT_IDS =
         this.options.includeBalloons === false
@@ -943,7 +956,9 @@ export default class Translations extends Masterfile {
         match = key.match(/^combat_grunt_balloon_quote#(\d+)__female_speaker$/)
         if (match) {
           const quoteNumber = Number(match[1])
-          BALLOON_GRUNT_IDS.forEach((id) => addQuote(id, value, quoteNumber))
+          BALLOON_GRUNT_IDS.forEach((id) => {
+            addQuote(id, value, quoteNumber)
+          })
           continue
         }
 
@@ -960,9 +975,9 @@ export default class Translations extends Masterfile {
         )
         if (match) {
           const quoteNumber = match[2] ? Number(match[2]) : 1
-          EXEC_TO_IDS[match[1]].forEach((id) =>
-            addQuote(id, value, quoteNumber, !!match[2]),
-          )
+          EXEC_TO_IDS[match[1]].forEach((id) => {
+            addQuote(id, value, quoteNumber, !!match[2])
+          })
           continue
         }
 
@@ -972,7 +987,6 @@ export default class Translations extends Masterfile {
           const quoteNumber = match[1] ? Number(match[1]) : 1
           addQuote(46, value, quoteNumber, !!match[1])
           addQuote(45, value, quoteNumber, !!match[1])
-          continue
         }
       }
 
@@ -981,9 +995,10 @@ export default class Translations extends Masterfile {
           .map((quoteNumber) => Number(quoteNumber))
           .sort((a, b) => a - b)
           .forEach((quoteNumber) => {
-            const key = quoteNumber === 1
-              ? `${prefix}${idStr}`
-              : `${prefix}${idStr}_${quoteNumber}`
+            const key =
+              quoteNumber === 1
+                ? `${prefix}${idStr}`
+                : `${prefix}${idStr}_${quoteNumber}`
             this.parsedTranslations[locale].gruntQuotes[key] =
               quotes[quoteNumber]
           })
@@ -1068,10 +1083,7 @@ export default class Translations extends Masterfile {
         ] = this.capitalize(name.replace('TEMP_EVOLUTION_', ''))
       })
       if (
-        !Object.prototype.hasOwnProperty.call(
-          Rpc.HoloTemporaryEvolutionId,
-          'TEMP_EVOLUTION_MEGA_Z',
-        ) &&
+        !Object.hasOwn(Rpc.HoloTemporaryEvolutionId, 'TEMP_EVOLUTION_MEGA_Z') &&
         !this.parsedTranslations[locale].misc[
           `${this.options.prefix.evolutions}5`
         ]

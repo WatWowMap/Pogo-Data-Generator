@@ -65,8 +65,9 @@ export default class Masterfile {
           ...translationOptions.prefix,
         }
         if (!translationOptions.questTitleTermsToSkip) {
-          merged.translations.options.questTitleTermsToSkip =
-            [...base.translations.options.questTitleTermsToSkip]
+          merged.translations.options.questTitleTermsToSkip = [
+            ...base.translations.options.questTitleTermsToSkip,
+          ]
         }
       }
     })
@@ -209,9 +210,7 @@ export default class Masterfile {
       // checks which fields are in the template and if the data is an object, loops through again
       let returnedObj: any = {}
       const ref =
-        x && typeof x === 'object'
-          ? x
-          : reference[fieldKey]?.[x] ?? x
+        x && typeof x === 'object' ? x : (reference[fieldKey]?.[x] ?? x)
       if (ref === undefined || ref === null || typeof ref !== 'object') {
         return ref
       }

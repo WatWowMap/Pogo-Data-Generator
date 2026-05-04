@@ -66,8 +66,8 @@ export interface SingleMove {
     attackerDefenseStatStageChange?: number
     targetAttackStatStageChange?: number
     targetDefenseStatStageChange?: number
-    buffActivationChance: number
-  }[]
+    buffActivationChance?: number
+  }
 }
 
 export interface AllItems {
@@ -163,7 +163,7 @@ interface SingleForm extends BaseStats {
     costumeProto: string
     costumeName: string
   }[]
-  sizeSettings?: { name: string; value: number }[]
+  sizeSettings?: { name: string; value: number | boolean }[]
   gmaxMove?: number
 }
 
