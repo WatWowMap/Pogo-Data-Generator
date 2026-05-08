@@ -2303,9 +2303,9 @@ pkg-dir@^4.2.0:
     find-up "^4.0.0"
 
 pogo-masterfile-types@<1.0.0:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/pogo-masterfile-types/-/pogo-masterfile-types-0.1.5.tgz#c555b3bbcf1241d3095f82d29229e8809ecff331"
-  integrity sha512-sPihwGXdbizzKm6kfM9MCF0T3nztYiD4HT2aOTx3Z49T28iTNgQbvc+GIMnAyBsdV1oHeSZ4PiDa3zNjp59CBg==
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/pogo-masterfile-types/-/pogo-masterfile-types-0.1.12.tgz#d4b5f7aaa04e23f51162bd1e70b06b0851b48853"
+  integrity sha512-v5594L9y0vaMJfGayAwR/I5p1LibfZdZNxIDYNm5xMQqDp2t2ZEAtoBYcCH190sXC7+mqYwnMKGHynO9jEiwpw==
 
 pretty-format@30.2.0:
   version "30.2.0"
