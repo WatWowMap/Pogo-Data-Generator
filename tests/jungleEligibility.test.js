@@ -21,8 +21,6 @@ describe('Pokemon jungle eligibility', () => {
     }
 
     allPokemon.jungleCup({
-      templateId: 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE',
-      data: {
         templateId: 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE',
         combatLeague: {
           pokemonCondition: [
@@ -33,8 +31,7 @@ describe('Pokemon jungle eligibility', () => {
             },
           ],
         },
-      },
-    })
+      })
 
     expect(allPokemon.jungleCupRules.banned).toEqual([])
     expect(() => allPokemon.jungleEligibility()).not.toThrow()

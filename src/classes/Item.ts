@@ -1,7 +1,7 @@
-import type { AllItems } from '../typings/dataTypes'
-import type { NiaMfObj } from '../typings/general'
-import type { Options } from '../typings/inputs'
 import { Rpc } from '@na-ji/pogo-protos'
+import type { ItemSettings } from 'pogo-masterfile-types'
+import type { AllItems } from '../typings/dataTypes'
+import type { Options } from '../typings/inputs'
 import type { ItemProto } from '../typings/protos'
 import Masterfile from './Masterfile'
 
@@ -34,12 +34,10 @@ export default class Item extends Masterfile {
     this.parsedItems = {}
   }
 
-  addItem(object: NiaMfObj) {
+  addItem(object: ItemSettings['data']) {
     try {
       const {
-        data: {
-          itemSettings: { itemId, itemType, category, dropTrainerLevel },
-        },
+        itemSettings: { itemId, itemType, category, dropTrainerLevel },
         templateId,
       } = object
       if (

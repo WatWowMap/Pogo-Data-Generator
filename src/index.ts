@@ -1,3 +1,4 @@
+import type { MasterfileEntryType } from 'pogo-masterfile-types'
 import base from './base'
 import ApkReader from './classes/Apk'
 import Invasions from './classes/Invasion'
@@ -13,7 +14,6 @@ import Translations from './classes/Translations'
 import Types from './classes/Types'
 import Weather from './classes/Weather'
 import type { AllInvasions, FinalResult } from './typings/dataTypes'
-import type { NiaMfObj } from './typings/general'
 import type {
   ApkTexts,
   Input,
@@ -118,7 +118,7 @@ export async function generate({
     AllTranslations.fromApk = await getApkTexts(apk, apkCache)
   }
 
-  const data: NiaMfObj[] = await AllPokemon.fetch(urlToFetch)
+  const data: MasterfileEntryType[] = await AllPokemon.fetch(urlToFetch)
 
   // add data from old gm (this setting is removed from latest)
   AllPokemon.addSmeargleMovesSettings({
@@ -354,37 +354,41 @@ export async function generate({
   })
 
   for (let i = 0; i < data.length; i += 1) {
-    if (data[i]) {
-      if (data[i].data.formSettings) {
-        AllPokemon.addForm(data[i])
-      } else if (data[i].data.pokemonSettings) {
-        AllPokemon.addPokemon(data[i])
-      } else if (data[i].data.sourdoughMoveMappingSettings) {
-        AllPokemon.addSourdoughMoveMappings(data[i])
-      } else if (data[i].data.smeargleMovesSettings) {
-        AllPokemon.addSmeargleMovesSettings(data[i])
-      } else if (data[i].data.itemSettings) {
-        AllItems.addItem(data[i])
-      } else if (data[i].data.moveSettings) {
-        AllMoves.addMoveSettings(data[i])
-      } else if (data[i].data.combatMove) {
-        AllMoves.addCombatMove(data[i])
+    const entry = data[i]
+    if (entry) {
+      const data = entry.data
+      if ('formSettings' in data) {
+        AllPokemon.addForm(data)
+      } else if ('pokemonSettings' in data) {
+        AllPokemon.addPokemon(data)
+      } else if ('sourdoughMoveMappingSettings' in data) {
+        AllPokemon.addSourdoughMoveMappings(data)
+        // } else if (data.smeargleMovesSettings) {
+        //   AllPokemon.addSmeargleMovesSettings(data)
+      } else if ('itemSettings' in data) {
+        AllItems.addItem(data)
+      } else if ('moveSettings' in data) {
+        AllMoves.addMoveSettings(data)
+      } else if ('combatMove' in data) {
+        AllMoves.addCombatMove(data)
       } else if (
-        data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE'
+        'combatLeague' in data &&
+        data.templateId === 'COMBAT_LEAGUE_VS_SEEKER_GREAT_LITTLE'
       ) {
-        AllPokemon.lcBanList = new Set(data[i].data.combatLeague.bannedPokemon)
-      } else if (data[i].data.weatherAffinities) {
-        AllWeather.addWeather(data[i])
-      } else if (data[i].data.evolutionQuestTemplate) {
-        AllPokemon.addEvolutionQuest(data[i])
+        AllPokemon.lcBanList = new Set(data.combatLeague.bannedPokemon)
+      } else if ('weatherAffinities' in data) {
+        AllWeather.addWeather(data)
+      } else if ('evolutionQuestTemplate' in data) {
+        AllPokemon.addEvolutionQuest(data)
       } else if (
-        data[i].templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE'
+        'combatLeague' in data &&
+        data.templateId === 'COMBAT_LEAGUE_VS_SEEKER_LITTLE_JUNGLE'
       ) {
-        AllPokemon.jungleCup(data[i])
-      } else if (data[i].data.pokemonExtendedSettings) {
-        AllPokemon.addExtendedStats(data[i])
-      } else if (data[i].data.locationCardSettings) {
-        AllLocationCards.addLocationCard(data[i])
+        AllPokemon.jungleCup(data)
+      } else if ('pokemonExtendedSettings' in data) {
+        AllPokemon.addExtendedStats(data)
+      } else if ('locationCardSettings' in data) {
+        AllLocationCards.addLocationCard(data)
       }
     }
   }

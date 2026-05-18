@@ -92,24 +92,22 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0720_POKEMON_HOOPA',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'HOOPA',
-          type: 'POKEMON_TYPE_PSYCHIC',
-          type2: 'POKEMON_TYPE_GHOST',
-          familyId: 'FAMILY_HOOPA',
-          pokemonClass: 'POKEMON_CLASS_MYTHIC',
-          quickMoves: ['CONFUSION_FAST'],
-          cinematicMoves: ['SHADOW_BALL'],
-          formChange: [
-            {
-              availableForm: ['HOOPA_UNBOUND'],
-              candyCost: 50,
-              stardustCost: 10000,
-            },
-          ],
-        }),
-      },
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'HOOPA',
+        type: 'POKEMON_TYPE_PSYCHIC',
+        type2: 'POKEMON_TYPE_GHOST',
+        familyId: 'FAMILY_HOOPA',
+        pokemonClass: 'POKEMON_CLASS_MYTHIC',
+        quickMoves: ['CONFUSION_FAST'],
+        cinematicMoves: ['SHADOW_BALL'],
+        formChange: [
+          {
+            availableForm: ['HOOPA_UNBOUND'],
+            candyCost: 50,
+            stardustCost: 10000,
+          },
+        ],
+      }),
     })
 
     expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.HOOPA].formChanges).toEqual(
@@ -155,15 +153,11 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
 
     expect(allPokemon.parsedPokemon[Rpc.HoloPokemonId.KYUREM].formChanges).toEqual(
@@ -197,15 +191,11 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.missingPokemon()
     allPokemon.generateProtoForms()
@@ -244,15 +234,11 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0720_POKEMON_HOOPA_UNBOUND',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addPokemon({
       templateId: 'V0720_POKEMON_HOOPA',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
 
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
@@ -284,23 +270,17 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0720_POKEMON_HOOPA_CONFINED',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addPokemon({
       templateId: 'V0720_POKEMON_HOOPA',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addForm({
       templateId: 'FORMS_V0720_POKEMON_HOOPA',
-      data: {
-        formSettings: {
-          pokemon: 'HOOPA',
-          forms: [{ form: 'HOOPA_CONFINED' }, { form: 'HOOPA_UNBOUND' }],
-        },
+      formSettings: {
+        pokemon: 'HOOPA',
+        forms: [{ form: 'HOOPA_CONFINED' }, { form: 'HOOPA_UNBOUND' }],
       },
     })
 
@@ -363,15 +343,11 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: formSettings,
-      },
+      pokemonSettings: formSettings,
     })
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON',
-      data: {
-        pokemonSettings: baseSettings,
-      },
+      pokemonSettings: baseSettings,
     })
     allPokemon.missingPokemon()
     allPokemon.generateProtoForms()
@@ -431,15 +407,11 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: formSettings,
-      },
+      pokemonSettings: formSettings,
     })
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON',
-      data: {
-        pokemonSettings: baseSettings,
-      },
+      pokemonSettings: baseSettings,
     })
     allPokemon.missingPokemon()
     allPokemon.generateProtoForms()
@@ -475,30 +447,24 @@ describe('Pokemon form changes', () => {
     })
     allPokemon.addPokemon({
       templateId: 'V0421_POKEMON_CHERRIM_OVERCAST',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
     allPokemon.addPokemon({
       templateId: 'V0421_POKEMON',
-      data: {
-        pokemonSettings: settings,
-      },
+      pokemonSettings: settings,
     })
 
     expect(allPokemon.parsedForms[overcastFormId].formChanges).toBeUndefined()
 
     allPokemon.addForm({
       templateId: 'FORMS_V0421_POKEMON_CHERRIM',
-      data: {
-        formSettings: {
-          pokemon: 'CHERRIM',
-          forms: [
-            { form: 'CHERRIM_NORMAL' },
-            { form: 'CHERRIM_OVERCAST' },
-            { form: 'CHERRIM_SUNNY' },
-          ],
-        },
+      formSettings: {
+        pokemon: 'CHERRIM',
+        forms: [
+          { form: 'CHERRIM_NORMAL' },
+          { form: 'CHERRIM_OVERCAST' },
+          { form: 'CHERRIM_SUNNY' },
+        ],
       },
     })
 
@@ -513,48 +479,46 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
-              availableForm: ['KYUREM_BLACK'],
-              candyCost: 30,
-              item: 'FUSION_RESOURCE_BLACK_KYUREM',
-              itemCostCount: 1000,
-              componentPokemonSettings: {
-                pokedexId: 'ZEKROM',
-                componentCandyCost: 30,
-                formChangeType: 'FUSE',
-                locationCardSettings: [
-                  {
-                    basePokemonLocationCard:
-                      'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_001',
-                    componentPokemonLocationCard:
-                      'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_WHITE_001',
-                    fusionPokemonLocationCard:
-                      'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_WHITE_001',
-                  },
-                ],
-                familyId: 'FAMILY_ZEKROM',
-              },
-              moveReassignment: {
-                cinematicMoves: [
-                  {
-                    existingMoves: ['GLACIATE'],
-                    replacementMoves: ['FREEZE_SHOCK'],
-                  },
-                ],
-              },
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            availableForm: ['KYUREM_BLACK'],
+            candyCost: 30,
+            item: 'FUSION_RESOURCE_BLACK_KYUREM',
+            itemCostCount: 1000,
+            componentPokemonSettings: {
+              pokedexId: 'ZEKROM',
+              componentCandyCost: 30,
+              formChangeType: 'FUSE',
+              locationCardSettings: [
+                {
+                  basePokemonLocationCard:
+                    'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_001',
+                  componentPokemonLocationCard:
+                    'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_WHITE_001',
+                  fusionPokemonLocationCard:
+                    'LC_SPECIALBACKGROUND_2025_GLOBAL_GOTOUR_BLACK_WHITE_001',
+                },
+              ],
+              familyId: 'FAMILY_ZEKROM',
             },
-          ],
-        }),
-      },
+            moveReassignment: {
+              cinematicMoves: [
+                {
+                  existingMoves: ['GLACIATE'],
+                  replacementMoves: ['FREEZE_SHOCK'],
+                },
+              ],
+            },
+          },
+        ],
+      }),
     })
 
     const expectedFormChange = {
@@ -680,34 +644,32 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
-              availableForm: [999999],
-              moveReassignment: {
-                cinematicMoves: [
-                  {
-                    existingMoves: [999998],
-                    replacementMoves: [999997],
-                  },
-                ],
-              },
-              requiredCinematicMoves: [
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            availableForm: [999999],
+            moveReassignment: {
+              cinematicMoves: [
                 {
-                  requiredMoves: [999996],
+                  existingMoves: [999998],
+                  replacementMoves: [999997],
                 },
               ],
             },
-          ],
-        }),
-      },
+            requiredCinematicMoves: [
+              {
+                requiredMoves: [999996],
+              },
+            ],
+          },
+        ],
+      }),
     })
 
     expect(allPokemon.parsedForms[formId].formChanges).toEqual([
@@ -1015,33 +977,29 @@ describe('Pokemon form changes', () => {
 
     allItems.addItem({
       templateId: storedFusionResource,
-      data: {
-        itemSettings: {
-          itemId: storedFusionResource,
-          itemType: 'ITEM_TYPE_NONE',
-          category: 'ITEM_CATEGORY_MISC',
-          dropTrainerLevel: 1,
-        },
+      itemSettings: {
+        itemId: storedFusionResource,
+        itemType: 'ITEM_TYPE_NONE',
+        category: 'ITEM_CATEGORY_MISC',
+        dropTrainerLevel: 1,
       },
     })
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
-              item: unknownFusionResource,
-            },
-          ],
-        }),
-      },
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            item: unknownFusionResource,
+          },
+        ],
+      }),
     })
 
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
@@ -1082,33 +1040,29 @@ describe('Pokemon form changes', () => {
 
     allItems.addItem({
       templateId: 'ITEM_FUTURE_TEST',
-      data: {
-        itemSettings: {
-          itemId: futureItemId,
-          itemType: 'ITEM_TYPE_NONE',
-          category: 'ITEM_CATEGORY_MISC',
-          dropTrainerLevel: 1,
-        },
+      itemSettings: {
+        itemId: futureItemId,
+        itemType: 'ITEM_TYPE_NONE',
+        category: 'ITEM_CATEGORY_MISC',
+        dropTrainerLevel: 1,
       },
     })
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
-              item: futureItemId,
-            },
-          ],
-        }),
-      },
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            item: futureItemId,
+          },
+        ],
+      }),
     })
 
     expect(
@@ -1168,10 +1122,8 @@ describe('Pokemon form changes', () => {
       expect(Rpc.LocationCard[locationCard]).toBeUndefined()
       allLocationCards.addLocationCard({
         templateId: locationCard,
-        data: {
-          locationCardSettings: {
-            locationCard,
-          },
+        locationCardSettings: {
+          locationCard,
         },
       })
     })
@@ -1179,35 +1131,33 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            locationCardSettings: [
+              {
+                existingLocationCard: locationCards.existing,
+                replacementLocationCard: locationCards.replacement,
+              },
+            ],
+            componentPokemonSettings: {
               locationCardSettings: [
                 {
-                  existingLocationCard: locationCards.existing,
-                  replacementLocationCard: locationCards.replacement,
+                  basePokemonLocationCard: locationCards.base,
+                  componentPokemonLocationCard: locationCards.component,
+                  fusionPokemonLocationCard: locationCards.fusion,
                 },
               ],
-              componentPokemonSettings: {
-                locationCardSettings: [
-                  {
-                    basePokemonLocationCard: locationCards.base,
-                    componentPokemonLocationCard: locationCards.component,
-                    fusionPokemonLocationCard: locationCards.fusion,
-                  },
-                ],
-              },
             },
-          ],
-        }),
-      },
+          },
+        ],
+      }),
     })
 
     expect(allPokemon.parsedForms[formId].formChanges).toBeUndefined()
@@ -1267,44 +1217,40 @@ describe('Pokemon form changes', () => {
 
     allLocationCards.addLocationCard({
       templateId: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
-      data: {
-        locationCardSettings: {
-          locationCard: locationCards.existing,
-        },
+      locationCardSettings: {
+        locationCard: locationCards.existing,
       },
     })
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            locationCardSettings: [
+              {
+                existingLocationCard: locationCards.existing,
+                replacementLocationCard: locationCards.replacement,
+              },
+            ],
+            componentPokemonSettings: {
               locationCardSettings: [
                 {
-                  existingLocationCard: locationCards.existing,
-                  replacementLocationCard: locationCards.replacement,
+                  basePokemonLocationCard: locationCards.base,
+                  componentPokemonLocationCard: locationCards.component,
+                  fusionPokemonLocationCard: locationCards.fusion,
                 },
               ],
-              componentPokemonSettings: {
-                locationCardSettings: [
-                  {
-                    basePokemonLocationCard: locationCards.base,
-                    componentPokemonLocationCard: locationCards.component,
-                    fusionPokemonLocationCard: locationCards.fusion,
-                  },
-                ],
-              },
             },
-          ],
-        }),
-      },
+          },
+        ],
+      }),
     })
 
     expect(
@@ -1399,34 +1345,30 @@ describe('Pokemon form changes', () => {
 
     allLocationCards.addLocationCard({
       templateId: 'LC_SPECIALBACKGROUND_FUTURE_TEST',
-      data: {
-        locationCardSettings: {
-          locationCard,
-        },
+      locationCardSettings: {
+        locationCard,
       },
     })
 
     allPokemon.addPokemon({
       templateId: 'V0646_POKEMON_KYUREM_NORMAL',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'KYUREM',
-          type: 'POKEMON_TYPE_DRAGON',
-          type2: 'POKEMON_TYPE_ICE',
-          familyId: 'FAMILY_KYUREM',
-          quickMoves: ['DRAGON_BREATH_FAST'],
-          cinematicMoves: ['GLACIATE'],
-          formChange: [
-            {
-              locationCardSettings: [
-                {
-                  existingLocationCard: locationCard,
-                },
-              ],
-            },
-          ],
-        }),
-      },
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'KYUREM',
+        type: 'POKEMON_TYPE_DRAGON',
+        type2: 'POKEMON_TYPE_ICE',
+        familyId: 'FAMILY_KYUREM',
+        quickMoves: ['DRAGON_BREATH_FAST'],
+        cinematicMoves: ['GLACIATE'],
+        formChange: [
+          {
+            locationCardSettings: [
+              {
+                existingLocationCard: locationCard,
+              },
+            ],
+          },
+        ],
+      }),
     })
 
     expect(allLocationCards.parsedLocationCards[+locationCard]).toEqual({
@@ -1472,10 +1414,8 @@ describe('Pokemon form changes', () => {
 
     allLocationCards.addLocationCard({
       templateId: 'LC_SPECIALBACKGROUND_TEST',
-      data: {
-        locationCardSettings: {
-          locationCard: locationCardId,
-        },
+      locationCardSettings: {
+        locationCard: locationCardId,
       },
     })
 
@@ -1639,58 +1579,56 @@ describe('Pokemon form changes', () => {
 
     allPokemon.addPokemon({
       templateId: 'V0888_POKEMON_ZACIAN_HERO',
-      data: {
-        pokemonSettings: basePokemonSettings({
-          pokemonId: 'ZACIAN',
-          type: 'POKEMON_TYPE_FAIRY',
-          familyId: 'FAMILY_ZACIAN',
-          quickMoves: ['QUICK_ATTACK_FAST'],
-          cinematicMoves: ['IRON_HEAD'],
-          formChange: [
-            {
-              availableForm: ['ZACIAN_CROWNED_SWORD'],
-              moveReassignment: {
-                cinematicMoves: [
-                  {
-                    existingMoves: ['IRON_HEAD'],
-                    replacementMoves: ['BEHEMOTH_BLADE'],
-                  },
-                ],
-              },
-              requiredCinematicMoves: [
+      pokemonSettings: basePokemonSettings({
+        pokemonId: 'ZACIAN',
+        type: 'POKEMON_TYPE_FAIRY',
+        familyId: 'FAMILY_ZACIAN',
+        quickMoves: ['QUICK_ATTACK_FAST'],
+        cinematicMoves: ['IRON_HEAD'],
+        formChange: [
+          {
+            availableForm: ['ZACIAN_CROWNED_SWORD'],
+            moveReassignment: {
+              cinematicMoves: [
                 {
-                  requiredMoves: ['IRON_HEAD'],
-                },
-              ],
-              requiredBreadMoves: [
-                {
-                  moveTypes: ['A'],
-                  moveLevel: 'LEVEL_1',
-                },
-              ],
-              priority: 1,
-              formChangeBonusAttributes: [
-                {
-                  targetForm: 'ZACIAN_CROWNED_SWORD',
-                  breadMode: 'BREAD_SPECIAL_MODE',
-                  maxMoves: [
-                    {
-                      moveType: 'A',
-                      moveLevel: 'LEVEL_1',
-                    },
-                  ],
-                },
-              ],
-              locationCardSettings: [
-                {
-                  existingLocationCard: 87,
-                  replacementLocationCard: 90,
+                  existingMoves: ['IRON_HEAD'],
+                  replacementMoves: ['BEHEMOTH_BLADE'],
                 },
               ],
             },
-          ],
-        }),
-      },
+            requiredCinematicMoves: [
+              {
+                requiredMoves: ['IRON_HEAD'],
+              },
+            ],
+            requiredBreadMoves: [
+              {
+                moveTypes: ['A'],
+                moveLevel: 'LEVEL_1',
+              },
+            ],
+            priority: 1,
+            formChangeBonusAttributes: [
+              {
+                targetForm: 'ZACIAN_CROWNED_SWORD',
+                breadMode: 'BREAD_SPECIAL_MODE',
+                maxMoves: [
+                  {
+                    moveType: 'A',
+                    moveLevel: 'LEVEL_1',
+                  },
+                ],
+              },
+            ],
+            locationCardSettings: [
+              {
+                existingLocationCard: 87,
+                replacementLocationCard: 90,
+              },
+            ],
+          },
+        ],
+      }),
     })
 
     expect(

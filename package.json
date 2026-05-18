@@ -36,7 +36,8 @@
     "apk": "ts-node devWrapper.ts --test --apk",
     "test": "tsc && ./node_modules/.bin/jest",
     "format": "biome format --write ./src/**/*.ts",
-    "publishBuild": "rm -r dist && tsc"
+    "publishBuild": "rm -r dist && tsc",
+    "deps:update": "yarn upgrade pogo-masterfile-types @na-ji/pogo-protos"
   },
   "repository": {
     "type": "git",
@@ -53,10 +54,11 @@
     "node": ">=21.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.9",
+    "@biomejs/biome": "2.4.14",
     "@types/node": "^24",
     "jest": "^30.2.0",
+    "pogo-masterfile-types": "<1.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
