@@ -21,6 +21,6 @@ export interface Character {
 
 export interface InvasionTeam {
   id: number
-  template: string
-  form: number
+  template?: string
+  form?: number | null
 }

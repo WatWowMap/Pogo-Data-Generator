@@ -110,7 +110,9 @@ export default class Invasion extends Masterfile {
               pogoInfo.lineup.team[i].forEach((pkmn) => {
                 this.parsedInvasions[id].encounters.push({
                   id: pkmn.id,
-                  formId: pkmn.form,
+                  ...(pkmn.form === undefined || pkmn.form === null
+                    ? {}
+                    : { formId: pkmn.form }),
                   position,
                 })
               })
