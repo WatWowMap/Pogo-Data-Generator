@@ -291,3 +291,78 @@ describe('Translations patch overlay', () => {
     expect(translations.rawTranslations.hi).toEqual({ foo: 'base foo' })
   })
 })
+
+describe('Reference resolution', () => {
+  const originalFetch = global.fetch
+
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    global.fetch = jest.fn().mockImplementation(async (url) => {
+      throw new Error(`Unexpected fetch: ${url}`)
+    })
+  })
+
+  afterEach(() => {
+    global.fetch = originalFetch
+    jest.restoreAllMocks()
+  })
+
+  const resolved = (raw) => {
+    const translations = makeTranslations({ translationPatchUrl: '' })
+    translations.rawTranslations.hi = raw
+    translations.resolveReferences('hi')
+    return translations.rawTranslations.hi
+  }
+
+  test('substitutes a reference marker with the value it points at', () => {
+    expect(
+      resolved({
+        move_name_0311: 'फ़ेल स्टिंगर',
+        move_name_0502: '<<move_name_0311>>+',
+      }).move_name_0502,
+    ).toBe('फ़ेल स्टिंगर+')
+  })
+
+  test('resolves a reference whose target is itself a reference', () => {
+    expect(resolved({ a: 'base', b: '<<a>>+', c: '<<b>>+' }).c).toBe('base++')
+  })
+
+  test('leaves a marker alone when its target is missing', () => {
+    expect(
+      resolved({ move_name_0502: '<<move_name_0311>>+' }).move_name_0502,
+    ).toBe('<<move_name_0311>>+')
+  })
+
+  test('does not loop forever on a cyclic reference', () => {
+    const out = resolved({ a: '<<b>>', b: '<<a>>' })
+    expect(out.a).toBe('<<b>>')
+    expect(out.b).toBe('<<a>>')
+  })
+
+  test('ignores markup that is not a reference', () => {
+    const out = resolved({
+      truncated: 'ends with markup<<b>',
+      anchor: 'see <a href=”x”>>site</a>',
+    })
+    expect(out.truncated).toBe('ends with markup<<b>')
+    expect(out.anchor).toBe('see <a href=”x”>>site</a>')
+  })
+
+  test('runs as part of fetchTranslations, after every source is merged', async () => {
+    const translations = makeTranslations()
+    translations.rawTranslations.hi = { move_name_0311: 'base name' }
+
+    global.fetch = jest.fn().mockImplementation(async (url) => {
+      if (url.includes('patch_i18n_hi-in.json.gz')) {
+        return gzipJsonResponse({
+          data: ['move_name_0502', '<<move_name_0311>>+'],
+        })
+      }
+      throw new Error(`Unexpected fetch: ${url}`)
+    })
+
+    await translations.fetchTranslations('hi', [])
+
+    expect(translations.rawTranslations.hi.move_name_0502).toBe('base name+')
+  })
+})
