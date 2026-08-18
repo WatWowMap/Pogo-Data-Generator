@@ -381,6 +381,7 @@ export interface Input {
   url?: string
   translationApkUrl?: string
   translationRemoteUrl?: string
+  translationPatchUrl?: string
   template?: FullTemplate
   test?: boolean
   raw?: boolean
