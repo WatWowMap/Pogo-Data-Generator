@@ -57,6 +57,7 @@ export async function generate({
   url,
   translationApkUrl,
   translationRemoteUrl,
+  translationPatchUrl,
   raw,
   pokeApi,
   apkCache,
@@ -98,6 +99,7 @@ export async function generate({
     translations.options,
     translationApkUrl,
     translationRemoteUrl,
+    translationPatchUrl,
   )
   const AllPokeApi = new PokeApi(pokeApiBaseUrl)
   const AllMisc = new Misc()

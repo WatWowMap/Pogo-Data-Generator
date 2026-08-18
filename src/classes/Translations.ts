@@ -14,9 +14,16 @@ import type { TypeProto } from '../typings/protos'
 import Masterfile from './Masterfile'
 
 export default class Translations extends Masterfile {
+  static readonly DEFAULT_APK_URL =
+    'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Release/English/en-us_raw.json'
+
+  static readonly DEFAULT_REMOTE_URL =
+    'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Remote/English/en-us_formatted.txt'
+
   options: Options
   translationApkUrl: string
   translationRemoteUrl: string
+  translationPatchUrl: string
   rawTranslations: TranslationKeys
   manualTranslations: { [key: string]: TranslationKeys }
   parsedTranslations: { [key: string]: TranslationKeys }
@@ -29,8 +36,9 @@ export default class Translations extends Masterfile {
 
   constructor(
     options: Options,
-    translationApkUrl = 'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Release/English/en-us_raw.json',
-    translationRemoteUrl = 'https://raw.githubusercontent.com/sora10pls/holoholo-text/refs/heads/main/Remote/English/en-us_formatted.txt',
+    translationApkUrl = Translations.DEFAULT_APK_URL,
+    translationRemoteUrl = Translations.DEFAULT_REMOTE_URL,
+    translationPatchUrl = 'https://asset-cdn-rel.nianticstatic.com/i18n/patch_i18n_en-us.json.gz',
   ) {
     super()
     this.collator = new Intl.Collator(undefined, {
@@ -40,6 +48,7 @@ export default class Translations extends Masterfile {
     this.options = options
     this.translationApkUrl = translationApkUrl
     this.translationRemoteUrl = translationRemoteUrl
+    this.translationPatchUrl = translationPatchUrl
 
     this.rawTranslations = {}
     this.manualTranslations = {}
@@ -164,6 +173,55 @@ export default class Translations extends Masterfile {
     return str.replace(/\r/g, '').replace(/\n/g, '').replace(/"/g, '”')
   }
 
+  async fetchGzipJson(url: string): Promise<any> {
+    const response = await fetch(url)
+    if (!response.ok || !response.body) {
+      throw new Error(`${response.status} ${response.statusText} URL: ${url}`)
+    }
+    const decompressed = response.body.pipeThrough(
+      new DecompressionStream('gzip'),
+    )
+    return JSON.parse(await new Response(decompressed).text())
+  }
+
+  // Only the final path segment carries the locale, so a mirror hosted under an
+  // en-us directory keeps that directory while its filename is localized. Works
+  // for Niantic's patch_i18n_en-us.json.gz and for a bare en-us.json.gz alike.
+  // The query and fragment are held back: they can contain slashes of their own,
+  // and a locale sitting in a query parameter isn't ours to rewrite.
+  static localizePatchUrl(url: string, localeCode: string) {
+    const [, path, suffix = ''] = url.match(/^([^?#]*)([?#].*)?$/) || []
+    if (path === undefined) return url
+    return (
+      path.replace(/[^/]*$/, (segment) =>
+        segment.split('en-us').join(localeCode),
+      ) + suffix
+    )
+  }
+
+  // Niantic's live patch feed carries hotfix strings pushed between APK
+  // releases. It never throws: a missing patch just leaves the base data as is.
+  async applyPatchTranslations(
+    locale: Locales[number],
+    localeCode: string,
+  ): Promise<void> {
+    if (!this.translationPatchUrl) return
+    try {
+      const patch = await this.fetchGzipJson(
+        Translations.localizePatchUrl(this.translationPatchUrl, localeCode),
+      )
+      const patchData: string[] = patch?.data || []
+
+      for (let i = 0; i + 1 < patchData.length; i += 2) {
+        this.rawTranslations[locale][patchData[i]] = this.removeEscapes(
+          patchData[i + 1],
+        )
+      }
+    } catch (e) {
+      console.warn(e, '\n', `Unable to fetch translation patch for ${locale}`)
+    }
+  }
+
   async fetchTranslations(
     locale: Locales[number],
     availableManualTranslations: string[],
@@ -193,6 +251,12 @@ export default class Translations extends Masterfile {
       characterCategories: {},
       misc: {},
     }
+    const localeInfo = this.codes[locale] || {
+      name: 'English',
+      code: 'en-us',
+    }
+    const isCustomRemoteUrl =
+      this.translationRemoteUrl !== Translations.DEFAULT_REMOTE_URL
     try {
       if (!this.codes[locale]) {
         console.warn(`Game assets unavailable for ${locale}, using English`)
@@ -201,30 +265,53 @@ export default class Translations extends Masterfile {
         this.generics[locale] = this.generics.en
         console.warn(`Generics unavailable for ${locale}, using English`)
       }
-      const localeInfo = this.codes[locale] || {
-        name: 'English',
-        code: 'en-us',
-      }
-      const { data }: { data: string[] } = (await this.fetch(
-        this.translationApkUrl.replace(
-          'English/en-us',
-          `${localeInfo.name}/${localeInfo.code}`,
-        ),
-      )) || { data: [] }
+      // Real APK text (Translations.fromApk) already covers the full set for
+      // every locale, so the built-in default URL is only needed as a
+      // fallback if that failed. A caller-supplied URL is always fetched,
+      // since it may carry strings the APK doesn't have.
+      const isCustomApkUrl =
+        this.translationApkUrl !== Translations.DEFAULT_APK_URL
+      if (
+        isCustomApkUrl ||
+        Object.keys(this.rawTranslations[locale]).length === 0
+      ) {
+        const { data }: { data: string[] } = (await this.fetch(
+          this.translationApkUrl.replace(
+            'English/en-us',
+            `${localeInfo.name}/${localeInfo.code}`,
+          ),
+        )) || { data: [] }
 
-      for (let i = 0; i < data.length; i += 2) {
-        this.rawTranslations[locale][data[i]] = this.removeEscapes(data[i + 1])
+        for (let i = 0; i < data.length; i += 2) {
+          this.rawTranslations[locale][data[i]] = this.removeEscapes(
+            data[i + 1],
+          )
+        }
       }
-
-      const textFile = ['hi', 'id'].includes(locale)
-        ? ''
-        : (await this.fetch(
-            this.translationRemoteUrl.replace(
-              'English/en-us',
-              `${localeInfo.name}/${localeInfo.code}`,
-            ),
-            true,
-          )) || ''
+    } catch (e) {
+      console.warn(e, '\n', `Unable to process ${locale} APK translations`)
+    }
+    // A caller-supplied remote feed is authoritative, so the built-in patch goes
+    // underneath it. With the default feed the patch goes on top: both carry the
+    // same keys, but the formatted text file truncates any value that spans
+    // multiple lines, which the patch preserves. Either way the patch sits
+    // between the two source attempts, so neither one failing can drop it.
+    if (isCustomRemoteUrl) {
+      await this.applyPatchTranslations(locale, localeInfo.code)
+    }
+    try {
+      // The built-in feed had no Hindi or Indonesian when they were added, but a
+      // caller-supplied one may well carry them.
+      const textFile =
+        !isCustomRemoteUrl && ['hi', 'id'].includes(locale)
+          ? ''
+          : (await this.fetch(
+              this.translationRemoteUrl.replace(
+                'English/en-us',
+                `${localeInfo.name}/${localeInfo.code}`,
+              ),
+              true,
+            )) || ''
       const splitText = textFile.split('\n')
 
       splitText.forEach((line: string, i: number) => {
@@ -238,6 +325,9 @@ export default class Translations extends Masterfile {
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to process ${locale} from GM`)
+    }
+    if (!isCustomRemoteUrl) {
+      await this.applyPatchTranslations(locale, localeInfo.code)
     }
     try {
       if (
