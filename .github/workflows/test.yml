@@ -7,18 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'yarn'
 
       - name: Restore APK Cache
         id: apk-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/pogo-data-generator
           key: ${{ runner.os }}-apk-cache-v1-${{ hashFiles('yarn.lock') }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -32,7 +32,7 @@ jobs:
         run: yarn generate
 
       - name: Save APK Cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ~/.cache/pogo-data-generator
           key: ${{ steps.apk-cache.outputs.cache-primary-key }}
