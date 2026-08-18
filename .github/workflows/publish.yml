@@ -50,6 +50,12 @@ jobs:
       # Ensure npm 11.5.1 or later is installed
       - name: Update npm
         run: npm install -g npm@latest
+      # setup-node's registry-url writes an .npmrc referencing ${NODE_AUTH_TOKEN}.
+      # Publishing is done via OIDC, so no such token exists, and yarn v1 aborts
+      # on an env var it cannot expand. npm itself treats the empty value as no
+      # auth and falls through to trusted publishing.
       - run: yarn
+        env:
+          NODE_AUTH_TOKEN: ''
       - run: ./node_modules/.bin/tsc
       - run: npm publish
