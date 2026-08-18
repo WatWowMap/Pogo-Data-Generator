@@ -222,6 +222,39 @@ export default class Translations extends Masterfile {
     }
   }
 
+  // Niantic expresses a handful of strings as a reference to another key, e.g.
+  // move_name_0502 is "<<move_name_0311>>+". Nothing downstream understands that
+  // syntax, so the markers are substituted once every source has been merged.
+  // A value is only rewritten when all of its markers resolve: one pointing at a
+  // missing key, or looping back on itself, leaves the whole value untouched so
+  // the raw marker stays visible instead of a half-built string.
+  resolveReferences(locale: Locales[number]) {
+    const raw = this.rawTranslations[locale]
+
+    const resolve = (value: string, seen: Set<string>): string | undefined => {
+      let unresolved = false
+      const resolved = value.replace(/<<(\w+)>>/g, (_marker, key: string) => {
+        const target = seen.has(key) ? undefined : raw[key]
+        const nested =
+          target === undefined
+            ? undefined
+            : resolve(target, new Set(seen).add(key))
+        if (nested === undefined) {
+          unresolved = true
+          return ''
+        }
+        return nested
+      })
+      return unresolved ? undefined : resolved
+    }
+
+    Object.entries(raw).forEach(([key, value]) => {
+      if (value.includes('<<')) {
+        raw[key] = resolve(value, new Set([key])) ?? value
+      }
+    })
+  }
+
   async fetchTranslations(
     locale: Locales[number],
     availableManualTranslations: string[],
@@ -440,6 +473,7 @@ export default class Translations extends Masterfile {
     } catch (e) {
       console.warn(e, '\n', `Unable to fetch manual translations for ${locale}`)
     }
+    this.resolveReferences(locale)
   }
 
   mergeManualTranslations(locale: string) {
