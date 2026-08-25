@@ -285,7 +285,6 @@ export default class Pokemon extends Masterfile {
             : move,
         )
         .filter(Boolean)
-        .sort((a, b) => a - b)
     } catch (e) {
       console.warn(e, `Failed to lookup moves for ${moves}`)
     }
