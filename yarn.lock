@@ -732,10 +732,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@na-ji/pogo-protos@<3.0.0":
-  version "2.238.0"
-  resolved "https://registry.yarnpkg.com/@na-ji/pogo-protos/-/pogo-protos-2.238.0.tgz#35781cdf8efb275df40fd32736d3531fc284d91a"
-  integrity sha512-FJofcjVMe8hvR26uHk2gD6uz78lFBwfJfGQ6mdl5YwZWHS9HFAwnpdcKvh3jhUbqU0PuyHfqhzM0rPkk9D/h5w==
+"@na-ji/pogo-protos@>=2.254.0 <3.0.0":
+  version "2.255.0"
+  resolved "https://registry.yarnpkg.com/@na-ji/pogo-protos/-/pogo-protos-2.255.0.tgz#9675a71b59dd52147d168d73d666cd6cfe83dab0"
+  integrity sha512-fjsEEZ+NHMEjhEeTQZMxXpv8dwBrraJtjLHNUVNkt8ALPidenQs4B/xSiRHdK3MDjpLNVXOMCDTmDGlkPmadLQ==
   dependencies:
     protobufjs "^6.11.4"
 

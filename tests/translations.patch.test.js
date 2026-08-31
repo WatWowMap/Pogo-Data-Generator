@@ -292,6 +292,46 @@ describe('Translations patch overlay', () => {
   })
 })
 
+describe('Translations move fallbacks', () => {
+  test('localizes a temporary-evolution move through its ordinary move', () => {
+    const moves = {
+      495: { moveId: 495, moveName: 'Dynamic Punch+' },
+    }
+    const ordinaryMoveIds = new Map([[495, 246]])
+    const translations = makeTranslations()
+    translations.rawTranslations.en = {
+      move_name_0246: 'Localized Dynamic Punch',
+    }
+    translations.parsedTranslations.en = {}
+
+    translations.moves('en', moves, ordinaryMoveIds)
+    translations.mergeCategories('en')
+    translations.translateMasterfile({ moves }, 'en', false)
+
+    expect(translations.masterfile.moves[495].moveName).toBe(
+      'Localized Dynamic Punch+',
+    )
+  })
+
+  test('preserves the derived name when both move resources are missing', () => {
+    const translations = makeTranslations()
+    translations.rawTranslations.en = {}
+    translations.parsedTranslations.en = {}
+
+    translations.moves(
+      'en',
+      {
+        495: { moveId: 495, moveName: 'Dynamic Punch+' },
+      },
+      new Map([[495, 246]]),
+    )
+
+    expect(translations.parsedTranslations.en.moves.move_495).toBe(
+      'Dynamic Punch+',
+    )
+  })
+})
+
 describe('Reference resolution', () => {
   const originalFetch = global.fetch
 

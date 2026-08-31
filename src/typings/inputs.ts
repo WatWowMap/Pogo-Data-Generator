@@ -224,7 +224,7 @@ type Move = {
   moveName?: boolean
   proto?: boolean
   fast?: boolean
-  type:
+  type?:
     | {
         typeId?: boolean
         type?: boolean
@@ -235,6 +235,7 @@ type Move = {
 interface TempEvolution extends BaseStats {
   tempEvoId?: boolean
   unreleased?: boolean
+  specialMove?: Move | StringBool
   firstEnergyCost?: boolean
   subsequentEnergyCost?: boolean
 }

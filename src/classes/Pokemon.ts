@@ -44,6 +44,7 @@ import {
 import Item from './Item'
 import LocationCards from './LocationCards'
 import Masterfile from './Masterfile'
+import type { TempEvolutionMove } from './Move'
 import PokeApi from './PokeApi'
 import PokemonOverrides from './PokemonOverrides'
 
@@ -188,6 +189,27 @@ export default class Pokemon extends Masterfile {
     this.evolutionQuests = {}
     this.parsedCostumes = {}
     this.jungleCupRules = { types: [], banned: [] }
+  }
+
+  applyTempEvolutionMoves(moves: TempEvolutionMove[]) {
+    const apply = (
+      tempEvolutions: TempEvolutions[] | undefined,
+      tempEvoId: number,
+      moveId: number,
+    ) => {
+      const tempEvolution = tempEvolutions?.find(
+        (entry) => entry.tempEvoId === tempEvoId,
+      )
+      if (tempEvolution) tempEvolution.specialMove = moveId
+    }
+    moves.forEach(({ pokemonId, tempEvoId, moveId }) => {
+      const pokemon = this.parsedPokemon[pokemonId]
+      if (!pokemon) return
+      apply(pokemon.tempEvolutions, tempEvoId, moveId)
+      pokemon.forms?.forEach((formId) => {
+        apply(this.parsedForms[formId]?.tempEvolutions, tempEvoId, moveId)
+      })
+    })
   }
 
   pokemonName(id: number) {

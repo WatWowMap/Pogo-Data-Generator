@@ -62,6 +62,7 @@ const baseTemplate: FullTemplate = {
         questRequirement: false,
         componentPokemonSettings: true,
         moveReassignment: true,
+        specialMove: true,
         targetForm: true,
         fusionMove1: true,
         fusionMove2: true,

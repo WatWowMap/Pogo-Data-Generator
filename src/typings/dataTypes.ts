@@ -246,6 +246,7 @@ export interface FormChangeComponentLocationCardSettings {
 export interface TempEvolutions extends BaseStats {
   tempEvoId: number | string
   unreleased?: boolean
+  specialMove?: number
   firstEnergyCost?: number
   subsequentEnergyCost?: number
 }

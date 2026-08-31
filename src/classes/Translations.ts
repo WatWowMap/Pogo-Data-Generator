@@ -2,6 +2,7 @@ import { Rpc } from '@na-ji/pogo-protos'
 import type {
   AllForms,
   AllInvasions,
+  AllMoves,
   AllPokemon,
   AllQuests,
   FinalResult,
@@ -814,7 +815,11 @@ export default class Translations extends Masterfile {
     }
   }
 
-  moves(locale: string) {
+  moves(
+    locale: string,
+    moves?: AllMoves,
+    tempEvolutionMoveOrdinaryMoveIds?: ReadonlyMap<number, number>,
+  ) {
     try {
       this.parsedTranslations[locale].moves = {
         [`${this.options.prefix.moves}0`]: this.generics[locale].unknown,
@@ -827,9 +832,21 @@ export default class Translations extends Masterfile {
           this.rawTranslations[locale][
             `move_name_${String(id).padStart(4, '0')}`
           ]
+        const numericId = Number(id)
+        const ordinaryMoveId =
+          tempEvolutionMoveOrdinaryMoveIds?.get(numericId)
+        const localizedOrdinaryMove =
+          ordinaryMoveId === undefined
+            ? undefined
+            : this.rawTranslations[locale][
+                `move_name_${String(ordinaryMoveId).padStart(4, '0')}`
+              ]
+        const fallback = localizedOrdinaryMove
+          ? `${localizedOrdinaryMove}+`
+          : moves?.[numericId]?.moveName || this.capitalize(name)
         this.parsedTranslations[locale].moves[
           `${this.options.prefix.moves}${id}`
-        ] = move || this.capitalize(name)
+        ] = move || fallback
       })
     } catch (e) {
       console.warn(e, '\n', `Unable to translate moves for ${locale}`)

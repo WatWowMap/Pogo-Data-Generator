@@ -4,12 +4,38 @@ import type { AllMoves } from '../typings/dataTypes'
 import type { MoveProto, TypeProto } from '../typings/protos'
 import Masterfile from './Masterfile'
 
+export interface TempEvolutionMove {
+  pokemonId: number
+  tempEvoId: number
+  moveId: number
+}
+
+const TEMP_EVOLUTION_MOVE_PREFIX = 'VM_MOVE_TEMP_EVOLUTION_'
+const TEMP_EVOLUTION_COMBAT_MOVE_PREFIX = `COMBAT_${TEMP_EVOLUTION_MOVE_PREFIX}`
+const TEMP_EVOLUTION_MOVE_PATTERN =
+  /^VM_MOVE_TEMP_EVOLUTION_(MEGA_X|MEGA_Y|MEGA_Z|MEGA|PRIMAL)_V(\d{4})_POKEMON_/
+const TEMP_EVOLUTION_IDS: Record<string, number> = {
+  MEGA: 1,
+  MEGA_X: 2,
+  MEGA_Y: 3,
+  PRIMAL: 4,
+  MEGA_Z: 5,
+}
+
 export default class Moves extends Masterfile {
   parsedMoves: AllMoves
+  tempEvolutionMoves: TempEvolutionMove[]
+  tempEvolutionMoveOrdinaryMoveIds: Map<number, number>
+  private moveIdsByVfxName: Map<string, number>
+  private tempEvolutionMoveVfxNames: Map<number, string>
 
   constructor() {
     super()
     this.parsedMoves = {}
+    this.tempEvolutionMoves = []
+    this.tempEvolutionMoveOrdinaryMoveIds = new Map()
+    this.moveIdsByVfxName = new Map()
+    this.tempEvolutionMoveVfxNames = new Map()
   }
 
   protoMoves() {
@@ -30,7 +56,9 @@ export default class Moves extends Masterfile {
     const { templateId, moveSettings } = object
     try {
       const isMax = templateId.startsWith('VN_BM_')
-      const proto = isMax ? templateId : templateId.substring(11)
+      const isTempEvolution = templateId.startsWith(TEMP_EVOLUTION_MOVE_PREFIX)
+      const proto =
+        isMax || isTempEvolution ? templateId : templateId.substring(11)
       const id = Rpc.HoloPokemonMove[proto as MoveProto]
       if (id || id === 0) {
         if (!this.parsedMoves[id]) {
@@ -40,7 +68,7 @@ export default class Moves extends Masterfile {
               isMax ? moveSettings.vfxName : proto.replace('_FAST', ''),
             ),
             proto,
-            fast: templateId.endsWith('_FAST'),
+            fast: proto.endsWith('_FAST'),
           }
         }
         this.parsedMoves[id].type =
@@ -50,6 +78,19 @@ export default class Moves extends Masterfile {
           : moveSettings.power
         this.parsedMoves[id].durationMs = moveSettings.durationMs
         this.parsedMoves[id].energyDelta = moveSettings.energyDelta
+        if (isTempEvolution) {
+          this.tempEvolutionMoveVfxNames.set(id, moveSettings.vfxName)
+          const match = TEMP_EVOLUTION_MOVE_PATTERN.exec(proto)
+          if (match) {
+            this.tempEvolutionMoves.push({
+              pokemonId: +match[2],
+              tempEvoId: TEMP_EVOLUTION_IDS[match[1]],
+              moveId: id,
+            })
+          }
+        } else if (!isMax && moveSettings.vfxName) {
+          this.moveIdsByVfxName.set(moveSettings.vfxName, id)
+        }
       }
     } catch (e) {
       console.warn(e, '\n', object)
@@ -59,17 +100,20 @@ export default class Moves extends Masterfile {
   addCombatMove(object: CombatMove['data']) {
     const { templateId, combatMove } = object
     try {
-      const id: number =
-        Rpc.HoloPokemonMove[templateId.substring(18) as MoveProto]
+      const isTempEvolution = templateId.startsWith(
+        TEMP_EVOLUTION_COMBAT_MOVE_PREFIX,
+      )
+      const proto = isTempEvolution
+        ? templateId.substring('COMBAT_'.length)
+        : templateId.substring(18)
+      const id: number = Rpc.HoloPokemonMove[proto as MoveProto]
       if (id || id === 0) {
         if (!this.parsedMoves[id]) {
           this.parsedMoves[id] = {
             moveId: id,
-            moveName: this.capitalize(
-              templateId.substring(18).replace('_FAST', ''),
-            ),
-            proto: templateId.substring(18),
-            fast: templateId.endsWith('_FAST'),
+            moveName: this.capitalize(proto.replace('_FAST', '')),
+            proto,
+            fast: proto.endsWith('_FAST'),
           }
         }
         this.parsedMoves[id].type =
@@ -86,5 +130,23 @@ export default class Moves extends Masterfile {
     } catch (e) {
       console.warn(e, '\n', object)
     }
+  }
+
+  finalizeTempEvolutionMoves() {
+    this.tempEvolutionMoveVfxNames.forEach((vfxName, moveId) => {
+      const ordinaryMoveId = this.moveIdsByVfxName.get(vfxName)
+      const ordinaryMove =
+        ordinaryMoveId === undefined
+          ? undefined
+          : this.parsedMoves[ordinaryMoveId]
+      if (ordinaryMove) {
+        this.tempEvolutionMoveOrdinaryMoveIds.set(moveId, ordinaryMoveId)
+        this.parsedMoves[moveId].moveName = `${ordinaryMove.moveName}+`
+      } else {
+        console.warn(
+          `Unable to resolve ordinary move name for temporary evolution move ${this.parsedMoves[moveId].proto}`,
+        )
+      }
+    })
   }
 }

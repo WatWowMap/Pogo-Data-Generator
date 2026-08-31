@@ -47,7 +47,7 @@
     "url": "https://github.com/WatWowMap/Pogo-Data-Generator/issues"
   },
   "dependencies": {
-    "@na-ji/pogo-protos": "<3.0.0",
+    "@na-ji/pogo-protos": ">=2.254.0 <3.0.0",
     "jszip": "^3.10.1"
   },
   "engines": {

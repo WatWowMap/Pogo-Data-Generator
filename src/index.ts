@@ -450,6 +450,8 @@ export async function generate({
   if (moves.options.includeProtos) {
     AllMoves.protoMoves()
   }
+  AllMoves.finalizeTempEvolutionMoves()
+  AllPokemon.applyTempEvolutionMoves(AllMoves.tempEvolutionMoves)
   AllWeather.buildWeather()
   if (
     invasions.enabled ||
@@ -495,7 +497,11 @@ export async function generate({
             )
           }
           if (translations.template.moves) {
-            AllTranslations.moves(localeCode)
+            AllTranslations.moves(
+              localeCode,
+              AllMoves.parsedMoves,
+              AllMoves.tempEvolutionMoveOrdinaryMoveIds,
+            )
           }
           if (translations.template.items) {
             AllTranslations.items(localeCode)
@@ -588,6 +594,7 @@ export async function generate({
           chargedMoves: localMoves,
           eliteQuickMoves: localMoves,
           eliteChargedMoves: localMoves,
+          specialMove: localMoves,
           types: localTypes,
           forms: localForms,
           availableForms: localForms,
