@@ -7,6 +7,7 @@ const base = require('../dist/base').default
 
 const DRAGONITE_PROTO = 'VM_MOVE_TEMP_EVOLUTION_MEGA_V0149_POKEMON_DRAGONITE'
 const MEWTWO_X_PROTO = 'VM_MOVE_TEMP_EVOLUTION_MEGA_X_V0150_POKEMON_MEWTWO'
+const VENUSAUR_PROTO = 'VM_MOVE_TEMP_EVOLUTION_MEGA_V0003_POKEMON_VENUSAUR'
 
 const moveSettings = (templateId, vfxName, power) => ({
   templateId,
@@ -31,7 +32,9 @@ describe('temporary evolution moves', () => {
     const moves = new Moves()
     const moveId = Rpc.HoloPokemonMove[DRAGONITE_PROTO]
 
-    moves.addMoveSettings(moveSettings(DRAGONITE_PROTO, 'outrage', 185))
+    moves.addMoveSettings(
+      moveSettings(DRAGONITE_PROTO, 'temporary_evolution_dragonite', 185),
+    )
     moves.addCombatMove({
       templateId: `COMBAT_${DRAGONITE_PROTO}`,
       combatMove: {
@@ -41,7 +44,7 @@ describe('temporary evolution moves', () => {
         durationTurns: 1,
       },
     })
-    moves.addMoveSettings(moveSettings('V0200_MOVE_OUTRAGE', 'outrage', 110))
+    moves.addMoveSettings(moveSettings('V0277_MOVE_OUTRAGE', 'outrage', 110))
     moves.finalizeTempEvolutionMoves()
 
     expect(moves.parsedMoves[moveId]).toMatchObject({
@@ -61,6 +64,16 @@ describe('temporary evolution moves', () => {
     ])
     expect(moves.tempEvolutionMoveOrdinaryMoveIds.get(moveId)).toBe(
       Rpc.HoloPokemonMove.OUTRAGE,
+    )
+  })
+
+  test('rejects an active special move without a canonical alias', () => {
+    const moves = new Moves()
+
+    moves.addMoveSettings(moveSettings(VENUSAUR_PROTO, 'frenzy_plant', 100))
+
+    expect(() => moves.finalizeTempEvolutionMoves()).toThrow(
+      `Missing canonical move alias for active temporary evolution move ${VENUSAUR_PROTO}`,
     )
   })
 

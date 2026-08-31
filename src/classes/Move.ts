@@ -2,6 +2,7 @@ import { Rpc } from '@na-ji/pogo-protos'
 import type { CombatMove, MoveSettings } from 'pogo-masterfile-types'
 import type { AllMoves } from '../typings/dataTypes'
 import type { MoveProto, TypeProto } from '../typings/protos'
+import tempEvolutionMoveAliases from '../utils/tempEvolutionMoveAliases'
 import Masterfile from './Masterfile'
 
 export interface TempEvolutionMove {
@@ -26,16 +27,12 @@ export default class Moves extends Masterfile {
   parsedMoves: AllMoves
   tempEvolutionMoves: TempEvolutionMove[]
   tempEvolutionMoveOrdinaryMoveIds: Map<number, number>
-  private moveIdsByVfxName: Map<string, number>
-  private tempEvolutionMoveVfxNames: Map<number, string>
 
   constructor() {
     super()
     this.parsedMoves = {}
     this.tempEvolutionMoves = []
     this.tempEvolutionMoveOrdinaryMoveIds = new Map()
-    this.moveIdsByVfxName = new Map()
-    this.tempEvolutionMoveVfxNames = new Map()
   }
 
   protoMoves() {
@@ -79,7 +76,6 @@ export default class Moves extends Masterfile {
         this.parsedMoves[id].durationMs = moveSettings.durationMs
         this.parsedMoves[id].energyDelta = moveSettings.energyDelta
         if (isTempEvolution) {
-          this.tempEvolutionMoveVfxNames.set(id, moveSettings.vfxName)
           const match = TEMP_EVOLUTION_MOVE_PATTERN.exec(proto)
           if (match) {
             this.tempEvolutionMoves.push({
@@ -88,8 +84,6 @@ export default class Moves extends Masterfile {
               moveId: id,
             })
           }
-        } else if (!isMax && moveSettings.vfxName) {
-          this.moveIdsByVfxName.set(moveSettings.vfxName, id)
         }
       }
     } catch (e) {
@@ -133,20 +127,22 @@ export default class Moves extends Masterfile {
   }
 
   finalizeTempEvolutionMoves() {
-    this.tempEvolutionMoveVfxNames.forEach((vfxName, moveId) => {
-      const ordinaryMoveId = this.moveIdsByVfxName.get(vfxName)
-      const ordinaryMove =
-        ordinaryMoveId === undefined
-          ? undefined
-          : this.parsedMoves[ordinaryMoveId]
-      if (ordinaryMove) {
-        this.tempEvolutionMoveOrdinaryMoveIds.set(moveId, ordinaryMoveId)
-        this.parsedMoves[moveId].moveName = `${ordinaryMove.moveName}+`
-      } else {
-        console.warn(
-          `Unable to resolve ordinary move name for temporary evolution move ${this.parsedMoves[moveId].proto}`,
+    this.tempEvolutionMoves.forEach(({ moveId }) => {
+      const specialMove = this.parsedMoves[moveId]
+      const ordinaryMoveId = tempEvolutionMoveAliases[moveId]
+      if (ordinaryMoveId === undefined) {
+        throw new Error(
+          `Missing canonical move alias for active temporary evolution move ${specialMove.proto}`,
         )
       }
+      const ordinaryMove = this.parsedMoves[ordinaryMoveId]
+      if (!ordinaryMove) {
+        throw new Error(
+          `Missing ordinary move ${ordinaryMoveId} for active temporary evolution move ${specialMove.proto}`,
+        )
+      }
+      this.tempEvolutionMoveOrdinaryMoveIds.set(moveId, ordinaryMoveId)
+      specialMove.moveName = `${ordinaryMove.moveName}+`
     })
   }
 }
