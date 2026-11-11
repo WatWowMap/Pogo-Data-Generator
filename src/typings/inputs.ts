@@ -76,6 +76,12 @@ export interface PokemonTemplate extends Form {
   gymDefenderEligible?: boolean
   unreleased?: boolean
   jungle?: boolean
+  ibfc?: Ibfc | StringBool
+}
+
+type Ibfc = {
+  defaultForms?: FormChangeAvailableForm | StringBool
+  alternateForms?: FormChangeAvailableForm | StringBool
 }
 
 interface CostumeTemplate {
