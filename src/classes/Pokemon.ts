@@ -13,6 +13,7 @@ import type {
   AllPokemon,
   Evolutions,
   FormChanges,
+  Ibfc,
   SinglePokemon,
   TempEvolutions,
 } from '../typings/dataTypes'
@@ -21,6 +22,7 @@ import type {
   EvolutionQuest,
   Generation,
   RawFormChange,
+  RawIbfc,
   TempEvo,
 } from '../typings/general'
 import type { Options } from '../typings/inputs'
@@ -340,6 +342,30 @@ export default class Pokemon extends Masterfile {
       }))
     } catch (e) {
       console.warn('Failed to process costume overrides', e, costumes)
+    }
+  }
+
+  compileIbfc(ibfc?: RawIbfc): Ibfc | undefined {
+    if (!ibfc) return undefined
+    const resolveForms = (
+      singular?: string | number,
+      plural?: (string | number)[],
+    ) =>
+      Array.from(
+        new Set(
+          resolveEnumIds(
+            Rpc.PokemonDisplayProto.Form,
+            [...(plural || []), ...(singular === undefined ? [] : [singular])],
+            'form',
+          ),
+        ),
+      )
+    const defaultForms = resolveForms(ibfc.defaultForm, ibfc.defaultForms)
+    const alternateForms = resolveForms(ibfc.alternateForm, ibfc.alternateForms)
+    if (!defaultForms.length && !alternateForms.length) return undefined
+    return {
+      ...(defaultForms.length ? { defaultForms } : {}),
+      ...(alternateForms.length ? { alternateForms } : {}),
     }
   }
 
@@ -1150,6 +1176,10 @@ export default class Pokemon extends Masterfile {
         if (formChanges.length) {
           this.parsedPokemon[id].formChanges = formChanges
           reconcileBaseFormChanges(this.parsedPokemon, this.parsedForms, id)
+        }
+        const ibfc = this.compileIbfc(pokemonSettings.ibfc as RawIbfc)
+        if (ibfc) {
+          this.parsedPokemon[id].ibfc = ibfc
         }
         if (pokemonSettings.tempEvoOverrides) {
           this.parsedPokemon[id].tempEvolutions = this.compileTempEvos(

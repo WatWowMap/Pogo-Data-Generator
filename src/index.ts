@@ -599,6 +599,8 @@ export async function generate({
           forms: localForms,
           availableForms: localForms,
           targetForm: localForms,
+          defaultForms: localForms,
+          alternateForms: localForms,
           itemRequirement: localItems,
           questRequirement: localEvolutionQuests,
           existingMoves: localMoves,

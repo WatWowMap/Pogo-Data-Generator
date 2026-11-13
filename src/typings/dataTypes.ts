@@ -135,6 +135,13 @@ export interface SinglePokemon extends SingleForm {
   gymDefenderEligible?: boolean
   unreleased?: boolean
   jungle?: boolean
+  ibfc?: Ibfc
+}
+
+/** In-battle form change: the forms a Pokemon is stored in and the forms it switches to in combat. */
+export interface Ibfc {
+  defaultForms?: number[]
+  alternateForms?: number[]
 }
 
 interface SingleForm extends BaseStats {

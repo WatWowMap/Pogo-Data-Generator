@@ -46,6 +46,15 @@ export interface TempEvo {
   typeOverride2?: string
 }
 
+/** In-battle form change (pokemonSettings.ibfc); singular and plural keys both occur in the game master. */
+export interface RawIbfc {
+  combatEnable?: boolean
+  defaultForm?: string | number
+  defaultForms?: (string | number)[]
+  alternateForm?: string | number
+  alternateForms?: (string | number)[]
+}
+
 export interface RawFormChange {
   availableForm?: (string | number)[]
   candyCost?: number

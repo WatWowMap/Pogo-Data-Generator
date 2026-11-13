@@ -71,6 +71,7 @@ const baseTemplate: FullTemplate = {
         basePokemonLocationCard: true,
         componentPokemonLocationCard: true,
         fusionPokemonLocationCard: true,
+        ibfc: true,
       },
       unsetDefaultForm: false,
       includeUnset: false,
@@ -164,6 +165,10 @@ const baseTemplate: FullTemplate = {
         questRequirement: false,
       },
       formChanges: structuredClone(formChangeTemplate),
+      ibfc: {
+        defaultForms: 'formName',
+        alternateForms: 'formName',
+      },
       legendary: true,
       mythic: true,
       buddyGroupNumber: true,
