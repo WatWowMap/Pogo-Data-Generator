@@ -4,6 +4,7 @@ const base = require('../dist/base').default
 const rawTexts = {
   en: {
     pokemon_name_0351: 'Castform',
+    pokemon_name_0386: 'Deoxys',
     pokemon_name_0422: 'Shellos',
     pokemon_name_0479: 'Rotom',
     pokemon_name_0493: 'Arceus',
@@ -29,6 +30,8 @@ const rawTexts = {
     form_arceus_normal: 'Normal-Type',
     form_rotom_wash: 'Wash Rotom',
     form_arceus_fire: 'Fire-Type',
+    form_attack: 'Attack',
+    form_deoxys_attack: 'Attack Forme',
   },
   de: {
     pokemon_name_0774: 'Meteno',
@@ -38,10 +41,21 @@ const rawTexts = {
     form_core_indigo: 'Blauer Kern',
     form_meteor: 'Meteorform',
   },
+  // Niantic ships some specific keys untranslated in a few locales
+  ko: {
+    form_attack: '어택폼',
+    form_deoxys_attack: 'Attack Forme',
+    form_arceus_fire: 'Fire-Type',
+    form_blue: '블루 페더',
+    form_core_blue: 'Blue Core',
+    form_core_indigo: '파란색 코어',
+    form_flabebe_blue: '파란 꽃',
+  },
 }
 
 const pokemon = {
   351: { pokemonName: 'Castform', forms: [29, 30] },
+  386: { pokemonName: 'Deoxys', forms: [34] },
   422: { pokemonName: 'Shellos', forms: [96] },
   479: { pokemonName: 'Rotom', forms: [81, 85] },
   493: { pokemonName: 'Arceus', forms: [100, 109] },
@@ -55,6 +69,7 @@ const pokemon = {
 
 const forms = {
   29: { formName: 'Normal', proto: 'CASTFORM_NORMAL' },
+  34: { formName: 'Attack', proto: 'DEOXYS_ATTACK' },
   30: { formName: 'Sunny', proto: 'CASTFORM_SUNNY' },
   100: { formName: 'Normal', proto: 'ARCEUS_NORMAL' },
   81: { formName: 'Normal', proto: 'ROTOM_NORMAL' },
@@ -78,8 +93,12 @@ const forms = {
 const parseForms = (locale, formsInput = forms, extraTexts = {}) => {
   const options = JSON.parse(JSON.stringify(base.translations.options))
   const translations = new Translations(options)
+  translations.rawTranslations.en = rawTexts.en
   translations.rawTranslations[locale] = { ...rawTexts[locale], ...extraTexts }
-  translations.parsedTranslations[locale] = { types: {}, misc: {} }
+  translations.parsedTranslations[locale] = {
+    types: { poke_type_10: locale === 'ko' ? '불꽃' : 'Fire' },
+    misc: {},
+  }
   translations.generics[locale] = {
     substitute: 'Substitute',
     unknown: 'Unknown',
@@ -169,5 +188,27 @@ describe('Translations form names', () => {
     expect(parsed.form_2710).toBe('Blauer Kern')
     expect(parsed.form_2986).toBe('Blaugefiedert')
     expect(parsed.form_3380).toBe('Meteorform')
+  })
+
+  test('falls back to the previous logic when a specific key is untranslated', () => {
+    const parsed = parseForms('ko')
+
+    expect(parsed.form_34).toBe('어택폼')
+    expect(parsed.form_109).toBe('불꽃')
+    expect(parsed.form_2617).toBe('파란 꽃')
+    expect(parsed.form_2710).toBe('파란색 코어')
+  })
+
+  test('keeps an untranslated alias key instead of another Pokémon generic key', () => {
+    const parsed = parseForms('ko')
+
+    expect(parsed.form_2708).toBe('Blue Core')
+    expect(parsed.form_2986).toBe('블루 페더')
+  })
+
+  test('uses the specific key in English even though it matches itself', () => {
+    const parsed = parseForms('en')
+
+    expect(parsed.form_34).toBe('Attack Forme')
   })
 })
