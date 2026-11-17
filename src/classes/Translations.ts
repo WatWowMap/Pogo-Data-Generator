@@ -34,6 +34,11 @@ export default class Translations extends Masterfile {
   reference: TranslationKeys
   enFallback: TranslationKeys
   collator: Intl.Collator
+  // Pokémon whose specific form keys don't use the Pokémon's proto name
+  static readonly FORM_ASSET_ALIASES: { [pokemonProto: string]: string[] } = {
+    minior: ['core'],
+    squawkabilly: ['squakabilly'],
+  }
 
   constructor(
     options: Options,
@@ -639,6 +644,34 @@ export default class Translations extends Masterfile {
     }
   }
 
+  /**
+   * Looks up a Pokémon specific form name, e.g. `form_flabebe_blue` or `form_core_blue` (Minior).
+   * The generic `form_<name>` keys are shared between Pokémon (`form_blue` is Squawkabilly's "Blue Plumage"),
+   * so the specific key has to win when it exists.
+   */
+  pokemonFormAsset(
+    locale: string,
+    id: string,
+    formProto: string | undefined,
+  ): string | undefined {
+    const pokemonProto = Rpc.HoloPokemonId[+id]
+    if (
+      !formProto ||
+      typeof pokemonProto !== 'string' ||
+      !formProto.startsWith(`${pokemonProto}_`)
+    ) {
+      return undefined
+    }
+    const form = formProto.slice(pokemonProto.length + 1).toLowerCase()
+    // like the generic lookup, keep "Normal" (`form_rotom_normal` is just "Rotom")
+    if (form === 'normal') return undefined
+
+    const prefix = pokemonProto.toLowerCase()
+    return [prefix, ...(Translations.FORM_ASSET_ALIASES[prefix] || [])]
+      .map((key) => this.rawTranslations[locale][`form_${key}_${form}`])
+      .find(Boolean)
+  }
+
   pokemon(
     locale: string,
     subItems: { [id: string]: boolean },
@@ -714,7 +747,16 @@ export default class Translations extends Masterfile {
                   Rpc.HoloPokemonType[
                     `POKEMON_TYPE_${checkAssets.toUpperCase()}` as TypeProto
                   ]
-                if (
+                const pokemonFormAsset = this.pokemonFormAsset(
+                  locale,
+                  id,
+                  forms[formId].proto,
+                )
+                if (pokemonFormAsset) {
+                  this.parsedTranslations[locale].forms[
+                    `${this.options.prefix.forms}${formId}`
+                  ] = pokemonFormAsset
+                } else if (
                   this.parsedTranslations[locale].misc?.[formName.toLowerCase()]
                 ) {
                   this.parsedTranslations[locale].forms[
