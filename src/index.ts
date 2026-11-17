@@ -472,69 +472,71 @@ export async function generate({
     const availableManualTranslations = await AllTranslations.fetch(
       'https://raw.githubusercontent.com/WatWowMap/pogo-translations/refs/heads/master/index.json',
     )
+    // Fetch every locale before parsing any of them, parsing compares against
+    // the English texts (e.g. to detect untranslated form keys).
     await Promise.all(
-      Object.entries(translations.locales).map(async (langCode) => {
-        const [localeCode, bool] = langCode
+      Object.entries(translations.locales).map(async ([localeCode, bool]) => {
         if (bool) {
           await AllTranslations.fetchTranslations(
             localeCode as Locales[number],
             availableManualTranslations,
           )
-
-          if (translations.template.misc) {
-            AllTranslations.misc(localeCode)
-          }
-          if (translations.template.types) {
-            AllTranslations.types(localeCode)
-          }
-          if (translations.template.pokemon) {
-            AllTranslations.pokemon(
-              localeCode,
-              translations.template.pokemon,
-              AllPokemon.parsedPokemon,
-              AllPokemon.parsedForms,
-              pokemon.options.unsetFormName,
-            )
-          }
-          if (translations.template.moves) {
-            AllTranslations.moves(
-              localeCode,
-              AllMoves.parsedMoves,
-              AllMoves.tempEvolutionMoveOrdinaryMoveIds,
-            )
-          }
-          if (translations.template.items) {
-            AllTranslations.items(localeCode)
-          }
-          if (translations.template.characters) {
-            AllTranslations.characters(localeCode, AllInvasions.parsedInvasions)
-          }
-          if (translations.template.gruntQuotes) {
-            AllTranslations.gruntQuotes(localeCode)
-          }
-          if (translations.template.weather) {
-            AllTranslations.weather(localeCode)
-          }
-          if (translations.template.pokemonCategories) {
-            AllTranslations.pokemonCategories(localeCode)
-          }
-          if (translations.template.bonuses) {
-            AllTranslations.bonuses(localeCode)
-          }
-          if (translations.template.quests) {
-            AllTranslations.quests(localeCode, {
-              questTypes: AllQuests.parsedQuestTypes,
-              questConditions: AllQuests.parsedConditions,
-              questRewardTypes: AllQuests.parsedRewardTypes,
-            })
-            AllTranslations.parseEvoQuests(
-              localeCode,
-              AllPokemon.evolutionQuests,
-            )
-          }
         }
       }),
     )
+    Object.entries(translations.locales).forEach((langCode) => {
+      const [localeCode, bool] = langCode
+      if (bool) {
+        if (translations.template.misc) {
+          AllTranslations.misc(localeCode)
+        }
+        if (translations.template.types) {
+          AllTranslations.types(localeCode)
+        }
+        if (translations.template.pokemon) {
+          AllTranslations.pokemon(
+            localeCode,
+            translations.template.pokemon,
+            AllPokemon.parsedPokemon,
+            AllPokemon.parsedForms,
+            pokemon.options.unsetFormName,
+          )
+        }
+        if (translations.template.moves) {
+          AllTranslations.moves(
+            localeCode,
+            AllMoves.parsedMoves,
+            AllMoves.tempEvolutionMoveOrdinaryMoveIds,
+          )
+        }
+        if (translations.template.items) {
+          AllTranslations.items(localeCode)
+        }
+        if (translations.template.characters) {
+          AllTranslations.characters(localeCode, AllInvasions.parsedInvasions)
+        }
+        if (translations.template.gruntQuotes) {
+          AllTranslations.gruntQuotes(localeCode)
+        }
+        if (translations.template.weather) {
+          AllTranslations.weather(localeCode)
+        }
+        if (translations.template.pokemonCategories) {
+          AllTranslations.pokemonCategories(localeCode)
+        }
+        if (translations.template.bonuses) {
+          AllTranslations.bonuses(localeCode)
+        }
+        if (translations.template.quests) {
+          AllTranslations.quests(localeCode, {
+            questTypes: AllQuests.parsedQuestTypes,
+            questConditions: AllQuests.parsedConditions,
+            questRewardTypes: AllQuests.parsedRewardTypes,
+          })
+          AllTranslations.parseEvoQuests(localeCode, AllPokemon.evolutionQuests)
+        }
+      }
+    })
     Object.entries(translations.locales).forEach((langCode) => {
       const [localeCode, bool] = langCode
       if (bool) {

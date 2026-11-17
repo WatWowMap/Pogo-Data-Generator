@@ -667,9 +667,25 @@ export default class Translations extends Masterfile {
     if (form === 'normal') return undefined
 
     const prefix = pokemonProto.toLowerCase()
-    return [prefix, ...(Translations.FORM_ASSET_ALIASES[prefix] || [])]
-      .map((key) => this.rawTranslations[locale][`form_${key}_${form}`])
-      .find(Boolean)
+    for (const key of [
+      prefix,
+      ...(Translations.FORM_ASSET_ALIASES[prefix] || []),
+    ]) {
+      const asset = this.rawTranslations[locale][`form_${key}_${form}`]
+      if (!asset) continue
+      // Niantic ships some specific keys untranslated (ko `form_deoxys_attack` is "Attack Forme"),
+      // use the previous lookup for those, it often has a translated generic key (`form_attack`).
+      // Aliased keys are kept, the generic keys there belong to another Pokémon (Minior vs Squawkabilly).
+      if (
+        key === prefix &&
+        locale !== 'en' &&
+        asset === this.rawTranslations.en?.[`form_${key}_${form}`]
+      ) {
+        return undefined
+      }
+      return asset
+    }
+    return undefined
   }
 
   pokemon(
